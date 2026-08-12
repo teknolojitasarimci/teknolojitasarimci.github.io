@@ -4,6 +4,8 @@ description: "Teknoloji, Tasarım, İnovasyon, Zeka Oyunları, Rehberlik ve Kiş
 url: "https://teknolojitasarimci.github.io"
 permalink: /:year/:month/:day/:title/
 
-# GitHub Pages ayarları
+# Gelecek tarihli veya zaman dilimi farkı olan yazıları gizlememesi için:
+future: true
+
 plugins:
   - jekyll-seo-tag
