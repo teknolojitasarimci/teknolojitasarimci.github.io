@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benim Blogum | Kod & Yaşam</title>
+    <meta name="description" content="Teknoloji, yazılım ve yaşama dair yazılarım.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <header class="header">
+        <div class="container header-container">
+            <a href="#" class="logo">Blog<span>.</span></a>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active">Ana Sayfa</a></li>
+                    <li><a href="#about" class="nav-link">Hakkımda</a></li>
+                    <li><a href="#contact" class="nav-link">İletişim</a></li>
+                </ul>
+            </nav>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Tema Değiştir">
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container fade-in-up">
+            <h1 class="hero-title">Merhaba, Ben <span class="gradient-text">Yazılımcı</span></h1>
+            <p class="hero-subtitle">Teknoloji, tasarım ve kişisel deneyimlerimi paylaştığım dijital bahçeme hoş geldiniz.</p>
+        </section>
+
+        <section class="blog-grid container">
+            <!-- Blog Card 1 -->
+            <article class="card fade-in-up" style="animation-delay: 0.1s;">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80');"></div>
+                <div class="card-content">
+                    <span class="tag">Teknoloji</span>
+                    <h2 class="card-title">Modern Web Geliştirme Temelleri</h2>
+                    <p class="card-excerpt">2026 yılında modern web siteleri nasıl tasarlanır? HTML, CSS ve JavaScript ekosistemine güncel bir bakış.</p>
+                    <a href="#" class="read-more">Devamını Oku <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                </div>
+            </article>
+
+            <!-- Blog Card 2 -->
+            <article class="card fade-in-up" style="animation-delay: 0.2s;">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80');"></div>
+                <div class="card-content">
+                    <span class="tag">Kodlama</span>
+                    <h2 class="card-title">GitHub Pages ile Ücretsiz Site Yayınlama</h2>
+                    <p class="card-excerpt">Kendi web sitenizi hiçbir ücret ödemeden ve sunucu kurmadan GitHub Pages üzerinden nasıl yayınlayabilirsiniz?</p>
+                    <a href="#" class="read-more">Devamını Oku <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                </div>
+            </article>
+
+            <!-- Blog Card 3 -->
+            <article class="card fade-in-up" style="animation-delay: 0.3s;">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80');"></div>
+                <div class="card-content">
+                    <span class="tag">Tasarım</span>
+                    <h2 class="card-title">Glassmorphism ve CSS Efektleri</h2>
+                    <p class="card-excerpt">Modern UI tasarımlarının vazgeçilmezi olan buzlu cam efektini (Glassmorphism) sadece CSS ile nasıl yaparsınız?</p>
+                    <a href="#" class="read-more">Devamını Oku <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Benim Blogum. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
