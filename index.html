@@ -1,91 +1,25 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>teknolojitasarimci</title>
-    <meta name="description" content="teknoloji tasarım teknolojitasarimci inovasyon tasarim yenilik yenilikçilik zeka oyunları rehberlik kişisel gelişim kültür">
-    
-    <!-- Google Fonts: Rubik & Open Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,700&family=Rubik:ital,wght@1,700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    
-    <header class="header">
-        <div class="container header-container">
-            <div class="logo-area">
-                <a href="#" class="logo">teknolojitasarimci</a>
-            </div>
-            
-            <div class="search-box">
-                <input type="text" placeholder="Sitede ara..." aria-label="Arama yap">
-                <button aria-label="Ara">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </button>
+---
+layout: default
+---
+<section class="hero container">
+    <h1 class="slogan">{{ site.description }}</h1>
+    <p class="hero-desc">Teknoloji ve tasarıma dair yenilikçi fikirler, kültürel birikimler ve kişisel gelişim notları paylaştığım bloguma hoş geldiniz.</p>
+</section>
+
+<section class="blog-grid container">
+    <!-- Jekyll burada _posts klasöründeki yazıları döngüyle otomatik çeker -->
+    {% for post in site.posts %}
+    <article class="post-card">
+        <div class="post-image" style="background-image: url('{{ post.image }}');"></div>
+        <div class="post-content">
+            <span class="category">{{ post.category }}</span>
+            <h2 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+            <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
+            <div class="post-meta">
+                <span>{{ post.date | date: "%d.%m.%Y" }}</span>
+                <a href="{{ post.url | relative_url }}" class="read-more">Devamını Oku &rarr;</a>
             </div>
         </div>
-    </header>
-
-    <main>
-        <section class="hero container">
-            <h1 class="slogan">Teknoloji, Tasarım, İnovasyon, Zeka Oyunları, Rehberlik ve Kişisel Gelişim</h1>
-            <p class="hero-desc">Teknoloji ve tasarıma dair yenilikçi fikirler, kültürel birikimler ve kişisel gelişim notları paylaştığım bloguma hoş geldiniz.</p>
-        </section>
-
-        <section class="blog-grid container">
-            <!-- Örnek Blog Yazısı 1 -->
-            <article class="post-card">
-                <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80');"></div>
-                <div class="post-content">
-                    <span class="category">İnovasyon</span>
-                    <h2 class="post-title"><a href="#">Geleceğin Teknolojileri ve Tasarımın Uyumu</a></h2>
-                    <p class="post-excerpt">Teknolojinin hızla geliştiği günümüzde, tasarımın rolü her zamankinden daha önemli. Kullanıcı deneyimini merkeze alan yenilikçi yaklaşımlar...</p>
-                    <div class="post-meta">
-                        <span>12 Ağustos 2026</span>
-                        <a href="#" class="read-more">Devamını Oku &rarr;</a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Örnek Blog Yazısı 2 -->
-            <article class="post-card">
-                <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80');"></div>
-                <div class="post-content">
-                    <span class="category">Kişisel Gelişim</span>
-                    <h2 class="post-title"><a href="#">Üretkenliğinizi Artıracak 5 Zeka Oyunu</a></h2>
-                    <p class="post-excerpt">Gündelik hayatın karmaşasından uzaklaşıp zihninizi tazelemek için her gün oynayabileceğiniz basit ama etkili zeka oyunları derlememiz.</p>
-                    <div class="post-meta">
-                        <span>5 Ağustos 2026</span>
-                        <a href="#" class="read-more">Devamını Oku &rarr;</a>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Örnek Blog Yazısı 3 -->
-            <article class="post-card">
-                <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80');"></div>
-                <div class="post-content">
-                    <span class="category">Rehberlik</span>
-                    <h2 class="post-title"><a href="#">Dijital Çağda Odaklanma Sanatı</a></h2>
-                    <p class="post-excerpt">Sürekli bildirimlerin ve dikkat dağıtıcı unsurların arasında derinlemesine çalışabilmek ve odaklanabilmek için uygulamalı ipuçları.</p>
-                    <div class="post-meta">
-                        <span>28 Temmuz 2026</span>
-                        <a href="#" class="read-more">Devamını Oku &rarr;</a>
-                    </div>
-                </div>
-            </article>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 teknolojitasarimci. Tüm hakları saklıdır.</p>
-        </div>
-    </footer>
-
-</body>
-</html>
+    </article>
+    {% endfor %}
+</section>

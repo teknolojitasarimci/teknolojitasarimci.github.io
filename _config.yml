@@ -1,0 +1,9 @@
+title: teknolojitasarimci
+email: murseleren@hotmail.com.tr
+description: "Teknoloji, Tasarım, İnovasyon, Zeka Oyunları, Rehberlik ve Kişisel Gelişim"
+url: "https://teknolojitasarimci.github.io"
+permalink: /:year/:month/:day/:title/
+
+# GitHub Pages ayarları
+plugins:
+  - jekyll-seo-tag
