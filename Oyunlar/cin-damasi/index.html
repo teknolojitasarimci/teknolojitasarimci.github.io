@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Çin Daması - teknolojitasarimci</title>
+<link rel="stylesheet" href="../../css/style.css">
+<style>
+:root{
+  --brand:#0284c7;
+  --brand-dark:#0369a1;
+  --brand-light:#e0f2fe;
+  --brand-grad: #0284c7;
+  --text:#1e293b;
+  --board-dark:#475569;
+  --board-light:#f8fafc;
+  --shadow:0 16px 40px rgba(2,132,199,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Arial, Helvetica, sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  background:#f8fafc;
+  color:var(--text);
+}
+.game-wrapper {
+    width: 100%;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 24px 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+.card{
+  background:#fff;
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  padding:28px 24px;
+  width:100%;
+  text-align:center;
+}
+.header-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:6px;
+}
+h1{
+  font-size:1.7rem;
+  font-weight:800;
+  letter-spacing:-0.5px;
+  background:var(--brand-grad);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin:0;
+}
+.subtitle{
+  color:#64748b;
+  font-size:0.85rem;
+  font-weight:500;
+  margin:2px 0 12px;
+  text-align:left;
+}
+.btn{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;;
+  border:none;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:0.85rem;
+  font-weight:700;
+  padding:8px 18px;
+  border-radius:25px;
+  transition:all .2s ease;
+}
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+.btn-outline{
+  background:#fff;
+  color:var(--brand-dark);
+  border:1.5px solid rgba(2,132,199,.3);
+}
+.btn-outline:hover{background:var(--brand-light);border-color:var(--brand);}
+.btn-primary{
+  background:var(--brand-grad);
+  color:#fff;
+  box-shadow:0 4px 14px rgba(2,132,199,.3);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(2,132,199,.4);}
+.btn-light{
+  background:#ffffff;
+  color:var(--brand-dark);
+  border:1.5px solid rgba(2,132,199,.3);
+}
+.statusbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+  font-size:0.9em;
+  font-weight:700;
+  flex-wrap:wrap;
+  gap:8px;
+}
+#turn{
+  background:var(--brand-light);
+  color:var(--brand-dark);
+  padding:8px 16px;
+  border-radius:20px;
+  box-shadow:inset 0 1px 3px rgba(2,132,199,.08);
+}
+#counts{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  padding:8px 16px;
+  border-radius:20px;
+  font-size:0.85em;
+}
+#board{
+  display:grid;
+  grid-template-columns:repeat(9,1fr);
+  grid-template-rows:repeat(9,1fr);
+  aspect-ratio:1;
+  border:3px solid var(--board-dark);
+  border-radius:14px;
+  overflow:hidden;
+  margin:0 auto 16px auto;
+  box-shadow:0 4px 15px rgba(0,0,0,.15);
+  max-width:440px;
+  width:100%;
+  background:var(--board-light);
+}
+.sq{
+  position:relative;
+  width:100%;
+  height:100%;
+  background:var(--board-light);
+  border:0.5px solid #cbd5e1;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.sq:hover{background:#e2e8f0;}
+.sq.home1{background:#e0f2fe;}
+.sq.home2{background:#fee2e2;}
+.sq.selected, .sq:has(.sel){
+  z-index: 15;
+}
+.piece{
+  position:absolute;
+  inset:10%;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform .15s cubic-bezier(0.175,0.885,0.32,1.275);
+  cursor:pointer;
+  box-shadow:0 3px 6px rgba(0,0,0,.35);
+  z-index: 2;
+}
+.piece.p1{background:var(--brand-grad);border:2px solid #005f8f;}
+.piece.p2{background:#ef4444;border:2px solid #991b1b;}
+.piece.sel{
+  z-index: 20;
+  box-shadow: 0 0 0 3.5px #f59e0b, 0 0 12px rgba(245,158,11,.8), 0 3px 6px rgba(0,0,0,.35);
+  transform:scale(1.08);
+}
+.sq .hint{
+  position:absolute;
+  inset:26%;
+  border-radius:50%;
+  background:rgba(2,132,199,.3);
+  border:2px solid #0284c7;
+  cursor:pointer;
+}
+.hint-text{
+  margin-top:14px;
+  font-size:0.82rem;
+  color:#64748b;
+  line-height:1.6;
+  text-align:center;
+}
+body.dark .hint-text{
+  color:#cbd5e1 !important;
+}
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  font-size:0.8rem;
+  font-weight:600;
+  margin-bottom:12px;
+  color:#334155;
+}
+.legend span{display:flex;align-items:center;gap:6px;}
+.legend .dot{width:14px;height:14px;border-radius:50%;display:inline-block;}
+.legend .dot.d1{background:var(--brand-grad);border:2px solid #005f8f;}
+.legend .dot.d2{background:#ef4444;border:2px solid #991b1b;}
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.6);
+  backdrop-filter:blur(4px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:1000;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:#fff;
+  border-radius:20px;
+  max-width:540px;
+  width:100%;
+  max-height:85vh;
+  overflow-y:auto;
+  padding:30px 28px 24px;
+  box-shadow:0 20px 50px rgba(0,0,0,.3);
+  text-align:center;
+}
+.modal h2{
+  font-size:1.45rem;
+  font-weight:800;
+  background:var(--brand-grad);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:16px;
+}
+.modal ol{
+  padding-left:20px;
+  color:#334155;
+  line-height:1.7;
+  font-size:0.93rem;
+  text-align:left;
+  margin-bottom:18px;
+}
+.modal ol li{margin-bottom:8px;}
+.modal .btn{margin-top:4px;}
+body.dark .sq{background:#1e293b;border-color:#334155;}
+body.dark .sq:hover{background:#273449;}
+body.dark .sq.home1{background:#0c4a6e;}
+body.dark .sq.home2{background:#7f1d1d;}
+body.dark #counts{background:#1e293b;border-color:#334155;color:#cbd5e1;}
+body.dark .legend{color:#cbd5e1 !important;}
+body.dark .legend span{color:#cbd5e1 !important;}
+body.dark .mode-btn{background:#1e293b;color:#38bdf8;border-color:#334155;}
+body.dark .mode-btn.active{background:#0284c7;color:#fff;border-color:#0284c7;}
+body.dark .mode-btn:hover{background:#273449;}
+.mode-row{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.mode-btn.active{
+  background:var(--brand-grad);
+  color:#fff;
+  border-color:transparent;
+}
+
+/* ==========================================================================
+   OYUNLAR STANDART KONTRAST VE BUTON DÜZENİ (Tüm Oyunlar İçin Evrensel)
+   ========================================================================== */
+
+/* 1. Başlama / Sıfırlama Butonları (Asla boydan boya değil, ortalanmış 25px hap buton) */
+button#reset-button,
+button#btn-reset,
+button#btn-restart,
+button#start-btn,
+button#restart-btn,
+.btn-reset,
+.btn-restart,
+.btn-start,
+.game-btn-primary,
+.main-game-btn {
+    width: auto !important;
+    min-width: 170px !important;
+    max-width: 240px !important;
+    margin: 14px auto !important;
+    display: block !important;
+    padding: 10px 24px !important;
+    border-radius: 25px !important;
+    border: none !important;
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 15px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25) !important;
+    transition: all 0.2s ease !important;
+}
+
+button#reset-button:hover,
+button#btn-reset:hover,
+button#btn-restart:hover,
+button#start-btn:hover,
+.btn-reset:hover,
+.btn-restart:hover,
+.btn-start:hover {
+    background: #0369a1 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
+}
+
+body.dark button#reset-button,
+body.dark button#btn-reset,
+body.dark button#btn-restart,
+body.dark button#start-btn,
+body.dark button#restart-btn,
+body.dark .btn-reset,
+body.dark .btn-restart,
+body.dark .btn-start,
+body.dark .game-btn-primary,
+body.dark .main-game-btn {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+}
+
+body.dark button#reset-button:hover,
+body.dark button#btn-reset:hover,
+body.dark button#btn-restart:hover,
+body.dark .btn-reset:hover,
+body.dark .btn-start:hover {
+    background: #7dd3e8 !important;
+}
+
+/* 2. Mod & Boyut Seçici Butonları (Yüksek Kontrast & Düz Renk) */
+.btn-mode,
+.size-btn,
+.level-btn,
+.amt-btn,
+.controls span,
+.option-btn {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #334155 !important;
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-mode.active,
+.size-btn.active,
+.level-btn.active,
+.amt-btn.active,
+.controls input[type="radio"]:checked + span,
+.option-btn.active {
+    background: #0284c7 !important;
+    border-color: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+body.dark .btn-mode,
+body.dark .size-btn,
+body.dark .level-btn,
+body.dark .amt-btn,
+body.dark .controls span,
+body.dark .option-btn {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark .btn-mode.active,
+body.dark .size-btn.active,
+body.dark .level-btn.active,
+body.dark .amt-btn.active,
+body.dark .controls input[type="radio"]:checked + span,
+body.dark .option-btn.active {
+    background: #38bdf8 !important;
+    border-color: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+/* 3. Durum Çubuğu / Sıra Göstergesi */
+.status-badge,
+.status-box,
+.statusbar,
+.turn-badge,
+#status-text,
+#turn-indicator {
+    background: #e0f2fe !important;
+    border: 1px solid rgba(2, 132, 199, 0.2) !important;
+    color: #0369a1 !important;
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+}
+
+body.dark .status-badge,
+body.dark .status-box,
+body.dark .statusbar,
+body.dark .turn-badge,
+body.dark #status-text,
+body.dark #turn-indicator {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #38bdf8 !important;
+    font-weight: 700 !important;
+}
+
+/* 4. Skor Panelleri */
+.score-card,
+.score-box,
+.scoreboard {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+    border-radius: 14px !important;
+}
+
+body.dark .score-card,
+body.dark .score-box,
+body.dark .scoreboard {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+/* 5. Kurallar / Yardım Butonları */
+.action-btn,
+.rules-btn,
+.btn-rules {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0369a1 !important;
+    border-radius: 20px !important;
+}
+
+body.dark .action-btn,
+body.dark .rules-btn,
+body.dark .btn-rules {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #38bdf8 !important;
+}
+
+
+/* ==========================================================================
+   STANDART KURALLAR VE AKSİYON BUTONLARI (Tüm Oyunlar İçin Şık 25px Hap Buton)
+   ========================================================================== */
+.action-btn,
+.btn-rules,
+.rules-btn,
+#btn-rules,
+#rules-btn,
+button#rules-btn,
+button.rules-btn,
+.rules-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 7px 18px !important;
+    min-width: 95px !important;
+    height: 36px !important;
+    border-radius: 25px !important;
+    border: 1.5px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #0ea5e9 !important;
+    font-weight: 800 !important;
+    font-size: 13.5px !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+.action-btn:hover,
+.btn-rules:hover,
+.rules-btn:hover,
+#btn-rules:hover,
+#rules-btn:hover,
+.rules-trigger:hover {
+    background: #e0f2fe !important;
+    border-color: #0ea5e9 !important;
+    color: #0284c7 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2) !important;
+}
+
+body.dark .action-btn,
+body.dark .btn-rules,
+body.dark .rules-btn,
+body.dark #btn-rules,
+body.dark #rules-btn,
+body.dark button#rules-btn,
+body.dark button.rules-btn,
+body.dark .rules-trigger {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark .action-btn:hover,
+body.dark .btn-rules:hover,
+body.dark .rules-btn:hover,
+body.dark #btn-rules:hover,
+body.dark #rules-btn:hover,
+body.dark .rules-trigger:hover {
+    background: #1e293b !important;
+    border-color: #38bdf8 !important;
+    color: #7dd3e8 !important;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+
+/* ==========================================================================
+   STANDART ORTALANMIŞ BUTONLAR VE MODAL ONAY BUTONLARI (Boydan boya yasak)
+   ========================================================================== */
+.modal-footer,
+.modal-actions,
+.dialog-footer,
+.rules-modal-footer,
+.rules-footer {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 18px !important;
+    padding-top: 10px !important;
+    text-align: center !important;
+}
+
+.modal-footer button,
+.modal-actions button,
+.modal-close-btn,
+.btn-understand,
+#btn-understand,
+#rules-close-btn,
+#btn-rules-close,
+.rules-modal-close,
+.rules-close,
+button.btn-understand,
+button.modal-close-btn,
+#restartBtn,
+#resetBtn,
+#startBtn,
+.btn-start,
+.btn-reset,
+.btn-restart {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 160px !important;
+    max-width: 240px !important;
+    width: auto !important;
+    margin: 12px auto !important;
+    padding: 10px 24px !important;
+    border-radius: 25px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+
+/* ==========================================================================
+   ANLADIM / OYUNA BAŞLA BUTONU (Kesinlikle Boydan Boya Değil, Ortalanmış 25px Hap Buton)
+   ========================================================================== */
+.modal-close,
+#rulesClose,
+#closeRulesBtn,
+#rules-close,
+.btn-understand,
+#btn-understand,
+.modal-close-btn,
+button.modal-close,
+button#rulesClose,
+button#closeRulesBtn,
+button#rules-close {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 170px !important;
+    max-width: 240px !important;
+    width: auto !important;
+    margin: 22px auto 6px auto !important;
+    padding: 11px 26px !important;
+    border-radius: 25px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    background: #0ea5e9 !important;
+    color: #ffffff !important;
+    border: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3) !important;
+    transition: all 0.25s ease !important;
+    box-sizing: border-box !important;
+}
+
+.modal-close:hover,
+#rulesClose:hover,
+#closeRulesBtn:hover,
+#rules-close:hover,
+.btn-understand:hover,
+#btn-understand:hover {
+    background: #0284c7 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.4) !important;
+}
+
+body.dark .modal-close,
+body.dark #rulesClose,
+body.dark #closeRulesBtn,
+body.dark #rules-close,
+body.dark .btn-understand,
+body.dark #btn-understand {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+}
+
+body.dark .modal-close:hover,
+body.dark #rulesClose:hover,
+body.dark #closeRulesBtn:hover,
+body.dark #rules-close:hover {
+    background: #7dd3e8 !important;
+}
+
+
+body.dark .modal ol,
+body.dark .modal ol li,
+body.dark .modal ul,
+body.dark .modal ul li,
+body.dark .modal p,
+body.dark .rules-content,
+body.dark .rules-modal ol,
+body.dark .rules-modal ol li {
+    color: #e2e8f0 !important;
+}
+body.dark .subtitle, body.dark p.subtitle {
+    color: #cbd5e1 !important;
+}
+body.dark #counts, body.dark #turn, body.dark .statusbar {
+    color: #e2e8f0 !important;
+}
+
+
+
+
+
+.status, .game-info, .statusbar-wrap, .info-row, .header-row,
+.mode-selector, .mode-row, .controls, .controls-wrapper, .size-bar, .level-bar, .grid-select, .tabs, .btn-row,
+body.dark .status, body.dark .game-info, body.dark .statusbar-wrap, body.dark .info-row, body.dark .header-row,
+body.dark .mode-selector, body.dark .mode-row, body.dark .controls, body.dark .controls-wrapper, body.dark .size-bar, body.dark .level-bar, body.dark .grid-select, body.dark .tabs, body.dark .btn-row {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+</style>
+    <script src="../../js/game-sounds.js"></script>
+    <script src="../../js/theme.js"></script>
+</head>
+<body><div class="game-wrapper">
+  <main class="card">
+    <div class="header-row">
+      <div>
+        <h1>Çin Daması</h1>
+        <p class="subtitle">9×9 tahtada 9 taşını rakibin başlangıç alanına ulaştıran kazanır.</p>
+      </div>
+      <button id="rulesBtn" class="btn btn-outline" type="button">Kurallar</button>
+    </div>
+
+    <div class="statusbar">
+      <span id="turn">Sıra: Oyuncu 1</span>
+      <span id="counts">O1: 9/9 · O2: 9/9</span>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot d1"></span> Oyuncu 1</span>
+      <span><span class="dot d2"></span> Oyuncu 2</span>
+    </div>
+
+    <div class="mode-row">
+      <button id="modePvP" class="btn btn-light mode-btn active" type="button">İki Kişi</button>
+      <button id="modeAI" class="btn btn-light mode-btn" type="button">Yapay Zekaya Karşı</button>
+    </div>
+
+    <div id="winnerBanner" style="display:none; margin:14px auto; padding:10px 24px; border-radius:25px; background:#ecfdf5; border:1px solid #a7f3d0; font-weight:800; color:#065f46; font-size:0.95rem; width:fit-content; max-width:440px;"></div>
+
+    <div id="board"></div>
+
+    <button id="newGameBtn" class="btn btn-primary" type="button" style="margin: 14px auto; display: block; min-width: 170px; max-width: 240px; border-radius: 25px !important;">Yeni Oyun</button>
+
+    <p class="hint-text">Mavi taşlar sağ alt köşedeki açık mavi alana, kırmızı taşlar sol üstteki açık kırmızı alana taşınmalıdır.</p>
+  </main>
+</div>
+
+<div id="rulesModal" class="modal-overlay">
+  <div class="modal">
+    <h2>Çin Daması Kuralları</h2>
+    <ol>
+      <li><b>Başlangıç:</b> Her oyuncu 9 taşını tahtanın karşılıklı köşelerindeki 3×3'lük alana yerleştirir.</li>
+      <li><b>Hareket:</b> Taşlar ileri ve yana doğru tek kare ilerleyebilir; çapraz hareket yasaktır. Geriye doğru hareket sadece rakibin başlangıç alanında (3×3'lük köşe) yapılabilir.</li>
+      <li><b>Zincirleme Atlama:</b> Bir veya birden fazla taşın üzerinden art arda sekerek tek hamlede 2, 3, 4 veya daha fazla atlama yapabilirsiniz. Her zıplama adım adım gösterilir.</li>
+      <li><b>Kazanma:</b> 9 taşını rakibin başlangıç alanına ilk yerleştiren oyuncu oyunu kazanır. Taşların özel bir düzende olması gerekmez, 3×3'lük alanı doldurmak yeterlidir.</li>
+    </ol>
+    <button id="closeRulesBtn" class="btn btn-primary" type="button" style="margin: 14px auto; display: block; min-width: 170px; max-width: 240px; border-radius: 25px !important;">Anladım, Oyuna Başla</button>
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=%C3%87in%20Damas%C4%B1%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#ÇinDaması</span>
+        <span class="tag-badge">#ChineseCheckers</span>
+        <span class="tag-badge">#MasaOyunları</span>
+        <span class="tag-badge">#StratejiOyunları</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+</div>
+</div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+    <div class="container">
+        <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+        <div class="footer-copyright-text">
+            Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+        </div>
+    </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  const N = 9;
+  // Başlangıç bölgeleri (3x3 köşeler)
+  // Oyuncu 1 (mavi): sol üst -> hedef sağ alt
+  // Oyuncu 2 (kırmızı): sağ alt -> hedef sol üst
+  const ZONES = {
+    1: { start: {r0:0, r1:2, c0:0, c1:2}, goal: {r0:6, r1:8, c0:6, c1:8} },
+    2: { start: {r0:6, r1:8, c0:6, c1:8}, goal: {r0:0, r1:2, c0:0, c1:2} }
+  };
+
+  let board = null;
+  let turn = 1;
+  let sel = null;
+  let hints = [];
+  let gameOver = false;
+  let mode = 'pvp';
+  let aiThinking = false;
+
+  const boardEl = document.getElementById('board');
+  const turnEl = document.getElementById('turn');
+  const countsEl = document.getElementById('counts');
+  const winnerBanner = document.getElementById('winnerBanner');
+  const modePvPBtn = document.getElementById('modePvP');
+  const modeAIBtn = document.getElementById('modeAI');
+
+  function inZone(z, r, c){
+    return r >= z.r0 && r <= z.r1 && c >= z.c0 && c <= z.c1;
+  }
+
+  function isHome(r, c){
+    return inZone(ZONES[1].start, r, c) || inZone(ZONES[2].start, r, c);
+  }
+
+  // Tek kare hareket: ileri/yana (hedefe doğru 4 yönün 2'si) + rakip alanda geriye
+  function singleStepMoves(r, c, p){
+    const dirs = [
+      [0,1],[1,0],[0,-1],[-1,0]
+    ];
+    const moves = [];
+    const oppZone = ZONES[p === 1 ? 2 : 1];
+    // Oyuncu 1 hedefi sağ alt -> ileri yönler +col, +row
+    // Oyuncu 2 hedefi sol üst -> ileri yönler -col, -row
+    const forward = p === 1 ? [[0,1],[1,0]] : [[0,-1],[-1,0]];
+    const candidates = [];
+    forward.forEach(([dr,dc])=>candidates.push([dr,dc]));
+    // Rakibin başlangıç alanındaysa (yani kendi hedefinde) geriye de gidebilir
+    if (inZone(oppZone.start, r, c)) {
+      dirs.forEach(([dr,dc])=>{
+        const exists = candidates.some(([er,ec])=>er===dr&&ec===dc);
+        if(!exists) candidates.push([dr,dc]);
+      });
+    }
+    candidates.forEach(([dr,dc])=>{
+      const nr = r + dr, nc = c + dc;
+      if(nr>=0 && nr<N && nc>=0 && nc<N && board[nr][nc] === null){
+        moves.push({
+          r: nr, 
+          c: nc, 
+          type: 'step', 
+          path: [{r: r, c: c}, {r: nr, c: nc}]
+        });
+      }
+    });
+    return moves;
+  }
+
+  // Zincirleme Atlama: bir veya birden fazla taşın üzerinden art arda sekerek atlama (BFS)
+  function getAllJumps(startR, startC, p){
+    const dirs = [[0,1],[1,0],[0,-1],[-1,0]];
+    const results = [];
+    const visited = new Set();
+    visited.add(`${startR},${startC}`);
+
+    const queue = [{
+      r: startR, 
+      c: startC, 
+      path: [{r: startR, c: startC}]
+    }];
+
+    while(queue.length > 0){
+      const curr = queue.shift();
+      dirs.forEach(([dr, dc]) => {
+        const mr = curr.r + dr, mc = curr.c + dc;
+        const lr = curr.r + 2 * dr, lc = curr.c + 2 * dc;
+        if(mr >= 0 && mr < N && mc >= 0 && mc < N && lr >= 0 && lr < N && lc >= 0 && lc < N){
+          const mid = (mr === startR && mc === startC) ? null : board[mr][mc];
+          const land = (lr === startR && lc === startC) ? null : board[lr][lc];
+          
+          if(mid !== null && land === null){
+            const key = `${lr},${lc}`;
+            if(!visited.has(key)){
+              visited.add(key);
+              const newPath = [...curr.path, {r: lr, c: lc}];
+              results.push({
+                r: lr, 
+                c: lc, 
+                type: 'jump', 
+                hops: newPath.length - 1,
+                path: newPath
+              });
+              queue.push({
+                r: lr, 
+                c: lc, 
+                path: newPath
+              });
+            }
+          }
+        }
+      });
+    }
+    return results;
+  }
+
+  function legalMovesFor(r, c){
+    const p = board[r][c];
+    if(!p) return [];
+    return singleStepMoves(r, c, p).concat(getAllJumps(r, c, p));
+  }
+
+  function buildBoard(){
+    boardEl.innerHTML = '';
+    board = [];
+    for(let r=0; r<N; r++){
+      board.push([]);
+      for(let c=0; c<N; c++){
+        board[r].push(null);
+      }
+    }
+    // Yerleştirme
+    for(let r=0; r<3; r++){
+      for(let c=0; c<3; c++){
+        board[r][c] = 1;         // mavi sol üst
+        board[8-r][8-c] = 2;     // kırmızı sağ alt
+      }
+    }
+    renderBoard();
+  }
+
+  function renderBoard(){
+    boardEl.innerHTML = '';
+    for(let r=0; r<N; r++){
+      for(let c=0; c<N; c++){
+        const sq = document.createElement('div');
+        sq.className = 'sq';
+        if(inZone(ZONES[1].start, r, c)) sq.classList.add('home1');
+        if(inZone(ZONES[2].start, r, c)) sq.classList.add('home2');
+        const p = board[r][c];
+        if(p){
+          const piece = document.createElement('div');
+          piece.className = 'piece p' + p;
+          if(sel && sel.r===r && sel.c===c){
+            piece.classList.add('sel');
+            sq.classList.add('selected');
+          }
+          sq.appendChild(piece);
+        }
+        hints.forEach(h=>{
+          if(h.r===r && h.c===c){
+            const hEl = document.createElement('div');
+            hEl.className = 'hint';
+            sq.appendChild(hEl);
+          }
+        });
+        sq.addEventListener('click', ()=>onClick(r, c));
+        boardEl.appendChild(sq);
+      }
+    }
+  }
+
+  function executeMoveWithAnimation(path, isJump, onComplete){
+    if(!path || path.length < 2){
+      if(onComplete) onComplete();
+      return;
+    }
+    aiThinking = true;
+    sel = null;
+    hints = [];
+    
+    let hopIdx = 0;
+    const movingPlayer = turn;
+    const start = path[0];
+    board[start.r][start.c] = null;
+    
+    function nextHop(){
+      hopIdx++;
+      if(hopIdx < path.length){
+        const prev = path[hopIdx - 1];
+        board[prev.r][prev.c] = null;
+        
+        const curr = path[hopIdx];
+        board[curr.r][curr.c] = movingPlayer;
+        
+        try{
+          if(isJump) GameSounds.capture();
+          else GameSounds.place();
+        }catch(e){}
+        
+        renderBoard();
+        
+        if(hopIdx < path.length - 1){
+          setTimeout(nextHop, 230); // 230ms delay between consecutive hops
+        } else {
+          aiThinking = false;
+          renderBoard();
+          if(onComplete) onComplete();
+        }
+      }
+    }
+    
+    nextHop();
+  }
+
+  function onClick(r, c){
+    if(gameOver || aiThinking) return;
+    if(mode === 'ai' && turn !== 1) return;
+    const p = board[r][c];
+    if(p && p === turn){
+      const moves = legalMovesFor(r, c);
+      if(moves.length > 0){
+        sel = {r, c};
+        hints = moves;
+        try{ GameSounds.click(); }catch(e){}
+        renderBoard();
+      }
+      return;
+    }
+    const mv = hints.find(h=>h.r===r && h.c===c);
+    if(mv){
+      executeMoveWithAnimation(mv.path, mv.type === 'jump', function(){
+        if(!checkWin()){
+          turn = turn === 1 ? 2 : 1;
+          turnEl.textContent = mode === 'ai' ? (turn === 1 ? 'Sıra: Sende (Oyuncu 1)' : 'Sıra: Yapay Zeka') : ('Sıra: Oyuncu ' + turn);
+          updateCounts();
+          renderBoard();
+          
+          if(mode === 'ai' && turn === 2 && !gameOver){
+            aiThinking = true;
+            turnEl.textContent = 'Sıra: Yapay Zeka (Düşünüyor...)';
+            setTimeout(aiMove, 500);
+          }
+        }
+      });
+    }
+  }
+
+  function checkWin(){
+    const p = turn;
+    let count = 0;
+    const goal = ZONES[p].goal;
+    for(let r=goal.r0; r<=goal.r1; r++){
+      for(let c=goal.c0; c<=goal.c1; c++){
+        if(board[r][c] === p) count++;
+      }
+    }
+    if(count === 9){
+      gameOver = true;
+      try{ GameSounds.win(); }catch(e){}
+      winnerBanner.style.display = 'block';
+      if(mode === 'ai'){
+        winnerBanner.textContent = p === 1 ? 'Tebrikler, sen kazandın!' : 'Yapay zeka kazandı. Tekrar deneyebilirsin!';
+      } else {
+        winnerBanner.textContent = 'Oyuncu ' + p + ' kazandı! 9 taşını rakip alana ulaştırdı.';
+      }
+      turnEl.textContent = 'Oyun Bitti';
+      updateCounts();
+      renderBoard();
+      return true;
+    }
+    updateCounts();
+    renderBoard();
+    return false;
+  }
+
+  function updateCounts(){
+    let c1 = 0, c2 = 0;
+    for(let r=0; r<N; r++){
+      for(let c=0; c<N; c++){
+        if(board[r][c] === 1) c1++;
+        else if(board[r][c] === 2) c2++;
+      }
+    }
+    countsEl.textContent = 'O1: ' + c1 + '/9 · O2: ' + c2 + '/9';
+  }
+
+  function distToGoal(r, c, p){
+    const g = ZONES[p].goal;
+    const cr = Math.round((g.r0 + g.r1) / 2);
+    const cc = Math.round((g.c0 + g.c1) / 2);
+    return Math.abs(r - cr) + Math.abs(c - cc);
+  }
+
+  function aiMove(){
+    const candidates = [];
+    for(let r=0; r<N; r++){
+      for(let c=0; c<N; c++){
+        if(board[r][c] !== 2) continue;
+        const fromDist = distToGoal(r, c, 2);
+        legalMovesFor(r, c).forEach(m=>{
+          const gain = fromDist - distToGoal(m.r, m.c, 2);
+          candidates.push({
+            fr: r, 
+            fc: c, 
+            tr: m.r, 
+            tc: m.c, 
+            type: m.type,
+            hops: m.hops || 1,
+            path: m.path, 
+            gain: gain
+          });
+        });
+      }
+    }
+    if(candidates.length === 0){
+      aiThinking = false;
+      turn = 1;
+      turnEl.textContent = 'Sıra: Sende (Oyuncu 1)';
+      renderBoard();
+      return;
+    }
+    candidates.sort(function(a, b){
+      const asc = b.gain - a.gain;
+      if(asc !== 0) return asc;
+      if((b.hops || 0) !== (a.hops || 0)) return (b.hops || 0) - (a.hops || 0);
+      return Math.random() - 0.5;
+    });
+    const best = candidates[0];
+    executeMoveWithAnimation(best.path, best.type === 'jump', function(){
+      if(!checkWin()){
+        turn = 1;
+        turnEl.textContent = 'Sıra: Sende (Oyuncu 1)';
+        updateCounts();
+        renderBoard();
+      }
+    });
+  }
+
+  function setMode(m){
+    mode = m;
+    modePvPBtn.classList.toggle('active', m === 'pvp');
+    modeAIBtn.classList.toggle('active', m === 'ai');
+    newGame();
+  }
+
+  function newGame(){
+    gameOver = false;
+    sel = null;
+    hints = [];
+    aiThinking = false;
+    turn = 1;
+    winnerBanner.style.display = 'none';
+    turnEl.textContent = mode === 'ai' ? 'Sıra: Oyuncu 1' : 'Sıra: Oyuncu 1';
+    buildBoard();
+  }
+
+  document.getElementById('newGameBtn').addEventListener('click', newGame);
+  modePvPBtn.addEventListener('click', function(){ setMode('pvp'); });
+  modeAIBtn.addEventListener('click', function(){ setMode('ai'); });
+
+  const rulesModal = document.getElementById('rulesModal');
+  document.getElementById('rulesBtn').addEventListener('click', ()=>{
+    rulesModal.classList.add('open');
+  });
+  document.getElementById('closeRulesBtn').addEventListener('click', ()=>{
+    rulesModal.classList.remove('open');
+  });
+  rulesModal.addEventListener('click', (e)=>{
+    if(e.target === rulesModal) rulesModal.classList.remove('open');
+  });
+
+  newGame();
+})();
+</script>
+
+<script src="../../js/menu.js" defer></script>  
+  
+  
+  
+  
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

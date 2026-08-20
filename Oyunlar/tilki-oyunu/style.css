@@ -1,0 +1,398 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f8fafc;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 20px 0;
+}
+
+#game-console {
+    background-color: #fff;
+    border: 2px solid #e6f7fa;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 35px rgba(7, 150, 176, 0.15);
+    width: 800px;
+    max-width: 95vw;
+}
+
+#brand-name {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #0074ad;
+    margin-bottom: 10px;
+    letter-spacing: 5px;
+}
+
+#game-screen {
+    width: 100%;
+    height: 400px;
+    background-color: #c7d1b8; /* Nostaljik yeşil ekran rengi */
+    border: 3px solid #0074ad;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Tilki Stili */
+#fox {
+    width: 80px;
+    height: 100px;
+    background-color: #d95b27; /* Tilki turuncusu */
+    position: absolute;
+    transition: all 0.1s ease;
+    border-radius: 50% 50% 10px 10px;
+    border: 3px solid #333;
+}
+/* Tilki'nin sepeti */
+#fox::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    background-color: #654321;
+    border: 3px solid #333;
+    border-radius: 10px 10px 0 0;
+    top: -20px;
+    left: 7px;
+}
+/* Tilkinin pozisyonları için sınıflar */
+.fox-top-left { top: 60px; left: 120px; }
+.fox-bottom-left { top: 240px; left: 120px; }
+.fox-top-right { top: 60px; right: 120px; transform: scaleX(-1); }
+.fox-bottom-right { top: 240px; right: 120px; transform: scaleX(-1); }
+
+
+/* Yumurta Stili */
+.egg {
+    width: 20px;
+    height: 26px;
+    background-color: #f0e68c;
+    border: 2px solid #333;
+    border-radius: 50%;
+    position: absolute;
+    transition: top 2s linear, left 2s linear;
+}
+
+/* Kırık Yumurta Stili */
+.egg.broken {
+    background-color: transparent;
+    border: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20 80 L40 60 L50 85 L60 60 L80 80 Z' fill='%23f0e68c' stroke='%23333' stroke-width='5'/%3E%3C/svg%3E");
+    background-size: contain;
+    width: 30px;
+    height: 30px;
+}
+
+/* Rampalar ve Tavuklar */
+.ramp, .chicken {
+    position: absolute;
+    background-color: #a52a2a;
+    height: 10px;
+    border: 2px solid #333;
+}
+.chicken {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50% 50% 0 0;
+}
+.chicken::before { /* Göz */
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #333;
+    border-radius: 50%;
+    top: 15px;
+    left: 25px;
+}
+.chicken::after { /* İbik */
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 10px;
+    background: red;
+    top: -5px;
+    left: 10px;
+    border-radius: 5px;
+}
+.top-left { top: 50px; left: 20px; }
+.bottom-left { top: 230px; left: 20px; }
+.top-right { top: 50px; right: 20px; transform: scaleX(-1); }
+.bottom-right { top: 230px; right: 20px; transform: scaleX(-1); }
+.ramp.top-left { top: 85px; left: 40px; width: 100px; transform: rotate(25deg); }
+.ramp.bottom-left { top: 265px; left: 40px; width: 100px; transform: rotate(25deg); }
+.ramp.top-right { top: 85px; right: 40px; width: 100px; transform: rotate(-25deg); }
+.ramp.bottom-right { top: 265px; right: 40px; width: 100px; transform: rotate(-25deg); }
+
+/* Skor ve Bilgi Ekranları */
+#score-display, #miss-display {
+    position: absolute;
+    top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+#score-display { left: 10px; }
+#miss-display { right: 10px; }
+#miss-display span { color: red; margin-left: 5px; }
+#miss-display span.lost { color: #8b0000; }
+
+#game-over-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    text-align: center;
+}
+.hidden { display: none !important; }
+
+/* Kontroller */
+#controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 15px;
+}
+.button-group {
+    display: flex;
+    flex-direction: column;
+}
+.control-btn, #restart-button {
+    width: 70px;
+    height: 70px;
+    margin: 5px;
+    border-radius: 50%;
+    border: 3px solid #0796b0;
+    background-color: #0796b0;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(7, 150, 176, 0.3);
+}
+.control-btn:active, #restart-button:active {
+    transform: scale(0.95);
+    background-color: #0074ad;
+}
+
+#restart-button {
+    width: 200px;
+    height: 60px;
+    border-radius: 10px;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+/* Kurallar Butonu ve Penceresi */
+#rules-button {
+    background-color: #fff;
+    color: #0074ad;
+    border: 2px solid #e6f7fa;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(7, 150, 176, 0.25);
+}
+#rules-button:hover {
+    background-color: #e6f7fa;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-card {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 30px 35px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-card h2 {
+    color: #0796b0;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.modal-card ol {
+    padding-left: 20px;
+    margin: 0;
+    line-height: 1.6;
+    color: #333;
+    font-size: 16px;
+}
+.modal-card ol li {
+    margin-bottom: 10px;
+}
+
+#rules-close {
+    display: block;
+    margin: 25px auto 0;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    background: #0796b0;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(7, 150, 176, 0.35);
+}
+#rules-close:hover {
+    opacity: 0.9;
+}
+body.dark {
+    background: #0f172a;
+}
+
+body.dark #game-console {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+}
+
+body.dark #brand-name { color: #7dd3e8; }
+
+body.dark .mode-selector,
+body.dark .pvp-banner {
+    background: #0f172a;
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+body.dark .btn-mode {
+    background: #0f172a;
+    border-color: rgba(7, 150, 176, 0.4);
+    color: #7dd3e8;
+}
+
+body.dark .btn-mode:hover { background: rgba(7, 150, 176, 0.2); }
+body.dark #score-display,
+body.dark #pvp-status,
+body.dark #misses-display {
+    color: #7dd3e8;
+    background: #0f172a;
+    border-color: #334155;
+}
+body.dark #game-over-screen { background: rgba(2, 6, 23, 0.92); }
+
+
+    /* --- Site Teması Uyumlu Arka Plan ve Kart Standartları --- */
+    body {
+        background: #f8fafc !important;
+        color: #1e293b;
+    }
+    .card, .game-container, .game-box, .board-wrap, .main-card, #app-container {
+        background: #ffffff;
+        border: 1px solid rgba(7, 150, 176, 0.15);
+        box-shadow: 0 10px 30px rgba(7, 150, 176, 0.08);
+    }
+
+    body.dark {
+        background: #0f172a !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark .card, 
+    body.dark .game-container, 
+    body.dark .game-box, 
+    body.dark .board-wrap, 
+    body.dark .main-card, 
+    body.dark #app-container,
+    body.dark .rules-modal,
+    body.dark .modal,
+    body.dark .modal-content,
+    body.dark .modal-card {
+        background: #1e293b !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark h1, body.dark h2, body.dark h3, body.dark .game-title, body.dark .header h1 {
+        color: #38bdf8 !important;
+    }
+    body.dark .turn-indicator, 
+    body.dark .status, 
+    body.dark .statusbar, 
+    body.dark .status-box, 
+    body.dark .score-card, 
+    body.dark .score-val,
+    body.dark .controls,
+    body.dark .mode-selector,
+    body.dark .game-info,
+    body.dark .msg-banner {
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+        color: #cbd5e1 !important;
+    }
+    body.dark .board, 
+    body.dark .board-outer, 
+    body.dark .piles-board, 
+    body.dark .mangala-board,
+    body.dark #board {
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+    }
+    body.dark .cell, 
+    body.dark .sq, 
+    body.dark .pit {
+        background: rgba(255, 255, 255, 0.04) !important;
+        border-color: #334155 !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark .cell.empty, body.dark .sq.empty {
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+    body.dark .btn-light, 
+    body.dark .btn-outline, 
+    body.dark .btn-mode, 
+    body.dark .size-btn, 
+    body.dark .level-btn, 
+    body.dark .amt-btn {
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+        color: #38bdf8 !important;
+    }
+    body.dark .btn-light:hover, 
+    body.dark .btn-outline:hover, 
+    body.dark .btn-mode:hover, 
+    body.dark .size-btn:hover {
+        background: #1e293b !important;
+        border-color: #0796b0 !important;
+    }
+    body.dark .btn-primary, 
+    body.dark .btn1, 
+    body.dark .rules-btn,
+    body.dark .action-btn-main {
+        background: #0796b0 !important;
+        color: #ffffff !important;
+    }

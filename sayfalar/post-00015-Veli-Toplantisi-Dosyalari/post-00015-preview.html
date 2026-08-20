@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veli Toplantısı Dosyaları: Tutanak, Dilekçe, Davetiye ve İmza Çizelgesi Seti - teknolojitasarimci</title>
+    <meta name="description" content="Veli toplantısı için ihtiyacınız olan tüm evraklar: toplantı tutanağı, idareye sunulacak dilekçe, veli davetiyesi ve imza çizelgesi. Ayrıca veli toplantısında neler konuşulur rehberi ve velilere dağıtılacak tavsiyeler.">
+    
+    <!-- Google Fonts Entegrasyonu -->
+
+
+<link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Özel Master Template Premium Stil İyileştirmeleri -->
+    <style>
+        :root {
+            --font-heading: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --font-body: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --primary-gradient: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+        }
+
+        body {
+            font-family: var(--font-body);
+        }
+
+        h1, h2, h3, h4, h5, .logo, .post-detail-title, .comments-header-title {
+            font-family: var(--font-heading);
+        }
+
+        /* Hero / Header Rozetleri */
+        .post-badge-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .badge-primary {
+            background: var(--brand-light);
+            color: var(--brand-color);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        .badge-read-time {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            margin-left: auto;
+        }
+
+        .post-detail-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .post-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .meta-item strong {
+            color: #334155;
+        }
+
+        /* Hızlı Eylem & Paylaşım Araç Çubuğu */
+        .quick-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 20px;
+            margin: 20px 0 28px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--brand-light);
+            border-color: var(--brand-color);
+            color: var(--brand-color);
+            transform: translateY(-1px);
+        }
+
+        /* 16:9 Sinematik Görsel Çerçevesi */
+        .post-cover-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+            margin: 24px 0 35px 0;
+            background: #0f172a;
+        }
+
+        .post-cover-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .post-cover-wrapper:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Alıntı (Blockquote) Stili */
+        .post-body-content blockquote {
+            margin: 18px 0;
+            padding: 18px 22px;
+            background: #eefaff;
+            border-left: 4px solid var(--brand-color);
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.65;
+        }
+
+        .source-line {
+            display: inline-block;
+            font-size: 13px;
+            color: #64748b;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 14px;
+            margin: 6px 0 30px 0;
+        }
+
+        .post-body-content h3 {
+            margin-top: 10px;
+        }
+
+        /* Toast Bildirim */
+        #toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: opacity;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        /* İlgili İçerikler (Related Posts) 3 Küçük Kart Grid */
+        .related-posts-section {
+            margin-top: 45px;
+            padding-top: 30px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .related-posts-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .related-posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .related-post-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .related-post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-color);
+            box-shadow: 0 8px 20px -4px rgba(2, 132, 199, 0.15);
+        }
+
+        .related-post-img {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+            background: #f8fafc;
+        }
+
+        .related-post-body {
+            padding: 12px 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .related-post-cat {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--brand-color);
+            margin-bottom: 4px;
+        }
+
+        .related-post-card-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s ease;
+        }
+
+        .related-post-card:hover .related-post-card-title {
+            color: var(--brand-color);
+        }
+    
+        body.dark .quick-action-bar { background: #0f172a; border-color: #334155; }
+        body.dark table.modern-table, body.dark table.modern-table thead th { background: #0f172a; color: #cbd5e1; }
+        body.dark table.modern-table tbody tr:nth-child(even) { background: #1e293b; }
+        body.dark table.modern-table tbody tr:hover { background: rgba(2,132,199,0.15); }
+        body.dark .related-post-card { background: #1e293b; border-color: #334155; }
+        body.dark .related-post-body { background: #1e293b; }
+        body.dark .related-post-card-title { color: #f1f5f9; }
+        body.dark .related-post-cat { color: #7dd3e8; }
+    </style>
+    <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+    <!-- Toast Bildirim Pop-up -->
+    <div id="toast-notification">Bağlantı kopyalandı!</div>
+
+    <!-- Header / Üst Menü --><!-- Ana İçerik Konteynırı -->
+    <main class="container article-layout">
+        <article class="post-detail">
+            
+            <!-- 1. Üst Ana Sayfaya Dön Butonu -->
+            <a href="../preview.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Ana Sayfaya Dön
+            </a>
+
+            <!-- 2. Yazı Üst Başlık & Rozet Alanı -->
+            <div class="post-detail-header">
+                <div class="post-badge-bar">
+                    <span class="badge-pill badge-primary">Dosyalar</span>
+                    <span class="badge-pill badge-primary">Veli Toplantısı</span>
+                    <span class="badge-pill badge-read-time">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        1 Dk Okuma
+                    </span>
+                </div>
+
+                <h1 class="post-detail-title">Veli Toplantısı Dosyaları: Tutanak, Dilekçe, Davetiye ve İmza Çizelgesi Seti</h1>
+
+                <div class="post-detail-meta">
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>Yayınlanma Tarihi: <strong>14 Ağustos 2026</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Hazırlayan: <strong>Mürsel EREN</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Görüntülenme: <span id="view-counter" data-path="/post-00015-preview.html">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.5 Hızlı Paylaşım & Araç Barı -->
+            <div class="quick-action-bar">
+                <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    İçeriği Paylaş:
+                </span>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="copyPageUrl()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Linki Kopyala
+                    </button>
+                    <a href="https://api.whatsapp.com/send?text=Veli%20Toplant%C4%B1s%C4%B1%20Dosyalar%C4%B1" target="_blank" class="action-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <button class="action-btn" onclick="window.print()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        Yazdır
+                    </button>
+                </div>
+            </div>
+
+<!-- 3. 16:9 Sinematik Kapak Görseli -->
+            <div class="post-cover-wrapper">
+                <img src="Veri/post-00015-Kapak.jpg" alt="Veli Toplantısı Dosyaları Kapak">
+            </div>
+
+            <!-- 4. Yazı Gövde Metni -->
+            <div class="post-body-content">
+<p>Veli toplantıları, öğretmen-veli iş birliğinin en önemli halkasıdır. Bu sayfada veli toplantısı öncesinde, sırasında ve sonrasında ihtiyacınız olan tüm evrakları bir araya getirdim: toplantı tutanağı, idareye sunulacak dilekçe, veli davetiyesi ve imza çizelgesi. Ayrıca toplantıda neler konuşulacağına dair bir rehber ve velilere dağıtabileceğiniz tavsiye dosyası da burada.</p>
+
+<h3>Veli Toplantısı Dosyaları Seti</h3>
+<ul style="font-size: 15px; line-height: 1.9; color: #334155; padding-left: 24px;">
+<li><a href="../post-00014-Veli-Toplantisi-Konusma-Metni/post-00014-preview.html">Veli Toplantısı Şablonu</a></li>
+<li><a href="../post-00013-Veli-Toplantisi-Rehberi/post-00013-preview.html">Veli Toplantısında Neler Konuşulur? Yeni Öğretmenler İçin 10 Maddelik Rehber</a></li>
+<li><a href="../post-00027-Okul-Aile-Rehberi/post-00027-preview.html">Velilere Tavsiyeler: Çocuğunuzun Okul Başarısı İçin Altın Değerinde Öneriler (Velilere Dağıtılacak Dosya)</a></li>
+</ul>
+
+<p>Set içindeki tüm evraklar düzenlenebilir formatta hazırlanmıştır; okul adınızı, tarihi ve sınıf bilgilerinizi ekleyerek doğrudan kullanabilirsiniz. Toplantı öncesinde davetiyeleri en az bir hafta önce dağıtmanız, katılım oranını önemli ölçüde artıracaktır.</p>
+
+<div class="post-sources" style="margin-top: 36px; padding: 20px 24px; background: #f8fafc; border-left: 4px solid #0284c7; border-radius: 8px;">
+<h3 style="margin-top: 0; font-size: 17px; color: #0369a1;">Kaynaklar</h3>
+<ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.9; color: #334155;">
+<li>Millî Eğitim Bakanlığı Okul-Aile Birliği Yönetmeliği</li>
+<li>Millî Eğitim Bakanlığı İlköğretim ve Ortaöğretim Kurumları Yönetmeliği (Veli toplantıları ile ilgili maddeler)</li>
+</ul>
+</div>
+</div>
+
+            <!-- 5. Standart Etiketler (Hashtag Box) -->
+            <div class="hashtag-box">
+<span class="tag-badge">#VeliToplantısı</span>
+<span class="tag-badge">#ToplantıTutanağı</span>
+<span class="tag-badge">#Dilekçe</span>
+<span class="tag-badge">#VeliDavetiyesi</span>
+<span class="tag-badge">#İmzaÇizelgesi</span>
+<span class="tag-badge">#ÖğretmenEvrakları</span>
+<span class="tag-badge">#OkulAileİşbirliği</span>
+<span class="tag-badge">#YeniÖğretmenler</span>
+<span class="tag-badge">#Dosyalar</span>
+<span class="tag-badge">#TeknolojiVeTasarım</span>
+</div>
+
+            <!-- 5.5. İlgili İçerikler ve Benzer Etkinlikler (Etiketlerin Hemen Altında) -->
+            <section class="related-posts-section">
+                <h3 class="related-posts-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    İlgili İçerikler ve Benzer Etkinlikler
+                </h3>
+                <div class="related-posts-grid">
+                    <a href="../post-00013-Veli-Toplantisi-Rehberi/post-00013-preview.html" class="related-post-card">
+                     <img src="../post-00013-Veli-Toplantisi-Rehberi/Veri/post-00013-Kapak.jpg" alt="Veli Toplantısında Neler Konuşulur?" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Öğretmen Rehberi / Veli Toplantısı</span>
+                            <div class="related-post-card-title">Veli Toplantısında Neler Konuşulur? Yeni Öğretmenler İçin 10 Maddelik Rehber</div>
+                        </div>
+                    </a>
+                    <a href="../post-00014-Veli-Toplantisi-Konusma-Metni/post-00014-preview.html" class="related-post-card">
+                        <img src="../post-00014-Veli-Toplantisi-Konusma-Metni/Veri/post-00014-Kapak.jpg" alt="İlk Veli Toplantısı Konuşma Metni" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Öğretmen Rehberi / Veli Toplantısı</span>
+                            <div class="related-post-card-title">Yeni Atanan Öğretmenler İçin "Fark Oluşturan" İlk Veli Toplantısı Konuşma Metni</div>
+                        </div>
+                    </a>
+                    <a href="../post-00027-Okul-Aile-Rehberi/post-00027-preview.html" class="related-post-card">
+                        <img src="../post-00027-Okul-Aile-Rehberi/Veri/post-00027-Kapak.jpg" alt="Okul Aile Rehberi" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Rehberlik ve Kişisel Gelişim</span>
+                            <div class="related-post-card-title">Öğretmen ve Velinin Ortak Gücü: Başarılı ve Mutlu Bir Çocuk Yetiştirme Rehberi</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. Tepki & Beğeni İkonları -->
+            <div class="reactions-box">
+                <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+                <div class="reactions-list">
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        Faydalı <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Harika <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Teşekkürler <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+                        Geliştirilmeli <span class="reaction-count">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. Yorum Bölümü -->
+            <section class="comments-section">
+                <h3 class="comments-header-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Yorumlar ve Değerlendirmeler
+                </h3>
+
+                <form class="comment-form" onsubmit="addComment(event)">
+                    <div class="form-group">
+                        <label for="comment-name">Adınız Soyadınız *</label>
+                        <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-body">Yorumunuz *</label>
+                        <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        Yorumu Gönder
+                    </button>
+                </form>
+
+                <div class="comments-list" id="comments-list">
+                    
+                </div>
+            </section>
+
+                        <script>
+                function copyPageUrl() {
+                    navigator.clipboard.writeText(window.location.href);
+                    const toast = document.getElementById('toast-notification');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2500);
+                }
+
+                                function toggleReaction(btn) {
+                    if (window.reactionsApi) {
+                        window.reactionsApi.toggleReaction(btn);
+                    }
+                }
+            </script>
+
+
+            <!-- 8. Alt Ana Sayfaya Dön Butonu -->
+            <div class="bottom-back-wrapper">
+                <a href="../preview.html" class="bottom-back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+
+        </article>
+
+        <!-- Sağ Yan Menü (Sidebar Widget) -->
+    </main>
+
+    <!-- 9. Standart Footer Telif Metni -->
+        <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase Entegrasyonu: yorum, gerçek sayaç ve kopyalama koruması -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/comments.js"></script>
+    <script src="../../js/views.js"></script>
+    <script src="../../js/reactions.js"></script>
+    <script src="../../js/download-counter.js"></script>
+    <script src="../../js/protection.js"></script>
+    <script src="../../js/sidebar-scroll.js"></script>
+<script src="../../js/menu.js" defer></script></body>
+</html>

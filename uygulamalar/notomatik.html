@@ -1,0 +1,2895 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notomatik (Yapım aşamasında) - Teknoloji ve Tasarım Dersi Otomatik Not Dağıtım ve Değerlendirme Ölçeği</title>
+    <meta name="description" content="Teknoloji ve Tasarım dersi öğretmenleri için geliştirilmiş, e-Okul uyumlu otomatik not dağıtıcı, ders etkinliklerine katılım ve değerlendirme ölçeği oluşturma aracı.">
+    <meta name="keywords" content="teknoloji ve tasarım, notomatik, e-okul not dağıtma, değerlendirme ölçeği, rubrik, ders etkinliklerine katılım ölçeği, otomatik not hesaplama, öğretmen materyalleri">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/theme.js"></script>
+    <style>
+        :root {
+            --border-color: #334155;
+            --table-border: #475569;
+            --header-bg: #f1f5f9;
+        }
+
+        .notomatik-page-container,
+        .notomatik-page-container * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8fafc;
+            padding: 0;
+        }
+
+        .notomatik-page-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 15px;
+            color: #0f172a;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+        }
+
+        .header {
+            border-left: 0;
+            border-right: 0;
+        }
+
+        /* EKRAN KONTROLLERİ VE PANELİ */
+        .no-print {
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 16px -2px rgba(2, 6, 23, 0.1);
+        }
+
+        .collapsible-instructions-container {
+            width: 100%;
+            margin: 0 0 20px;
+        }
+
+        .collapsible-instructions {
+            position: relative;
+            width: 100%;
+        }
+
+        .collapsible-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 48px;
+            width: fit-content;
+            margin: 0;
+            padding: 10px 28px;
+            border: 0;
+            border-radius: 25px;
+            background: #1e293b;
+            color: #fff;
+            font: 700 16px/1.2 Arial, Helvetica, sans-serif;
+            cursor: pointer;
+        }
+
+        .collapsible-trigger:hover {
+            background: #334155;
+            transform: none;
+        }
+
+        .collapsible-trigger .arrow-icon {
+            font-size: 16px;
+            transition: transform .25s ease;
+        }
+
+        .collapsible-trigger.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
+            margin-top: -5px;
+            border: 0 solid #cbd5e1;
+            border-top: 0;
+            border-radius: 0 0 12px 12px;
+            background: #fff;
+            color: #0f172a;
+            transition: max-height .35s ease, padding .35s ease, border-width .1s linear .2s;
+        }
+
+        .collapsible-content.open {
+            max-height: 1800px;
+            padding: 22px 24px 18px;
+            border-width: 1px;
+        }
+
+        .collapsible-content p,
+        .collapsible-content li {
+            margin: 0 0 11px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .collapsible-content ol,
+        .collapsible-content ul {
+            margin: 8px 0 14px;
+            padding-left: 24px;
+        }
+
+        .collapsible-content li::marker {
+            color: #0284c7;
+            font-weight: 700;
+        }
+
+        .collapsible-content code {
+            padding: 1px 4px;
+            border: 1px solid #bae6fd;
+            border-radius: 4px;
+            background: #e0f2fe;
+            font-family: monospace;
+        }
+
+        body.dark .collapsible-content {
+            border-color: #334155;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        body.dark .collapsible-content code {
+            border-color: #0369a1;
+            background: #0f172a;
+        }
+
+        .app-title {
+            margin-bottom: 10px;
+            color: #0284c7;
+            font-size: 16px;
+            font-weight: 800;
+        }
+        /* --- Top Section: School Info & E-Okul --- */
+        .top-section { display: flex; flex-wrap: wrap; gap: 20px; align-items: stretch; width: 100%; margin-bottom: 20px; margin-top: 20px; }
+        .school-info-fieldset, .eokul-fieldset { margin-bottom: 0; display: flex; flex-direction: column; }
+        .school-info-fieldset { flex: 1; min-width: 300px; }
+        .eokul-fieldset { flex: 1; min-width: 300px; }
+        fieldset { border: 2px solid #38bdf8; border-radius: 10px; margin: 0; padding: 15px; background-color: #fff; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        fieldset legend { font-weight: 600; color: #0284c7; background-color: #fff; padding: 3px 10px; font-size: 16px; margin-left: 10px; border-radius: 5px; border: 1px solid #bae6fd; width: auto; display: inline-block; }
+        fieldset legend svg { margin-right: 8px; vertical-align: text-bottom; }
+        .school-info-grid { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: center; }
+        .school-info-grid label { font-weight: 700; text-align: right; margin-bottom: 0; padding-right: 10px; color: #0284c7; font-size: 15px; }
+        .school-info-grid input[type="text"] { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #bae6fd; border-radius: 6px; font-size: 13px; color: #334155; }
+        .school-info-grid input[type="text"]:focus { outline: none; border-color: #0284c7; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.1); }
+        .period-selector { display: contents; }
+        .period-btn { flex: 1; padding: 9px 12px; border: 2px solid #0284c7; border-radius: 8px; background: #e0f2fe; color: #0369a1; font-weight: 700; cursor: pointer; }
+        .period-btn.active { background: #0284c7; border-color: #0284c7; color: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18); }
+        .period-btn:hover { background: #0369a1; border-color: #0369a1; color: #fff; }
+        .info-note { font-size: 12px; color: #64748b; margin-top: auto; padding-top: 15px; line-height: 1.4; padding-left: 5px; padding-right: 5px; font-style: italic; }
+        .info-note strong { font-weight: bold; color: #334155; font-style: normal; }
+
+
+
+        .header-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            font-size: 11px;
+            color: #334155;
+        }
+
+        .input-group input {
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        /* e-Okul Turuncu Yapıştırma Alanı */
+        .paste-zone {
+            background-color: transparent;
+            border: none;
+            border-radius: 14px;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+
+        .paste-zone label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: bold;
+            color: #c2410c;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .paste-textarea {
+            width: 100%;
+            height: 90px;
+            border: 2px solid #f97316;
+            background: #fff7ed;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 11px;
+            border-radius: 8px;
+            resize: vertical;
+        }
+
+        .paste-textarea:focus {
+            outline: 2px solid #ea580c;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: fit-content;
+            padding: 9px 18px;
+            font-weight: bold;
+            font-size: 12px;
+            border-radius: 25px !important;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn svg {
+            flex-shrink: 0;
+        }
+
+        .btn-primary { background: #0284c7; color: #ffffff; }
+        .btn-primary:hover { background: #0369a1; }
+        .btn-sample { background: #0d9488; color: #ffffff; }
+        .btn-sample:hover { background: #0f766e; }
+        .btn-clear { background: #ef4444; color: #ffffff; }
+        .btn-clear:hover { background: #dc2626; }
+        .btn-secondary { background: #64748b; color: #ffffff; }
+        .btn-secondary:hover { background: #475569; }
+        .action-columns { display: flex; gap: 12px; justify-content: center; align-items: stretch; margin-top: 15px; }
+        .action-column { display: flex; flex-direction: column; gap: 8px; min-width: 190px; }
+        .action-column .btn { width: 100%; margin: 0 !important; }
+        @media (max-width: 700px) { .action-columns { flex-direction: column; align-items: stretch; } .action-column { min-width: 0; } }
+
+        .btn-note {
+            font-size: 11px;
+            color: #475569;
+            margin: 4px 2px 10px 2px;
+            line-height: 1.5;
+        }
+        body.dark .btn-note { color: #94a3b8; }
+
+        .btn-row-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .btn-row-grid.btn-row-5 {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .btn-cell {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btn-cell .btn {
+            width: 100%;
+            height: 64px;
+            justify-content: center;
+            border-radius: 14px !important;
+        }
+
+        .tabs-container {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 14px 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px -2px rgba(2,6,23,0.08);
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tabs-aux {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .tabs-aux .btn-cell .btn {
+            width: 100%;
+            justify-content: center;
+            border-radius: 14px !important;
+            height: auto;
+            font-size: 12px;
+        }
+
+        body.dark .tabs-container {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px 28px 20px;
+            max-width: 560px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            border: 1px solid #e2e8f0;
+        }
+        .modal-box h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0284c7;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-box ol {
+            padding-left: 18px;
+            font-size: 13px;
+            line-height: 1.8;
+            color: #1e293b;
+        }
+        .modal-box ol li { margin-bottom: 6px; }
+        .modal-box ol li strong { color: #0284c7; }
+        .modal-img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin: 14px 0;
+        }
+        .modal-close-btn {
+            display: block !important;
+            margin: 14px auto !important;
+            padding: 9px 28px;
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            width: fit-content !important;
+            text-align: center;
+        }
+        .modal-close-btn:hover { background: #0369a1; }
+
+        /* How to Use Modal & Typography Classes */
+        .howto-modal-title {
+            margin-top: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0284c7;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .howto-content {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .howto-left {
+            flex: 1;
+            min-width: 320px;
+            font-size: 13.5px;
+            color: #334155;
+        }
+        .howto-section-heading {
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #0f172a;
+        }
+        .howto-list {
+            margin-top: 0;
+            padding-left: 20px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #334155;
+        }
+        .howto-list li { margin-bottom: 6px; }
+        .howto-list li strong { color: #0284c7; }
+        .howto-list code {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .howto-privacy-badge {
+            color: #0369a1;
+            font-size: 12px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+        }
+        .howto-right {
+            width: 280px;
+            max-width: 100%;
+            flex-shrink: 0;
+        }
+        .howto-img-card {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+        }
+        .howto-img-card img {
+            margin: 0;
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: block;
+        }
+        .howto-img-caption {
+            font-size: 11.5px;
+            color: #64748b;
+            text-align: center;
+            margin: 0;
+        }
+
+        .modal-close-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #f1f5f9;
+            border: none;
+            cursor: pointer;
+            color: #475569;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        .modal-close-icon:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Criteria Modal Classes */
+        .criteria-badge {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #e0f2fe;
+            border-radius: 12px;
+            font-weight: bold;
+            color: #0369a1;
+            text-align: center;
+            border: 1px solid #bae6fd;
+        }
+        .criteria-desc {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .criteria-footer {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #cbd5e1;
+        }
+        .criteria-count-box {
+            font-size: 15px;
+            font-weight: bold;
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: #0f172a;
+        }
+
+        /* Dark Mode Overrides for Notomatik */
+        body.dark .modal-box {
+            background: #1e293b !important;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        body.dark .modal-box h2,
+        body.dark .howto-modal-title {
+            color: #38bdf8 !important;
+            border-bottom-color: #334155;
+        }
+        body.dark .modal-close-icon {
+            background: #334155;
+            color: #cbd5e1;
+        }
+        body.dark .modal-close-icon:hover {
+            background: #475569;
+            color: #f8fafc;
+        }
+        body.dark .howto-section-heading {
+            color: #f8fafc;
+        }
+        body.dark .howto-left,
+        body.dark .howto-list,
+        body.dark .modal-box ol {
+            color: #cbd5e1;
+        }
+        body.dark .howto-list li strong,
+        body.dark .modal-box ol li strong {
+            color: #38bdf8;
+        }
+        body.dark .howto-list code {
+            background: #0f172a;
+            color: #38bdf8;
+            border-color: #334155;
+        }
+        body.dark .howto-privacy-badge {
+            background: #0f172a;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+        body.dark .howto-privacy-badge svg {
+            color: #38bdf8;
+        }
+        body.dark .howto-img-card {
+            background: #0f172a;
+            border-color: #334155;
+        }
+        body.dark .howto-img-card img {
+            border-color: #334155;
+        }
+        body.dark .howto-img-caption {
+            color: #94a3b8;
+        }
+        body.dark .criteria-badge {
+            background: #0f172a;
+            border-color: #334155;
+            color: #38bdf8;
+        }
+        body.dark .criteria-desc {
+            color: #cbd5e1;
+        }
+        body.dark .criteria-desc strong {
+            color: #38bdf8;
+        }
+        body.dark .criteria-footer {
+            border-top-color: #334155;
+        }
+        body.dark .criteria-count-box {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        body.dark .school-info-grid label {
+            color: #38bdf8;
+        }
+        body.dark .school-info-grid input,
+        body.dark .school-info-grid select,
+        body.dark .paste-textarea {
+            background: #0f172a;
+            color: #f8fafc;
+            border-color: #334155;
+        }
+        body.dark #ocr-drop-area {
+            background: #0f172a !important;
+            border-color: #0284c7 !important;
+            color: #cbd5e1 !important;
+        }
+        body.dark #ocr-drop-area div {
+            color: #e2e8f0 !important;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 5px;
+        }
+
+        .tab-btn {
+            padding: 7px 14px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .tab-btn.active {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        /* YAZDIRMA VE ÇİZELGE TASARIMI (A4 YATAY TEK SAYFA DÜZENİ) */
+        .print-sheet {
+            background: #ffffff;
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto 30px auto;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .print-sheet.active-sheet {
+            display: block;
+        }
+
+        .sheet-title {
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            line-height: 1.3;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        /* TABLO GENEL */
+        .scale-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 8.5px;
+            border: 1.5px solid #000000;
+        }
+
+        .scale-table th, .scale-table td {
+            border: 1px solid #000000;
+            padding: 1px 2px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .scale-table th {
+            background-color: #f1f5f9;
+        }
+
+        .unit-header {
+            font-weight: bold;
+            font-size: 9px;
+            background-color: #e2e8f0 !important;
+            padding: 3px !important;
+            border-bottom: 1.5px solid #000000 !important;
+        }
+
+        /* DIŞ ÇERÇEVE VE SAĞ (NOT) SÜTUNU ÇİZGİ KALINLIĞI UYUMU */
+        .scale-table thead tr:first-child th {
+            border-top: 1.5px solid #000000 !important;
+        }
+
+        .scale-table thead tr:last-child th {
+            border-bottom: 1.5px solid #000000 !important;
+        }
+
+        .scale-table tbody tr:last-child td {
+            border-bottom: 1.5px solid #000000 !important;
+        }
+
+        .scale-table th:first-child,
+        .scale-table td:first-child {
+            border-left: 1.5px solid #000000 !important;
+        }
+
+        .scale-table th:last-child,
+        .scale-table td:last-child,
+        .scale-table .col-not-long,
+        .scale-table .col-not {
+            border-right: 1.5px solid #000000 !important;
+            border-left: 1.5px solid #000000 !important;
+        }
+
+        .scale-table .col-not-long {
+            border-top: 1.5px solid #000000 !important;
+            border-bottom: 1.5px solid #000000 !important;
+        }
+
+        /* DİKİNE KAZANIM BAŞLIKLARI (AŞAĞIDAN YUKARIYA) */
+        .th-vertical {
+            height: 160px;
+            max-height: 160px;
+            min-width: 18px;
+            padding: 4px 1px !important;
+            vertical-align: middle !important;
+            position: relative;
+        }
+
+        .th-vertical-text {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            white-space: normal;
+            line-height: 1.05;
+            font-size: 8.5px;
+            text-align: left;
+            height: 155px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        /* SÜTUN GENİŞLİKLERİ */
+        .col-sira { width: 12px; min-width: 12px; max-width: 12px; }
+        .col-no { width: 25px; min-width: 25px; max-width: 25px; }
+        .col-adsoyad { width: 100px; min-width: 100px; max-width: 100px; text-align: left !important; padding-left: 4px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+        .col-not { width: 22px; min-width: 22px; max-width: 22px; font-weight: bold; background-color: #e2e8f0 !important; font-size: 9px; }
+        .col-not-long { width: 26px; min-width: 26px; max-width: 26px; height: 160px; padding: 4px 2px !important; font-weight: bold; background-color: #e2e8f0 !important; font-size: 8px; line-height: 1.05; writing-mode: vertical-rl; transform: rotate(180deg); white-space: normal; vertical-align: middle !important; }
+
+        .rubric-info {
+            font-size: 7.5px;
+            text-align: left;
+            padding: 2px;
+            line-height: 1.15;
+        }
+
+        /* 25 ÖĞRENCİ SATIRI İÇİN MİKRO YÜKSEKLİK (A4'E SIĞMA GARANTİSİ) */
+        .scale-table tbody tr {
+            height: 14.5px;
+        }
+
+        .scale-table tbody td {
+            font-size: 8.5px;
+        }
+
+        .signature-row {
+            margin-top: 16px;
+            padding-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 40px;
+            padding-right: 40px;
+            font-size: 9.5px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* YAZDIRMA (PRINT) STİLLERİ - A4 YATAY, OFİS "DAR" KENAR BOŞLUĞU (12,7mm) */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 12.7mm;
+            }
+
+            body {
+                background: #fff;
+                padding: 0;
+                margin: 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .no-print,
+            .header,
+            .footer,
+            .quick-action-bar,
+            .hashtag-box,
+            .reactions-box,
+            .comments-section,
+            #toast-notification {
+                display: none !important;
+            }
+
+            .notomatik-page-container {
+                max-width: none;
+                margin: 0;
+            }
+
+            .print-sheet {
+                display: block !important;
+                page-break-before: always;
+                page-break-after: always;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 184mm; /* A4 yatay - 12,7mm üst ve alt kenar boşluğu sonrası kullanılabilir yükseklik */
+                max-height: 184mm;
+                overflow: hidden;
+            }
+
+            .print-sheet:first-of-type {
+                page-break-before: avoid;
+            }
+
+            .th-vertical {
+                height: 155px;
+            }
+            .th-vertical-text {
+                height: 150px;
+                font-size: 8.5px;
+            }
+
+            .scale-table tbody tr {
+                height: 14px;
+            }
+
+            .scale-table {
+                border: 1.5px solid #000000 !important;
+            }
+
+            .scale-table th, .scale-table td {
+                border: 1px solid #000000 !important;
+                border-color: #000000 !important;
+            }
+
+            .scale-table thead tr:first-child th {
+                border-top: 1.5px solid #000000 !important;
+            }
+
+            .scale-table thead tr:last-child th {
+                border-bottom: 1.5px solid #000000 !important;
+            }
+
+            .scale-table tbody tr:last-child td {
+                border-bottom: 1.5px solid #000000 !important;
+            }
+
+            .scale-table th:first-child,
+            .scale-table td:first-child {
+                border-left: 1.5px solid #000000 !important;
+            }
+
+            .scale-table th:last-child,
+            .scale-table td:last-child,
+            .scale-table .col-not-long,
+            .scale-table .col-not {
+                border-right: 1.5px solid #000000 !important;
+                border-left: 1.5px solid #000000 !important;
+            }
+
+            .scale-table .col-not-long {
+                border-top: 1.5px solid #000000 !important;
+                border-bottom: 1.5px solid #000000 !important;
+            }
+        }
+
+        /* KOYU TEMA (body.dark) */
+        body.dark .no-print {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark .app-title {
+            color: #38bdf8;
+        }
+
+        body.dark .input-group label {
+            color: #cbd5e1;
+        }
+
+        body.dark .input-group input {
+            background: #0f172a;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        body.dark .paste-zone {
+            background: transparent;
+            border: none;
+        }
+
+        body.dark .paste-textarea {
+            background: #0f172a;
+            border-color: #f97316;
+            color: #e2e8f0;
+        }
+
+        body.dark .tabs {
+            border-bottom-color: #334155;
+        }
+
+        body.dark .tab-btn {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        body.dark .tab-btn.active {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        /* DERS SEÇİCİ BAR */
+        .ders-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .ders-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 14px;
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11.5px;
+            color: #475569;
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+
+        .ders-btn:hover:not(:disabled) {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .ders-btn.active {
+            background: #0284c7;
+            color: #fff;
+            border-color: #0284c7;
+        }
+
+        .ders-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        .ders-badge {
+            font-size: 9px;
+            background: #fbbf24;
+            color: #78350f;
+            border-radius: 10px;
+            padding: 1px 6px;
+            font-weight: 700;
+        }
+
+        body.dark .ders-bar { border-bottom-color: #334155; }
+        body.dark .ders-btn { background: #334155; border-color: #475569; color: #94a3b8; }
+        body.dark .ders-btn:hover:not(:disabled) { background: #475569; color: #e2e8f0; }
+        body.dark .ders-btn.active { background: #0284c7; border-color: #0284c7; color: #fff; }
+
+        body.dark .print-sheet {
+            background: #ffffff;
+            border-color: #334155;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+    
+        /* --- PREMIUM THEME OVERRIDES --- */
+        body.dark .no-print {
+            background: #1e293b;
+            border-color: #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        body.dark fieldset {
+            background: #0f172a !important;
+            border: 1px solid #334155 !important;
+        }
+        body.dark fieldset legend {
+            background: #1e293b !important;
+            color: #38bdf8 !important;
+            border: 1px solid #334155 !important;
+        }
+        body.dark .school-info-grid label, body.dark .paste-zone label {
+            color: #38bdf8 !important;
+        }
+        body.dark .school-info-grid input[type="text"],
+        body.dark .school-info-grid select,
+        body.dark .period-selector select,
+        body.dark .paste-textarea {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border: 1px solid #475569 !important;
+        }
+        body.dark .paste-textarea:focus, body.dark .school-info-grid input[type="text"]:focus, body.dark .school-info-grid select:focus {
+            border-color: #38bdf8 !important;
+            outline: none;
+        }
+        body.dark .info-note {
+            color: #94a3b8 !important;
+        }
+        body.dark .info-note strong {
+            color: #e2e8f0 !important;
+        }
+        
+        fieldset { border-radius: 16px; border: 1px solid #cbd5e1; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        fieldset legend { border-radius: 8px; border: 1px solid #cbd5e1; }
+
+        
+        
+        body.dark #ocr-drop-area {
+            background: #1e293b !important;
+            border-color: #38bdf8 !important;
+        }
+        body.dark #ocr-drop-area div {
+            color: #e2e8f0 !important;
+        }
+
+        /* FIX PRINT TABLE FOR BOTH LIGHT AND DARK MODES - MUST ALWAYS BE WHITE/BLACK */
+        @media screen {
+            body.dark .print-sheet, .print-sheet {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            body.dark .print-sheet *, .print-sheet * {
+                color: #000000 !important;
+            }
+            body.dark .print-sheet table, .print-sheet table,
+            body.dark .print-sheet th, .print-sheet th,
+            body.dark .print-sheet td, .print-sheet td {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-color: #000000 !important;
+            }
+            body.dark .print-sheet .empty-cell, .print-sheet .empty-cell {
+                background: #f1f5f9 !important;
+            }
+            body.dark .print-sheet th.student-name-header, .print-sheet th.student-name-header {
+                color: #000000 !important;
+            }
+        }
+    </style>
+
+
+    <script src="../js/lib/tesseract/tesseract.min.js"></script>
+</head>
+<body>
+
+    <main class="notomatik-page-container">
+
+    <div class="app-privacy-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><strong>Gizlilik Güvencesi:</strong> Bu uygulama internet üzerinden değil, bir script (kod) olarak doğrudan kendi cihazınızda çalışır. Girdiğiniz veriler ve dosyalar hiçbir sunucuya gönderilemez, kopyalanamaz, saklanamaz ve paylaşılamaz. Uygulamada veri toplama veya takip yoktur; tüm veriler yalnızca size aittir.</span>
+    </div>
+
+    <!-- Standart Uygulama Başlık Şeridi -->
+    <div class="app-main-header">
+        <div class="app-main-header-left">
+            <div class="app-logo-badge">
+                <img src="notomatik-icon.jpg" alt="Notomatik Logo" class="app-logo-img">
+            </div>
+            <div class="app-title-group">
+                <h1 class="app-title">Notomatik v1.0 <span class="app-tag-wip">(Yapım Aşamasında)</span></h1>
+            </div>
+        </div>
+        <div class="app-main-header-right">
+            <button type="button" class="how-to-use-btn" onclick="document.getElementById('howtoModal').classList.add('open')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Nasıl Kullanılır?</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="top-section">
+            <fieldset class="school-info-fieldset">
+                <legend><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Bilgileri Giriniz</legend>
+                <div class="school-info-grid" style="margin-bottom: 10px;">
+                    <label style="color: #0284c7; font-weight: 700; font-size: 15px; margin: 0; padding-right: 10px; text-align: right; display: block;">
+                        Dönem:
+                    </label>
+                    <div class="period-selector">
+                    <select id="inp-donem-secim" onchange="selectPeriod(parseInt(this.value))" style="display: block; width: 100%; padding: 12px; border: 2px solid #0284c7; border-radius: 8px; font-weight: 600; font-size: 15px; font-family: inherit; color: #0f172a; cursor: pointer; appearance: none; background: #fff url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%230284c7%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 12px center;">
+                        <option value="1">1. DÖNEM</option>
+                        <option value="2">2. DÖNEM</option>
+                    </select>
+                    </div>
+                </div>
+                <div class="school-info-grid" style="margin-bottom: 10px;">
+                    <label style="color: #0284c7; font-weight: 700; font-size: 15px; margin: 0; padding-right: 10px; text-align: right; display: block;">
+                        Ders Adı:
+                    </label>
+                    <select id="inp-brans-secim" onchange="changeBranch()" style="display: block; width: 100%; padding: 12px; border: 2px solid #0284c7; border-radius: 8px; font-weight: 600; font-size: 15px; font-family: inherit; color: #0f172a; cursor: pointer; appearance: none; background: #fff url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%230284c7%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 12px center;">
+                        <option value="teknoloji">Teknoloji ve Tasarım</option>
+                        <option value="muzik">Müzik</option>
+                        <option value="turkce" disabled>Türkçe (Çok Yakında...)</option>
+                        <option value="matematik" disabled>Matematik (Çok Yakında...)</option>
+                        <option value="fen" disabled>Fen Bilimleri (Çok Yakında...)</option>
+                        <option value="sosyal" disabled>Sosyal Bilgiler (Çok Yakında...)</option>
+                        <option value="ingilizce" disabled>İngilizce (Çok Yakında...)</option>
+                        <option value="din" disabled>Din Kültürü (Çok Yakında...)</option>
+                        <option value="beden" disabled>Beden Eğitimi (Çok Yakında...)</option>
+                        <option value="gorsel" disabled>Görsel Sanatlar (Çok Yakında...)</option>
+                        <option value="secmeli" disabled>Seçmeli Dersler (Çok Yakında...)</option>
+                    </select>
+                </div>
+
+                <div class="school-info-grid">
+                    <label>Eğitim-Öğretim Yılı:</label>
+                    <input type="text" id="inp-yil" value="2026 - 2027" oninput="updateHeaderInfo()">
+
+                    <label>Okul Adı:</label>
+                    <input type="text" id="inp-okul" value="" placeholder="Büyük Harflerle Okul Adını Giriniz..." oninput="updateHeaderInfo()">
+
+                    <label style="display: none;">Ders Adı (Çıktıda Görünecek):</label>
+                    <input type="hidden" id="inp-ders" value="TEKNOLOJİ VE TASARIM" oninput="updateHeaderInfo()">
+
+                    <label>Sınıf:</label>
+                    <input type="text" id="inp-sinif" placeholder="Örn: 7/A" oninput="updateHeaderInfo()">
+
+                    <label>Öğretmen:</label>
+                    <input type="text" id="inp-ogretmen" value="" placeholder="Öğretmen Adı ve Soyadı Giriniz..." oninput="updateHeaderInfo()">
+
+                    <label>Branş:</label>
+                    <input type="text" id="inp-brans" value="Teknoloji ve Tasarım Öğretmeni" oninput="updateHeaderInfo()">
+
+                    <label>Okul Müdürü:</label>
+                    <input type="text" id="inp-muder" value="" placeholder="Okul Müdürünün Adı ve Soyadı Giriniz..." oninput="updateHeaderInfo()">
+                </div>
+                <p class="info-note"><strong>Not:</strong> Yukarıdaki bilgiler değiştirildiğinde, bu döneme ait not çizelgeleri de eş zamanlı olarak güncellenmektedir.</p>
+            </fieldset>
+
+            <fieldset class="eokul-fieldset">
+                <legend><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M8 4V2h8v2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg> e-Okul "Hızlı Ders Notu Girişi" Yapıştırma Alanı</legend>
+                <div class="paste-zone" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 0;">
+                    <!-- Yeni Sürükle Bırak Alanı -->
+                    <div id="ocr-drop-area" style="border: 2px dashed #38bdf8; border-radius: 12px; padding: 25px 20px; text-align: center; margin-bottom: 15px; cursor: pointer; transition: all 0.2s ease; background: #f0f9ff; color: #475569;">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 10px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <div style="font-weight: bold; font-size: 15px; color: #0f172a;">Görseli Buraya Sürükleyip Bırakın</div>
+                        <div style="font-size: 13px; margin-top: 6px;">Tıklayıp bilgisayardan dosya seçebilir veya Ctrl+V ile yapıştırabilirsiniz</div>
+                        <input type="file" id="ocr-file-input" accept="image/*" style="display: none;">
+                    </div>
+
+                    <textarea id="paste-box" class="paste-textarea" style="flex: 1; min-height: 270px;" placeholder="Akıllı Not Girişi&#10;&#10;e-Okul verilerini yapıştırarak notları otomatik dağıtın ya da yalnızca öğrenci listesini yapıştırarak boş gözlem formu oluşturun.&#10;&#10;e-Okul Hızlı Not Girişi ekranındaki öğrenci listesini ve notları (başlıklar dahil/hariç fark etmez) olduğu gibi kopyalayıp buraya yapıştırın. (Windows/Linux: Ctrl+C / Ctrl+V — Mac: Cmd+C / Cmd+V)&#10;&#10;Sistem verileri otomatik olarak tanır. D1, D2 değerlendirme notlarını; DEK1, DEK2 ise ders etkinliklerine katılım notlarını ifade eder. &quot;G&quot; (Girmedi) ve &quot;K&quot; (Kopya) gibi özel durumlar da desteklenir.&#10;&#10;Yapıştırma işleminden sonra değişikliklerinizi kontrol edip &quot;Not Değişikliklerini Kaydet&quot; butonuna basmanız yeterlidir."></textarea>
+
+                    <div id="ocr-status-container" style="display: none; margin-top: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <div style="font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #0284c7; display: flex; align-items: center; gap: 6px;" id="ocr-status-text">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                            Görsel Okunuyor...
+                        </div>
+                        <div style="width: 100%; background: #e2e8f0; border-radius: 6px; overflow: hidden; height: 8px;">
+                            <div id="ocr-progress-bar" style="width: 0%; height: 100%; background: #0ea5e9; transition: width 0.3s ease-out;"></div>
+                        </div>
+                    </div>
+
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <!-- SEKMELER + YARDIMCI BUTONLAR: Tek geniş konteyner -->
+        <div class="tabs-container">
+            <!-- 5 buton tek satırda -->
+            <div class="btn-row-grid btn-row-5">
+                <div class="btn-cell">
+                    <button type="button" class="btn btn-primary" onclick="openCriteriaEditor()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        Ünite ve Kazanımları Düzenle
+                    </button>
+                    <p class="btn-note"><strong>Not:</strong> <em>Ölçeklerdeki ünite başlıklarını ve kazanım ifadelerini kendi sınıfınıza göre özelleştirebilirsiniz.</em></p>
+                </div>
+                <div class="btn-cell">
+                    <button class="btn btn-primary" onclick="processPastedData()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Not Değişikliklerini Kaydet
+                    </button>
+                    <p class="btn-note"><strong>Not:</strong> <em>Yapıştırılan veride yapılan değişiklikleri kaydetmeye yarar.</em></p>
+                </div>
+                <div class="btn-cell">
+                    <button class="btn btn-primary" onclick="printObservationForm()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+                        Öğrenci Gözlem Formu Oluştur ve Yazdır
+                    </button>
+                    <p class="btn-note"><strong>Not:</strong> <em>Not sütunları boş, yalnızca öğrenci numarası ve adı soyadı içeren temiz bir gözlem formu üretir. Elle not girişi için idealdir.</em></p>
+                </div>
+                <div class="btn-cell">
+                    <button class="btn btn-primary" onclick="printClean()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        Not Çizelgelerini Yazdır veya PDF Olarak Kaydet
+                    </button>
+                    <p class="btn-note"><strong>Not:</strong> <em>Oluşturulan not çizelgelerini yazdırır veya isteğe bağlı olarak PDF olarak kaydeder. Arşivleme ve resmi kullanım için uygundur.</em></p>
+                </div>
+                <div class="btn-cell">
+                    <button class="btn btn-clear" onclick="clearData()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                        Temizle
+                    </button>
+                    <p class="btn-note"><strong>Not:</strong> <em>Tüm öğrenci verilerini ve yapıştırılan notları sıfırlar. İşlem geri alınamaz.</em></p>
+                </div>
+            </div>
+            <!-- SEKMELER -->
+            <div class="tabs">
+                <button id="tab-btn-0" class="tab-btn active" onclick="switchView(0)">1. Değerlendirme Ölçeği</button>
+                <button id="tab-btn-1" class="tab-btn" onclick="switchView(1)">2. Değerlendirme Ölçeği</button>
+                <button id="tab-btn-2" class="tab-btn" onclick="switchView(2)">1. Ders Etkinliklerine Katılım Ölçeği</button>
+                <button id="tab-btn-3" class="tab-btn" onclick="switchView(3)">2. Ders Etkinliklerine Katılım Ölçeği</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 1. SAYFA: 1. DÖNEM 1. DEĞERLENDİRME ================= -->
+    <div id="sheet-0" class="print-sheet active-sheet">
+        <div class="sheet-title">
+            <span class="txt-yil">2026 - 2027</span> EĞİTİM ÖĞRETİM YILI <span class="txt-okul">................................................................</span><br>
+            <span class="txt-sinif">.......</span> SINIFI <span class="txt-ders">TEKNOLOJİ VE TASARIM</span> DERSİ <span class="txt-donem">1. DÖNEM</span> 1. DEĞERLENDİRME NOTU ÖLÇEĞİ
+        </div>
+
+        <table class="scale-table">
+            <colgroup>
+                <col style="width:14px;">
+                <col style="width:24px;">
+                <col style="width:110px;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:26px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="3"></th>
+                    <th colspan="4" class="unit-header">7.A.1. TEK. TAS. ÖĞR. (20 Puan)</th>
+                    <th colspan="10" class="unit-header">7.A.2. TEMEL TASARIM (50 Puan)</th>
+                    <th colspan="6" class="unit-header">7.B.1. TAS. ODAKLI SÜREÇ (Ara Tatil Öncesi) (30 Puan)</th>
+                    <th rowspan="2" class="col-not-long">1. DEĞERLENDİRME NOTU</th>
+                </tr>
+                <tr>
+                    <th class="col-sira">Sıra</th>
+                    <th class="col-no">No:</th>
+                    <th class="col-adsoyad">
+                        <div class="rubric-info">
+                            <strong>Öğrenci Adı Soyadı:</strong>
+                        </div>
+                    </th>
+                    <th class="th-vertical"><div class="th-vertical-text">1. Teknoloji ve tasarım ile ilişkili kavramları tanımlar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">2. Teknoloji ve tasarım arasındaki ilişkiyi ifade eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">3. Teknoloji ve tasarım ürünlerine günlük hayattan örnekler verir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">4. Ülkemizdeki teknolojik gelişmeleri değerlendirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">1. Sanat/tasarım elemanlarını doğru şekilde tanımlar ve ifade eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">2. Sanat/tasarım elemanlarını bir ürün üzerinde gösterir ve analiz eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">3. Tasarım ilkelerini bir ürün üzerinde göstererek açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">4. Çevresindeki bir tasarım ürününü özgün fikirlerle yeniden yorumlar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">5. Tasarım sürecinde fikir geliştirme ve taslak çalışmalarını etkili şekilde yapar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">6. Sanat/tasarım elemanlarını ve tasarım ilkelerini kullanarak özgün bir tasarım oluşturur.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">7. Doğru birleştirme tekniklerini kullanır, güvenlik kurallarına ve estetik değerlere dikkat eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">8. Geri dönüşüm ve çevre bilinci konusuna dikkat ederek atık malzemelerden ürün oluşturur.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">9. Tasarım sürecinde sorumluluk değerini göz önünde bulundurur ve bunu ürününe yansıtır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">10. Temel tasarım ürününü özenli bir şekilde tamamlar ve etkili sunum yapar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">1. Tasarım sürecinin bir problem tanımlama ve çözüm önerme süreci olduğunu açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">2. Günlük hayatta karşılaştığı bir sorunu/ihtiyacı "tasarım problemi" olarak ifade eder ve yenilikçi çözüm önerilerini paylaşır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">3. Tasarım sürecinin araştırma basamaklarını ve doğru veri kaynaklarına ulaşma yollarını açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">4. Tasarım geliştirme kriterlerini (ergonomik, estetik, yenilikçi, özgün, işlevsel vb.) açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">5. Tasarım oluşturulurken kullanıcı, malzeme, uygulama ve çevre faktörlerinin etkisini ve önemini açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">6. Taslak, model, maket ve prototip kavramlarını örneklerle açıklar.</div></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-d1">
+                <!-- Dinamik Satırlar -->
+            </tbody>
+        </table>
+
+        <div style="text-align: left; font-size: 11.5px; margin-top: 8px; color: #475569;">
+            <strong>Not:</strong> <em>Her değerlendirme ölçütü 5 Puan üzerinden değerlendirilir. (Puanlama: 1- Çok Zayıf, 2- Zayıf, 3- Orta, 4- İyi, 5- Çok İyi).</em>
+        </div>
+
+        <div class="signature-row">
+            <div>
+                <span class="txt-ogretmen">...................................</span><br>
+                Teknoloji ve Tasarım Öğretmeni
+            </div>
+            <div>
+                <span class="txt-muder">............................</span><br>
+                Okul Müdürü
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 2. SAYFA: 1. DÖNEM 2. DEĞERLENDİRME ================= -->
+    <div id="sheet-1" class="print-sheet">
+        <div class="sheet-title">
+            <span class="txt-yil">2026 - 2027</span> EĞİTİM ÖĞRETİM YILI <span class="txt-okul">................................................................</span><br>
+            <span class="txt-sinif">.......</span> SINIFI <span class="txt-ders">TEKNOLOJİ VE TASARIM</span> DERSİ <span class="txt-donem">1. DÖNEM</span> 2. DEĞERLENDİRME NOTU ÖLÇEĞİ
+        </div>
+
+        <table class="scale-table">
+            <colgroup>
+                <col style="width:14px;">
+                <col style="width:24px;">
+                <col style="width:110px;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:26px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="3"></th>
+                    <th colspan="4" class="unit-header">7.B.1. T.O.S. (Tatil Sonrası) (20 Puan)</th>
+                    <th colspan="8" class="unit-header">7.B.2. BİLGİSAYAR DESTEKLİ TASARIM (40 Puan)</th>
+                    <th colspan="8" class="unit-header">7.C.1. MİMARİ TASARIM (40 Puan)</th>
+                    <th rowspan="2" class="col-not-long">2. DEĞERLENDİRME NOTU</th>
+                </tr>
+                <tr>
+                    <th class="col-sira">Sıra</th>
+                    <th class="col-no">No:</th>
+                    <th class="col-adsoyad">
+                        <div class="rubric-info">
+                            <strong>Öğrenci Adı Soyadı:</strong>
+                        </div>
+                    </th>
+                    <th class="th-vertical"><div class="th-vertical-text">7. Kullanımı tamamlanmış ürünlerin geri dönüşümüne yönelik imkanları araştırır ve değerlendirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">8. Tasarımını belirlenen kriterlere göre değerlendirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">9. Tasarımını değerlendirme sonuçlarına göre yeniden yapılandırır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">10. Tasarımını kullanıcıya ulaştırmak için uygun tanıtım ve pazarlama yöntemlerini araştırır ve değerlendirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">1. Tasarımı için düşündüğü çözüm önerisini kağıt üzerinde taslak çizimlerle ifade eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">2. Taslak çizimlerini bilgisayar ortamına aktarır ve iki boyutlu görsellere dönüştürür.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">3. Çizim ve modelleme yazılımlarının temel arayüz ve menü kontrollerini etkili bir şekilde kullanır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">4. Çizim ve modelleme yazılımlarında çizim, düzenleme ve değişiklik yapmak için temel araçları doğru kullanır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">5. Çizim ve modelleme yazılımlarında farklı ölçeklerde çizim yapabilir ve düzenlemeler gerçekleştirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">6. Çizim ve modelleme yazılımlarını kullanarak tasarımlarını dijital ortamda sunabileceği hale getirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">7. Tasarım fikrini açık ve anlaşılır şekilde sunmak için çoklu ortam sunusu hazırlar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">8. Tasarım sürecini ve kullanılan yazılımların avantaj/dezavantajlarını analiz eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">1. İşlevsel farklılıkların mimari tasarımda yapısal farklılıklara neden olduğunu örneklerle açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">2. Yakın çevresindeki mimari yapıları işlevsel ve fiziksel özelliklerine göre karşılaştırır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">3. Mimari yapılar ile hayat biçimi arasındaki ilişkiyi farklı coğrafi/kültürel örneklerle açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">4. Farklı coğrafi alan ve kişisel ihtiyaçlara uygun tasarımını çizim veya maket ile gösterir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">5. Tasarımını gerçekleştirirken güvenlik önlemlerini ve doğru birleştirme tekniklerini uygular.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">6. Maketini ölçeklendirir ve ölçeklendirmenin önemini açıklar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">7. Maket yapımında malzemeleri etkin ve verimli bir şekilde kullanır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">8. Malzeme seçiminde sürdürülebilirlik ve çevre dostu özellikleri dikkate alır.</div></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-d2">
+                <!-- Dinamik Satırlar -->
+            </tbody>
+        </table>
+
+        <div style="text-align: left; font-size: 11.5px; margin-top: 8px; color: #475569;">
+            <strong>Not:</strong> <em>Her değerlendirme ölçütü 5 Puan üzerinden değerlendirilir. (Puanlama: 1- Çok Zayıf, 2- Zayıf, 3- Orta, 4- İyi, 5- Çok İyi).</em>
+        </div>
+
+        <div class="signature-row">
+            <div>
+                <span class="txt-ogretmen">...................................</span><br>
+                Teknoloji ve Tasarım Öğretmeni
+            </div>
+            <div>
+                <span class="txt-muder">............................</span><br>
+                Okul Müdürü
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 3. SAYFA: 1. DERS ETKİNLİKLERİNE KATILIM ================= -->
+    <div id="sheet-2" class="print-sheet">
+        <div class="sheet-title">
+            <span class="txt-yil">2026 - 2027</span> EĞİTİM ÖĞRETİM YILI <span class="txt-okul">................................................................</span><br>
+            <span class="txt-sinif">.......</span> SINIFI <span class="txt-ders">TEKNOLOJİ VE TASARIM</span> DERSİ <span class="txt-donem">1. DÖNEM</span> 1. DERS ETKİNLİKLERİNE KATILIM ÖLÇEĞİ
+        </div>
+
+        <table class="scale-table">
+            <colgroup>
+                <col style="width:14px;">
+                <col style="width:24px;">
+                <col style="width:110px;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:26px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="3"></th>
+                    <th colspan="5" class="unit-header">Bilgiye Ulaşım ve Kaynak Kullanımı (25P)</th>
+                    <th colspan="5" class="unit-header">Derse Katılım ve İfade Yeteneği (25P)</th>
+                    <th colspan="5" class="unit-header">Analitik Düşünme ve Problem Çözme (25P)</th>
+                    <th colspan="5" class="unit-header">Disiplin ve Sorumluluk (25P)</th>
+                    <th rowspan="2" class="col-not-long">1. DERS ETKİNLİKLERİNE KATILIM NOTU</th>
+                </tr>
+                <tr>
+                    <th class="col-sira">Sıra</th>
+                    <th class="col-no">No:</th>
+                    <th class="col-adsoyad">
+                        <div class="rubric-info">
+                            <strong>Öğrenci Adı Soyadı:</strong>
+                        </div>
+                    </th>
+                    <th class="th-vertical"><div class="th-vertical-text">1. Kaynakların güvenilirliğini değerlendirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">2. Çeşitli bilgi kaynaklarına başvurarak derse hazırlıklı gelir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">3. Verilen bilgilerin ötesine geçerek ek kaynakları araştırır ve kullanır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">4. Araştırmalarda elde ettiği bilgiyi uygun bir şekilde organize ederek sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">5. Farklı kaynaklardan edindiği bilgileri derse anlamlı bir şekilde entegre eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">6. Ders sırasında aktif olarak söz alır ve düşüncelerini ifade eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">7. Sorulan sorulara anlamlı ve açıklayıcı cevaplar verir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">8. Özgün ve yenilikçi sorular sorarak tartışmalara katkıda bulunur.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">9. Grup çalışmalarında etkin rol alır ve iş birliğine açıktır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">10. Kendisine verilen görevleri tam ve zamanında yerine getirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">11. Verilen bilgilerden mantıklı çıkarımlar yapar ve çözüm önerileri sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">12. Derse yönelik gözlemlerinden yenilikçi fikirler geliştirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">13. Araştırma ve incelemelerinde tutarlı ve mantıklı sonuçlar sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">14. Yenilikçi tasarımlarını ve düşüncelerini uygulamaya geçirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">15. Karşılaştığı sorunlara yenilikçi ve çözüm odaklı yaklaşımlar sergiler.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">16. Derse zamanında gelir ve etkin katılım sağlar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">17. Ders sırasında düzeni bozucu davranışlardan kaçınır ve akışı destekler.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">18. Çalışmalarını belirtilen süre içerisinde tamamlar ve eksiksiz sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">19. Grup çalışmalarında iş birliğine açık ve sorumluluk bilinciyle hareket eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">20. Ders sırasında gösterdiği çabayla sürekli gelişim sergiler.</div></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-k1">
+                <!-- Dinamik Satırlar -->
+            </tbody>
+        </table>
+
+        <div style="text-align: left; font-size: 11.5px; margin-top: 8px; color: #475569;">
+            <strong>Not:</strong> <em>Her değerlendirme ölçütü 5 Puan üzerinden değerlendirilir. (Puanlama: 1- Çok Zayıf, 2- Zayıf, 3- Orta, 4- İyi, 5- Çok İyi).</em>
+        </div>
+
+        <div class="signature-row">
+            <div>
+                <span class="txt-ogretmen">...................................</span><br>
+                Teknoloji ve Tasarım Öğretmeni
+            </div>
+            <div>
+                <span class="txt-muder">............................</span><br>
+                Okul Müdürü
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 4. SAYFA: 2. DERS ETKİNLİKLERİNE KATILIM ================= -->
+    <div id="sheet-3" class="print-sheet">
+        <div class="sheet-title">
+            <span class="txt-yil">2026 - 2027</span> EĞİTİM ÖĞRETİM YILI <span class="txt-okul">................................................................</span><br>
+            <span class="txt-sinif">.......</span> SINIFI <span class="txt-ders">TEKNOLOJİ VE TASARIM</span> DERSİ <span class="txt-donem">1. DÖNEM</span> 2. DERS ETKİNLİKLERİNE KATILIM ÖLÇEĞİ
+        </div>
+
+        <table class="scale-table">
+            <colgroup>
+                <col style="width:14px;">
+                <col style="width:24px;">
+                <col style="width:110px;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:3.6%;">
+                <col style="width:26px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="3"></th>
+                    <th colspan="5" class="unit-header">Bilgiye Ulaşım ve Kaynak Kullanımı (25P)</th>
+                    <th colspan="5" class="unit-header">Derse Katılım ve İfade Yeteneği (25P)</th>
+                    <th colspan="5" class="unit-header">Analitik Düşünme ve Problem Çözme (25P)</th>
+                    <th colspan="5" class="unit-header">Disiplin ve Sorumluluk (25P)</th>
+                    <th rowspan="2" class="col-not-long">2. DERS ETKİNLİKLERİNE KATILIM NOTU</th>
+                </tr>
+                <tr>
+                    <th class="col-sira">Sıra</th>
+                    <th class="col-no">No:</th>
+                    <th class="col-adsoyad">
+                        <div class="rubric-info">
+                            <strong>Öğrenci Adı Soyadı:</strong>
+                        </div>
+                    </th>
+                    <th class="th-vertical"><div class="th-vertical-text">1. Kaynakların güvenilirliğini değerlendirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">2. Çeşitli bilgi kaynaklarına başvurarak derse hazırlıklı gelir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">3. Verilen bilgilerin ötesine geçerek ek kaynakları araştırır ve kullanır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">4. Araştırmalarda elde ettiği bilgiyi uygun bir şekilde organize ederek sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">5. Farklı kaynaklardan edindiği bilgileri derse anlamlı bir şekilde entegre eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">6. Ders sırasında aktif olarak söz alır ve düşüncelerini ifade eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">7. Sorulan sorulara anlamlı ve açıklayıcı cevaplar verir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">8. Özgün ve yenilikçi sorular sorarak tartışmalara katkıda bulunur.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">9. Grup çalışmalarında etkin rol alır ve iş birliğine açıktır.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">10. Kendisine verilen görevleri tam ve zamanında yerine getirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">11. Verilen bilgilerden mantıklı çıkarımlar yapar ve çözüm önerileri sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">12. Derse yönelik gözlemlerinden yenilikçi fikirler geliştirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">13. Araştırma ve incelemelerinde tutarlı ve mantıklı sonuçlar sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">14. Yenilikçi tasarımlarını ve düşüncelerini uygulamaya geçirir.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">15. Karşılaştığı sorunlara yenilikçi ve çözüm odaklı yaklaşımlar sergiler.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">16. Derse zamanında gelir ve etkin katılım sağlar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">17. Ders sırasında düzeni bozucu davranışlardan kaçınır ve akışı destekler.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">18. Çalışmalarını belirtilen süre içerisinde tamamlar ve eksiksiz sunar.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">19. Grup çalışmalarında iş birliğine açık ve sorumluluk bilinciyle hareket eder.</div></th>
+                    <th class="th-vertical"><div class="th-vertical-text">20. Ders sırasında gösterdiği çabayla sürekli gelişim sergiler.</div></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-k2">
+                <!-- Dinamik Satırlar -->
+            </tbody>
+        </table>
+
+        <div style="text-align: left; font-size: 11.5px; margin-top: 8px; color: #475569;">
+            <strong>Not:</strong> <em>Her değerlendirme ölçütü 5 Puan üzerinden değerlendirilir. (Puanlama: 1- Çok Zayıf, 2- Zayıf, 3- Orta, 4- İyi, 5- Çok İyi).</em>
+        </div>
+
+        <div class="signature-row">
+            <div>
+                <span class="txt-ogretmen">...................................</span><br>
+                Teknoloji ve Tasarım Öğretmeni
+            </div>
+            <div>
+                <span class="txt-muder">............................</span><br>
+                Okul Müdürü
+            </div>
+        </div>
+    </div>
+
+    </main>
+
+    <div class="modal-overlay" id="howtoModal">
+        <div class="modal-box" style="padding: 24px; max-width: 850px; position: relative;">
+            <button class="modal-close-icon" onclick="document.getElementById('howtoModal').classList.remove('open')" aria-label="Kapat">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            
+            <h2 class="howto-modal-title">Nasıl Kullanılır?</h2>
+            
+            <div class="howto-content">
+                <div class="howto-left">
+                    <p class="howto-section-heading">Veri Girişi ve Çizelge Hazırlama:</p>
+                    <ol class="howto-list">
+                        <li><strong>Dönem ve Ders:</strong> Hangi sınıf ve dönem için işlem yapacağınızı sekmelerden seçin. Eğitim yılı, sınıf, öğretmen gibi başlık bilgilerini doldurun.</li>
+                        <li><strong>Notları Aktarma:</strong> e-Okul'daki listeyi kopyalayıp (Ctrl+C) turuncu alana yapıştırın (Ctrl+V). <strong>G</strong> (Girmedi) ve <strong>K</strong> (Kopya) kodları sistem tarafından otomatik tanınır. (<em>Alternatif olarak ekran görüntüsüyle OCR kullanabilirsiniz.</em>)</li>
+                        <li><strong>Kısaltmalar:</strong> <code>D1/D2</code>: Değerlendirme notlarını, <code>DEK1/DEK2</code>: Ders içi katılım notlarını belirtir.</li>
+                        <li><strong>Kaydetme:</strong> İşleminiz bitince <em>"Not Değişikliklerini Kaydet"</em> butonuna basın. Ölçekleri dilediğiniz gibi düzenleyebilirsiniz.</li>
+                    </ol>
+
+                    <p class="howto-section-heading">Temiz Çıktı Alma ve Yazdırma:</p>
+                    <ol class="howto-list" style="margin-bottom: 16px;">
+                        <li><strong>Elle Not Girişi:</strong> <em>"Öğrenci Gözlem Formu Oluştur"</em> butonuna basarak not sütunları boş, temiz bir form indirebilirsiniz.</li>
+                        <li><strong>Dolu Çizelge Çıktısı:</strong> <em>"Yazdır veya PDF Kaydet"</em> butonunu kullanın.</li>
+                        <li class="howto-alert-warn">ÖNEMLİ: Yazdırma ayarlarında (Diğer ayarlar) "Üstbilgi ve altbilgi" seçeneğini kesinlikle kapatın.</li>
+                    </ol>
+
+                    <p class="howto-privacy-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 
+                        Tüm verileriniz tarayıcınızda yerel olarak işlenir. Sunucuya gönderilmez.
+                    </p>
+                </div>
+                
+                <div class="howto-right">
+                    <div class="howto-img-card">
+                        <img src="yazdir_ipucu.jpg" alt="PDF yazdırma ayarları" class="modal-img">
+                    </div>
+                    <p class="howto-img-caption">Yazdırma ekranı ayarları örneği</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Alt Bilgisi (teknolojitasarimci) -->
+
+    <!-- Hızlı Paylaşım & Araç Bar -->
+    <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Notomatik%20II%20Uygulamas%C4%B1%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#Notomatik</span>
+        <span class="tag-badge">#NotDağıtım</span>
+        <span class="tag-badge">#ÖğretmenRehberi</span>
+        <span class="tag-badge">#eOkul</span>
+        <span class="tag-badge">#ÖğrenciDeğerlendirme</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+        <span class="tag-badge">#NotÇizelgesi</span>
+        <span class="tag-badge">#DeğerlendirmeÖlçeği</span>
+        <span class="tag-badge">#ÖğretmenAraçları</span>
+        <span class="tag-badge">#SınıfYönetimi</span>
+        <span class="tag-badge">#PDFÇizelge</span>
+        <span class="tag-badge">#DijitalEğitim</span>
+      </div>
+
+      <!-- Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu uygulamayı nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya düşüncelerinizi yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+
+      <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+  <div id="toast-notification"></div>
+  <script src="../js/config.js"></script>
+  <script src="../js/reactions.js"></script>
+  <script src="../js/comments.js"></script>
+  <script src="../js/lib/html2canvas.min.js"></script>
+  <script src="../js/lib/jspdf.umd.min.js"></script>
+  <script>
+    async function downloadPDF() {
+      const btn = document.getElementById('btn-pdf');
+      btn.disabled = true;
+      btn.textContent = 'Hazırlanıyor...';
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pageW = 297;
+      const pageH = 210;
+      const margin = 12.7;
+      const contentW = pageW - margin * 2;
+      const contentH = pageH - margin * 2;
+
+      const sheets = document.querySelectorAll('.print-sheet');
+      let first = true;
+      const brans = document.getElementById('inp-brans-secim').value;
+
+      for (const sheet of sheets) {
+        if (brans === 'muzik' && (sheet.id === 'sheet-0' || sheet.id === 'sheet-1')) continue;
+
+        // Geçici olarak görünür yap
+        const wasHidden = !sheet.classList.contains('active-sheet');
+        if (wasHidden) {
+          sheet.style.display = 'block';
+          sheet.style.position = 'absolute';
+          sheet.style.left = '-9999px';
+        }
+
+        const canvas = await html2canvas(sheet, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+          width: sheet.scrollWidth,
+          height: sheet.scrollHeight
+        });
+
+        if (wasHidden) {
+          sheet.style.display = '';
+          sheet.style.position = '';
+          sheet.style.left = '';
+        }
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const imgW = contentW;
+        const imgH = (canvas.height * contentW) / canvas.width;
+        const finalH = Math.min(imgH, contentH);
+
+        if (!first) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', margin, margin, imgW, finalH);
+        first = false;
+      }
+
+      const sinif = document.getElementById('inp-sinif').value || 'sinif';
+      const yil = document.getElementById('inp-yil').value || '2024-2025';
+      pdf.save(`Notomatik-II_${sinif}_${yil}.pdf`);
+
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF Olarak İndir';
+    }
+
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Sayfa bağlantısı kopyalandı';
+        toast.classList.add('show');
+        setTimeout(function () { toast.classList.remove('show'); }, 2200);
+      }
+    }
+
+    function printClean() {
+      const sheets = document.querySelectorAll('.print-sheet');
+      let sheetsHtml = '';
+      const brans = document.getElementById('inp-brans-secim').value;
+      sheets.forEach(s => { 
+          if (brans === 'muzik' && (s.id === 'sheet-0' || s.id === 'sheet-1')) return;
+          sheetsHtml += s.outerHTML; 
+      });
+
+      const styles = Array.from(document.querySelectorAll('style'))
+        .map(s => s.outerHTML).join('');
+
+      const className = document.getElementById('inp-sinif').value || 'Sinif';
+      const lessonName = document.getElementById('inp-ders').value || 'Ders';
+      const safeTitle = `${className} - ${lessonName} - Not Cizelgesi`.replace(/[\/\\?%*:|"<>]/g, '-');
+
+      const win = window.open('', '_blank');
+      win.document.write(`<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8">
+        <title>${safeTitle}</title>
+        <style>
+          @page { size: A4 landscape; margin: 0; }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: Arial, Helvetica, sans-serif; font-size: 11px; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 12.7mm; }
+        
+        /* --- PREMIUM THEME OVERRIDES --- */
+        body.dark .no-print {
+            background: #1e293b;
+            border-color: #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        body.dark fieldset {
+            background: #0f172a !important;
+            border: 1px solid #334155 !important;
+        }
+        body.dark fieldset legend {
+            background: #1e293b !important;
+            color: #38bdf8 !important;
+            border: 1px solid #334155 !important;
+        }
+        body.dark .school-info-grid label, body.dark .paste-zone label {
+            color: #38bdf8 !important;
+        }
+        body.dark .school-info-grid input[type="text"],
+        body.dark .school-info-grid select,
+        body.dark .period-selector select,
+        body.dark .paste-textarea {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border: 1px solid #475569 !important;
+        }
+        body.dark .paste-textarea:focus, body.dark .school-info-grid input[type="text"]:focus, body.dark .school-info-grid select:focus {
+            border-color: #38bdf8 !important;
+            outline: none;
+        }
+        body.dark .info-note {
+            color: #94a3b8 !important;
+        }
+        body.dark .info-note strong {
+            color: #e2e8f0 !important;
+        }
+        
+        fieldset { border-radius: 16px; border: 1px solid #cbd5e1; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        fieldset legend { border-radius: 8px; border: 1px solid #cbd5e1; }
+
+        
+        
+        body.dark #ocr-drop-area {
+            background: #1e293b !important;
+            border-color: #38bdf8 !important;
+        }
+        body.dark #ocr-drop-area div {
+            color: #e2e8f0 !important;
+        }
+
+        /* FIX PRINT TABLE FOR BOTH LIGHT AND DARK MODES - MUST ALWAYS BE WHITE/BLACK */
+        @media screen {
+            body.dark .print-sheet, .print-sheet {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            body.dark .print-sheet *, .print-sheet * {
+                color: #000000 !important;
+            }
+            body.dark .print-sheet table, .print-sheet table,
+            body.dark .print-sheet th, .print-sheet th,
+            body.dark .print-sheet td, .print-sheet td {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-color: #000000 !important;
+            }
+            body.dark .print-sheet .empty-cell, .print-sheet .empty-cell {
+                background: #f1f5f9 !important;
+            }
+            body.dark .print-sheet th.student-name-header, .print-sheet th.student-name-header {
+                color: #000000 !important;
+            }
+        }
+    </style>
+
+
+        ${styles}
+        <style>
+          .no-print, .header, .footer { display: none !important; }
+          .print-sheet { display: block !important; page-break-before: always; page-break-after: always; box-shadow: none; border: none; border-radius: 0; margin: 0; padding: 0; width: 100%; }
+          .print-sheet:first-of-type { page-break-before: avoid; }
+        
+        /* --- PREMIUM THEME OVERRIDES --- */
+        body.dark .no-print {
+            background: #1e293b;
+            border-color: #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        body.dark fieldset {
+            background: #0f172a !important;
+            border: 1px solid #334155 !important;
+        }
+        body.dark fieldset legend {
+            background: #1e293b !important;
+            color: #38bdf8 !important;
+            border: 1px solid #334155 !important;
+        }
+        body.dark .school-info-grid label, body.dark .paste-zone label {
+            color: #38bdf8 !important;
+        }
+        body.dark .school-info-grid input[type="text"],
+        body.dark .school-info-grid select,
+        body.dark .period-selector select,
+        body.dark .paste-textarea {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border: 1px solid #475569 !important;
+        }
+        body.dark .paste-textarea:focus, body.dark .school-info-grid input[type="text"]:focus, body.dark .school-info-grid select:focus {
+            border-color: #38bdf8 !important;
+            outline: none;
+        }
+        body.dark .info-note {
+            color: #94a3b8 !important;
+        }
+        body.dark .info-note strong {
+            color: #e2e8f0 !important;
+        }
+        
+        fieldset { border-radius: 16px; border: 1px solid #cbd5e1; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        fieldset legend { border-radius: 8px; border: 1px solid #cbd5e1; }
+
+        
+        
+        body.dark #ocr-drop-area {
+            background: #1e293b !important;
+            border-color: #38bdf8 !important;
+        }
+        body.dark #ocr-drop-area div {
+            color: #e2e8f0 !important;
+        }
+
+        /* FIX PRINT TABLE FOR BOTH LIGHT AND DARK MODES - MUST ALWAYS BE WHITE/BLACK */
+        @media screen {
+            body.dark .print-sheet, .print-sheet {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            body.dark .print-sheet *, .print-sheet * {
+                color: #000000 !important;
+            }
+            body.dark .print-sheet table, .print-sheet table,
+            body.dark .print-sheet th, .print-sheet th,
+            body.dark .print-sheet td, .print-sheet td {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-color: #000000 !important;
+            }
+            body.dark .print-sheet .empty-cell, .print-sheet .empty-cell {
+                background: #f1f5f9 !important;
+            }
+            body.dark .print-sheet th.student-name-header, .print-sheet th.student-name-header {
+                color: #000000 !important;
+            }
+        }
+    </style>
+
+
+        </head><body>${sheetsHtml}</body></html>`);
+      win.document.close();
+      setTimeout(() => { win.focus(); win.print(); }, 300);
+    }
+
+        function printObservationForm() {
+            const scoreCells = Array.from(document.querySelectorAll('.print-sheet tbody tr')).flatMap(function (row) {
+                return Array.from(row.children).slice(3);
+            });
+            const originalValues = scoreCells.map(cell => cell.innerHTML);
+            scoreCells.forEach(cell => { cell.innerHTML = ''; });
+
+            try {
+                printClean();
+            } finally {
+                scoreCells.forEach((cell, index) => { cell.innerHTML = originalValues[index]; });
+            }
+        }
+  </script>
+
+    <!-- JAVASCRIPT: NOT DAĞITIM VE E-OKUL PARSER ALGORİTMASI -->
+    <script>
+        let studentData = [];
+        const MAX_ROWS = 25;
+
+        // Sayfa Yüklendiğinde Boş Satırları Hazırla
+        window.onload = function() {
+            clearData();
+
+            const instructionTrigger = document.querySelector('.collapsible-trigger');
+            const instructionContent = document.querySelector('.collapsible-content');
+            if (instructionTrigger && instructionContent) {
+                instructionTrigger.addEventListener('click', function() {
+                    const isOpening = !instructionContent.classList.contains('open');
+                    instructionContent.classList.toggle('open', isOpening);
+                    instructionTrigger.classList.toggle('active', isOpening);
+                    instructionTrigger.setAttribute('aria-expanded', String(isOpening));
+                });
+            }
+        };
+
+        function switchView(tabIndex) {
+            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx === tabIndex);
+            });
+            document.querySelectorAll('.print-sheet').forEach((sheet, idx) => {
+                sheet.classList.toggle('active-sheet', idx === tabIndex);
+            });
+        }
+
+        
+        // --- KRİTER DÜZENLEYİCİ MANTIĞI ---
+        let defaultCriteriaData = [{"units": [{"name": "7.A.1. TEK. TAS. ÖĞR. (20 Puan)", "count": 4}, {"name": "7.A.2. TEMEL TASARIM (50 Puan)", "count": 10}, {"name": "7.B.1. TAS. ODAKLI SÜREÇ (Ara Tatil Öncesi) (30 Puan)", "count": 6}], "criteria": ["1. Teknoloji ve tasarım ile ilişkili kavramları tanımlar.", "2. Teknoloji ve tasarım arasındaki ilişkiyi ifade eder.", "3. Teknoloji ve tasarım ürünlerine günlük hayattan örnekler verir.", "4. Ülkemizdeki teknolojik gelişmeleri değerlendirir.", "1. Sanat/tasarım elemanlarını doğru şekilde tanımlar ve ifade eder.", "2. Sanat/tasarım elemanlarını bir ürün üzerinde gösterir ve analiz eder.", "3. Tasarım ilkelerini bir ürün üzerinde göstererek açıklar.", "4. Çevresindeki bir tasarım ürününü özgün fikirlerle yeniden yorumlar.", "5. Tasarım sürecinde fikir geliştirme ve taslak çalışmalarını etkili şekilde yapar.", "6. Sanat/tasarım elemanlarını ve tasarım ilkelerini kullanarak özgün bir tasarım oluşturur.", "7. Doğru birleştirme tekniklerini kullanır, güvenlik kurallarına ve estetik değerlere dikkat eder.", "8. Geri dönüşüm ve çevre bilinci konusuna dikkat ederek atık malzemelerden ürün oluşturur.", "9. Tasarım sürecinde sorumluluk değerini göz önünde bulundurur ve bunu ürününe yansıtır.", "10. Temel tasarım ürününü özenli bir şekilde tamamlar ve etkili sunum yapar.", "1. Tasarım sürecinin bir problem tanımlama ve çözüm önerme süreci olduğunu açıklar.", "2. Günlük hayatta karşılaştığı bir sorunu/ihtiyacı \"tasarım problemi\" olarak ifade eder ve yenilikçi çözüm önerilerini paylaşır.", "3. Tasarım sürecinin araştırma basamaklarını ve doğru veri kaynaklarına ulaşma yollarını açıklar.", "4. Tasarım geliştirme kriterlerini (ergonomik, estetik, yenilikçi, özgün, işlevsel vb.) açıklar.", "5. Tasarım oluşturulurken kullanıcı, malzeme, uygulama ve çevre faktörlerinin etkisini ve önemini açıklar.", "6. Taslak, model, maket ve prototip kavramlarını örneklerle açıklar."]}, {"units": [{"name": "7.B.1. T.O.S. (Tatil Sonrası) (20 Puan)", "count": 4}, {"name": "7.B.2. BİLGİSAYAR DESTEKLİ TASARIM (40 Puan)", "count": 8}, {"name": "7.C.1. MİMARİ TASARIM (40 Puan)", "count": 8}], "criteria": ["7. Kullanımı tamamlanmış ürünlerin geri dönüşümüne yönelik imkanları araştırır ve değerlendirir.", "8. Tasarımını belirlenen kriterlere göre değerlendirir.", "9. Tasarımını değerlendirme sonuçlarına göre yeniden yapılandırır.", "10. Tasarımını kullanıcıya ulaştırmak için uygun tanıtım ve pazarlama yöntemlerini araştırır ve değerlendirir.", "1. Tasarımı için düşündüğü çözüm önerisini kağıt üzerinde taslak çizimlerle ifade eder.", "2. Taslak çizimlerini bilgisayar ortamına aktarır ve iki boyutlu görsellere dönüştürür.", "3. Çizim ve modelleme yazılımlarının temel arayüz ve menü kontrollerini etkili bir şekilde kullanır.", "4. Çizim ve modelleme yazılımlarında çizim, düzenleme ve değişiklik yapmak için temel araçları doğru kullanır.", "5. Çizim ve modelleme yazılımlarında farklı ölçeklerde çizim yapabilir ve düzenlemeler gerçekleştirir.", "6. Çizim ve modelleme yazılımlarını kullanarak tasarımlarını dijital ortamda sunabileceği hale getirir.", "7. Tasarım fikrini açık ve anlaşılır şekilde sunmak için çoklu ortam sunusu hazırlar.", "8. Tasarım sürecini ve kullanılan yazılımların avantaj/dezavantajlarını analiz eder.", "1. İşlevsel farklılıkların mimari tasarımda yapısal farklılıklara neden olduğunu örneklerle açıklar.", "2. Yakın çevresindeki mimari yapıları işlevsel ve fiziksel özelliklerine göre karşılaştırır.", "3. Mimari yapılar ile hayat biçimi arasındaki ilişkiyi farklı coğrafi/kültürel örneklerle açıklar.", "4. Farklı coğrafi alan ve kişisel ihtiyaçlara uygun tasarımını çizim veya maket ile gösterir.", "5. Tasarımını gerçekleştirirken güvenlik önlemlerini ve doğru birleştirme tekniklerini uygular.", "6. Maketini ölçeklendirir ve ölçeklendirmenin önemini açıklar.", "7. Maket yapımında malzemeleri etkin ve verimli bir şekilde kullanır.", "8. Malzeme seçiminde sürdürülebilirlik ve çevre dostu özellikleri dikkate alır."]}, {"units": [{"name": "Bilgiye Ulaşım ve Kaynak Kullanımı (25P)", "count": 5}, {"name": "Derse Katılım ve İfade Yeteneği (25P)", "count": 5}, {"name": "Analitik Düşünme ve Problem Çözme (25P)", "count": 5}, {"name": "Disiplin ve Sorumluluk (25P)", "count": 5}], "criteria": ["1. Kaynakların güvenilirliğini değerlendirir.", "2. Çeşitli bilgi kaynaklarına başvurarak derse hazırlıklı gelir.", "3. Verilen bilgilerin ötesine geçerek ek kaynakları araştırır ve kullanır.", "4. Araştırmalarda elde ettiği bilgiyi uygun bir şekilde organize ederek sunar.", "5. Farklı kaynaklardan edindiği bilgileri derse anlamlı bir şekilde entegre eder.", "6. Ders sırasında aktif olarak söz alır ve düşüncelerini ifade eder.", "7. Sorulan sorulara anlamlı ve açıklayıcı cevaplar verir.", "8. Özgün ve yenilikçi sorular sorarak tartışmalara katkıda bulunur.", "9. Grup çalışmalarında etkin rol alır ve iş birliğine açıktır.", "10. Kendisine verilen görevleri tam ve zamanında yerine getirir.", "11. Verilen bilgilerden mantıklı çıkarımlar yapar ve çözüm önerileri sunar.", "12. Derse yönelik gözlemlerinden yenilikçi fikirler geliştirir.", "13. Araştırma ve incelemelerinde tutarlı ve mantıklı sonuçlar sunar.", "14. Yenilikçi tasarımlarını ve düşüncelerini uygulamaya geçirir.", "15. Karşılaştığı sorunlara yenilikçi ve çözüm odaklı yaklaşımlar sergiler.", "16. Derse zamanında gelir ve etkin katılım sağlar.", "17. Ders sırasında düzeni bozucu davranışlardan kaçınır ve akışı destekler.", "18. Çalışmalarını belirtilen süre içerisinde tamamlar ve eksiksiz sunar.", "19. Grup çalışmalarında iş birliğine açık ve sorumluluk bilinciyle hareket eder.", "20. Ders sırasında gösterdiği çabayla sürekli gelişim sergiler."]}, {"units": [{"name": "Bilgiye Ulaşım ve Kaynak Kullanımı (25P)", "count": 5}, {"name": "Derse Katılım ve İfade Yeteneği (25P)", "count": 5}, {"name": "Analitik Düşünme ve Problem Çözme (25P)", "count": 5}, {"name": "Disiplin ve Sorumluluk (25P)", "count": 5}], "criteria": ["1. Kaynakların güvenilirliğini değerlendirir.", "2. Çeşitli bilgi kaynaklarına başvurarak derse hazırlıklı gelir.", "3. Verilen bilgilerin ötesine geçerek ek kaynakları araştırır ve kullanır.", "4. Araştırmalarda elde ettiği bilgiyi uygun bir şekilde organize ederek sunar.", "5. Farklı kaynaklardan edindiği bilgileri derse anlamlı bir şekilde entegre eder.", "6. Ders sırasında aktif olarak söz alır ve düşüncelerini ifade eder.", "7. Sorulan sorulara anlamlı ve açıklayıcı cevaplar verir.", "8. Özgün ve yenilikçi sorular sorarak tartışmalara katkıda bulunur.", "9. Grup çalışmalarında etkin rol alır ve iş birliğine açıktır.", "10. Kendisine verilen görevleri tam ve zamanında yerine getirir.", "11. Verilen bilgilerden mantıklı çıkarımlar yapar ve çözüm önerileri sunar.", "12. Derse yönelik gözlemlerinden yenilikçi fikirler geliştirir.", "13. Araştırma ve incelemelerinde tutarlı ve mantıklı sonuçlar sunar.", "14. Yenilikçi tasarımlarını ve düşüncelerini uygulamaya geçirir.", "15. Karşılaştığı sorunlara yenilikçi ve çözüm odaklı yaklaşımlar sergiler.", "16. Derse zamanında gelir ve etkin katılım sağlar.", "17. Ders sırasında düzeni bozucu davranışlardan kaçınır ve akışı destekler.", "18. Çalışmalarını belirtilen süre içerisinde tamamlar ve eksiksiz sunar.", "19. Grup çalışmalarında iş birliğine açık ve sorumluluk bilinciyle hareket eder.", "20. Ders sırasında gösterdiği çabayla sürekli gelişim sergiler."]}];
+        
+        let editorActiveSheet = 0;
+        let editorData = [];
+
+        function renderTableHeaders() {
+            for (let s = 0; s < 4; s++) {
+                const sheetData = defaultCriteriaData[s];
+                if(!sheetData || sheetData.units.length === 0) continue;
+                
+                const table = document.querySelector(`#sheet-${s} .scale-table`);
+                if(!table) continue;
+                
+                let thead = table.querySelector('thead');
+                if(!thead) {
+                    thead = document.createElement('thead');
+                    table.insertBefore(thead, table.firstChild);
+                }
+                
+                let tr1 = `<tr>
+                    <th colspan="3" rowspan="2">
+                        <div class="scale-info-header">DEĞERLENDİRME ÖLÇÜTLERİ</div>
+                    </th>`;
+                    
+                sheetData.units.forEach(u => {
+                    tr1 += `<th colspan="${u.count}" class="unit-header"><div class="th-horizontal">${u.name}</div></th>`;
+                });
+                
+                tr1 += `<th rowspan="2" class="col-not-long">${s === 0 ? '1. DEĞERLENDİRME NOTU' : s === 1 ? '2. DEĞERLENDİRME NOTU' : s === 2 ? '1. DERS ETKİNLİKLERİNE KATILIM NOTU' : '2. DERS ETKİNLİKLERİNE KATILIM NOTU'}</th></tr>`;
+                
+                let tr2 = `<tr>`;
+                sheetData.criteria.forEach(c => {
+                    tr2 += `<th class="th-vertical"><div class="th-vertical-text">${c}</div></th>`;
+                });
+                tr2 += `</tr>`;
+                
+                thead.innerHTML = tr1 + tr2;
+            }
+        }
+        
+        function getSheetName(idx) {
+            const names = [
+                "1. Dönem 1. Değerlendirme",
+                "1. Dönem 2. Değerlendirme",
+                "1. Dönem 1. Ders Etkinliklerine Katılım",
+                "1. Dönem 2. Ders Etkinliklerine Katılım"
+            ];
+            return names[idx] || "Bilinmeyen Tablo";
+        }
+        
+        function openCriteriaEditor() {
+            const sheets = document.querySelectorAll('.print-sheet');
+            editorActiveSheet = 0;
+            sheets.forEach((sh, idx) => {
+                if(sh.classList.contains('active-sheet')) {
+                    editorActiveSheet = idx;
+                }
+            });
+            
+            document.getElementById('editor-sheet-name').innerText = getSheetName(editorActiveSheet);
+            editorData = JSON.parse(JSON.stringify(defaultCriteriaData[editorActiveSheet]));
+            
+            renderEditorForm();
+            document.getElementById('criteriaModal').classList.add('open');
+        }
+        
+        function closeCriteriaEditor() {
+            document.getElementById('criteriaModal').classList.remove('open');
+        }
+        
+        function renderEditorForm() {
+            const container = document.getElementById('editor-units-container');
+            container.innerHTML = '';
+            
+            let totalCount = 0;
+            let criteriaIdx = 0;
+            
+            editorData.units.forEach((unit, uIdx) => {
+                totalCount += unit.count;
+                
+                let html = `
+                <div style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #f8fafc; position: relative;">
+                    <button type="button" style="position: absolute; right: 10px; top: 10px; background: #ef4444; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;" onclick="removeUnitFromEditor(${uIdx})">Sil</button>
+                    
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Ünite Adı:</label>
+                    <input type="text" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; margin-bottom: 15px;" value="${unit.name.replace(/"/g, '&quot;')}" onchange="updateEditorUnitName(${uIdx}, this.value)">
+                    
+                    <div style="margin-bottom: 10px; font-weight: bold; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">
+                        Kazanımlar (${unit.count} Adet) 
+                        <button type="button" class="btn" style="background: #3b82f6; color: white; padding: 2px 8px; font-size: 12px; margin-left: 10px;" onclick="addCriteriaToUnit(${uIdx})">+ Ekle</button>
+                    </div>
+                `;
+                
+                for(let i=0; i<unit.count; i++) {
+                    const cText = editorData.criteria[criteriaIdx] || '';
+                    html += `
+                    <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 8px;">
+                        <span style="min-width: 20px; font-weight: bold; color: #64748b;">${i+1}.</span>
+                        <input type="text" style="flex: 1; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;" value="${cText.replace(/"/g, '&quot;')}" onchange="updateEditorCriteriaText(${criteriaIdx}, this.value)">
+                        <button type="button" style="background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer;" onclick="removeCriteriaFromUnit(${uIdx}, ${criteriaIdx})">x</button>
+                    </div>
+                    `;
+                    criteriaIdx++;
+                }
+                
+                html += `</div>`;
+                container.innerHTML += html;
+            });
+            
+            const totalSpan = document.getElementById('editor-total-count');
+            totalSpan.innerText = `${totalCount} / 20`;
+            totalSpan.style.color = (totalCount === 20) ? '#10b981' : '#ef4444';
+            
+            const saveBtn = document.getElementById('editor-save-btn');
+            saveBtn.disabled = (totalCount !== 20);
+            saveBtn.style.opacity = (totalCount !== 20) ? '0.5' : '1';
+            saveBtn.style.cursor = (totalCount !== 20) ? 'not-allowed' : 'pointer';
+            
+            document.getElementById('editor-error-msg').style.display = 'none';
+        }
+        
+        function updateEditorUnitName(uIdx, val) {
+            editorData.units[uIdx].name = val;
+        }
+        
+        function updateEditorCriteriaText(cIdx, val) {
+            editorData.criteria[cIdx] = val;
+        }
+        
+        function addUnitToEditor() {
+            editorData.units.push({ name: 'Yeni Ünite', count: 1 });
+            editorData.criteria.push('Yeni kazanım açıklaması girin.');
+            renderEditorForm();
+        }
+        
+        function removeUnitFromEditor(uIdx) {
+            const unit = editorData.units[uIdx];
+            let startIdx = 0;
+            for(let i=0; i<uIdx; i++) startIdx += editorData.units[i].count;
+            editorData.criteria.splice(startIdx, unit.count);
+            
+            editorData.units.splice(uIdx, 1);
+            renderEditorForm();
+        }
+        
+        function addCriteriaToUnit(uIdx) {
+            editorData.units[uIdx].count++;
+            
+            let insertIdx = 0;
+            for(let i=0; i<=uIdx; i++) insertIdx += editorData.units[i].count;
+            insertIdx -= 1;
+            
+            editorData.criteria.splice(insertIdx, 0, 'Yeni kazanım açıklaması girin.');
+            renderEditorForm();
+        }
+        
+        function removeCriteriaFromUnit(uIdx, globalCIdx) {
+            if(editorData.units[uIdx].count <= 1) {
+                alert("Bir ünitenin en az 1 kazanımı olmalıdır. Üniteyi silmek istiyorsanız ünitenin 'Sil' butonunu kullanın.");
+                return;
+            }
+            editorData.units[uIdx].count--;
+            editorData.criteria.splice(globalCIdx, 1);
+            renderEditorForm();
+        }
+        
+        function saveCriteriaData() {
+            let totalCount = 0;
+            editorData.units.forEach(u => totalCount += u.count);
+            if(totalCount !== 20) {
+                document.getElementById('editor-error-msg').style.display = 'block';
+                return;
+            }
+            defaultCriteriaData[editorActiveSheet] = editorData;
+            renderTableHeaders();
+            closeCriteriaEditor();
+        }
+
+
+        function updateHeaderInfo() {
+            const yil = document.getElementById('inp-yil').value || '2026 - 2027';
+            const okul = document.getElementById('inp-okul').value || '................................................................';
+            const sinif = document.getElementById('inp-sinif').value || '.......';
+            const ogretmen = document.getElementById('inp-ogretmen').value || '...................................';
+            const mudur = document.getElementById('inp-muder').value || '............................';
+            const ders = document.getElementById('inp-ders').value || 'TEKNOLOJİ VE TASARIM';
+
+            document.querySelectorAll('.txt-yil').forEach(el => el.innerText = yil);
+            document.querySelectorAll('.txt-okul').forEach(el => el.innerText = okul);
+            document.querySelectorAll('.txt-sinif').forEach(el => el.innerText = sinif);
+            document.querySelectorAll('.txt-ogretmen').forEach(el => el.innerText = ogretmen);
+            document.querySelectorAll('.txt-muder').forEach(el => el.innerText = mudur);
+            document.querySelectorAll('.txt-ders').forEach(el => el.innerText = ders);
+        }
+
+        function selectPeriod(period) {
+            const label = `${period}. DÖNEM`;
+            document.querySelectorAll('.txt-donem').forEach(el => el.innerText = label);
+        }
+
+        function changeBranch() {
+            const brans = document.getElementById('inp-brans-secim').value;
+            const dersAd = document.getElementById('inp-ders');
+            const bransInput = document.getElementById('inp-brans');
+            const tab0 = document.getElementById('tab-btn-0');
+            const tab1 = document.getElementById('tab-btn-1');
+
+            if (brans === 'muzik') {
+                dersAd.value = "MÜZİK";
+                bransInput.value = "Müzik Öğretmeni";
+                tab0.style.display = 'none';
+                tab1.style.display = 'none';
+                if (tab0.classList.contains('active') || tab1.classList.contains('active')) {
+                    switchView(2); // Katılım 1'e geç
+                }
+            } else {
+                dersAd.value = "TEKNOLOJİ VE TASARIM";
+                bransInput.value = "Teknoloji ve Tasarım Öğretmeni";
+                tab0.style.display = 'inline-block';
+                tab1.style.display = 'inline-block';
+            }
+            updateHeaderInfo();
+        }
+
+        function processPastedData(ocrData) {
+            let text = '';
+            let useSpatialParsing = false;
+
+            if (ocrData && ocrData.lines) {
+                text = ocrData.text;
+                useSpatialParsing = true;
+            } else {
+                text = typeof ocrData === 'string' ? ocrData : document.getElementById('paste-box').value;
+            }
+
+            if (!text) return;
+
+            studentData = [];
+            
+            // OCR hatalarını düzelt
+            text = text.replace(/100100/g, '100 100')
+                       .replace(/100\/100/g, '100 100')
+                       .replace(/400/g, '100');
+
+            if (useSpatialParsing) {
+                text = text.replace(/\|/g, ' ');
+            }
+
+            if (useSpatialParsing) {
+                // SATIR VE SÜTUNLARI GEOMETRİK (SPATIAL) OLARAK AYIRMA ALGORİTMASI
+                let studentLines = [];
+                let allGradeX0s = [];
+
+                // 1. Aşama: Satırları filtrele ve notların X koordinatlarını topla
+                ocrData.lines.forEach(line => {
+                    let words = line.words;
+                    if (words.length < 3) return;
+
+                    let isStudent = false;
+                    let firstGradeIdx = -1;
+                    
+                    let startIdx = 0;
+                    for (let i = 0; i < Math.min(3, words.length); i++) {
+                        let wtxt = words[i].text;
+                        if (/\d/.test(wtxt) || ['&','“','”','s','S'].includes(wtxt[0])) {
+                            startIdx = i;
+                            isStudent = true;
+                            break;
+                        }
+                    }
+                    if (!isStudent) return;
+
+                    for (let i = startIdx + 1; i < words.length; i++) {
+                        let w = words[i].text.trim().replace(/100100/g, '100').replace(/100\/100/g, '100').replace(/400/g, '100');
+                        if (/^\d{1,3}$/.test(w) && w !== 'E' && w !== 'e') {
+                            firstGradeIdx = i;
+                            break;
+                        }
+                    }
+
+                    if (firstGradeIdx !== -1) {
+                        let rawGrades = words.slice(firstGradeIdx);
+                        let processedGrades = [];
+                        
+                        rawGrades.forEach(g => {
+                            let w = g.text.trim().replace(/400/g, '100');
+                            if (w === '100100' || w === '100/100') {
+                                let halfWidth = (g.bbox.x1 - g.bbox.x0) / 2;
+                                processedGrades.push({ text: '100', bbox: { x0: g.bbox.x0, x1: g.bbox.x0 + halfWidth } });
+                                processedGrades.push({ text: '100', bbox: { x0: g.bbox.x0 + halfWidth, x1: g.bbox.x1 } });
+                            } else if (/^\d{1,3}$/.test(w) || w === 'E') {
+                                processedGrades.push({ text: w, bbox: g.bbox });
+                            }
+                        });
+
+                        let rowData = {
+                            no: words[startIdx].text,
+                            nameParts: words.slice(startIdx + 1, firstGradeIdx).map(w => w.text),
+                            grades: processedGrades
+                        };
+                        
+                        rowData.grades.forEach(g => {
+                            if (!/^[EeGgKk]$/.test(g.text)) {
+                                allGradeX0s.push(g.bbox.x0);
+                            }
+                        });
+                        studentLines.push(rowData);
+                    }
+                });
+
+                // 2. Aşama: Not X koordinatlarını kümele (Sütunları tespit et)
+                allGradeX0s.sort((a, b) => a - b);
+                let clusters = [];
+                allGradeX0s.forEach(x => {
+                    if (clusters.length === 0) {
+                        clusters.push([x]);
+                    } else {
+                        let lastCluster = clusters[clusters.length - 1];
+                        let avg = lastCluster.reduce((a,b)=>a+b, 0) / lastCluster.length;
+                        if (Math.abs(x - avg) < 40) { // 40 piksel yakınlık toleransı
+                            lastCluster.push(x);
+                        } else {
+                            clusters.push([x]);
+                        }
+                    }
+                });
+                
+                let columnCenters = clusters.map(c => c.reduce((a,b)=>a+b,0)/c.length);
+
+                // 3. Aşama: Her öğrenci için notları doğru sütunlara yerleştir
+                studentLines.forEach(st => {
+                    let name = st.nameParts.join(' ').replace(/E$/i, '').trim();
+                    let alignedGrades = new Array(columnCenters.length).fill('');
+                    
+                    st.grades.forEach(g => {
+                        let txt = g.text.replace(/100100/g, '100').replace(/100\/100/g, '100').replace(/400/g, '100');
+                        if (txt === 'E' || txt === 'e') return;
+                        
+                        let minDiff = Infinity;
+                        let bestCol = 0;
+                        for (let c = 0; c < columnCenters.length; c++) {
+                            let diff = Math.abs(g.bbox.x0 - columnCenters[c]);
+                            if (diff < minDiff) {
+                                minDiff = diff;
+                                bestCol = c;
+                            }
+                        }
+                        alignedGrades[bestCol] = parseInt(txt);
+                    });
+                    
+                    let gradeCols = alignedGrades;
+                    const brans = document.getElementById('inp-brans-secim').value;
+                    let d1 = '', d2 = '', k1 = '', k2 = '';
+
+                    if (brans === 'muzik') {
+                        if (gradeCols.length >= 4) {
+                            k1 = gradeCols[gradeCols.length - 4];
+                            k2 = gradeCols[gradeCols.length - 3];
+                        } else if (gradeCols.length === 2) {
+                            k1 = gradeCols[0];
+                            k2 = gradeCols[1];
+                        } else {
+                            k1 = gradeCols[2] !== undefined ? gradeCols[2] : '';
+                            k2 = gradeCols[3] !== undefined ? gradeCols[3] : '';
+                        }
+                    } else {
+                        if (gradeCols.length >= 4) {
+                            d1 = gradeCols[0]; d2 = gradeCols[1];
+                            k1 = gradeCols[2]; k2 = gradeCols[3];
+                        } else {
+                            d1 = gradeCols[0] !== undefined ? gradeCols[0] : '';
+                            d2 = gradeCols[1] !== undefined ? gradeCols[1] : '';
+                        }
+                    }
+                    
+                    if (d1 > 100) d1 = 100; if (d2 > 100) d2 = 100;
+                    if (k1 > 100) k1 = 100; if (k2 > 100) k2 = 100;
+
+                    if (name) {
+                        studentData.push({ no: st.no, name, d1, d2, k1, k2 });
+                    }
+                });
+
+                document.getElementById('paste-box').value = studentData
+                    .map(s => `${s.no} ${s.name} | D1:${s.d1} D2:${s.d2} K1:${s.k1} K2:${s.k2}`)
+                    .join('\n');
+                renderAllTables();
+                return;
+            }
+
+            // Normal kopyala-yapıştır düz metin analizi (Eski Yöntem)
+            const lines = text.split('\n');
+            lines.forEach((line) => {
+                line = line.trim();
+                if (!line) return;
+
+                let cols = line.split('\t');
+                if (cols.length <= 1) cols = line.split(/\s{2,}/);
+                if (cols.length <= 1) cols = line.split(/\s+/);
+
+                if (line.includes('Öğrenci No') || line.includes('Adı Soyadı') || line.includes('Okul No')) return;
+                if (/^(?:BULUNAN SÜTUN SAYISI|ÖĞRENCİLER\s*:)/i.test(line)) return;
+                if (/^\d+\s*\|\s*(?:K1|D\.E\.K\.1|1\. DERS ETKİNLİKLERİNE KATILIM NOTU):\s*(?:K2|D\.E\.K\.2|2\. DERS ETKİNLİKLERİNE KATILIM NOTU):\s*$/i.test(line)) return;
+                if (/^\d+\s*\|\s*D1:\s*D2:\s*DEK1:\s*DEK2:\s*$/i.test(line)) return;
+
+                const compactAllMatch = line.match(/^([^\s]+)\s+(.+?)\s*\|\s*D1:\s*(\d+)?\s*D2:\s*(\d+)?\s*DEK1:\s*(\d+)?\s*DEK2:\s*(\d+)?$/i);
+                if (compactAllMatch) {
+                    const compactAllName = compactAllMatch[2].trim();
+                    if (compactAllName) {
+                        studentData.push({
+                            no: compactAllMatch[1],
+                            name: compactAllName,
+                            d1: compactAllMatch[3] || '',
+                            d2: compactAllMatch[4] || '',
+                            k1: compactAllMatch[5] || '',
+                            k2: compactAllMatch[6] || ''
+                        });
+                    }
+                    return;
+                }
+
+                const compactMatch = line.match(/^([^\s]+)\s+(.+?)\s*\|\s*(?:K1|D\.E\.K\.1|1\. DERS ETKİNLİKLERİNE KATILIM NOTU):\s*(\d+)?\s*(?:K2|D\.E\.K\.2|2\. DERS ETKİNLİKLERİNE KATILIM NOTU):\s*(\d+)?$/i);
+                if (compactMatch) {
+                    const compactNo = compactMatch[1];
+                    const compactName = compactMatch[2].trim();
+                    const compactK1 = compactMatch[3] || '';
+                    const compactK2 = compactMatch[4] || '';
+                    if (compactName) {
+                        studentData.push({ no: compactNo, name: compactName, d1: '', d2: '', k1: compactK1, k2: compactK2 });
+                    }
+                    return;
+                }
+
+                let no = '', name = '', d1 = '', d2 = '', k1 = '', k2 = '';
+                let cleanCols = cols.map(c => c.trim()).filter(c => c !== '');
+
+                let firstNumIdx = -1;
+                for (let i = 0; i < cleanCols.length; i++) {
+                    if (/^\d+$/.test(cleanCols[i])) {
+                        firstNumIdx = i;
+                        break;
+                    }
+                }
+                
+                if (firstNumIdx !== -1) {
+                    no = cleanCols[firstNumIdx];
+                    let nextNumIdx = -1;
+                    
+                    for (let i = firstNumIdx + 1; i < cleanCols.length; i++) {
+                        let val = cleanCols[i].replace(/100100/g, '100').replace(/100\/100/g, '100').replace(/400/g, '100');
+                        if (/^\d{1,3}$/.test(val) || val === 'E') {
+                            nextNumIdx = i;
+                            break;
+                        }
+                    }
+
+                    if (nextNumIdx !== -1) {
+                        name = cleanCols.slice(firstNumIdx + 1, nextNumIdx).join(' ');
+                        name = name.replace(/E$/i, '').trim();
+
+                        let gradeCols = cleanCols.slice(nextNumIdx).filter(c => /^\d{1,3}$/.test(c) || /^[EeGgKk]$/.test(c));
+                        const brans = document.getElementById('inp-brans-secim').value;
+                        
+                        if (brans === 'muzik') {
+                            if (gradeCols.length >= 4) {
+                                k1 = gradeCols[gradeCols.length - 4];
+                                k2 = gradeCols[gradeCols.length - 3];
+                            } else if (gradeCols.length === 2) {
+                                k1 = gradeCols[0];
+                                k2 = gradeCols[1];
+                            } else {
+                                k1 = gradeCols[2] !== undefined ? gradeCols[2] : '';
+                                k2 = gradeCols[3] !== undefined ? gradeCols[3] : '';
+                            }
+                        } else {
+                            if (gradeCols.length >= 4) {
+                                d1 = gradeCols[0]; d2 = gradeCols[1];
+                                k1 = gradeCols[2]; k2 = gradeCols[3];
+                            } else {
+                                d1 = gradeCols[0] !== undefined ? gradeCols[0] : '';
+                                d2 = gradeCols[1] !== undefined ? gradeCols[1] : '';
+                            }
+                        }
+                    }
+                }
+
+                if (no || name) {
+                    if (/^[EeGgKk]$/.test(d1)) d1 = ''; if (/^[EeGgKk]$/.test(d2)) d2 = '';
+                    if (/^[EeGgKk]$/.test(k1)) k1 = ''; if (/^[EeGgKk]$/.test(k2)) k2 = '';
+                    
+                    if (d1 > 100) d1 = 100; if (d2 > 100) d2 = 100;
+                    if (k1 > 100) k1 = 100; if (k2 > 100) k2 = 100;
+
+                    studentData.push({ no, name, d1, d2, k1, k2 });
+                }
+            });
+
+            renderAllTables();
+        }
+
+        /*
+         * KAZANIM BAZLI ADİL NOT DAĞITIM ALGORİTMASI:
+         * 100 puanlık notu 20 kritere (1-5 puan arası) toplamı tam olarak öğrencinin notunu verecek şekilde dağıtır.
+         */
+        function distributeGrade(totalGrade, seed) {
+            if (totalGrade === '' || isNaN(totalGrade) || totalGrade === null) {
+                return Array(20).fill('');
+            }
+            let grade = Math.min(100, Math.max(0, parseInt(totalGrade)));
+
+            let scores = Array(20).fill(0);
+            let base = Math.floor(grade / 20);
+            let remainder = grade % 20;
+
+            for (let i = 0; i < 20; i++) scores[i] = base;
+
+            // Kalan puanları doğal bir sırayla dağıt
+            let perm = [0, 4, 8, 12, 16, 2, 6, 10, 14, 18, 1, 5, 9, 13, 17, 3, 7, 11, 15, 19];
+            let offset = seed % 20;
+            let order = perm.map((_, i) => perm[(i + offset) % 20]);
+
+            for (let i = 0; i < remainder; i++) {
+                scores[order[i]] += 1;
+            }
+
+            // Doğal öğretmen değerlendirme varyasyonu (toplamı asla bozmaz)
+            let swapCount = (seed % 3);
+            for (let s = 0; s < swapCount; s++) {
+                let high = order[s];
+                let low = order[19 - s];
+                if (scores[high] < 5 && scores[low] > 1) {
+                    scores[high]++;
+                    scores[low]--;
+                }
+            }
+
+            return scores;
+        }
+
+        // Tabloları Oluştur
+        function renderAllTables() {
+            const tableD1 = document.getElementById('tbody-d1');
+            const tableD2 = document.getElementById('tbody-d2');
+            const tableK1 = document.getElementById('tbody-k1');
+            const tableK2 = document.getElementById('tbody-k2');
+
+            tableD1.innerHTML = '';
+            tableD2.innerHTML = '';
+            tableK1.innerHTML = '';
+            tableK2.innerHTML = '';
+
+            const totalRows = Math.max(MAX_ROWS, studentData.length);
+
+            for (let i = 0; i < totalRows; i++) {
+                const st = studentData[i] || { no: '', name: '', d1: '', d2: '', k1: '', k2: '' };
+                const rowNo = i + 1;
+
+                // 4 ölçek için puan dağılımlarını hesapla
+                const scoresD1 = distributeGrade(st.d1, rowNo + 3);
+                const scoresD2 = distributeGrade(st.d2, rowNo + 7);
+                const scoresK1 = distributeGrade(st.k1, rowNo + 11);
+                const scoresK2 = distributeGrade(st.k2, rowNo + 15);
+
+                tableD1.innerHTML += createRowHtml(rowNo, st.no, st.name, scoresD1, st.d1);
+                tableD2.innerHTML += createRowHtml(rowNo, st.no, st.name, scoresD2, st.d2);
+                tableK1.innerHTML += createRowHtml(rowNo, st.no, st.name, scoresK1, st.k1);
+                tableK2.innerHTML += createRowHtml(rowNo, st.no, st.name, scoresK2, st.k2);
+            }
+        }
+
+        function createRowHtml(sira, no, name, scores, total) {
+            let cells = scores.map(s => `<td>${s}</td>`).join('');
+            return `<tr>
+                <td>${sira}</td>
+                <td>${no}</td>
+                <td class="col-adsoyad">${name}</td>
+                ${cells}
+                <td class="col-not">${total !== undefined && total !== '' ? total : ''}</td>
+            </tr>`;
+        }
+
+        // Temizle
+        function clearData() {
+            document.getElementById('paste-box').value = '';
+            document.getElementById('ocr-file-input').value = '';
+            const statusContainer = document.getElementById('ocr-status-container');
+            if (statusContainer) statusContainer.style.display = 'none';
+            studentData = [];
+            renderAllTables();
+        }
+
+        function selectDers(btn, dersKey) {
+            if (btn.disabled) return;
+            document.querySelectorAll('.ders-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // Gelecekte ders bazlı içerik değişimi buradan yönetilecek
+        }
+
+        // Örnek Veri Yükle
+        function loadSampleData() {
+            const sampleText = 
+`1\t101\tGÜL İSTANBUL\t85	90	95	90
+2\t138\tLALE ANKARA\t95	100	100	95
+3\t175\tSÜMBÜL İZMİR\t75	80	85	80
+4\t212\tPAPATYA BURSA\t90	95	90	95
+5\t249\tKARANFİL ANTALYA\t65	70	75	70
+6\t286\tZAMBAK ADANA\t100	95	100	100
+7\t323\tYASEMİN KONYA\t80	85	85	90
+8\t360\tORKİDE GAZİANTEP\t90	90	95	95
+9\t397\tBEGONVİL ŞANLIURFA\t70	75	80	75
+10\t434\tNİLÜFER MERSİN\t85	90	90	90
+11\t471\tLAVANTA DİYARBAKIR\t60	65	70	70
+12\t508\tÇİÇEK KAYSERİ\t95	95	100	100
+13\t545\tŞAKAYIK ESKİŞEHİR\t85	85	90	85
+14\t582\tNERGİS SAMSUN\t90	95	95	95
+15\t619\tKARDELEN DENİZLİ\t75	80	80	85
+16\t656\tFULYA TRABZON\t100	100	100	100
+17\t693\tMELİSA VAN\t80	85	85	80
+18\t730\tMANOLYA MALATYA\t70	75	75	80
+19\t767\tSARMAŞIK ERZURUM\t95	90	95	95
+20\t804\tYONCA MANİSA\t85	85	90	90
+21\t841\tHATMİ TEKİRDAĞ\t90	90	95	95
+22\t878\tEBEGÜMECİ BALIKESİR\t65	70	75	70
+23\t915\tHANIMELİ ÇANAKKALE\t80	80	85	85
+24\t952\tAÇELYA MUĞLA\t95	100	100	95
+25\t989\tSÜSEN HATAY\t90	95	95	90`;
+
+            document.getElementById('paste-box').value = sampleText;
+            processPastedData();
+        }
+
+        // ================= OCR (Görselden Metin Okuma) Entegrasyonu =================
+        document.addEventListener('DOMContentLoaded', () => {
+            const pasteBox = document.getElementById('paste-box');
+            const dropArea = document.getElementById('ocr-drop-area');
+            const fileInput = document.getElementById('ocr-file-input');
+
+            if (!pasteBox || !dropArea || !fileInput) return;
+
+            // Global paste handle
+            document.addEventListener('paste', async (e) => {
+                const items = (e.clipboardData || window.clipboardData).items;
+                for (let index in items) {
+                    const item = items[index];
+                    if (item.kind === 'file' && item.type.startsWith('image/')) {
+                        e.preventDefault();
+                        const imageFile = item.getAsFile();
+                        runOCR(imageFile);
+                        return;
+                    }
+                }
+            });
+
+            // Drag and Drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+                dropArea.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(evt => {
+                dropArea.addEventListener(evt, () => {
+                    dropArea.style.borderColor = '#ea580c';
+                    dropArea.style.background = '#ffedd5';
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                dropArea.addEventListener(evt, () => {
+                    dropArea.style.borderColor = '#f97316';
+                    dropArea.style.background = '#fff7ed';
+                }, false);
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                if (dt && dt.files && dt.files.length > 0) {
+                    const f = dt.files[0];
+                    if (f.type.startsWith('image/')) runOCR(f);
+                }
+            });
+
+            // Click to upload
+            dropArea.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files && fileInput.files.length > 0) {
+                    runOCR(fileInput.files[0]);
+                }
+                fileInput.value = '';
+            });
+        });
+
+        let currentWorker = null;
+
+        async function runOCR(imageFile) {
+            const container = document.getElementById('ocr-status-container');
+            const statusText = document.getElementById('ocr-status-text');
+            const progressBar = document.getElementById('ocr-progress-bar');
+            const pasteBox = document.getElementById('paste-box');
+
+            if (!window.Tesseract) {
+                alert("OCR Sistemi yüklenemedi. Lütfen internet bağlantınızı kontrol edip sayfayı yenileyin (veya file:// yerine sunucudan açın).");
+                return;
+            }
+
+            container.style.display = 'block';
+            progressBar.style.width = '5%';
+            statusText.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg> OCR Motoru Hazırlanıyor...`;
+            
+            try {
+                if (currentWorker) {
+                    await currentWorker.terminate().catch(()=>{});
+                }
+
+                const worker = await Tesseract.createWorker('tur', 1, {
+                    workerPath: '../js/lib/tesseract/worker.min.js',
+                    corePath: '../js/lib/tesseract/tesseract-core-wasm.js',
+                    langPath: '../js/lib/tesseract/',
+                    logger: m => {
+                        if (!m || !m.status) return;
+                        if (m.status === 'loading tesseract core') {
+                            const p = m.progress * 30;
+                            progressBar.style.width = Math.round(10 + p) + '%';
+                            statusText.innerText = `OCR Çekirdeği Yükleniyor... %${Math.round(p * 3.3)}`;
+                        } else if (m.status === 'initializing api') {
+                            progressBar.style.width = '40%';
+                            statusText.innerText = `OCR API Başlatılıyor...`;
+                        } else if (m.status === 'loading language traineddata') {
+                            const p = m.progress * 20;
+                            progressBar.style.width = Math.round(40 + p) + '%';
+                            statusText.innerText = `Dil Dosyası Yükleniyor... %${Math.round(m.progress * 100)}`;
+                        } else if (m.status === 'recognizing text') {
+                            const p = m.progress * 40;
+                            progressBar.style.width = Math.round(60 + p) + '%';
+                            statusText.innerText = `Görseldeki Notlar Okunuyor... %${Math.round(m.progress * 100)}`;
+                        }
+                    }
+                });
+                
+                currentWorker = worker;
+
+                const { data } = await worker.recognize(imageFile);
+                await worker.terminate();
+                currentWorker = null;
+
+                progressBar.style.width = '100%';
+                statusText.innerText = `Okuma Tamamlandı! Notlar İşleniyor...`;
+                
+                // Set text and trigger processing
+                pasteBox.value = data.text || "";
+                
+                setTimeout(() => {
+                    container.style.display = 'none';
+                    processPastedData(data);
+                }, 1000);
+
+            } catch (error) {
+                console.error("OCR Hatası:", error);
+                statusText.innerText = `Hata: ${error.message || 'Görsel okunamadı'}`;
+                statusText.style.color = '#ef4444';
+                progressBar.style.background = '#ef4444';
+            }
+        }
+    </script>
+
+    <!-- Criteria Editor Modal -->
+    <div id="criteriaModal" class="modal-overlay">
+        <div class="modal-box" style="padding: 24px; max-width: 900px; width: 95%;">
+            <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 class="howto-modal-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        Ünite ve Kazanımları Düzenle
+                    </h2>
+                    <p class="criteria-desc">
+                        Aktif tablonun ünite ve kazanım sayılarını buradan ayarlayabilirsiniz. Dağıtım sisteminin sorunsuz çalışması için <strong>toplam kazanım sayısının tam olarak 20</strong> olması zorunludur.
+                    </p>
+                    
+                    <div class="criteria-badge">
+                        Düzenlenen Tablo: <span id="editor-sheet-name"></span>
+                    </div>
+                    
+                    <div id="editor-units-container" style="max-height: 50vh; overflow-y: auto; padding-right: 10px;">
+                    </div>
+                    
+                    <div class="criteria-footer">
+                        <button type="button" class="btn" style="background: #10b981; color: white; padding: 8px 16px; border-radius: 20px; border: none; font-weight: 700;" onclick="addUnitToEditor()">+ Yeni Ünite Ekle</button>
+                        <div class="criteria-count-box">
+                            Toplam Kazanım: <span id="editor-total-count" style="color: #ef4444;">0 / 20</span>
+                        </div>
+                    </div>
+                    
+                    <div id="editor-error-msg" style="color: #ef4444; font-weight: bold; text-align: center; margin-top: 15px; display: none; background: #fee2e2; padding: 10px; border-radius: 8px; border: 1px solid #fca5a5;">
+                        Toplam kazanım sayısı tam 20 olmalıdır!
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+                        <button class="modal-close-btn" onclick="closeCriteriaEditor()" style="background: #64748b; color: white; margin: 0 !important; display: inline-flex !important; justify-content: center; align-items: center; width: fit-content !important; min-width: 140px; border-radius: 25px !important; border: none; font-weight: bold; cursor: pointer;">İptal</button>
+                        <button id="editor-save-btn" class="modal-close-btn" style="background: #0284c7; color: white; margin: 0 !important; display: inline-flex !important; justify-content: center; align-items: center; width: fit-content !important; min-width: 140px; border-radius: 25px !important; border: none; font-weight: bold; cursor: pointer;" onclick="saveCriteriaData()">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="../js/menu.js" defer></script></body>
+</html>

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2018 ve 2025 (Taslak) Teknoloji ve Tasarım Dersi Öğretim Programları Karşılaştırması - teknolojitasarimci</title>
+    <meta name="description" content="MEB'in Türkiye Yüzyılı Maarif Modeli kapsamındaki 2025 (taslak) ile 2018 Teknoloji ve Tasarım dersi öğretim programlarının detaylı karşılaştırması.">
+    <!-- Google Fonts Entegrasyonu -->
+
+
+<link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Özel Master Template Premium Stil İyileştirmeleri -->
+    <style>
+        :root {
+            --font-heading: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --font-body: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --primary-gradient: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+        }
+
+        body {
+            font-family: var(--font-body);
+        }
+
+        h1, h2, h3, h4, h5, .logo, .post-detail-title, .comments-header-title {
+            font-family: var(--font-heading);
+        }
+
+        /* Hero / Header Rozetleri */
+        .post-badge-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .badge-primary {
+            background: var(--brand-light);
+            color: var(--brand-color);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        .badge-read-time {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            margin-left: auto;
+        }
+
+        .badge-verified {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .post-detail-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .post-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .meta-item strong {
+            color: #334155;
+        }
+
+        /* Hızlı Eylem & Paylaşım Araç Çubuğu */
+        .quick-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 20px;
+            margin: 20px 0 28px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--brand-light);
+            border-color: var(--brand-color);
+            color: var(--brand-color);
+            transform: translateY(-1px);
+        }
+
+        /* 16:9 Sinematik Görsel Çerçevesi */
+        .post-cover-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+            margin: 24px 0 35px 0;
+            background: #0f172a;
+        }
+
+        .post-cover-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .post-cover-wrapper:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Modernleştirilmiş Tablo Stili */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            margin: 28px 0;
+        }
+
+        table.modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 14.5px;
+            background: #ffffff;
+        }
+
+        table.modern-table th {
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 16px 18px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            font-family: var(--font-heading);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table.modern-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        table.modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table.modern-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .center-td {
+            background: #fafafa;
+            color: #0f172a;
+        }
+
+        /* İndirme Bağlantı Linkleri için Buton Görünümü */
+        .doc-link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .doc-item-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 13.5px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .doc-item-btn:hover {
+            background: var(--brand-color);
+            color: #ffffff;
+            border-color: var(--brand-color);
+            transform: translateX(4px);
+        }
+
+        /* Meta Duyuru Kutusu */
+        .meta-box-enhanced {
+            background: #e0f2fe;
+            border-left: 4px solid var(--brand-color);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 24px 0;
+            color: #0369a1;
+            font-size: 15px;
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+        }
+
+        /* Section Başlık Banner */
+        .section-header-banner {
+            text-align: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 32px 0 20px 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand-color);
+        }
+
+        /* Toast Bildirim */
+        #toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: opacity;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        /* İlgili İçerikler (Related Posts) 3 Küçük Kart Grid */
+        .related-posts-section {
+            margin-top: 45px;
+            padding-top: 30px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .related-posts-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .related-posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .related-post-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .related-post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-color);
+            box-shadow: 0 8px 20px -4px rgba(2, 132, 199, 0.15);
+        }
+
+        .related-post-img {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+            background: #f8fafc;
+        }
+
+        .related-post-body {
+            padding: 12px 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .related-post-cat {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--brand-color);
+            margin-bottom: 4px;
+        }
+
+        .related-post-card-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s ease;
+        }
+
+        .related-post-card:hover .related-post-card-title {
+            color: var(--brand-color);
+        }
+    
+        body.dark .quick-action-bar { background: #0f172a; border-color: #334155; }
+        body.dark table.modern-table, body.dark table.modern-table thead th { background: #0f172a; color: #cbd5e1; }
+        body.dark table.modern-table tbody tr:nth-child(even) { background: #1e293b; }
+        body.dark table.modern-table tbody tr:hover { background: rgba(2,132,199,0.15); }
+        body.dark .related-post-card { background: #1e293b; border-color: #334155; }
+        body.dark .related-post-body { background: #1e293b; }
+        body.dark .related-post-card-title { color: #f1f5f9; }
+        body.dark .related-post-cat { color: #7dd3e8; }
+    </style>
+    <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+    <!-- Toast Bildirim Pop-up -->
+    <div id="toast-notification">Bağlantı kopyalandı!</div>
+
+    <!-- Header / Üst Menü --><!-- Ana İçerik Konteynırı -->
+    <main class="container article-layout">
+        <article class="post-detail">
+            
+            <!-- 1. Üst Ana Sayfaya Dön Butonu -->
+            <a href="../preview.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Ana Sayfaya Dön
+            </a>
+
+            <!-- 2. Yazı Üst Başlık & Rozet Alanı -->
+            <div class="post-detail-header">
+                <div class="post-badge-bar">
+                    <span class="badge-pill badge-primary">Öğretim Programı</span>
+                    <span class="badge-pill badge-primary">İnovasyon - İnovatif Düşünce</span>
+                    <span class="badge-pill badge-read-time">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        13 Dk Okuma
+                    </span>
+                </div>
+
+                <h1 class="post-detail-title">2018 ve 2025 (Taslak) Teknoloji ve Tasarım Dersi Öğretim Programları Karşılaştırması</h1>
+
+                <div class="post-detail-meta">
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>Yayınlanma Tarihi: <strong>15 Haziran 2025</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Hazırlayan: <strong>Mürsel EREN</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Görüntülenme: <span id="view-counter" data-path="/post-00001-preview.html">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.5 Hızlı Paylaşım & Araç Barı -->
+            <div class="quick-action-bar">
+                <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    İçeriği Paylaş:
+                </span>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="copyPageUrl()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Linki Kopyala
+                    </button>
+                    <a href="https://api.whatsapp.com/send?text=2018%20ve%202025%20Teknoloji%20ve%20Tasar%C4%B1m%20%C3%96%C4%9Fretim%20Programlar%C4%B1%20Kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1" target="_blank" class="action-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <button class="action-btn" onclick="window.print()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        Yazdır
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. 16:9 Sinematik Kapak Görseli -->
+            <div class="post-cover-wrapper">
+                <img src="Veri/post-00001-Kapak.jpg" alt="2025 Öğretim Programı Kapak">
+            </div>
+
+            <!-- 4. Yazı Gövde Metni -->
+            <div class="post-body-content">
+                <p>Millî Eğitim Bakanlığı'nın <strong>“Türkiye Yüzyılı Maarif Modeli” (TYMM)</strong> başlığıyla sunduğu yeni program taslağı, ilk bakışta Teknoloji ve Tasarım dersi için basit bir müfredat güncellemesi veya konu yerlerinin değiştirilmesi gibi görünebilir. Ancak programın satır aralarına inildiğinde, felsefi altyapı, <strong>ontolojik (varlıksal) duruş</strong> ve pedagojik bakış açısı yönünden <strong>köklü bir devrimi</strong> temsil ettiği açıkça anlaşılmaktadır.</p>
+                <p>Bu yazımda; biz teknoloji tasarımcıların 2018 yılından bu yana uyguladığı mevcut program ile 2025'te yürürlüğe girmesi planlanan yeni program taslağını; genel felsefe, vizyon, yapısal özellikler, içerik değişiklikleri ve pedagojik yaklaşımlar açısından kapsamlı şekilde karşılaştıracağım.</p>
+
+                <p>Burada özellikle <strong>“taslak”</strong> ifadesini kullanmamın iki nedeni var. Birincisi, sürecin hâlâ dinamik olması ve Bakanlığın geri bildirimlere göre son rötuşları yapma ihtimalidir. İkincisi ise Bakanlığın internet sitesinde yayımlanan PDF dosyasının bir süre sonra erişime kapatılmış olmasıdır; bu durum, programda bir revizyon süreci olup olmadığı konusunda akıllarda bir soru işareti bıraktı. Bakalım süreç bize neler getirecek, hayırlısı olsun. İşte benim karşılaştırmam:</p>
+
+                <h4>A. Genel Felsefe ve Vizyon – “Ne Öğreteceğiz?”den “Nasıl Bir İnsan Yetiştireceğiz?”e Geçiş</h4>
+                <p>İki program arasındaki temel fark, hedeflerinde ortaya çıkmaktadır.</p>
+                <p><strong>2018 Programı:</strong> Bu programda odak noktası, öğrencilere teknoloji ve tasarım okuryazarlığı kazandırmak, problem çözme ve inovasyon gibi temel beceriler geliştirmekti. Değerler ve yetkinlikler de programda yer alsa da, bunlar genellikle programın çerçevesine eklenmiş unsurlar olarak kalmıştır. Programın ana yapısına, 2025 modelinde olduğu kadar bütüncül bir biçimde entegre edilmemişlerdir.</p>
+                <p><strong>2025 Maarif Modeli Taslağı:</strong> Bu yeni yaklaşımda, Teknoloji ve Tasarım dersi çok daha kapsamlı bir vizyonun parçası hâline gelmiştir. Amaç yalnızca tasarım alanında yetkin bireyler yetiştirmek değil; aynı zamanda <strong>"erdemli, ehil, estetik bakış açısına sahip, sorumluluk sahibi, iyi insan"</strong> yetiştirmek olarak belirlenmiştir. Bilgi ve beceri, bu vizyonun yalnızca bir boyutunu oluşturmakta; değerler, sosyal-duygusal gelişim ve öğrenmeye yönelik tutumlar ise programın merkezine alınmıştır. Program, hem milli değerlere ve toplumsal ihtiyaçlara vurgu yapmakta, hem de yapay zekâ, STEAM gibi güncel teknolojik gelişmeleri güçlü şekilde entegre etmektedir. Bu açıdan bakıldığında, yeni modelin vizyonunun daha geniş ve derinlemesine olduğu görülmektedir.</p>
+
+                <div class="meta-box-enhanced">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:sub; margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <strong>Köprü Metaforu:</strong>
+                    <br><br>
+                    <strong>2018 Programındaki "Basit Köprü" Yaklaşımı:</strong> Bu yaklaşımda temel işlev "A noktasından B noktasına geçiş"ti; yani öğrenci teknoloji okuryazarlığını öğrenir, problem çözer, tasarım yapar. Yapı oldukça sadeydi. Kazanımlar net ve doğrudandı: "Şu bilgiyi öğren, şu beceriyi kazan" mantığı hakimdi. Değerler ve sosyal beceriler elbette vardı, ancak bunlar köprünün "süsü" gibiydi. Asıl önemli olan köprünün sağlam durması ve temel işlevini yerine getirmesiydi.
+                    <br><br>
+                    <strong>2025 Maarif Modelindeki "Sanat Eseri Köprü" Yaklaşımı:</strong> Bu yeni yaklaşımda köprü sadece geçiş sağlamakla kalmıyor, aynı zamanda çevreye duyarlı, sürdürülebilir malzemelerle inşa ediliyor. Köprünün estetiği, kullanıcı deneyimi, doğayla uyumu ve toplumsal katkısı en başından itibaren tasarımın merkezinde yer alıyor. Köprüyü tasarlayan kişi, sadece mühendislik bilgisi değil, aynı zamanda çevre bilinci, estetik anlayış, sosyal sorumluluk ve yenilikçi düşünce gibi özelliklere de sahip oluyor. Sonuçta ortaya çıkan yapı, hem işvelsel hem de o bölgenin kültürel ve doğal değerlerini yansıtan, gelecek nesillere ilham veren bir eser haline geliyor.
+                </div>
+
+                <h4>B. Yapısal Değişim - "Kazanım" Gitti, Bütünleşik "Öğrenme Ekosistemi" Geldi</h4>
+                <p>Programların mimarisi, felsefedeki bu değişimin en somut kanıtı.</p>
+                <ul>
+                    <li><strong>2018'de temel birim "Kazanım"dı.</strong> Örneğin, <em>“Tasarımını değerlendirme kriterlerini sınıflandırır.”</em> gibi hedefler vardı. Bu yapı, doğrusal ve içerik odaklıydı.</li>
+                    <li><strong>2025'te ise "Kazanım" yerini çok katmanlı bir yapıya bıraktı:</strong>
+                        <ul>
+                            <li><strong>Öğrenme Çıktısı:</strong> Bir becerinin somut olarak ne olduğudur.</li>
+                            <li><strong>Süreç Bileşenleri (SB):</strong> O beceriyi uygularken atılacak gözlemlenebilir adımlardır.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <p>Ama bu değişimler burada bitmiyor. Her bir öğrenme çıktısı, bir ağ gibi farklı kodlarla birbirine bağlanıyor:</p>
+
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Kod</th>
+                                <th>Açılımı</th>
+                                <th>Anlamı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>TSRMAB</strong></td><td>Teknoloji ve Tasarım Alan Becerileri</td><td>Derse özgü temel yetkinlikler (Örn: Tasarım Ürünü Oluşturma).</td></tr>
+                            <tr><td><strong>KB</strong></td><td>Kavramsal Beceriler</td><td>Üst düzey düşünme becerileri (Örn: Sorgulama, Analiz Etme).</td></tr>
+                            <tr><td><strong>SDB</strong></td><td>Sosyal-Duygusal Öğrenme Becerileri</td><td>İş birliği, empati, öz farkındalık gibi yaşam becerileri.</td></tr>
+                            <tr><td><strong>D</strong></td><td>Değerler</td><td>Çalışkanlık, tasarruf, adalet gibi erdemler.</td></tr>
+                            <tr><td><strong>OB</strong></td><td>Okuryazarlık Becerileri</td><td>Dijital, veri, görsel, sürdürülebilirlik gibi çağın okuryazarlıkları.</td></tr>
+                            <tr><td><strong>E</strong></td><td>Eğilimler</td><td>Merak, eleştirel bakma, sorumluluk gibi öğrencinin tutumları.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="meta-box-enhanced">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:sub; margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <strong>LEGO Metaforu:</strong>
+                    <br><br>
+                    2018 programı, yan yana dizilmiş tekil LEGO parçalarından oluşan düz bir yapı gibiyse, 2025 modeli, her bir parçanın diğerine özel kodlarla (renk, şekil, boyut) bağlandığı, katmanlı ve yaşayan bir <strong>LEGO şehrine</strong> benzer. Bir parçayı oynattığınızda, şehrin tamamı etkilenir. Artık amaç sadece bir bina yapmak değil, o şehirde yaşanabilir bir ekosistem kurmaktır.
+                </div>
+
+                <p>İki programın yapısal değişim farklılıklarını gösteren tablo da aşağıdaki gibidir:</p>
+
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Özellik / Kriter</th>
+                                <th>2018 Programı</th>
+                                <th>2025 Maarif Modeli Taslağı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Ana Felsefe</strong></td><td>Becerikli, teknoloji okuryazarı ve problem çözen birey yetiştirmek.</td><td><strong>Bütüncül İnsan:</strong> "Erdemli, ehil, estetik sahibi, iyi insan" yetiştirmek. Ders, bu büyük hedefin bir aracıdır.</td></tr>
+                            <tr><td><strong>Temel Birim</strong></td><td><strong>Kazanım:</strong> Öğrencinin ulaşması beklenen hedefler. (Örnek: "Tasarımını değerlendirme kriterlerini sınıflandırır.")</td><td><strong>Öğrenme Çıktısı + Süreç Bileşenleri (SB):</strong> Kazanım yerine, bir becerinin uygulanmasındaki gözlemlenebilir adımları içeren çok daha detaylı bir yapı. (Örnek: TT.7.1.3.a: "Teknoloji ve tasarım ürünlerinin günlük yaşam üzerindeki etkilerini belirler.")</td></tr>
+                            <tr><td><strong>Program Mimarisi</strong></td><td>Doğrusal ve içerik odaklı (Öğrenme Alanı → Ünite → Kazanım).</td><td><strong>Sarmal ve Bütünleşik:</strong> Tüm bileşenlerin (Alan Becerisi, Kavramsal Beceri, Değer, SDB, Okuryazarlık, Eğilim) birbiriyle konuştuğu, kodlandığı ve infografiklerle görselleştirildiği matris bir yapı.</td></tr>
+                            <tr><td><strong>Bilişsel Boyut</strong></td><td>Bilişsel hedefler kazanımlar içinde örtüktür.</td><td><strong>Kavramsal Beceriler (KB):</strong> Analiz, sorgulama, çözümleme gibi üst düzey düşünme becerileri ayrı ayrı kodlanmış ve öğrenme çıktılarıyla doğrudan ilişkilendirilmiştir. KB2.4 Çözümleme, KB2.8 Sorgulama gibi...</td></tr>
+                            <tr><td><strong>Becerisel Boyut</strong></td><td>Genel bir hedef.</td><td><strong>Tasarım Alan Becerileri (TSRMAB):</strong> TSRMAB1 Tasarım Ürünü Oluşturma gibi derse özgü temel yetkinlikler kodlanmış.</td></tr>
+                            <tr><td><strong>Duyuşsal Boyut</strong></td><td>Belirgin bir yapısı yoktur.</td><td><strong>Eğilimler (E):</strong> Merak, sorumluluk, yenilikçilik, eleştirel bakma gibi öğrencinin tutum ve yatkınlıkları ayrıca tanımlanmıştır.</td></tr>
+                            <tr><td><strong>Değerler Eğitimi</strong></td><td>"Değerler Eğitimi" başlığı altında genel bir vurgu vardır.</td><td>D3 Çalışkanlık, D14 Saygı gibi değerler; SDB2.1 İletişim gibi sosyal-duygusal beceriler; her öğrenme çıktısına bütünleşmiş ve kodlanmış…</td></tr>
+                            <tr><td><strong>Dil ve Terminoloji</strong></td><td>Standart eğitim dili.</td><td><strong>Sistematik ve Teknik Dil:</strong> Her unsurun bir kodu ve tanımlanmış bir yeri olduğu mühendislik benzeri bir terminoloji.</td></tr>
+                            <tr><td><strong>Disiplinler Arası</strong></td><td>Önerilir, ancak yapısal değildir.</td><td><strong>Yapısal ve Zorunlu:</strong> "STEAM" gibi özel üniteler ve "Disiplinler Arası İlişkiler" bölümü ile programın temel bir parçasıdır.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>C. Ünite ve İçerik Analizi - Ne Gitti, Ne Geldi, Ne Dönüştü?</h4>
+                <p>Bu yeni felsefe, ünite içeriklerini de baştan aşağı yeniden şekillendirmiş. İşte sınıf seviyelerine göre en çarpıcı değişikliklerin özeti:</p>
+
+                <p><strong>7. Sınıf Ünite ve İçeriklerinin Karşılaştırması:</strong></p>
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>2018 Programı Ünitesi</th>
+                                <th>2025 Maarif Modeli Ünitesi</th>
+                                <th>Doğrulanmış Karşılaştırma, Farklar ve Dönüşüm Analizi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>A.1. Teknoloji ve Tasarım Öğreniyorum</td><td>Ünite 1: Teknoloji ve Tasarım Öğreniyorum</td><td><strong>FARK (Kavramsal Ufuk):</strong> Her iki program da temel kavramlarla başlıyor. Ancak 2025, 2018'deki Endüstri 4.0'ın yanına Endüstri 5.0, STEAM ve Yapay Zekâ gibi kavramları da ekleyerek konuya daha güncel ve geleceğe dönük bir başlangıç yapıyor.</td></tr>
+                            <tr><td>A.2. Temel Tasarım</td><td>Ünite 2: Temel Tasarım</td><td><strong>FARK (Metodolojik Derinlik):</strong> Konunun özü (tasarım elemanları ve ilkeleri) aynı. 2025'teki temel fark, bu eylemlerin TSRMAB1 Tasarım Ürünü Oluşturma ve TSRMAB2.2 Analoji Yapabilme gibi kodlanmış alan becerileriyle ilişkilendirilmesidir. Bu, öğretim sürecini daha metodik ve beceri odaklı hale getiriyor.</td></tr>
+                            <tr><td>B.1. Tasarım Odaklı Süreç</td><td>Ünite 3: Tasarım Odaklı Süreç</td><td><strong>FARK (Bütüncül Yaklaşım):</strong> Konu başlığı ve basamakları aynı. Ancak 2025'te bu süreç, SDB (sosyal-duygusal beceriler) ve Değerler (çalışkanlık, tasarruf vb.) ile zenginleştirilerek sadece bir iş akışı olmaktan çıkarılıp bütüncül bir "gelişim yaşantısı" olarak kurgulanıyor.</td></tr>
+                            <tr><td>B.2. Bilgisayar Destekli Tasarım</td><td>Ünite 4: Bilgisayar Destekli Tasarım</td><td><strong>FARK (Odak ve Amaç Değişimi):</strong> 2018'de konu daha genel, "2D görsellere dönüştürme" ve "çoklu ortam sunusi hazırlama" hedeflerini içeriyordu. 2025'te ise ünite, sadece bu becerileri öğretmekle kalmıyor, aynı zamanda bu sürecin TSRMAB1 ve TSRMAB3 gibi temel alan becerilerinin bir uygulaması olduğunu vurguluyor. Ayrıca, 2025'teki "Farklılaştırma" bölümü, imkânı olan okullarda 3D yazıcıların ve daha ileri programların kullanımını teşvik ederek konuyu genişletme potansiyeli sunuyor.</td></tr>
+                            <tr><td>C.1. Mimari Tasarım</td><td>Ünite 5: Mimari Tasarım</td><td><strong>FARK (Profesyonel Kriterler):</strong> 2018'deki genel mimari yaklaşım, 2025'te iklim, topografya, yön, antropometri, sürdürülebilirlik gibi profesyonel ve bilimsel kriterlerle çok daha analitik bir hale getirilmiştir.</td></tr>
+                            <tr><td>Ç.1. Enerjinin Dönüşümü ve Tasarım</td><td>Ünite 7: Enerjinin Dönüşümü ve Tasarım</td><td><strong>FARK (Aciliyet ve Sorumluluk):</strong> 2018'de konu temiz enerji teknolojilerini tanıtma odaklıyken, 2025'te "fosil yakıtların zararları" ve "küresel ısınma" gibi sorun odaklı bir çerçeveye oturtulmuştur. Konuya eklenen D9 Merhamet değeri, çevreye ve canlılara karşı sorumluluk duygusunu pekiştiriyor.</td></tr>
+                            <tr><td>Ç.2. Engelsiz Hayat Teknolojileri</td><td><em>(Bağımsız Ünite Olarak YOK)</em></td><td><strong>DÖNÜŞÜM (Felsefi Entegrasyon):</strong> Bu konu kaldırılmamıştır. Aksine, önemi vurgulanarak ayrı bir ünite olmaktan çıkarılıp programın ana felsefesi haline getirilmiştir. Artık "engelsiz hayat" ve "sosyal sorumluluk", her tasarım probleminin içinde düşünülmesi gereken, D5 Duyarlılık ve E2.1 Empati gibi değer ve eğilimlerle desteklenen yatay bir temadır.</td></tr>
+                            <tr><td><em>(YOK)</em></td><td>Ünite 6: Doğadan Tasarıma</td><td><strong>EKLENEN:</strong> 2018'de 8. sınıfta yer alan bu konu, 2025'te 7. sınıfa yeni bir ünite olarak eklenmiştir.</td></tr>
+                            <tr><td><em>(YOK)</em></td><td>Ünite 8: Bütünleşik Öğrenme: STEAM</td><td><strong>EKLENEN:</strong> 2018 programında bulunmayan bu ünite, Maarif Modelinin disiplinler arası felsefesini somutlaştırmak için eklenmiştir.</td></tr>
+                            <tr><td><em>(YOK)</em></td><td>Ünite 9: Yapay Zekâ ve Akıllı Ürünler</td><td><strong>EKLENEN:</strong> 2018 programında bulunmayan, tamamen yeni ve vizyoner bir ünitedir. İstem Mühendisliği gibi en güncel konuları içermektedir.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p><strong>8. Sınıf Ünite ve İçeriklerinin Doğru Karşılaştırması:</strong></p>
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>2018 Programı Ünitesi</th>
+                                <th>2025 Maarif Modeli Ünitesi</th>
+                                <th>Doğrulanmış Karşılaştırma, Farklar ve Dönüşüm Analizi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>A.1. İnovatif Düşünce ve Fikri Ürünler</td><td>Ünite 1: İnovatif Düşüncenin Geliştirilmesi, Fikirlerin Korunması ve Etik</td><td><strong>FARK (Etik Vurgusu):</strong> 2025'te "ETİK" kavramı başlığa ve içeriğe eklenmiştir. Fikri mülkiyet artık sadece yasal bir konu değil, aynı zamanda D1 Adalet gibi değerlerle ilişkilendirilmiş etik bir sorumluluktur.</td></tr>
+                            <tr><td>B.1. Bilgisayar Destekli Tasarım ve Akıllı Ürünler</td><td><em>(Stratejik Olarak Dağıtıldı)</em></td><td><strong>DÖNÜŞÜM:</strong> 2018'deki bu ünite kaldırılmamıştır, diğer ünitelere yayılmıştır. "Akıllı Ürünler" kısmı, 7. sınıftaki "Yapay Zeka" ünitesine dönüşerek çok daha kapsamlı hale gelmiştir. "BDT" ise artık 8. sınıfta ayrı bir ünite değil, tüm projelerde kullanılan temel bir dijital beceriye dönüşmüştür.</td></tr>
+                            <tr><td>B.2. Tanıtım ve Pazarlama</td><td>Ünite 2: Tanıtım ve Pazarlama</td><td><strong>FARK (Uygulamalı Dijitalleşme):</strong> Konu aynı kalsa da 2025'te TSRMAB3 Çoklu Ortam Sunumu becerisi ile ilişkilendirilerek daha dijital ve uygulama odaklı hale getirilmiştir.</td></tr>
+                            <tr><td>C.1. Görsel İletişim Tasarımı</td><td>Ünite 3: Görsel İletişim Tasarımı</td><td><strong>FARK (Profesyonel Derinlik):</strong> 2025'te mizanpaj (sayfa düzeni) gibi profesyonel yayıncılık kavramları daha merkezî bir rol oynar ve daha karmaşık projelere (dergi/kitap sayfası) odaklanır.</td></tr>
+                            <tr><td>C.2. Ürün Geliştirme</td><td>Ünite 4: Ürün Geliştirme</td><td><strong>FARK (Bilimsel Odak):</strong> 2018'deki genel yaklaşım, 2025'te tamamen ergonomi ve antropometriye odaklanarak çok daha spesifik ve bilimsel bir çerçeveye oturtulmuştur.</td></tr>
+                            <tr><td>C.3. Mühendislik ve Tasarım</td><td>Ünite 5: Mühendislik ve Tasarım</td><td><strong>FARK (Anlamlı Bağlam):</strong> Konu temeli aynı. Ancak 2025'teki uygulamalar, "yaşlı bireyler için tasarım yapmak" gibi, "Engelsiz Hayat" felsefesini yansıtan anlamlı sosyal sorumluluk senaryolarıyla zenginleştirilmiştir.</td></tr>
+                            <tr><td>C.4. Doğadan Tasarıma</td><td><em>(7. Sınıfa Kaydırıldı)</em></td><td><strong>YORUM:</strong> Bu konunun, temel bir ilham kaynağı olarak daha erken yaşta (7. Sınıf) sunulmasının daha etkili olacağını düşündüklerini varsayıyorum.</td></tr>
+                            <tr><td>Ç.1. Ulaşım Teknolojileri</td><td>Ünite 6: Ulaşım Teknolojileri</td><td><strong>Benzer İçerik:</strong> Konu başlığı ve genel çerçevesi büyük ölçüde korunmuştur.</td></tr>
+                            <tr><td>D.1. Özgün Ürünümü Tasarlıyorum</td><td>Ünite 7: Özgün Ürünümü Tasarlıyorum</td><td><strong>FARK (Büyük Sentez):</strong> 2018'deki yıl sonu projesi, 2025'te bir "Büyük Sentez Projesi" haline gelmiştir. Öğrenciden beklenen ürünün, yıl boyunca öğrendiği sürdürülebilirlik, etik, ergonomi, estetik ve değerleri bir araya getiren bütüncül bir çalışma olması beklenir.</td></tr>
+                            <tr><td>D.2. Bunu Ben Yaptım</td><td>Ünite 8: Bunu Ben Yaptım</td><td><strong>FARK (Sergiyi Tasarlamak):</strong> İsim ve amaç aynı. Ancak 2025'te sergi etkinliğinin kendisi, sergileme yöntemleri, sergileme tasarımı, mekân kullanımı, küratöryel düşünce, yeni medya gibi daha üst düzey kavramlarla bir tasarım problemi olarak ele alınarak sergileme eylemini bilinçli bir tasarım sürecine dönüştürüyor.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>D. Pedagojik Uygulamalar - Yapılandırılmış ve Bütüncül Öğrenme Deneyimleri</h4>
+                <p>2025 Maarif Modeli, öğrenme-öğretme sürecini yeniden tanımlıyor. 2018 programında genel pedagojik öneriler sunulurken, 2025 modeli her ünite için son derece yapılandırılmış bir ders akışı öneriyor. Bu akış, öğrenme sürecini dört temel başlık altında organize ediyor:</p>
+                <ul>
+                    <li><strong>Temel Kabuller:</strong> Ünitenin felsefi ve kavramsal çerçevesini çiziyor.</li>
+                    <li><strong>Ön Değerlendirme:</strong> Öğrencilerin mevcut bilgi düzeylerini anlamak için bir başlangıç noktası sunuyor.</li>
+                    <li><strong>Köprü Kurma:</strong> Öğrencilerin günlük hayatlarıyla ders konusu arasında bağ kurmasını sağlıyor. Örneğin, <em>“Kullandığınız telefonların gelecekte nasıl değişeceğini hayal edin...”</em> gibi sorularla öğrencilerin ilgisini çekiyor ve konuyu somutlaştırıyor.</li>
+                    <li><strong>Uygulamalar:</strong> Her süreç bileşeni (SB) için adım adım etkinlik önerileri sunarak öğretmenin ders planlama yükünü azaltıyor. Ancak, öğretmenin yenilikçi yaklaşımına alan bırakarak esneklik sağlıyor.</li>
+                </ul>
+
+                <h4>E. Sistematik Farklılaştırma - Her Öğrenciye Özel Öğrenme Yolu</h4>
+                <p>2025 modelinin en dikkat çekici yeniliklerinden biri, sistematik farklılaştırma yaklaşımı. Bu yaklaşım, her öğrencinin öğrenme ihtiyacına uygun etkinlikler sunarak kapsayıcı bir sınıf ortamı oluşturuyor:</p>
+                <ul>
+                    <li><strong>Zenginleştirme:</strong> İleri düzey öğrencileri için yenilikçi projeler öneriyor. Örneğin, <em>“Mars’ta yaşam için enerji ihtiyacı nasıl karşılanır?”</em> gibi açık uçlu sorularla öğrencilerin eleştirel düşünme becerilerini geliştiriyor.</li>
+                    <li><strong>Destekleme:</strong> Desteğe ihtiyaç duyan öğrenciler için somut materyaller ve yöntemler sunuyor. Örneğin, konuya giriş için belgesel önerileri veya basamaklı görev kartları hazırlama gibi uygulamalar.</li>
+                </ul>
+
+                <h4>F. Ölçme ve Değerlendirme - Süreç ve Gelişim Odaklı Yaklaşım</h4>
+                <p>2025 Maarif Modeli, ölçme ve değerlendirme anlayışını kökten değiştiriyor. 2018 programında ürün ve proje odaklı bir değerlendirme ön plandayken, yeni model değerlendirmeyi öğrenme sürecinin ayrılmaz bir parçası haline getiriyor. Bu yaklaşımın temel özellikleri şunlar:</p>
+                <ul>
+                    <li><strong>Öğrenme Kanıtları:</strong> “Ne ile ölçeceksiniz?” sorusuna somut yanıtlar sunuyor. Rubrikler, gözlem formları, ürün dosyaları, akran değerlendirme formları ve kavram haritaları gibi çeşitli araçlar, öğrenme sürecini şeffaflaştırıyor.</li>
+                    <li><strong>Süreç Değerlendirmesi:</strong> Sadece nihai ürün değil, öğrencinin araştırma süreci, iş birliği, eleştirel düşünmesi ve hatalarından öğrenmesi de değerlendiriliyor.</li>
+                </ul>
+
+                <h4>G. Pedagojik Uygulamalar ve Öğretmenin Rolündeki Dönüşüm - Rehberden Deneyim Tasarımcısına</h4>
+                <p>2025 modeli, öğretmenin rolünü yeniden tanımlıyor. Artık öğretmen sadece bilgiyi aktaran bir rehber değil, aynı zamanda bir öğrenme deneyimi tasarımcısı, değerler eğitimcisi ve mentor... Öğretmenin yeni rolleri şu şekilde özetlenebilir:</p>
+                <ul>
+                    <li><strong>Değerler Eğitimcisi:</strong> Öğrencilere erdem, etik ve sorumluluk bilinci aşılıyor.</li>
+                    <li><strong>Sosyal-Duygusal Gelişim Rehberi:</strong> Öğrencilerin duygusal ve sosyal becerilerini destekliyor.</li>
+                    <li><strong>Disiplinler Arası Mentor:</strong> Farklı disiplinler arasında köprüler kurarak bütüncül öğrenmeyi teşvik ediyor.</li>
+                    <li><strong>Öğrenme Deneyimi Tasarımcısı:</strong> Sınıfta her öğrenciye uygun, anlamlı ve yapılandırılmış öğrenme ortamları oluşturuyor.</li>
+                </ul>
+
+                <h4>Sonuç: Eğitimde Bütüncül Bir Dönüşüm Analizi</h4>
+                <p>2025 Türkiye Yüzyılı Maarif Modeli, bir müfredat güncellemesinin çok ötesinde, eğitim felsefesinde köklü bir dönüşümü hedeflemektedir. Bu modelin temel amacı, geleceğin bireylerini sadece "ne bildikleriyle" değil, aynı zamanda "bildikleriyle ne yaptıkları ve nasıl bir insan olduklarıyla" da donatmaktır. Bu vizyon, öğrencileri bilgi tüketicisi olmaktan çıkarıp; tasarımcı, eleştirel düşünür, sorumlu vatandaş ve değer üreticisi kimlikleriyle yetiştirmeyi merkeze alır.</p>
+
+                <p>Aşağıda, 2018 programı ile 2025 Maarif Modeli arasındaki temel farklar, yapısal ve pedagojik yenilikler üzerinden karşılaştırılmıştır.</p>
+
+                <p><strong>1. Öğrenme Sürecinin Yapısı: Genel Çerçeveden Yapılandırılmış Yaşantıya</strong></p>
+                <ul>
+                    <li><strong>2018 Programı (Genel Çerçeve):</strong> Öğretmenlere genel öneriler sunan, esnek ancak aynı zamanda belirsizlikler içeren bir yapıdaydı.</li>
+                    <li><strong>2025 Maarif Modeli (Yapılandırılmış Yaşantılar):</strong> Her ünite için öğretmene yol gösteren, son derece net ve yapılandırılmış bir akış sunar.</li>
+                </ul>
+
+                <p><strong>2. Sınıf İçi Farklılaştırma: Modelin En Güçlü Pedagojik Yeniliği</strong></p>
+                <ul>
+                    <li><strong>Zenginleştirme Etkinlikleri (İleri Düzey Öğrenciler İçin):</strong> Öğrencilerin potansiyellerini en üst düzeyde kullanmaları için somut proje fikirleri sunulur. Örneğin: "Mars'ta yaşam için sürdürülebilir bir enerji kaynağı önerisi geliştirin."</li>
+                    <li><strong>Destekleme Stratejileri (Desteğe İhtiyaç Duyan Öğrenciler İçin):</strong> Her öğrencinin başarıya ulaşması için alternatif yollar sunar. Örneğin: Konuyla ilgili belgesel izletme, basitleştirilmiş görev kartları hazırlama gibi öneriler.</li>
+                </ul>
+
+                <p><strong>3. Ölçme ve Değerlendirme: Ürün Odaklılıktan Süreç Odaklılığa</strong></p>
+                <ul>
+                    <li><strong>2018 Programı:</strong> Değerlendirme daha çok ürün ve proje odaklıydı.</li>
+                    <li><strong>2025 Maarif Modeli:</strong> Değerlendirmeyi öğrenme sürecinin ayrılmaz bir parçası haline getirir. Rubrikler, gözlem formları, ürün dosyası (portfolyo), akran ve öz değerlendirme araçları kullanılır.</li>
+                </ul>
+
+                <p><strong>4. Öğretmenin Yeni Rolü: Bilgi Aktarandan Deneyim Tasarımcısına</strong></p>
+                <ul>
+                    <li><strong>Bilgi Aktaran → Öğrenme Deneyimi Tasarımcısı:</strong> Dersleri anlamlı deneyimlere dönüştüren bir mimar.</li>
+                    <li><strong>Disiplin Öğretmeni → Disiplinler Arası Köprü Kurucusu:</strong> Farklı alanlar arasında bağlantı kuran orkestra şefi.</li>
+                    <li><strong>Akademik Rehber → Sosyal-Duygusal Gelişim Uzmanı:</strong> Duygusal zekâyı ve empatiyi güçlendiren bir mentor.</li>
+                    <li><strong>Sınıf Yöneticisi → Değerler Eğitimcisi:</strong> Ahlaki ve etik değerleri aktaran bir rol model.</li>
+                </ul>
+
+                <div class="meta-box-enhanced">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:sub; margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <strong>Otomobil Metaforu:</strong>
+                    <br><br>
+                    2018 programı, bir arabanın kullanım kılavuzu gibiydi; temel işlevleri anlatıyor ama sürüş deneyiminin derinliğine inmiyordu. <strong>2025 Maarif Modeli ise o arabanın hem mühendislik şeması hem yol haritası hem de sürüş felsefesi el kitabı gibidir.</strong>
+                </div>
+
+                <p><strong>Özet Karşılaştırma Tablosu:</strong></p>
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Kriter</th>
+                                <th>2018 Programı</th>
+                                <th>2025 Maarif Modeli</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Öğrenme Süreci</strong></td><td>Genel pedagojik öneriler</td><td>(Temel Kabuller, Ön Değerlendirme, Köprü Kurma, Uygulamalar)</td></tr>
+                            <tr><td><strong>Sınıf Yönetimi</strong></td><td>Öğretmenin genel yetkinliğine bırakılmış</td><td>Sistematik farklılaştırma (Zenginleştirme ve Destekleme etkinlikleri)</td></tr>
+                            <tr><td><strong>Ölçme-Değerlendirme</strong></td><td>Ürün ve proje odaklı</td><td>Süreç ve gelişim odaklı (Öğrenme Kanıtları yaklaşımı)</td></tr>
+                            <tr><td><strong>Değerlendirme Araçları</strong></td><td>Genel ve sınırlı araçlar</td><td>Çeşitli ve otantik araçlar (Rubrik, portfolyo, gözlem)</td></tr>
+                            <tr><td><strong>Temel Odak</strong></td><td>Bilginin ve projenin tamamlanması</td><td>Yetkin ve erdemli bireyin bütüncül gelişimi</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. Standart Etiketler (Hashtag Box) -->
+            <div class="hashtag-box">
+                <span class="tag-badge">#TYMM</span>
+                <span class="tag-badge">#2018Programı</span>
+                <span class="tag-badge">#2025MaarifModeli</span>
+                <span class="tag-badge">#EğitimdeDönüşüm</span>
+                <span class="tag-badge">#TeknolojiVeTasarım</span>
+                <span class="tag-badge">#BütüncülEğitim</span>
+                <span class="tag-badge">#ErdemliBirey</span>
+                <span class="tag-badge">#STEAM</span>
+                <span class="tag-badge">#YapayZeka</span>
+                <span class="tag-badge">#SistematikFarklılaştırma</span>
+                <span class="tag-badge">#OtomobilMetaforu</span>
+                <span class="tag-badge">#KöprüMetaforu</span>
+                <span class="tag-badge">#LEGOMetaforu</span>
+                <span class="tag-badge">#TeknolojiTasarımcı</span>
+            </div>
+
+            <!-- 5.5. İlgili İçerikler ve Benzer Etkinlikler (Etiketlerin Hemen Altında) -->
+            <section class="related-posts-section">
+                <h3 class="related-posts-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    İlgili İçerikler ve Benzer Etkinlikler
+                </h3>
+                <div class="related-posts-grid">
+                    <a href="../post-00098-7-Sinif-Etkinlikleri/post-00098-preview.html" class="related-post-card">
+                        <img src="../post-00098-7-Sinif-Etkinlikleri/Veri/post-00098-Kapak.jpg" alt="7. Sınıf Etkinlikleri" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">7. Sınıf Etkinlikleri</span>
+                            <div class="related-post-card-title">7. Sınıf Teknoloji ve Tasarım Dersi Ünitelere Göre Etkinlikler</div>
+                        </div>
+                    </a>
+                    <a href="../post-00097-8-Sinif-Etkinlikleri/post-00097-preview.html" class="related-post-card">
+                        <img src="../post-00097-8-Sinif-Etkinlikleri/Veri/post-00097-Kapak.jpg" alt="8. Sınıf Etkinlikleri" class="related-post-img">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">8. Sınıf Etkinlikleri</span>
+                            <div class="related-post-card-title">8. Sınıf Teknoloji ve Tasarım Dersi Etkinlikleri ve Sunuları</div>
+                        </div>
+                    </a>
+                    <a href="../post-00002-Sinif-Defteri-Kazanim/post-00002-preview.html" class="related-post-card">
+                        <img src="../post-00002-Sinif-Defteri-Kazanim/Veri/post-00002-Kapak.jpg" alt="Sınıf Defteri Kazanım" class="related-post-img">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">MEB Yönetmeliği</span>
+                            <div class="related-post-card-title">Sınıf Defterine Sadece Kazanım Numarası Yazılabilir mi? (MEB Yönetmeliği ve İspatı)</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. Tepki & Beğeni İkonları -->
+            <div class="reactions-box">
+                <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+                <div class="reactions-list">
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        Faydalı <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Harika <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Teşekkürler <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+                        Geliştirilmeli <span class="reaction-count">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. Yorum Bölümü -->
+            <section class="comments-section">
+                <h3 class="comments-header-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Yorumlar ve Değerlendirmeler
+                </h3>
+
+                <form class="comment-form" onsubmit="addComment(event)">
+                    <div class="form-group">
+                        <label for="comment-name">Adınız Soyadınız *</label>
+                        <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-body">Yorumunuz *</label>
+                        <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        Yorumu Gönder
+                    </button>
+                </form>
+
+                <div class="comments-list" id="comments-list">
+                    
+                </div>
+            </section>
+
+                        <script>
+                function copyPageUrl() {
+                    navigator.clipboard.writeText(window.location.href);
+                    const toast = document.getElementById('toast-notification');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2500);
+                }
+
+                                function toggleReaction(btn) {
+                    if (window.reactionsApi) {
+                        window.reactionsApi.toggleReaction(btn);
+                    }
+                }
+            </script>
+
+
+            <!-- 8. Alt Ana Sayfaya Dön Butonu -->
+            <div class="bottom-back-wrapper">
+                <a href="../preview.html" class="bottom-back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Ana Sayfaya Dön
+                </a>
+                <a href="../post-00002-Sinif-Defteri-Kazanim/post-00002-preview.html" class="bottom-next-btn">
+                    Sonraki Bölüm
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+                </a>
+            </div>
+
+        </article>
+
+        <!-- Sağ Yan Menü (Sidebar Widget) -->
+    </main>
+
+    <!-- 9. Standart Footer Telif Metni -->
+        <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/comments.js"></script>
+    <script src="../../js/views.js"></script>
+    <script src="../../js/reactions.js"></script>
+    <script src="../../js/download-counter.js"></script>
+    <script src="../../js/pdf-embed.js"></script>
+    <script src="../../js/protection.js"></script>
+    <script src="../../js/sidebar-scroll.js"></script>
+<script src="../../js/menu.js" defer></script></body>
+</html>

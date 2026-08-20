@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Farklı zorluk seviyelerinde klasik 9x9 Sudoku oyunu." />
+  <title>Sudoku - teknolojitasarimci</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    :root {
+      --brand: #0284c7;
+      --brand-dark: #0369a1;
+      --brand-light: #e0f2fe;
+      --brand-grad: #0284c7;
+      --danger: #fee2e2;
+      --success: #d1fae5;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: #1e293b;
+      background: #f8fafc;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible, .cell:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, .35);
+      outline-offset: 3px;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-row h1 {
+      margin: 0 0 4px 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .rules-btn {
+      padding: 8px 18px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-outline {
+      background: #fff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+    }
+    .btn-outline:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: translateY(-1px);
+    }
+
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 8px 0 16px;
+      flex-wrap: wrap;
+    }
+    .level-btn {
+      padding: 7px 16px;
+      border-radius: 25px !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+      transition: all 0.2s ease;
+    }
+    .level-btn:hover {
+      background: var(--brand-light);
+    }
+    .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .status-box {
+      background: var(--brand-light);
+      color: var(--brand-dark);
+      padding: 7px 16px;
+      border-radius: 20px;
+    }
+
+    /* 9x9 Klasik Sudoku Izgarası */
+    .sudoku {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      width: min(100%, 480px);
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border: 3.5px solid #0f172a;
+      background: #0f172a;
+      gap: 1px;
+      touch-action: manipulation;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      border-radius: 4px;
+    }
+    .cell {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 0;
+      border: 0;
+      border-radius: 0 !important;
+      background: #ffffff;
+      color: #0284c7;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: clamp(1.1rem, 4.2vw, 1.7rem);
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      transition: background-color 100ms ease;
+      font-variant-numeric: tabular-nums;
+    }
+    .cell:nth-child(3n) { border-right: 3px solid #0f172a !important; }
+    .cell:nth-child(9n) { border-right: 0 !important; }
+    .cell:nth-child(n+19):nth-child(-n+27),
+    .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #0f172a !important; }
+    
+    .cell.given {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 900;
+      cursor: default;
+    }
+    .cell.selected { background: #bae6fd !important; color: #0369a1 !important; }
+    .cell.related { background: #f0f9ff; }
+    .cell.same-number { background: #bae6fd; color: #0369a1; }
+    .cell.error { background: #fee2e2 !important; color: #dc2626 !important; animation: nudge 180ms ease; }
+    .cell.correct { background: #dcfce7 !important; color: #15803d !important; }
+    .cell:not(.given):hover { background: #e0f2fe; }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateX(0); }
+      35% { transform: translateX(-3px); }
+      70% { transform: translateX(3px); }
+    }
+
+    .hint-text {
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #64748b;
+      margin: 12px auto 0;
+      min-height: 22px;
+    }
+    .hint-text.success { color: #047857; font-weight: 700; }
+    .hint-text.error { color: #b91c1c; font-weight: 700; }
+
+    /* Rakam Tuşları */
+    .number-pad {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      width: min(100%, 480px);
+      margin: 14px auto 0;
+    }
+    .num-btn {
+      aspect-ratio: 1;
+      min-height: 40px;
+      border-radius: 12px !important;
+      border: 1px solid rgba(2,132,199,0.25);
+      background: #ffffff;
+      color: #0284c7;
+      font-size: 1.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+    .num-btn:hover {
+      background: #e0f2fe;
+      border-color: #0284c7;
+      transform: translateY(-1px);
+    }
+    .num-btn.erase {
+      color: #dc2626;
+      border-color: rgba(220,38,38,0.3);
+      font-size: 0.85rem;
+    }
+    .num-btn.erase:hover {
+      background: #fee2e2;
+      border-color: #dc2626;
+    }
+
+    /* Alt Eylem Butonları */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .action-row .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;;
+      padding: 9px 18px;
+      border-radius: 25px !important;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+    .btn-primary {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 540px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 30px 28px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    .modal h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 16px;
+    }
+    .modal ol {
+      padding-left: 20px;
+      color: #334155;
+      line-height: 1.7;
+      font-size: 0.93rem;
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .modal ol li { margin-bottom: 8px; }
+
+    /* Koyu Tema Standartları */
+    body.dark {
+      background: #0f172a !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .card {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+    }
+    body.dark .header-row h1 { color: #f8fafc !important; }
+    body.dark .subtitle, body.dark .hint-text { color: #cbd5e1 !important; }
+    body.dark .btn-outline, body.dark .level-btn {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    body.dark .btn-outline:hover, body.dark .level-btn:hover {
+      background: rgba(2, 132, 199, 0.2) !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .statusbar, body.dark .status-box {
+      background: #0f172a !important;
+      border: 1px solid #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    body.dark .sudoku {
+      border: 3.5px solid #38bdf8 !important;
+      background: #38bdf8 !important;
+    }
+    body.dark .cell {
+      border-radius: 0 !important;
+      background: #1e293b !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .cell:nth-child(3n) { border-right: 3px solid #38bdf8 !important; }
+    body.dark .cell:nth-child(9n) { border-right: 0 !important; }
+    body.dark .cell:nth-child(n+19):nth-child(-n+27),
+    body.dark .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #38bdf8 !important; }
+
+    body.dark .cell.given { background: #0f172a !important; color: #f8fafc !important; font-weight: 900 !important; }
+    body.dark .cell.selected { background: rgba(56, 189, 248, 0.4) !important; color: #ffffff !important; }
+    body.dark .cell.related { background: rgba(56, 189, 248, 0.12) !important; }
+    body.dark .cell.same-number { background: rgba(56, 189, 248, 0.28) !important; color: #38bdf8 !important; }
+    body.dark .cell.error { background: rgba(239, 68, 68, 0.35) !important; color: #fca5a5 !important; }
+    body.dark .cell.correct { background: rgba(16, 185, 129, 0.35) !important; color: #6ee7b7 !important; }
+    body.dark .cell:not(.given):hover { background: rgba(56, 189, 248, 0.2) !important; }
+
+    body.dark .num-btn {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .num-btn:hover {
+      background: #1e293b !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .num-btn.erase {
+      color: #f87171 !important;
+      border-color: rgba(239,68,68,0.4) !important;
+    }
+    body.dark .modal {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .modal h2 { color: #38bdf8 !important; }
+    body.dark .modal ol { color: #cbd5e1 !important; }
+  </style>
+  <script src="../../js/game-sounds.js"></script>
+</head>
+<body>
+  <!-- Site Üst Menüsü --><div class="game-wrapper">
+    <div class="card">
+      <div class="header-row">
+        <div>
+          <h1>Sudoku</h1>
+          <p class="subtitle">Klasik 9×9 mantık ve zekâ bulmacası</p>
+        </div>
+        <button class="rules-btn btn-outline" id="rulesBtn">Kurallar</button>
+      </div>
+
+      <div class="mode-selector">
+        <button class="level-btn" data-level="kolay">Kolay</button>
+        <button class="level-btn active" data-level="orta">Orta</button>
+        <button class="level-btn" data-level="zor">Zor</button>
+        <button class="level-btn" data-level="uzman">Uzman</button>
+      </div>
+
+      <div class="statusbar">
+        <span class="status-box" id="levelTitle">Orta Seviye</span>
+        <span class="status-box">Süre: <b id="timer">00:00</b></span>
+        <span class="status-box">İpucu: <b id="clueCount">36</b> · Kalan: <b id="emptyCount">45</b></span>
+      </div>
+
+      <div id="sudoku" class="sudoku" role="grid" aria-label="Sudoku tahtası"></div>
+
+      <div id="status" class="hint-text">Bir kare seç ve rakam gir.</div>
+
+      <div class="number-pad" aria-label="Rakam seçimi">
+        <button class="num-btn" data-number="1">1</button>
+        <button class="num-btn" data-number="2">2</button>
+        <button class="num-btn" data-number="3">3</button>
+        <button class="num-btn" data-number="4">4</button>
+        <button class="num-btn" data-number="5">5</button>
+        <button class="num-btn" data-number="6">6</button>
+        <button class="num-btn" data-number="7">7</button>
+        <button class="num-btn" data-number="8">8</button>
+        <button class="num-btn" data-number="9">9</button>
+        <button class="num-btn erase" data-number="0">Sil</button>
+      </div>
+
+      <div class="action-row">
+        <button id="checkButton" class="btn btn-outline">Kontrol Et</button>
+        <button id="hintButton" class="btn btn-outline">İpucu Al</button>
+        <button id="clearButton" class="btn btn-outline">Temizle</button>
+        <button id="solveButton" class="btn btn-outline">Çözümü Gör</button>
+        <button id="newButton" class="btn btn-primary">Yeni Sudoku</button>
+      </div>
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Sudoku%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#Sudoku</span>
+        <span class="tag-badge">#SudokuAtölyesi</span>
+        <span class="tag-badge">#MantıkBulmacaları</span>
+        <span class="tag-badge">#SayıBulmacaları</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+</div>
+  </div>
+
+  <div class="modal-overlay" id="rulesModal">
+    <div class="modal">
+      <h2>Sudoku Kuralları</h2>
+      <ol>
+        <li>Oyun 9×9 boyutunda, 81 kareden oluşan bir ızgara üzerinde oynanır.</li>
+        <li>Izgara 3×3'lük 9 büyük bloktan oluşur.</li>
+        <li>Her satırda 1'den 9'a kadar tüm rakamlar tekrarsız bulunmalıdır.</li>
+        <li>Her sütunda 1'den 9'a kadar tüm rakamlar tekrarsız bulunmalıdır.</li>
+        <li>Her 3×3'lük blokta 1'den 9'a kadar tüm rakamlar tekrarsız bulunmalıdır.</li>
+      </ol>
+      <button class="modal-close" id="rulesClose">Anladım, Oyuna Başla</button>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin:18px 0;">
+
+    <a href="../../sayfalar/post-00067-Klasik-Sudoku/Veri/Klasik-Sudoku-Seti-1-(www.teknolojitasarimci.com).pdf" target="_blank" rel="noopener" class="btn btn-outline download-btn">Çalışma Kâğıdı PDF&rsquo;sini İndir</a>
+
+  </div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+    <div class="container">
+      <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+      <div class="footer-copyright-text">
+        Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/theme.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const DIFFICULTIES = {
+        kolay: { label: 'Kolay', clues: 45 },
+        orta: { label: 'Orta', clues: 36 },
+        zor: { label: 'Zor', clues: 30 },
+        uzman: { label: 'Uzman', clues: 25 }
+      };
+
+      const state = {
+        puzzle: [],
+        solution: [],
+        values: [],
+        given: [],
+        selected: 0,
+        difficulty: 'orta',
+        seconds: 0,
+        running: false,
+        finished: false,
+        generating: false,
+        timerId: null
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const boardElement = $('sudoku');
+      const statusElement = $('status');
+      const timerElement = $('timer');
+      const levelTitleElement = $('levelTitle');
+      const clueCountElement = $('clueCount');
+      const emptyCountElement = $('emptyCount');
+      const newButton = $('newButton');
+      const checkButton = $('checkButton');
+      const hintButton = $('hintButton');
+      const clearButton = $('clearButton');
+      const solveButton = $('solveButton');
+
+      const range = (start, end) => Array.from({ length: end - start }, (_, index) => start + index);
+      const shuffled = (items) => {
+        const copy = items.slice();
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      };
+      const emptyGrid = () => Array.from({ length: 9 }, () => Array(9).fill(0));
+      const cloneGrid = (grid) => grid.map((row) => row.slice());
+      const rowOf = (index) => Math.floor(index / 9);
+      const colOf = (index) => index % 9;
+
+      function isSafe(grid, row, col, number) {
+        for (let i = 0; i < 9; i += 1) {
+          if (grid[row][i] === number || grid[i][col] === number) return false;
+        }
+        const boxRow = Math.floor(row / 3) * 3;
+        const boxCol = Math.floor(col / 3) * 3;
+        for (let r = boxRow; r < boxRow + 3; r += 1) {
+          for (let c = boxCol; c < boxCol + 3; c += 1) {
+            if (grid[r][c] === number) return false;
+          }
+        }
+        return true;
+      }
+
+      function solveSudoku(grid) {
+        for (let row = 0; row < 9; row += 1) {
+          for (let col = 0; col < 9; col += 1) {
+            if (grid[row][col] === 0) {
+              const numbers = shuffled(range(1, 10));
+              for (const number of numbers) {
+                if (isSafe(grid, row, col, number)) {
+                  grid[row][col] = number;
+                  if (solveSudoku(grid)) return true;
+                  grid[row][col] = 0;
+                }
+              }
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+
+      function countSolutions(grid, limit = 2) {
+        let count = 0;
+        function backtrack() {
+          for (let row = 0; row < 9; row += 1) {
+            for (let col = 0; col < 9; col += 1) {
+              if (grid[row][col] === 0) {
+                for (let number = 1; number <= 9; number += 1) {
+                  if (isSafe(grid, row, col, number)) {
+                    grid[row][col] = number;
+                    backtrack();
+                    grid[row][col] = 0;
+                    if (count >= limit) return;
+                  }
+                }
+                return;
+              }
+            }
+          }
+          count += 1;
+        }
+        backtrack();
+        return count;
+      }
+
+      async function makePuzzleAsync(targetClues) {
+        const solution = emptyGrid();
+        solveSudoku(solution);
+        const puzzle = cloneGrid(solution);
+        const cells = shuffled(range(0, 81));
+        let clues = 81;
+        const start = performance.now();
+        const budgetMs = 400;
+
+        for (const index of cells) {
+          if (clues <= targetClues) break;
+          const row = rowOf(index);
+          const col = colOf(index);
+          const backup = puzzle[row][col];
+          if (backup !== 0) {
+            puzzle[row][col] = 0;
+            if (countSolutions(cloneGrid(puzzle), 2) === 1) {
+              clues -= 1;
+            } else {
+              puzzle[row][col] = backup;
+            }
+          }
+          if (performance.now() - start > budgetMs) break;
+          await new Promise((resolve) => requestAnimationFrame(resolve));
+        }
+        return { puzzle, solution };
+      }
+
+      function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+      }
+
+      function setStatus(text, kind = '') {
+        statusElement.textContent = text;
+        statusElement.className = `hint-text${kind ? ` ${kind}` : ''}`;
+      }
+
+      function startTimer() {
+        if (state.timerId !== null) clearInterval(state.timerId);
+        state.timerId = setInterval(() => {
+          if (!state.finished && state.running && !state.generating) {
+            state.seconds += 1;
+            timerElement.textContent = formatTime(state.seconds);
+          }
+        }, 1000);
+      }
+
+      function updateStats() {
+        const clues = state.given.filter(Boolean).length;
+        clueCountElement.textContent = String(clues);
+        emptyCountElement.textContent = String(81 - clues);
+      }
+
+      function setControlsDisabled(disabled) {
+        [newButton, checkButton, hintButton, clearButton, solveButton].forEach((el) => {
+          el.disabled = disabled;
+        });
+        document.querySelectorAll('.level-btn').forEach((btn) => { btn.disabled = disabled; });
+        document.querySelectorAll('[data-number]').forEach((btn) => { btn.disabled = disabled; });
+      }
+
+      function renderBoard() {
+        boardElement.innerHTML = '';
+        const selectedValue = state.values[state.selected];
+        for (let index = 0; index < 81; index += 1) {
+          const row = rowOf(index);
+          const col = colOf(index);
+          const cell = document.createElement('button');
+          const value = state.values[index];
+          cell.type = 'button';
+          cell.className = 'cell';
+          cell.setAttribute('role', 'gridcell');
+          cell.setAttribute('aria-label', `${row + 1}. satır, ${col + 1}. sütun${value ? `, ${value}` : ', boş'}`);
+          if (state.given[index]) cell.classList.add('given');
+          if (index === state.selected) cell.classList.add('selected');
+          if (row === rowOf(state.selected) || col === colOf(state.selected) || (Math.floor(row / 3) === Math.floor(rowOf(state.selected) / 3) && Math.floor(col / 3) === Math.floor(colOf(state.selected) / 3))) cell.classList.add('related');
+          if (selectedValue && value === selectedValue) cell.classList.add('same-number');
+          if (!state.given[index] && value && value !== state.solution[index]) cell.classList.add('error');
+          if (!state.given[index] && value && value === state.solution[index] && state.finished) cell.classList.add('correct');
+          cell.textContent = value ? String(value) : '';
+          cell.addEventListener('click', () => selectCell(index));
+          boardElement.appendChild(cell);
+        }
+      }
+
+      function selectCell(index) {
+        if (state.given[index] || state.finished || state.generating) return;
+        state.selected = index;
+        state.running = true;
+        try{ GameSounds.click(); }catch(e){}
+        renderBoard();
+      }
+
+      function enterNumber(number) {
+        if (state.finished || state.generating || state.given[state.selected]) return;
+        state.running = true;
+        state.values[state.selected] = number;
+        try{
+          if(number) GameSounds.place();
+          else GameSounds.click();
+        }catch(e){}
+        setStatus(number ? 'Rakam yerleştirildi.' : 'Kare temizlendi.');
+        renderBoard();
+        if (number && state.values.every((value, index) => state.given[index] || value === state.solution[index])) finishGame(true);
+      }
+
+      function finishGame(won) {
+        state.finished = true;
+        state.running = false;
+        if (won) {
+          try{ GameSounds.win(); }catch(e){}
+          setStatus(`Tebrikler! Bulmacayı ${formatTime(state.seconds)} sürede tamamladın.`, 'success');
+        } else {
+          try{ GameSounds.wrong(); }catch(e){}
+          setStatus('Kontrol tamamlandı. Kırmızı karelerdeki sayıları düzelt.', 'error');
+        }
+        renderBoard();
+      }
+
+      function checkBoard() {
+        if (state.generating) return;
+        const wrongCells = [];
+        let incomplete = false;
+        state.values.forEach((value, index) => {
+          if (!state.given[index] && value === 0) incomplete = true;
+          if (!state.given[index] && value !== 0 && value !== state.solution[index]) wrongCells.push(index);
+        });
+        renderBoard();
+        wrongCells.forEach((index) => boardElement.children[index].classList.add('error'));
+        if (wrongCells.length > 0) {
+          try{ GameSounds.wrong(); }catch(e){}
+          setStatus(`${wrongCells.length} karede hata var. Kırmızı kareleri düzelt.`, 'error');
+        } else if (incomplete) {
+          try{ GameSounds.point(); }catch(e){}
+          setStatus('Şu ana kadar tüm girişler doğru; doldurulmamış kareler var.', 'success');
+        } else {
+          finishGame(true);
+        }
+      }
+
+      function giveHint() {
+        if (state.finished || state.generating) return;
+        const candidates = range(0, 81).filter((index) => !state.given[index] && state.values[index] !== state.solution[index]);
+        if (!candidates.length) return finishGame(true);
+        const index = candidates[Math.floor(Math.random() * candidates.length)];
+        state.selected = index;
+        state.values[index] = state.solution[index];
+        state.running = true;
+        setStatus('Bir ipucu yerleştirildi.', 'success');
+        renderBoard();
+      }
+
+      function clearEntries() {
+        if (state.finished || state.generating) return;
+        state.values = state.values.map((value, index) => state.given[index] ? value : 0);
+        setStatus('Kendi girdiğin sayılar temizlendi.');
+        renderBoard();
+      }
+
+      function showSolution() {
+        if (state.finished || state.generating) return;
+        state.values = cloneGrid(state.solution).flat();
+        state.finished = true;
+        state.running = false;
+        setStatus('Çözüm gösterildi. Yeni bir Sudoku ile tekrar deneyebilirsin.');
+        renderBoard();
+      }
+
+      async function newGame() {
+        if (state.generating) return;
+        state.generating = true;
+        setControlsDisabled(true);
+        setStatus('Bulmaca hazırlanıyor...');
+
+        const difficulty = DIFFICULTIES[state.difficulty];
+        const generated = await makePuzzleAsync(difficulty.clues);
+
+        state.puzzle = generated.puzzle;
+        state.solution = generated.solution;
+        state.values = generated.puzzle.flat();
+        state.given = state.values.map((value) => value !== 0);
+        state.selected = state.given.findIndex((isGiven) => !isGiven);
+        if (state.selected < 0) state.selected = 0;
+        state.seconds = 0;
+        state.running = false;
+        state.finished = false;
+        state.generating = false;
+        timerElement.textContent = '00:00';
+        levelTitleElement.textContent = `${difficulty.label} Seviye`;
+        setStatus('Bir kare seç ve rakam gir.');
+        updateStats();
+        setControlsDisabled(false);
+        renderBoard();
+      }
+
+      function moveSelection(deltaRow, deltaCol) {
+        if (state.generating) return;
+        const row = rowOf(state.selected);
+        const col = colOf(state.selected);
+        const nextRow = Math.max(0, Math.min(8, row + deltaRow));
+        const nextCol = Math.max(0, Math.min(8, col + deltaCol));
+        selectCell(nextRow * 9 + nextCol);
+      }
+
+      document.querySelectorAll('.level-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.level-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.difficulty = btn.dataset.level;
+          newGame();
+        });
+      });
+
+      newButton.addEventListener('click', newGame);
+      checkButton.addEventListener('click', checkBoard);
+      hintButton.addEventListener('click', giveHint);
+      clearButton.addEventListener('click', clearEntries);
+      solveButton.addEventListener('click', showSolution);
+      document.querySelectorAll('[data-number]').forEach((button) => {
+        button.addEventListener('click', () => enterNumber(Number(button.dataset.number)));
+      });
+
+      $('rulesBtn').addEventListener('click', () => $('rulesModal').classList.add('open'));
+      $('rulesClose').addEventListener('click', () => $('rulesModal').classList.remove('open'));
+
+      document.addEventListener('keydown', (event) => {
+        if (state.generating) return;
+        if (/^[1-9]$/.test(event.key)) {
+          enterNumber(Number(event.key));
+        } else if (event.key === 'Backspace' || event.key === 'Delete' || event.key === '0') {
+          enterNumber(0);
+        } else if (event.key === 'ArrowUp') {
+          event.preventDefault(); moveSelection(-1, 0);
+        } else if (event.key === 'ArrowDown') {
+          event.preventDefault(); moveSelection(1, 0);
+        } else if (event.key === 'ArrowLeft') {
+          event.preventDefault(); moveSelection(0, -1);
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault(); moveSelection(0, 1);
+        }
+      });
+
+      startTimer();
+      newGame();
+    })();
+  </script>
+
+<script src="../../js/menu.js" defer></script>  
+  
+  
+  
+  
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

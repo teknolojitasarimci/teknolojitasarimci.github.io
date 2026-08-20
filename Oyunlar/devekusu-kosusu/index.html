@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Devekuşu Koşusu - teknolojitasarimci</title>
+  <meta name="description" content="Devekuşu Koşusu, öğrencilerin zıplama, eğilme ve ateş püskürtme hamleleriyle engelleri aştığı, dikkat ve refleks becerilerini destekleyen eğitici bir koşu oyunudur.">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/theme.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f8fafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+      color: #1e293b;
+    }
+    body.dark {
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    #game-shell {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto 36px;
+      padding: 0 12px;
+    }
+    .game-title {
+      margin: 0 0 12px;
+      color: #0284c7;
+      font-size: clamp(20px, 3vw, 30px);
+      letter-spacing: 0.04em;
+      text-align: center;
+      font-weight: 800;
+    }
+    body.dark .game-title {
+      color: #38bdf8;
+    }
+    .frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1000 / 500;
+      max-height: 88vh;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #14100e;
+      border: 2px solid #0284c7;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      touch-action: none;
+    }
+    body.dark .frame {
+      border: 2px solid #334155;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+    .hud {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      padding: clamp(8px, 2vw, 18px);
+    }
+    .hud-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .hud-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hud-score {
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 900;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
+    }
+    .hud-label {
+      font-size: 9.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    }
+    .hud-era {
+      font-size: clamp(11px, 1.6vw, 14px);
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      max-width: 220px;
+      line-height: 1.4;
+    }
+    .hud-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .hearts {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .heart {
+      width: 20px;
+      height: 20px;
+      color: #334155;
+      transition: color 0.2s ease;
+    }
+    .heart.filled {
+      color: #e11d48;
+    }
+    .hearts-label {
+      font-size: 9.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+    }
+    .mute-btn {
+      pointer-events: auto;
+      cursor: pointer;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(226, 232, 240, 0.35);
+      background: rgba(0, 0, 0, 0.35);
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mute-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    .fire-btn {
+      pointer-events: auto;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(251, 146, 60, 0.6);
+      background: rgba(251, 146, 60, 0.28);
+      color: #fb923c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fire-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+    .pip-label {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+      text-align: right;
+    }
+    .companion-tag {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      text-align: right;
+    }
+    .companion-tag.on {
+      opacity: 1;
+    }
+    .fire-charges {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fde047;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      margin-bottom: 4px;
+      text-align: right;
+      font-weight: bold;
+    }
+    .combo-pop {
+      position: absolute;
+      font-weight: 800;
+      color: #38bdf8;
+      font-size: clamp(12px, 1.9vw, 19px);
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      transform: translate(-50%, -50%);
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.85);
+      transition: opacity 0.35s ease;
+      padding: 22px;
+      z-index: 5;
+    }
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .msg-box {
+      margin: auto;
+      width: fit-content !important;
+      max-width: 420px;
+      min-width: 260px;
+      border-radius: 20px !important;
+      background: #0f1f33;
+      padding: 22px 28px 20px;
+      border: 1.5px solid #0284c7;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .eyebrow {
+      font-size: clamp(8px, 1.1vw, 10px);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    h1 {
+      font-size: clamp(22px, 4.2vw, 38px);
+      margin: 0 0 8px;
+      letter-spacing: 0.01em;
+      color: #e2e8f0;
+      line-height: 1;
+      font-weight: 800;
+      word-spacing: 4px;
+    }
+    h1 span {
+      color: #38bdf8;
+    }
+    .sub {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: clamp(11px, 1.3vw, 13px);
+      color: #cbd5e1;
+      max-width: 360px;
+      line-height: 1.5;
+    }
+    .mech-row {
+      margin-top: 8px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .mech {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #e2e8f0;
+    }
+    .mech-swatch {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .kbd-row {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .kbd {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      color: #e0f2fe;
+      padding: 5px 12px;
+      border-radius: 25px;
+      background: rgba(2, 132, 199, 0.15);
+      font-weight: 600;
+    }
+    .rank-eyebrow {
+      font-size: clamp(10px, 1.3vw, 12px);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .rank-title {
+      font-size: clamp(24px, 5.4vw, 44px);
+      margin: 0;
+      color: #38bdf8;
+      font-weight: 800;
+    }
+    .rank-sub {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #e2e8f0;
+      max-width: 380px;
+    }
+    .go-stats {
+      margin-top: 18px;
+      display: flex;
+      gap: clamp(16px, 3.6vw, 42px);
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+    .go-stat-label {
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .go-stat-value {
+      font-size: clamp(18px, 2.8vw, 26px);
+      font-weight: 700;
+      color: #f1f5f9;
+      font-variant-numeric: tabular-nums;
+    }
+    .restart-btn {
+      margin: 26px auto 0;
+      width: fit-content !important;
+      min-width: 160px;
+      max-width: 440px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      pointer-events: auto;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 25px !important;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.15s ease;
+    }
+    .restart-btn::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      flex-shrink: 0;
+    }
+    .restart-btn:hover { background: #0369a1; }
+    body.dark .restart-btn { background: #38bdf8; color: #0f172a; }
+    body.dark .restart-btn::after {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+    }
+    body.dark .restart-btn:hover { background: #7dd3e8; }
+
+    .start-btn {
+      margin: 26px auto 0;
+      width: fit-content !important;
+      min-width: 160px;
+      max-width: 440px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      pointer-events: auto;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 25px !important;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.15s ease;
+    }
+    .start-btn::after {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpolygon points='5 3 19 12 5 21'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      flex-shrink: 0;
+    }
+    .start-btn:hover { background: #0369a1; }
+    body.dark .start-btn { background: #38bdf8; color: #0f172a; }
+    body.dark .start-btn::after {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230f172a'%3E%3Cpolygon points='5 3 19 12 5 21'/%3E%3C/svg%3E");
+    }
+    body.dark .start-btn:hover { background: #7dd3e8; }
+    #bottom-info {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    body.dark #bottom-info {
+      color: #94a3b8;
+    }
+    .key-badge {
+      background: rgba(2, 132, 199, 0.12);
+      border: 1px solid rgba(2, 132, 199, 0.35);
+      padding: 2px 8px;
+      border-radius: 25px !important;
+      color: #0284c7;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+    }
+    body.dark .key-badge {
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+    }
+    @media (max-width: 600px) {
+      #bottom-info {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-shell">
+  <h1 class="game-title">Devekuşu Koşusu</h1>
+
+  <div class="frame" id="frame">
+    <canvas id="game"></canvas>
+    <img id="ostrich-sprite" src="Veri/deve-kusu.gif" style="position: absolute; display: none; pointer-events: none; z-index: 5; visibility: visible;" />
+
+    <div class="hud">
+      <div class="hud-top">
+        <div class="hud-left">
+          <div>
+            <div class="hud-label">Kat Edilen</div>
+            <div class="hud-score"><span id="scoreVal">0</span> m</div>
+          </div>
+          <div class="hud-era" id="eraVal">Gündüz Koşusu</div>
+        </div>
+        <div class="hud-right">
+          <button class="fire-btn" id="fireBtn" title="Ateş Püskürt (F)" aria-label="Ateş Püskürt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+          </button>
+          <button class="mute-btn" id="muteBtn" style="display:none;" title="Sesi kapat/aç" aria-label="Sesi kapat/aç">
+            <svg id="iconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg id="iconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+          <div>
+            <div class="hearts" id="hearts"></div>
+<span id="fireCharges" class="fire-charges">ATEŞ x3</span>
+            <div class="hearts-label">Can</div>
+            <div class="pip-label" id="eggLabel">Yumurta 0/3</div>
+            <div class="companion-tag" id="companionTag">Yol Arkadaşı Hazır</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="comboLayer" style="position:absolute; inset:0; pointer-events:none; overflow:hidden;"></div>
+
+    <div class="overlay" id="startOverlay">
+      <div class="msg-box">
+        <div class="eyebrow">Koş &middot; Zıpla &middot; Ateş Püskürt</div>
+        <h1>DEVEKUŞU <span>KOŞUSU</span></h1>
+        <p class="sub">Güneşli bir günde devekuşunla koş, kaktüsleri aş ve ateş püskürterek engelleri yok et.</p>
+        <div class="mech-row">
+          <div class="mech"><span class="mech-swatch" style="background:#fde047;"></span>Ateş topu engelleri yok eder</div>
+          <div class="mech"><span class="mech-swatch" style="background:#22c55e;"></span>Kaktüslere dikkat et</div>
+          <div class="mech"><span class="mech-swatch" style="background:#e11d48;"></span>Kalp toplayarak can kazan</div>
+        </div>
+        <div class="mech-row">
+          <div class="mech"><span class="mech-swatch" style="background:#f59e0b;"></span>Altın kargayı yakala: +150 puan</div>
+          <div class="mech"><span class="mech-swatch" style="background:#334155;"></span>Sıradan kargalar zararsızdır</div>
+        </div>
+        <div class="kbd-row">
+          <span class="kbd">Boşluk / Yukarı &rarr; Zıpla</span>
+          <span class="kbd">Aşağı &rarr; Eğil</span>
+          <span class="kbd">F &rarr; Ateş</span>
+        </div>
+        <button class="start-btn" id="startBtn">Oyuna Başla</button>
+      </div>
+    </div>
+
+    <div class="overlay hidden" id="overOverlay">
+      <div class="msg-box">
+        <div class="rank-eyebrow">Koşu Bitti</div>
+        <h2 class="rank-title" id="rankTitle">Yavru Devekuşu</h2>
+        <p class="rank-sub" id="rankSub">İlk adımlarını attın, yolculuk başladı.</p>
+        <div class="go-stats">
+          <div><div class="go-stat-label">Kat Edilen</div><div class="go-stat-value" id="finalScore">0 m</div></div>
+          <div><div class="go-stat-label">En İyi</div><div class="go-stat-value" id="bestScore">0 m</div></div>
+          <div><div class="go-stat-label">Yok Edilen Engel</div><div class="go-stat-value" id="finalEra">0</div></div>
+        </div>
+        <button class="restart-btn" id="shareBtn" style="background:#0369a1; margin-top:8px;">Skoru Paylaş</button>
+        <button class="restart-btn" id="restartBtn">Yeniden Başla</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bottom-info">
+    <div><b>Zıpla:</b> <span class="key-badge">Boşluk</span> / <span class="key-badge">Yukarı Ok</span></div>
+    <div><b>Eğil:</b> <span class="key-badge">Aşağı Ok</span></div>
+    <div><b>Ses:</b> <span class="key-badge">M</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const frame = document.getElementById('frame');
+  const scoreVal = document.getElementById('scoreVal');
+  const eraVal = document.getElementById('eraVal');
+  const startOverlay = document.getElementById('startOverlay');
+  const overOverlay = document.getElementById('overOverlay');
+  const finalScoreEl = document.getElementById('finalScore');
+  const bestScoreEl = document.getElementById('bestScore');
+  const finalEraEl = document.getElementById('finalEra');
+  const restartBtn = document.getElementById('restartBtn');
+  const startBtn = document.getElementById('startBtn');
+  const comboLayer = document.getElementById('comboLayer');
+  const muteBtn = document.getElementById('muteBtn');
+  const fireBtn = document.getElementById('fireBtn');
+  const iconOn = document.getElementById('iconOn');
+  const iconOff = document.getElementById('iconOff');
+  const heartsWrap = document.getElementById('hearts');
+  const eggLabel = document.getElementById('eggLabel');
+  const companionTag = document.getElementById('companionTag');
+  const rankTitle = document.getElementById('rankTitle');
+  const rankSub = document.getElementById('rankSub');
+
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- Canvas boyutlandırma ----------
+  const W = 1000, H = 500;
+  let dpr = 1;
+  let scaleX = 1;
+  let scaleY = 1;
+  function sizeCanvas() {
+    dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    
+    // Layout Thrashing'i önlemek için ekran boyutu değiştiğinde oranları tek seferde hesapla
+    const rect = canvas.getBoundingClientRect();
+    scaleX = rect.width / 1000;
+    scaleY = rect.height / 500;
+  }
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+
+  const GROUND_Y = H - 92;
+
+  // ---------- Gece / Gündüz Çağ Döngüsü ----------
+  const eras = [
+    { minScore: 0, name: "Gündüz Koşusu", sky: "#7dd3fc", strata: ["#f6e7c1", "#e9d19a", "#dcb872"], fog: "#1e293b" },
+    { minScore: 1000, name: "Kızıl Gün Batımı", sky: "#fb7185", strata: ["#fda4af", "#f43f5e", "#be123c"], fog: "#4c0519" },
+    { minScore: 2500, name: "Gece Yarısı", sky: "#0f172a", strata: ["#1e293b", "#334155", "#0f172a"], fog: "#94a3b8" }
+  ];
+
+  function eraForScore(s) {
+    let idx = 0;
+    for (let i = 0; i < eras.length; i++) { if (s >= eras[i].minScore) idx = i; }
+    return idx;
+  }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function hexToRgb(h) { h = h.replace('#', ''); return [parseInt(h.substring(0, 2), 16), parseInt(h.substring(2, 4), 16), parseInt(h.substring(4, 6), 16)]; }
+  function rgbToStr(rgb) { return 'rgb(' + (rgb[0] | 0) + ',' + (rgb[1] | 0) + ',' + (rgb[2] | 0) + ')'; }
+  function lerpColor(c1, c2, t) { const a = hexToRgb(c1), b = hexToRgb(c2); return rgbToStr([lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)]); }
+
+  function getEraColors(score) {
+    const idx = eraForScore(score);
+    const cur = eras[idx];
+    const next = eras[idx + 1];
+    if (!next) return { sky: cur.sky, strata: cur.strata, fog: cur.fog, name: cur.name };
+    const span = next.minScore - cur.minScore;
+    const transitionStart = next.minScore - Math.min(220, span * 0.5);
+    let t = 0;
+    if (score >= transitionStart) {
+      t = (score - transitionStart) / (next.minScore - transitionStart);
+      t = Math.max(0, Math.min(1, t));
+    }
+    return {
+      sky: lerpColor(cur.sky, next.sky, t),
+      strata: cur.strata.map(function (c, i) { return lerpColor(c, next.strata[i], t); }),
+      fog: lerpColor(cur.fog, next.fog, t),
+      name: t > 0.5 ? next.name : cur.name
+    };
+  }
+
+  // ---------- Rütbeler ----------
+  const ranks = [
+    { min: 0,    name: "Yavru Devekuşu",   sub: "İlk adımlarını attın, yolculuk başladı." },
+    { min: 300,  name: "Hızlı Koşucu",     sub: "Hızını artırdın, kaktüsleri geride bırakıyorsun." },
+    { min: 900,  name: "Keskin Göz",       sub: "Engelleri önceden seziyorsun." },
+    { min: 1800, name: "Ateş Ustası",      sub: "Ateş püskürtmek artık ikinci doğan." },
+    { min: 3000, name: "Kaktüs Avcısı",    sub: "Önüne çıkan her engeli yok ediyorsun." },
+    { min: 4500, name: "Efsanevi Koşucu",  sub: "Gündüz koşusunun tartışmasız şampiyonu." }
+  ];
+  function rankForScore(s) {
+    let r = ranks[0];
+    for (let i = 0; i < ranks.length; i++) { if (s >= ranks[i].min) r = ranks[i]; }
+    return r;
+  }
+
+  // ---------- Ses ----------
+  let actx = null;
+  let muted = false;
+  function ensureAudio() {
+    if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } }
+    if (actx && actx.state === 'suspended') actx.resume();
+  }
+  function blip(freq, dur, type, gain) {
+    if (!actx || muted) return;
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type || 'sine';
+    o.frequency.value = freq;
+    g.gain.value = gain != null ? gain : 0.05;
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+    o.connect(g);
+    g.connect(actx.destination);
+    o.start();
+    o.stop(actx.currentTime + dur);
+  }
+  const sfx = {
+    jump: function () { blip(520, 0.12, 'square', 0.045); },
+    land: function () { blip(180, 0.08, 'sine', 0.035); },
+    combo: function () { blip(760, 0.09, 'triangle', 0.05); setTimeout(function () { blip(980, 0.09, 'triangle', 0.05); }, 70); },
+    era: function () { blip(300, 0.2, 'sine', 0.04); setTimeout(function () { blip(450, 0.25, 'sine', 0.04); }, 120); },
+    hit: function () { blip(120, 0.35, 'sawtooth', 0.06); },
+    amber: function () { blip(660, 0.14, 'sine', 0.045); setTimeout(function () { blip(880, 0.18, 'sine', 0.04); }, 90); setTimeout(function () { blip(1100, 0.22, 'sine', 0.03); }, 180); },
+    egg: function () { blip(920, 0.08, 'triangle', 0.04); },
+    companion: function () { blip(500, 0.12, 'triangle', 0.045); setTimeout(function () { blip(750, 0.16, 'triangle', 0.04); }, 90); },
+    shield: function () { blip(200, 0.2, 'square', 0.05); },
+    heart: function () { blip(880, 0.1, 'sine', 0.045); setTimeout(function () { blip(1180, 0.14, 'sine', 0.04); }, 90); },
+    goldcrow: function () { blip(720, 0.12, 'sine', 0.05); setTimeout(function () { blip(1080, 0.14, 'sine', 0.045); }, 90); setTimeout(function () { blip(1440, 0.16, 'sine', 0.04); }, 180); },
+    fire: function () { blip(320, 0.16, 'sawtooth', 0.05); setTimeout(function () { blip(210, 0.2, 'sawtooth', 0.045); }, 50); },
+    firebonus: function () { blip(520, 0.2, 'sine', 0.1); setTimeout(function () { blip(780, 0.18, 'sine', 0.08); }, 70); }
+  };
+  muteBtn.addEventListener('click', function () {
+    muted = !muted;
+    iconOn.style.display = muted ? 'none' : 'block';
+    iconOff.style.display = muted ? 'block' : 'none';
+    muteBtn.style.opacity = muted ? '0.5' : '1';
+  });
+  document.getElementById('fireBtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    ensureAudio();
+    if (state === 'start' || state === 'over') startGame();
+    else spawnFire();
+  });
+
+  // ---------- Arazi ----------
+  function genTerrain(seed, points, amp, baseY, smooth) {
+    let v = seed;
+    const arr = [];
+    for(let i=0; i<points; i++){
+      v = (v * 9301 + 49297) % 233280;
+      arr.push(v / 233280);
+    }
+    for(let i=0; i<15; i++) {
+       let t = i / 15;
+       arr[points - 15 + i] = arr[points - 15 + i] * (1 - t) + arr[i] * t;
+    }
+    const smoothed = [];
+    for(let i=0; i<points; i++){
+      const prev = arr[(i-1+points)%points];
+      const cur = arr[i];
+      const next = arr[(i+1)%points];
+      smoothed.push(baseY + ((prev + cur*2 + next)/4 - 0.5) * amp);
+    }
+    return { data: smoothed, smooth: smooth, seg: Math.ceil(W / (points * 0.4)) }; 
+  }
+  
+  const layerDefs = [
+    genTerrain(11, 80, 190, GROUND_Y - 220, true),
+    genTerrain(42, 70, 140, GROUND_Y - 130, false),
+    genTerrain(77, 60, 70,  GROUND_Y - 45,  true)
+  ];
+
+
+
+  function drawTerrainLayer(def, color, offset, alpha) {
+    ctx.globalAlpha = alpha != null ? alpha : 1;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    
+    const seg = def.seg;
+    const points = def.data.length;
+    const startIdx = Math.floor(offset / seg);
+    const localOff = offset % seg;
+    
+    ctx.moveTo(-seg, H);
+    
+    if (def.smooth) {
+      let p1 = def.data[(startIdx + points) % points];
+      ctx.lineTo(-localOff, p1);
+      for(let i=1; i<=Math.ceil(W/seg)+2; i++) {
+        let idx = (startIdx + i) % points;
+        let p2 = def.data[idx];
+        let xc = (-localOff + (i-1)*seg + -localOff + i*seg) / 2;
+        let yc = (p1 + p2) / 2;
+        ctx.quadraticCurveTo(-localOff + (i-1)*seg, p1, xc, yc);
+        p1 = p2;
+      }
+    } else {
+      for(let i=0; i<=Math.ceil(W/seg)+2; i++) {
+        let idx = (startIdx + i) % points;
+        ctx.lineTo(-localOff + i*seg, def.data[idx]);
+      }
+    }
+    
+    ctx.lineTo(W + seg*3, H);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------- Parçacıklar ----------
+  let particles = [];
+  function spawnDust(x, y, opts) {
+    if (reducedMotion && Math.random() > 0.3) return;
+    particles.push({
+      x: x,
+      y: y,
+      vx: (opts && opts.vx != null) ? opts.vx : (-1.5 - Math.random() * 1.5),
+      vy: (opts && opts.vy != null) ? opts.vy : (-1 - Math.random() * 1.2),
+      r: (opts && opts.r) || (2 + Math.random() * 2.5),
+      life: 1,
+      decay: (opts && opts.decay) || (0.02 + Math.random() * 0.02),
+      color: (opts && opts.color) || 'amber'
+    });
+  }
+  function updateParticles() {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.03;
+      p.life -= p.decay;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+  }
+  function drawParticles(fog) {
+    particles.forEach(function (p) {
+      ctx.globalAlpha = Math.max(0, p.life) * 0.6;
+      ctx.fillStyle = p.color === 'amber' ? '#c8a26a' : (p.color === 'bone' ? '#fff7e6' : (p.color === 'fire' ? '#fb923c' : p.color));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------- Oyuncu ----------
+  const player = { x: 140, y: GROUND_Y, vy: 0, w: 46, h: 54, ducking: false, grounded: true, legPhase: 0, jumpHeld: false, jumpTime: 0, fireCharges: 0 };
+  const GRAVITY = 0.62, JUMP_V = -12.2, MAX_JUMP_HOLD = 9;
+  let hasCompanion = false, eggCount = 0;
+  let lives = 5;
+  let invuln = 0;
+
+  // ---------- Ateş püskürtme ----------
+  let fireballs = [];
+  let fireCooldown = 0;
+  let destroyed = 0;
+  function spawnFire() {
+    if (state !== 'playing') return;
+    if (player.fireCharges <= 0) return;
+    if (fireCooldown > 0) return;
+    player.fireCharges--;
+    updateFireIndicator();
+    fireCooldown = 26;
+    const y = player.ducking ? player.y - 30 : player.y - 46;
+    fireballs.push({ x: player.x + 26, y: y, vx: 13, life: 46 });
+    sfx.fire();
+    spawnDust(player.x + 22, y, { vx: 3, vy: 0, r: 4, color: 'fire' });
+  }
+
+  // ---------- Bulutlar ----------
+  let clouds = [];
+  function initClouds() {
+    clouds = [];
+    const defs = [{x:150,y:70,w:80},{x:430,y:38,w:110},{x:700,y:92,w:75},{x:920,y:48,w:95}];
+    defs.forEach(function (c) { clouds.push({ x: c.x, y: c.y, w: c.w }); });
+  }
+  initClouds();
+
+  function resetPlayer() {
+    player.y = GROUND_Y;
+    player.vy = 0;
+    player.grounded = true;
+    player.ducking = false;
+    player.braking = false;
+    player.legPhase = 0;
+    player.jumpHeld = false;
+    player.jumpTime = 0;
+  }
+
+  function drawDino(x, y, ducking, legPhase, color, blink) {
+    const sprite = document.getElementById('ostrich-sprite');
+    if (sprite) {
+      if (blink && Math.floor(Date.now() / 90) % 2 === 0) {
+        sprite.style.visibility = 'hidden';
+      } else {
+        sprite.style.visibility = 'visible';
+      }
+      // Her zaman açık/beyaz bir aura vererek kontrastı garantile
+      sprite.style.filter = 'drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.9))';
+    }
+
+    if (sprite) {
+      const w = 90;
+      const h = ducking ? 52 : 90;
+      // GIF'in altında %14 boşluk var — sprite'i buna göre aşağı kaydır
+      const bottomPad = h * 0.14;
+      sprite.style.width = (w * scaleX) + 'px';
+      sprite.style.height = (h * scaleY) + 'px';
+      sprite.style.left = ((x - w / 2) * scaleX) + 'px';
+      sprite.style.top = ((y - h + bottomPad) * scaleY) + 'px';
+      sprite.style.display = 'block';
+    }
+  }
+
+  function drawCompanion(px, py, t, color) {
+    const bx = px - 25, by = py - 75 + Math.sin(t * 0.06) * 8;
+    const sprite = document.getElementById('companion-sprite');
+    if (!sprite) {
+      const el = document.createElement('img');
+      el.id = 'companion-sprite';
+      el.src = 'Veri/sinek-kusu.gif';
+      el.style.position = 'absolute';
+      el.style.pointerEvents = 'none';
+      el.style.zIndex = '4';
+      el.style.filter = 'drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.9))';
+      el.style.width = (36 * scaleX) + 'px';
+      el.style.height = (36 * scaleY) + 'px';
+      el.style.left = ((bx - 18) * scaleX) + 'px';
+      el.style.top = ((by - 18) * scaleY) + 'px';
+      el.style.display = 'block';
+      frame.appendChild(el);
+    } else {
+      sprite.style.width = (36 * scaleX) + 'px';
+      sprite.style.height = (36 * scaleY) + 'px';
+      sprite.style.left = ((bx - 18) * scaleX) + 'px';
+      sprite.style.top = ((by - 18) * scaleY) + 'px';
+      sprite.style.display = 'block';
+      sprite.style.filter = 'drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.9))';
+    }
+  }
+
+  // Normal Karga: altın kargaya zıt yönde uçan, zararsız ambiyans kuşu
+  function drawNormalCrow(o) {
+    if (!o.el) return;
+    const cx = o.x;
+    const cy = o.y + Math.sin(o.t * 0.11) * 3;
+    o.el.style.width = (36 * scaleX) + 'px';
+    o.el.style.height = (36 * scaleY) + 'px';
+    o.el.style.left = (cx * scaleX) + 'px';
+    o.el.style.top = (cy * scaleY) + 'px';
+  }
+
+  function spawnNormalCrow() {
+    const el = document.createElement('img');
+    el.src = 'Veri/sinek-kusu.gif';
+    el.style.position = 'absolute';
+    el.style.pointerEvents = 'none';
+    el.style.zIndex = '4';
+    el.style.display = 'block';
+    el.style.filter = 'drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.9))';
+    frame.appendChild(el);
+    crows.push({ type: 'crow', x: -60, w: 30, h: 22, y: GROUND_Y - (70 + Math.random() * 90), t: 0, vy: 0, el: el });
+  }
+
+  function playerHitbox() {
+    const h = player.ducking ? 32 : 58, w = player.ducking ? 64 : 36;
+    return { x: player.x - w / 2 + 4, y: player.y - h, w: w - 8, h: h };
+  }
+
+  // ---------- Engeller ve toplanabilirler ----------
+  let obstacles = [];
+  let obstacleTimer = 60;
+  let amberTimer = 420, eggTimer = 320, heartTimer = 700, fireBonusTimer = 500;
+  let goldCrowTimer = 1500;
+  let nextLifeAt = 750;
+  let crows = [];
+  let crowTimer = 700;
+
+  function removeObstacle(idx) {
+    const o = obstacles[idx];
+    if (o && o.el) {
+      o.el.remove();
+    }
+    obstacles.splice(idx, 1);
+  }
+
+  function spawnObstacle() {
+    const roll = Math.random();
+    // Meteorlar artık sadece Gece Yarısı çağında (score > 2500) düşebilir
+    if (score > 2500 && Math.random() < 0.22) {
+      obstacles.push({ type: 'meteor', x: W + 40, w: 36, h: 0, y: -40, vy: 8.5, falling: true, passed: false });
+      return;
+    }
+    if (roll < 0.66) {
+      const h = 34 + Math.random() * 22;
+      obstacles.push({ type: 'rock', x: W + 40, w: 26 + Math.random() * 14, h: h, y: GROUND_Y, passed: false });
+    } else {
+      const h = 46 + Math.random() * 10;
+      obstacles.push({ type: 'branch', x: W + 40, w: 14, h: h, y: GROUND_Y, passed: false });
+    }
+  }
+  function spawnAmber() {
+    obstacles.push({ type: 'amber', x: W + 40, w: 18, h: 18, y: GROUND_Y - (58 + Math.random() * 30), t: 0, passed: false });
+  }
+  function spawnEgg() {
+    obstacles.push({ type: 'egg', x: W + 40, w: 16, h: 20, y: GROUND_Y - (30 + Math.random() * 20), t: 0, passed: false });
+  }
+  function spawnHeart() {
+    obstacles.push({ type: 'heart', x: W + 40, w: 18, h: 18, y: GROUND_Y - (78 + Math.random() * 40), t: 0, passed: false });
+  }
+  function spawnFireBonus() {
+    obstacles.push({ type: 'fire', x: W + 40, w: 18, h: 18, y: GROUND_Y - (58 + Math.random() * 30), t: 0, passed: false });
+  }
+  function spawnGoldCrow() {
+    obstacles.push({ type: 'goldcrow', x: W + 40, w: 34, h: 26, y: GROUND_Y - (85 + Math.random() * 55), t: 0, passed: false });
+  }
+
+  // Saguaro kaktüs: gövde + kollar (yuvarlak hatlı vektör)
+  function drawCactus(cx, gy, h, big) {
+    const isNight = (state !== 'start' && score >= 2500);
+    const OUT = isNight ? '#166534' : '#15803d';
+    const FILL = isNight ? '#4ade80' : '#22c55e';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    const passes = [[9, OUT], [5.5, FILL]];
+    for (let p = 0; p < passes.length; p++) {
+      const w = passes[p][0], col = passes[p][1];
+      ctx.strokeStyle = col;
+      // Gövde
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.moveTo(cx, gy);
+      ctx.lineTo(cx, gy - h + w / 2);
+      ctx.stroke();
+
+      // Sol kol
+      ctx.beginPath();
+      ctx.moveTo(cx, gy - h * 0.4);
+      ctx.lineTo(cx - h * 0.22, gy - h * 0.4);
+      ctx.lineTo(cx - h * 0.22, gy - h * 0.72);
+      ctx.stroke();
+
+      // Sağ kol
+      ctx.beginPath();
+      ctx.moveTo(cx, gy - h * 0.58);
+      ctx.lineTo(cx + h * 0.24, gy - h * 0.58);
+      ctx.lineTo(cx + h * 0.24, gy - h * 0.85);
+      ctx.stroke();
+    }
+  }
+
+  // Meteor çizimi
+  function drawMeteor(o) {
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(o.x + 18, o.y, 18, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Altın Karga: devekuşuna doğru uçan, yakalanınca bonus veren karga
+  function drawGoldCrow(o) {
+    const cx = o.x + o.w / 2, cy = o.y + Math.sin(o.t * 0.09) * 4;
+    const wing = Math.sin(o.t * 0.22) * 10;
+    ctx.save();
+    // Altın parıltı halesi
+    ctx.globalAlpha = 0.22 + Math.sin(o.t * 0.12) * 0.08;
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(cx, cy - 4, 22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    // Gövde
+    ctx.fillStyle = '#d97706';
+    ctx.beginPath();
+    ctx.ellipse(cx - 4, cy - 4, 11, 8, -0.15, 0, Math.PI * 2);
+    ctx.fill();
+    // Kafa
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(cx + 7, cy - 9, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    // Gaga
+    ctx.fillStyle = '#b45309';
+    ctx.beginPath();
+    ctx.moveTo(cx + 12, cy - 10);
+    ctx.lineTo(cx + 19, cy - 8.5);
+    ctx.lineTo(cx + 12, cy - 7);
+    ctx.closePath();
+    ctx.fill();
+    // Kuyruk
+    ctx.fillStyle = '#d97706';
+    ctx.beginPath();
+    ctx.moveTo(cx - 14, cy - 4);
+    ctx.lineTo(cx - 23, cy - 9);
+    ctx.lineTo(cx - 20, cy - 1);
+    ctx.closePath();
+    ctx.fill();
+    // Üst kanat (çırpma animasyonlu)
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, cy - 8);
+    ctx.quadraticCurveTo(cx - 10, cy - 22 + wing * 0.6, cx - 20, cy - 18 + wing);
+    ctx.quadraticCurveTo(cx - 12, cy - 8, cx - 4, cy - 5);
+    ctx.closePath();
+    ctx.fill();
+    // Alt kanat
+    ctx.beginPath();
+    ctx.moveTo(cx - 4, cy - 2);
+    ctx.quadraticCurveTo(cx - 12, cy + 10 - wing * 0.4, cx - 20, cy + 8 - wing * 0.5);
+    ctx.quadraticCurveTo(cx - 10, cy + 2, cx - 3, cy);
+    ctx.closePath();
+    ctx.fill();
+    // Göz
+    ctx.fillStyle = '#1c1917';
+    ctx.beginPath();
+    ctx.arc(cx + 8.5, cy - 10, 1.4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Engelleri ve toplanabilirleri çiz
+  function drawObstacle(o, colors) {
+    if (o.type === 'rock') {
+      drawCactus(o.x + o.w/2, o.y, o.h, false);
+    } else if (o.type === 'branch') {
+      drawCactus(o.x + o.w/2, o.y, o.h, true);
+    } else if (o.type === 'meteor') {
+      if (o.falling) {
+        ctx.strokeStyle = 'rgba(242,165,65,0.55)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(o.x + o.w / 2, 0);
+        ctx.lineTo(o.x + o.w / 2, o.y - 14);
+        ctx.stroke();
+        ctx.fillStyle = '#f2a541';
+        ctx.beginPath();
+        ctx.arc(o.x + o.w / 2, o.y, 7, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = colors.strata[0];
+        ctx.beginPath();
+        ctx.moveTo(o.x, o.y);
+        ctx.lineTo(o.x + o.w * 0.2, o.y - o.h);
+        ctx.lineTo(o.x + o.w * 0.55, o.y - o.h * 0.75);
+        ctx.lineTo(o.x + o.w * 0.85, o.y - o.h);
+        ctx.lineTo(o.x + o.w, o.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(242,165,65,0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(o.x + o.w * 0.5, o.y - o.h * 0.5, o.w * 0.66, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    } else if (o.type === 'goldcrow') {
+      drawGoldCrow(o);
+    } else if (o.type === 'amber') {
+      const bob = Math.sin(o.t * 0.08) * 4;
+      const cx = o.x + o.w / 2, cy = o.y + bob;
+      ctx.globalAlpha = 0.18 + Math.sin(o.t * 0.1) * 0.06;
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 17, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      const grad = ctx.createRadialGradient(cx - 3, cy - 4, 2, cx, cy, 13);
+      grad.addColorStop(0, '#fde68a');
+      grad.addColorStop(0.55, '#fbbf24');
+      grad.addColorStop(1, '#d97706');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, 11, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(120,53,15,0.85)';
+      ctx.beginPath();
+      ctx.ellipse(cx - 1, cy + 1, 4, 2.6, -0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(120,53,15,0.7)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      for (let i = -1; i <= 1; i++) {
+        ctx.moveTo(cx - 5, cy - 1 + i * 2.6);
+        ctx.lineTo(cx - 1.5, cy - 0.5 + i * 1.4);
+        ctx.moveTo(cx + 3, cy - 0.5 + i * 1.4);
+        ctx.lineTo(cx + 6, cy - 1 + i * 2.6);
+      }
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.beginPath();
+      ctx.ellipse(cx - 4, cy - 5, 3, 1.8, -0.6, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (o.type === 'egg') {
+      const bob = Math.sin(o.t * 0.08 + 1.4) * 3;
+      ctx.fillStyle = '#ede4d3';
+      ctx.beginPath();
+      ctx.ellipse(o.x + o.w / 2, o.y + bob, 7, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(43,33,64,0.4)';
+      ctx.beginPath();
+      ctx.arc(o.x + o.w / 2 - 2, o.y + bob - 2, 1.4, 0, Math.PI * 2);
+      ctx.arc(o.x + o.w / 2 + 3, o.y + bob + 2, 1.1, 0, Math.PI * 2);
+      ctx.fill();
+} else if (o.type === 'heart') {
+      const bob = Math.sin(o.t * 0.09 + 0.7) * 4;
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = '#e11d48';
+      ctx.beginPath();
+      ctx.arc(o.x + o.w / 2, o.y + bob, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#e11d48';
+      ctx.beginPath();
+      ctx.moveTo(o.x + o.w / 2, o.y + bob + 7);
+      ctx.bezierCurveTo(o.x + o.w / 2 - 12, o.y + bob - 2, o.x + o.w / 2 - 6, o.y + bob - 9, o.x + o.w / 2, o.y + bob - 3);
+      ctx.bezierCurveTo(o.x + o.w / 2 + 6, o.y + bob - 9, o.x + o.w / 2 + 12, o.y + bob - 2, o.x + o.w / 2, o.y + bob + 7);
+      ctx.fill();
+    } else if (o.type === 'fire') {
+      const bob = Math.sin(o.t * 0.08) * 3;
+      const cx = o.x + o.w / 2, cy = o.y + bob;
+      const flick = Math.sin(o.t * 0.18) * 1.5;
+      ctx.globalAlpha = 0.35 + Math.sin(o.t * 0.15) * 0.1;
+      ctx.fillStyle = '#f97316';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 15 + flick * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.moveTo(cx - 8, cy + 6);
+      ctx.quadraticCurveTo(cx - 10, cy - 1, cx - 5, cy - 6);
+      ctx.quadraticCurveTo(cx - 3, cy - 11, cx, cy - 12 + flick);
+      ctx.quadraticCurveTo(cx + 3, cy - 11, cx + 5, cy - 6);
+      ctx.quadraticCurveTo(cx + 10, cy - 1, cx + 8, cy + 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fb923c';
+      ctx.beginPath();
+      ctx.moveTo(cx - 4.5, cy + 5);
+      ctx.quadraticCurveTo(cx - 6, cy - 1, cx - 2, cy - 5);
+      ctx.quadraticCurveTo(cx, cy - 8, cx + 1, cy - 7 + flick);
+      ctx.quadraticCurveTo(cx + 4, cy - 4, cx + 4.5, cy + 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.moveTo(cx - 2, cy + 5);
+      ctx.quadraticCurveTo(cx - 2.5, cy + 1, cx, cy - 2);
+      ctx.quadraticCurveTo(cx + 2.5, cy + 1, cx + 2, cy + 5);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
+  function obstacleHitbox(o) {
+    if (o.type === 'amber' || o.type === 'egg' || o.type === 'heart' || o.type === 'fire') return { x: o.x, y: o.y - o.h, w: o.w, h: o.h };
+    if (o.type === 'meteor') {
+      if (o.falling) return null;
+      return { x: o.x + 4, y: o.y - o.h + 2, w: o.w - 8, h: o.h - 2 };
+    }
+    return { x: o.x + 4, y: o.y - o.h + 2, w: o.w - 8, h: o.h - 2 };
+  }
+  function aabb(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
+
+  // ---------- Can ve kalp göstergesi ----------
+  function buildHearts() {
+    heartsWrap.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
+      const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      s.setAttribute('viewBox', '0 0 24 24');
+      s.setAttribute('width', '20');
+      s.setAttribute('height', '20');
+      s.classList.add('heart');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('fill', 'currentColor');
+      p.setAttribute('d', 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+      s.appendChild(p);
+      heartsWrap.appendChild(s);
+    }
+    // Ateş indikatörünü başlangıçta gizle
+    const fc = document.getElementById('fireCharges');
+    if (fc) fc.style.display = 'none';
+  }
+
+  function updateFireIndicator() {
+    const fc = document.getElementById('fireCharges');
+    if (!fc) return;
+    if (player.fireCharges > 0) {
+      fc.textContent = `ATEŞ x${player.fireCharges} (F)`;
+      fc.style.display = 'inline-block';
+    } else {
+      fc.style.display = 'none';
+    }
+  }
+  function updateHearts() {
+    const hs = heartsWrap.children;
+    for (let i = 0; i < hs.length; i++) {
+      hs[i].classList.toggle('filled', i < lives);
+    }
+  }
+  function addLife(amount) {
+    const before = lives;
+    lives = Math.min(5, lives + amount);
+    if (lives > before) {
+      updateHearts();
+      sfx.heart();
+      return true;
+    }
+    return false;
+  }
+
+  // ---------- Popup mesajlar ----------
+  function showCombo(text, xFrac, yFrac, color) {
+    const el = document.createElement('div');
+    el.className = 'combo-pop';
+    el.textContent = text;
+    if (color) el.style.color = color;
+    el.style.left = (xFrac * 100) + '%';
+    el.style.top = (yFrac * 100) + '%';
+    comboLayer.appendChild(el);
+    requestAnimationFrame(function () {
+      el.style.transition = 'transform 0.9s ease, opacity 0.9s ease';
+      el.style.opacity = '1';
+      el.style.transform = 'translate(-50%,calc(-50% - 34px))';
+    });
+    setTimeout(function () { el.remove(); }, 950);
+  }
+
+  // ---------- Oyun durumu ----------
+  let state = 'start';
+  let score = 0, best = 0, speed = 6.2;
+  let lastEraIdx = 0, shakeT = 0, amberT = 0;
+  let gameOverShown = false;
+
+  function updatePips() {
+    eggLabel.textContent = 'Yumurta ' + eggCount + '/3';
+    companionTag.classList.toggle('on', hasCompanion);
+  }
+
+  function startGame() {
+    ensureAudio();
+    const compSprite = document.getElementById('companion-sprite');
+    if (compSprite) compSprite.remove();
+    if (obstacles) {
+      obstacles.forEach(function (o) { if (o.el) o.el.remove(); });
+    }
+    obstacles = [];
+    particles = [];
+    fireballs = [];
+    if (crows) {
+      crows.forEach(function (cr) { if (cr.el) cr.el.remove(); });
+    }
+    crows = [];
+    fireCooldown = 0;
+    destroyed = 0;
+    score = 0;
+    speed = 6.2;
+    obstacleTimer = 60;
+    amberTimer = 420;
+    eggTimer = 320;
+    heartTimer = 700;
+    fireBonusTimer = 500;
+    amberT = 0;
+    hasCompanion = false;
+    eggCount = 0;
+    lives = 5;
+    invuln = 0;
+    nextLifeAt = 750;
+    gameOverShown = false;
+    resetPlayer();
+    player.fireCharges = 0;
+    updateFireIndicator();
+    lastEraIdx = 0;
+    state = 'playing';
+    startOverlay.classList.add('hidden');
+    overOverlay.classList.add('hidden');
+    updateHearts();
+    updatePips();
+  }
+
+  function endGame() {
+    state = 'over';
+    gameOverShown = true;
+    best = Math.max(best, Math.floor(score));
+    try { localStorage.setItem('devekusu-best', String(best)); } catch (e) { }
+    const r = rankForScore(score);
+    rankTitle.textContent = r.name;
+    rankSub.textContent = r.sub;
+    finalScoreEl.textContent = Math.floor(score) + ' m';
+    bestScoreEl.textContent = best + ' m';
+    finalEraEl.textContent = destroyed;
+    overOverlay.classList.remove('hidden');
+    sfx.hit();
+    shakeT = 14;
+  }
+
+  function hurtPlayer() {
+    if (lives <= 0) return;
+    lives--;
+    invuln = 150;
+    updateHearts();
+    sfx.hit();
+    shakeT = 14;
+    spawnDust(player.x - 6, player.y - 10, { vx: -2, vy: -2, r: 5, color: 'bone' });
+    spawnDust(player.x + 6, player.y - 10, { vx: 2, vy: -2, r: 5, color: 'bone' });
+    if (lives <= 0) {
+      endGame();
+    }
+  }
+
+  function doJump() {
+    if (state !== 'playing') return;
+    if (player.grounded) {
+      player.vy = JUMP_V;
+      player.grounded = false;
+      player.ducking = false;
+      player.jumpHeld = true;
+      player.jumpTime = 0;
+      sfx.jump();
+      spawnDust(player.x - 6, player.y - 4, { vx: -2 - Math.random() * 2, vy: -0.6, r: 3, color: 'amber' });
+    }
+  }
+  function setDuck(v) { if (state === 'playing') player.ducking = v && player.grounded; }
+
+  // ---------- Girdi ----------
+  window.addEventListener('keydown', function (e) {
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+    if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'KeyA', 'KeyS', 'KeyW', 'KeyF', 'KeyX', 'KeyJ'].indexOf(e.code) >= 0) e.preventDefault();
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+      if (state === 'start' || state === 'over') startGame();
+      else {
+        doJump();
+        player.jumpHeld = true;
+      }
+    }
+    if (e.code === 'ArrowDown' || e.code === 'KeyS') setDuck(true);
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') player.braking = true;
+    if (e.code === 'KeyF' || e.code === 'KeyX' || e.code === 'KeyJ') spawnFire();
+    if (e.code === 'KeyM') { muted = !muted; iconOn.style.display = muted ? 'none' : 'block'; iconOff.style.display = muted ? 'block' : 'none'; muteBtn.style.opacity = muted ? '0.5' : '1'; }
+  });
+  window.addEventListener('keyup', function (e) {
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') player.jumpHeld = false;
+    if (e.code === 'ArrowDown' || e.code === 'KeyS') setDuck(false);
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') player.braking = false;
+  });
+  // Sekme değişimi / pencere blur'da tuş durumlarını sıfırla (havada asılı kalmayı önler)
+  function releaseAllKeys() {
+    player.jumpHeld = false;
+    player.ducking = false;
+    player.braking = false;
+  }
+  window.addEventListener('blur', releaseAllKeys);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) releaseAllKeys();
+  });
+  frame.addEventListener('touchstart', function (e) {
+    const t = e.touches[0];
+    if (e.target === muteBtn || e.target === fireBtn || muteBtn.contains(e.target) || fireBtn.contains(e.target)) return;
+    ensureAudio();
+    const rect = canvas.getBoundingClientRect();
+    const relY = (t.clientY - rect.top) / rect.height;
+    if (state === 'start' || state === 'over') { startGame(); return; }
+    if (relY > 0.62) { setDuck(true); } else { doJump(); player.jumpHeld = true; }
+  }, { passive: true });
+  frame.addEventListener('touchend', function () { setDuck(false); player.jumpHeld = false; }, { passive: true });
+  frame.addEventListener('mousedown', function (e) {
+    if (e.target === muteBtn || e.target === fireBtn || muteBtn.contains(e.target) || fireBtn.contains(e.target)) return;
+    ensureAudio();
+    if (state === 'start' || state === 'over') { startGame(); return; }
+    doJump();
+    player.jumpHeld = true;
+  });
+  window.addEventListener('mouseup', function () { player.jumpHeld = false; });
+  restartBtn.addEventListener('click', function (e) { e.stopPropagation(); startGame(); });
+  startBtn.addEventListener('click', function (e) { e.stopPropagation(); startGame(); });
+
+  const shareBtn = document.getElementById('shareBtn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const msg = 'Devekuşu Koşusu\'nda ' + Math.floor(score) + ' m koştum! En iyim: ' + best + ' m. Sen de dene: teknolojitasarimci.com';
+      if (navigator.share) {
+        navigator.share({ title: 'Devekuşu Koşusu', text: msg }).catch(function () { });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = msg;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); shareBtn.textContent = 'Kopyalandı!'; setTimeout(function () { shareBtn.textContent = 'Skoru Paylaş'; }, 1800); } catch (err) { }
+        document.body.removeChild(ta);
+      }
+    });
+  }
+
+  // ---------- Ana döngü ----------
+  let lastT = performance.now();
+  let bgOffset1 = 0, bgOffset2 = 0, bgOffset3 = 0, groundOffset = 0;
+  let animT = 0;
+
+  function update(dt) {
+    animT += dt;
+    if (state !== 'playing') return;
+
+    if (amberT > 0) amberT -= 1;
+    let timeScale = amberT > 0 ? 0.42 : 1;
+    if (player.braking) timeScale *= 0.65; // Geri tuşuna basılınca ek %35 yavaşlat
+
+    speed = 6.2 + Math.min(6.5, score / 380);
+    const effSpeed = speed * timeScale;
+
+    score += effSpeed * 0.045 * (amberT > 0 ? 1.7 : 1);
+    scoreVal.textContent = Math.floor(score);
+
+    // Mesafe ödülü: her 750 m'de 1 can
+    if (score >= nextLifeAt && lives < 5) {
+      nextLifeAt += 750;
+      addLife(1);
+      showCombo('CAN +1', 0.5, 0.38, '#e11d48');
+    } else if (score >= nextLifeAt) {
+      nextLifeAt += 750;
+    }
+
+    const colors = getEraColors(score);
+    eraVal.textContent = colors.name;
+    // Oyuncu fiziği (yavaşlamadan etkilenmez)
+    // Güvenlik: jumpTime MAX_JUMP_HOLD'u aştıysa jumpHeld'i serbest bırak
+    if (player.jumpTime >= MAX_JUMP_HOLD) player.jumpHeld = false;
+    player.vy += GRAVITY * (player.jumpHeld && player.vy < 0 ? 0.62 : 1);
+    if (player.jumpHeld && player.vy < 0) player.jumpTime++;
+    // vy'yi makul bir aralıkta sınırla (havada asılı kalmayı önler)
+    if (player.vy < JUMP_V) player.vy = JUMP_V;
+    player.y += player.vy;
+    if (player.y >= GROUND_Y) {
+      if (!player.grounded) {
+        spawnDust(player.x, GROUND_Y - 2, { vx: 0, vy: -0.4, r: 5, color: 'amber' });
+        sfx.land();
+      }
+      player.y = GROUND_Y;
+      player.vy = 0;
+      player.grounded = true;
+      player.jumpHeld = false;
+      player.jumpTime = 0;
+    }
+    player.legPhase += (player.grounded ? 0.35 : 0) * (effSpeed / 6.2);
+    if (player.grounded && Math.random() < 0.5) {
+      spawnDust(player.x - 16, GROUND_Y - 2, { vx: -effSpeed * 0.3 - 1, vy: -0.3, r: 2, color: 'amber', decay: 0.045 });
+    }
+
+    if (invuln > 0) invuln--;
+
+    // Üreticiler
+    obstacleTimer -= timeScale;
+    if (obstacleTimer <= 0) { spawnObstacle(); obstacleTimer = Math.max(46, 92 - speed * 4.2) + Math.random() * 40; }
+    amberTimer -= timeScale;
+    if (amberTimer <= 0 && score > 150) { spawnAmber(); amberTimer = 620 + Math.random() * 260; }
+    eggTimer -= timeScale;
+    if (eggTimer <= 0 && score > 80) { spawnEgg(); eggTimer = 480 + Math.random() * 220; }
+    heartTimer -= timeScale;
+    if (heartTimer <= 0 && lives < 5 && score > 300) { spawnHeart(); heartTimer = 900 + Math.random() * 300; }
+    fireBonusTimer -= timeScale;
+    if (fireBonusTimer <= 0 && score > 200) { spawnFireBonus(); fireBonusTimer = 1200 + Math.random() * 400; }
+    goldCrowTimer -= timeScale;
+    if (goldCrowTimer <= 0 && score > 120) { spawnGoldCrow(); goldCrowTimer = 1100 + Math.random() * 500; }
+    crowTimer -= timeScale;
+    if (crowTimer <= 0 && score > 60) { spawnNormalCrow(); crowTimer = 800 + Math.random() * 600; }
+    for (let ci = crows.length - 1; ci >= 0; ci--) {
+      const cr = crows[ci];
+      cr.x += effSpeed * 0.75;
+      cr.t += 1;
+      if (cr.x > W + 60) {
+        if (cr.el) cr.el.remove();
+        crows.splice(ci, 1);
+      }
+    }
+
+    const hb = playerHitbox();
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+      const o = obstacles[i];
+      o.x -= effSpeed;
+      if (o.type === 'amber' || o.type === 'egg' || o.type === 'heart' || o.type === 'goldcrow') o.t += 1;
+
+      if (o.type === 'meteor' && o.falling) {
+        o.y += o.vy;
+        if (o.y >= GROUND_Y) {
+          o.falling = false;
+          o.y = GROUND_Y;
+          o.h = 46;
+          spawnDust(o.x, GROUND_Y, { vx: -1, vy: -2, r: 4, color: 'amber' });
+          spawnDust(o.x, GROUND_Y, { vx: 2, vy: -1.6, r: 3, color: 'amber' });
+          shakeT = 8;
+        }
+      }
+
+      const box = obstacleHitbox(o);
+
+      if (o.type === 'amber') {
+        if (box && aabb(hb, box)) {
+          amberT = 190;
+          sfx.amber();
+          showCombo('KEHRİBAR ANI!', player.x / W, (player.y - 90) / H, '#38bdf8');
+          removeObstacle(i);
+          continue;
+        }
+} else if (o.type === 'goldcrow') {
+        if (box && aabb(hb, box)) {
+          score += 150;
+          sfx.goldcrow();
+          showCombo('ALTIN KARGA +150!', player.x / W, (player.y - 100) / H, '#f59e0b');
+          spawnDust(o.x + o.w / 2, o.y, { vx: 0, vy: -2.2, r: 3, color: '#fbbf24' });
+          spawnDust(o.x + o.w / 2, o.y, { vx: -2, vy: -1.6, r: 2.5, color: '#f59e0b' });
+          spawnDust(o.x + o.w / 2, o.y, { vx: 2, vy: -1.8, r: 2.5, color: '#d97706' });
+          removeObstacle(i);
+          continue;
+        }
+      } else if (o.type === 'egg') {
+        if (box && aabb(hb, box)) {
+          eggCount++;
+          sfx.egg();
+          if (eggCount >= 3) {
+            eggCount = 0;
+            hasCompanion = true;
+            sfx.companion();
+            showCombo('YOL ARKADAŞIN UYANDI!', player.x / W, (player.y - 90) / H, '#e2e8f0');
+          }
+          updatePips();
+          removeObstacle(i);
+          continue;
+        }
+      } else if (o.type === 'fire') {
+        if (box && aabb(hb, box)) {
+          player.fireCharges = 3;
+          sfx.firebonus();
+          showCombo('ATEŞ BONUSU! (F / BUTON)', player.x / W, (player.y - 90) / H, '#fde047');
+          updateFireIndicator();
+          removeObstacle(i);
+          continue;
+        }
+      } else {
+        if (box && aabb(hb, box)) {
+          if (invuln > 0) {
+            removeObstacle(i);
+            continue;
+          }
+          if (hasCompanion) {
+            hasCompanion = false;
+            updatePips();
+            sfx.shield();
+            showCombo('YOL ARKADAŞIN SENİ KURTARDI!', player.x / W, (player.y - 90) / H, '#38bdf8');
+            removeObstacle(i);
+            continue;
+          }
+          hurtPlayer();
+          removeObstacle(i);
+          continue;
+        }
+        if (!o.passed && (o.x + o.w) < (player.x - hb.w)) {
+          o.passed = true;
+          const gapDist = Math.abs((o.x + o.w) - (player.x - hb.w / 2));
+          if (gapDist < 18) {
+            score += 12;
+            sfx.combo();
+            showCombo('YAKIN KAÇIŞ +12', player.x / W, (player.y - 70) / H, '#38bdf8');
+          }
+        }
+      }
+
+      if (o.x < -80) removeObstacle(i);
+    }
+
+    // Bulutlar
+    clouds.forEach(function (c) {
+      c.x -= effSpeed * 0.12 * (dt / 16.6);
+      if (c.x < -140) { c.x = W + 60 + Math.random() * 160; c.y = 26 + Math.random() * 90; c.w = 70 + Math.random() * 50; }
+    });
+
+    // Ateş topları
+    if (fireCooldown > 0) fireCooldown--;
+    for (let i = fireballs.length - 1; i >= 0; i--) {
+      const f = fireballs[i];
+      f.x += f.vx;
+      f.life--;
+      if (f.life <= 0 || f.x > W + 40) { fireballs.splice(i, 1); continue; }
+      const fb = { x: f.x - 10, y: f.y - 10, w: 20, h: 20 };
+      for (let j = obstacles.length - 1; j >= 0; j--) {
+        const o = obstacles[j];
+        if (o.type === 'amber' || o.type === 'egg' || o.type === 'heart' || o.type === 'fire' || o.type === 'goldcrow') continue;
+        const box = obstacleHitbox(o);
+        if (!box) continue;
+        if (aabb(fb, box)) {
+          removeObstacle(j);
+          destroyed++;
+          score += 20;
+          showCombo('YOK EDİLDİ +20', f.x / W, f.y / H, '#fde047');
+          spawnDust(f.x, f.y, { vx: 3, vy: -1, r: 4, color: 'fire' });
+          spawnDust(f.x, f.y, { vx: -1, vy: -2, r: 3, color: 'fire' });
+          fireballs.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    updateParticles();
+
+    bgOffset1 += effSpeed * 0.18 * (dt / 16.6);
+    bgOffset2 += effSpeed * 0.32 * (dt / 16.6);
+    bgOffset3 += effSpeed * 0.55 * (dt / 16.6);
+    groundOffset += effSpeed * (dt / 16.6);
+
+    if (shakeT > 0) shakeT -= 1;
+  }
+
+  function drawCloud(c) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+    const h = c.w * 0.22;
+    ctx.beginPath();
+    // Sol alt köşe
+    ctx.arc(c.x - c.w * 0.35, c.y + h * 0.3, h * 0.55, Math.PI * 0.5, Math.PI * 1.5);
+    // Sol üst kubbe
+    ctx.arc(c.x - c.w * 0.16, c.y - h * 0.1, h * 0.85, Math.PI * 1.0, Math.PI * 2.0);
+    // Ana orta pofuduk kubbe
+    ctx.arc(c.x + c.w * 0.08, c.y - h * 0.45, h * 1.25, Math.PI * 1.0, Math.PI * 2.0);
+    // Sağ üst kubbe
+    ctx.arc(c.x + c.w * 0.28, c.y + h * 0.1, h * 0.75, Math.PI * 1.2, Math.PI * 2.0);
+    // Sağ alt köşe
+    ctx.arc(c.x + c.w * 0.38, c.y + h * 0.3, h * 0.55, Math.PI * 1.5, Math.PI * 0.5);
+    // Alt tabanı düz çizgiyle birleştir ve kapat
+    ctx.lineTo(c.x - c.w * 0.35, c.y + h * 0.85);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawFireball(f) {
+    ctx.globalAlpha = 0.4;
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#fb923c';
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath();
+    ctx.arc(f.x - 3, f.y - 2, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = '#fb923c';
+    ctx.beginPath();
+    ctx.arc(f.x - 12, f.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  function render() {
+    const colors = getEraColors(state === 'start' ? 0 : score);
+
+    ctx.save();
+    if (shakeT > 0) ctx.translate((Math.random() - 0.5) * shakeT * 0.6, (Math.random() - 0.5) * shakeT * 0.6);
+
+    // Gökyüzü
+    ctx.fillStyle = colors.sky;
+    ctx.fillRect(-10, -10, W + 20, H + 20);
+
+    // Güneş (gündüz) / Ay (gece yarısı çağı)
+    const isNightSky = (state !== 'start' && score >= 2500);
+    const sunX = W * 0.82, sunY = H * 0.18;
+    if (isNightSky) {
+      ctx.globalAlpha = 0.3;
+      ctx.fillStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, 46, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, 28, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#cbd5e1';
+      ctx.beginPath();
+      ctx.arc(sunX - 9, sunY - 7, 6, 0, Math.PI * 2);
+      ctx.arc(sunX + 8, sunY + 9, 4.5, 0, Math.PI * 2);
+      ctx.arc(sunX - 6, sunY + 11, 4, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalAlpha = 0.35;
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, 54, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, 34, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fef9c3';
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, 26, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Bulutlar
+    clouds.forEach(function (c) { drawCloud(c); });
+
+    drawTerrainLayer(layerDefs[0], colors.strata[0], bgOffset1, 0.85);
+    drawTerrainLayer(layerDefs[1], colors.strata[1], bgOffset2, 0.95);
+    drawTerrainLayer(layerDefs[2], colors.strata[2], bgOffset3, 1);
+
+    // Zemin
+    ctx.fillStyle = colors.strata[2];
+    ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
+    
+    ctx.fillStyle = '#c9a26a';
+    ctx.globalAlpha = 0.35;
+    ctx.fillRect(0, GROUND_Y, W, 12);
+    
+    ctx.globalAlpha = 0.3;
+    ctx.fillStyle = '#b08950';
+    const gOff = groundOffset % 60;
+    for(let x = -gOff; x < W; x += 60) {
+       ctx.fillRect(x + 10, GROUND_Y + 18, 12, 3);
+       ctx.fillRect(x + 35, GROUND_Y + 28, 6, 3);
+       ctx.fillRect(x + 50, GROUND_Y + 45, 18, 4);
+    }
+    ctx.globalAlpha = 1;
+
+    drawParticles(colors.fog);
+    obstacles.forEach(function (o) { drawObstacle(o, colors); });
+    crows.forEach(function (cr) { drawNormalCrow(cr); });
+    fireballs.forEach(function (f) { drawFireball(f); });
+
+    if (hasCompanion && state !== 'start') {
+      drawCompanion(player.x, player.y, animT, colors.fog);
+    } else {
+      const sprite = document.getElementById('companion-sprite');
+      if (sprite) sprite.style.display = 'none';
+    }
+    drawDino(player.x, player.y, state !== 'start' && player.ducking, player.legPhase, colors.fog, state === 'playing' && invuln > 0);
+    ctx.restore();
+  }
+
+  function loop(t) {
+    const dt = Math.min(34, t - lastT);
+    lastT = t;
+    update(dt);
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  // ---------- Başlangıç ----------
+  buildHearts();
+  updateHearts();
+  updatePips();
+  try {
+    best = Number(localStorage.getItem('devekusu-best') || 0);
+  } catch (e) { }
+  requestAnimationFrame(loop);
+})();
+</script>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+
+
+  
+
+      <footer class="footer">
+  <div class="container">
+    <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+    <div class="footer-copyright-text">Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek kullanabilirsiniz. İçeriklerimi kullandığınız için teşekkür ederim.</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../js/views.js"></script>
+
+<script src="../../js/protection.js"></script>
+<script src="../../js/menu.js"></script>
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

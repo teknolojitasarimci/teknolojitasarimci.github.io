@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dünyanın Bilinen 16 Köprüsü: Tarihi ve Mühendislik Özellikleri - teknolojitasarimci</title>
+    <meta name="description" content="Charles Köprüsü'nden Millau Viyadüğü'ne, Zincir Köprü'nün şehir efsanesinden Irgandı Köprüsü'ne: dünyanın bilinen köprülerini tarihleri ve mimari özellikleriyle derledik.">
+    
+    <!-- Google Fonts Entegrasyonu -->
+
+
+<link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Özel Master Template Premium Stil İyileştirmeleri -->
+    <style>
+        :root {
+            --font-heading: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --font-body: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --primary-gradient: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+        }
+
+        body {
+            font-family: var(--font-body);
+        }
+
+        h1, h2, h3, h4, h5, .logo, .post-detail-title, .comments-header-title {
+            font-family: var(--font-heading);
+        }
+
+        /* Hero / Header Rozetleri */
+        .post-badge-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .badge-primary {
+            background: var(--brand-light);
+            color: var(--brand-color);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        .badge-read-time {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            margin-left: auto;
+        }
+
+        .post-detail-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .post-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .meta-item strong {
+            color: #334155;
+        }
+
+        /* Hızlı Eylem & Paylaşım Araç Çubuğu */
+        .quick-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 20px;
+            margin: 20px 0 28px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--brand-light);
+            border-color: var(--brand-color);
+            color: var(--brand-color);
+            transform: translateY(-1px);
+        }
+
+        /* 16:9 Sinematik Görsel Çerçevesi */
+        .post-cover-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+            margin: 24px 0 35px 0;
+            background: #0f172a;
+        }
+
+        .post-cover-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .post-cover-wrapper:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Alıntı (Blockquote) Stili */
+
+        .bridge-slider { position: relative; margin: 14px 0 22px; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); background: #f8fafc; }
+        .bridge-slide { display: none; height: 340px; background-size: cover; background-position: center; }
+        .bridge-slide.active-slide { display: block; animation: bridgeFade 0.5s ease; }
+        @keyframes bridgeFade { from { opacity: 0.3; } to { opacity: 1; } }
+        .bridge-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border: none; border-radius: 50%; background: rgba(255,255,255,0.92); color: #0284c7; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(2,6,23,0.18); transition: all 0.2s ease; z-index: 10; }
+        .bridge-arrow:hover { background: #0284c7; color: #ffffff; }
+        .bridge-prev { left: 12px; }
+        .bridge-next { right: 12px; }
+        .bridge-dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 7px; z-index: 10; }
+        .bridge-dot { width: 9px; height: 9px; border-radius: 50%; border: none; background: rgba(255,255,255,0.75); cursor: pointer; padding: 0; transition: all 0.2s ease; }
+        .bridge-dot.active-dot { background: #0284c7; transform: scale(1.25); }
+        .bridge-count { position: absolute; top: 10px; right: 12px; z-index: 10; background: rgba(2,6,23,0.55); color: #ffffff; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+        .post-body-content blockquote {
+            margin: 18px 0;
+            padding: 18px 22px;
+            background: #eefaff;
+            border-left: 4px solid var(--brand-color);
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.65;
+        }
+
+        .source-line {
+            display: inline-block;
+            font-size: 13px;
+            color: #64748b;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 14px;
+            margin: 6px 0 30px 0;
+        }
+
+        .post-body-content h3 {
+            margin-top: 10px;
+        }
+
+        /* Toast Bildirim */
+        #toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: opacity;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        /* İlgili İçerikler (Related Posts) 3 Küçük Kart Grid */
+        .related-posts-section {
+            margin-top: 45px;
+            padding-top: 30px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .related-posts-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .related-posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .related-post-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .related-post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-color);
+            box-shadow: 0 8px 20px -4px rgba(2, 132, 199, 0.15);
+        }
+
+        .related-post-img {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+            background: #f8fafc;
+        }
+
+        .related-post-body {
+            padding: 12px 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .related-post-cat {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--brand-color);
+            margin-bottom: 4px;
+        }
+
+        .related-post-card-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s ease;
+        }
+
+        .related-post-card:hover .related-post-card-title {
+            color: var(--brand-color);
+        }
+    
+        body.dark .quick-action-bar { background: #0f172a; border-color: #334155; }
+        body.dark table.modern-table, body.dark table.modern-table thead th { background: #0f172a; color: #cbd5e1; }
+        body.dark table.modern-table tbody tr:nth-child(even) { background: #1e293b; }
+        body.dark table.modern-table tbody tr:hover { background: rgba(2,132,199,0.15); }
+        body.dark .related-post-card { background: #1e293b; border-color: #334155; }
+        body.dark .related-post-body { background: #1e293b; }
+        body.dark .related-post-card-title { color: #f1f5f9; }
+        body.dark .related-post-cat { color: #7dd3e8; }
+    </style>
+    <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+    <!-- Toast Bildirim Pop-up -->
+    <div id="toast-notification">Bağlantı kopyalandı!</div>
+
+    <!-- Header / Üst Menü --><!-- Ana İçerik Konteynırı -->
+    <main class="container article-layout">
+        <article class="post-detail">
+            
+            <!-- 1. Üst Ana Sayfaya Dön Butonu -->
+            <a href="../preview.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Ana Sayfaya Dön
+            </a>
+
+            <!-- 2. Yazı Üst Başlık & Rozet Alanı -->
+            <div class="post-detail-header">
+                <div class="post-badge-bar">
+                    <span class="badge-pill badge-primary">Mimari Tasarım</span>
+                    <span class="badge-pill badge-primary">Genel Kültür</span>
+                    <span class="badge-pill badge-read-time">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        6 Dk Okuma
+                    </span>
+                </div>
+
+                <h1 class="post-detail-title">Dünyanın Bilinen 16 Köprüsü: Tarihi ve Mühendislik Özellikleri</h1>
+
+                <div class="post-detail-meta">
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>Yayınlanma Tarihi: <strong>13 Ağustos 2026</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Hazırlayan: <strong>Mürsel EREN</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Görüntülenme: <span id="view-counter" data-path="/post-00059-preview.html">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.5 Hızlı Paylaşım & Araç Barı -->
+            <div class="quick-action-bar">
+                <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    İçeriği Paylaş:
+                </span>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="copyPageUrl()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Linki Kopyala
+                    </button>
+                    <a href="https://api.whatsapp.com/send?text=D%C3%BCnyan%C4%B1n%20En%20%C3%9Cnl%C3%BC%2016%20K%C3%B6pr%C3%BCs%C3%BC%3A%20Tarihi%20ve%20M%C3%BChendislik%20Harikalar%C4%B1" target="_blank" class="action-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <button class="action-btn" onclick="window.print()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        Yazdır
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. 16:9 Sinematik Kapak Görseli -->
+            <div class="post-cover-wrapper">
+                <img src="Veri/post-00059-Kapak.jpg" alt="Dünyanın En Ünlü Köprüleri Kapak">
+            </div>
+
+            <!-- 4. Yazı Gövde Metni -->
+            <div class="post-body-content">
+<p>Köprü, nehir ve vadi gibi geçilmesi güç bir engelin iki kıyısını bağlayan veya herhangi bir engelle ayrılmış iki yakayı birbirine bağlayan veya trafik akımının, başka bir trafik akımını kesmeden üstten geçmesini sağlayan yapı olarak özgür ansiklopedi Vikipedi'de tanımlanmaktadır. Bu yazıda günümüzde dünyada bilinirliği en çok olan köprüleri derledik:</p>
+
+<h3>Charles Köprüsü (Karl Köprüsü), Çekya</h3>
+
+<p>Karlův Köprüsü (Çekçe: Karlův most), Çek Cumhuriyeti'nin başkenti Prag'da bulunan Vltava Nehri üzerine kurulmuş olan tarihi köprüdür.</p>
+
+<p>Kral IV. Karl tarafından yaptırılan köprünün mimarı Peter Parler'dir. Yapımı 1357-1400 yılları arasında tamamlanmıştır. 516 m uzunluğunda, 10 m genişliğindeki köprü, günümüzde yaya trafiğine açıktır ve şehrin turistler tarafından en çok ilgi gören yeridir. Yapıldığı dönemde köprü kalesi olarak da kullanılan bir tahkimat olan yapının iki ucunda birer kule yer alır. Köprünün üstünde 30 tane heykel vardır. Aziz John Nepomuk heykeli, en ünlü olanıdır.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Charles_Köprüsü_1.jpg');" title="Charles Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Charles_Köprüsü_2.jpg');" title="Charles Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Charles_Köprüsü_3.jpg');" title="Charles Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Charles_Köprüsü_4.jpg');" title="Charles Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Charles_Köprüsü_5.jpg');" title="Charles Köprüsü"></div>
+<span class="bridge-count">1 / 5</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+</div>
+</div>
+
+<h3>Erasmus Köprüsü, Hollanda</h3>
+
+<p>Erasmusbrug (Türkçe: Erasmus Köprüsü), eğik kablo askılı köprü sınıfına giren ve Hollanda, Rotterdam'dan geçen Nieuwe Maas Nehri'nin her iki yakasını birbirine bağlayan köprüdür. Köprü aynı zamanda Rotterdam şehrinin kuzey ve güney yakalarını da birbirine bağlamış olur.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Erasmus_Köprüsü_1.jpg');" title="Erasmus Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Erasmus_Köprüsü_2.jpg');" title="Erasmus Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Erasmus_Köprüsü_3.jpg');" title="Erasmus Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Erasmus_Köprüsü_4.jpg');" title="Erasmus Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Erasmus_Köprüsü_5.jpg');" title="Erasmus Köprüsü"></div>
+<span class="bridge-count">1 / 5</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+</div>
+</div>
+
+<h3>Brooklyn Köprüsü, ABD</h3>
+
+<p>New York'un simgelerinden biri olan Brooklyn Köprüsü, Brooklyn ve Manhattan'ı birbirine bağlıyor. 1.825 metre uzunluğundaki köprünün yapımına 1870 yılında başlanmıştı. 13 yıl süren inşaatın ardından köprü <b>1883</b>'te kullanıma açıldı.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Brooklyn_Köprüsü_1.jpg');" title="Brooklyn Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Brooklyn_Köprüsü_2.jpg');" title="Brooklyn Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Brooklyn_Köprüsü_3.jpg');" title="Brooklyn Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Brooklyn_Köprüsü_4.jpg');" title="Brooklyn Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Brooklyn_Köprüsü_5.jpg');" title="Brooklyn Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Brooklyn_Köprüsü_6.jpg');" title="Brooklyn Köprüsü"></div>
+<span class="bridge-count">1 / 6</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+<button type="button" class="bridge-dot" data-index="5" aria-label="Görsel 6"></button>
+</div>
+</div>
+
+<h3>Golden Gate Köprüsü, ABD</h3>
+
+<p>San Francisco Körfezi'nde yer alan Golden Gate Köprüsü, Amerika'nın da simgelerinden biridir. Golden Gate Boğazı'na inşa edilen köprü 227 metre yüksekliğe sahip. 2.737 metre uzunluğuyla dünyanın en uzun köprülerinden biri olan Golden Gate'in inşasına 1933 yılında başlanmış ve köprü <b>1937</b> yılında kullanıma açılmıştır.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Golden_Gate_Köprüsü_1.jpg');" title="Golden Gate Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Golden_Gate_Köprüsü_2.jpg');" title="Golden Gate Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Golden_Gate_Köprüsü_3.jpg');" title="Golden Gate Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Golden_Gate_Köprüsü_4.jpg');" title="Golden Gate Köprüsü"></div>
+<span class="bridge-count">1 / 4</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+</div>
+</div>
+
+<h3>15 Temmuz Şehitler Köprüsü, Türkiye</h3>
+
+<p>İstanbul'un en ünlü simgelerinden biri olan 15 Temmuz Şehitler Köprüsü, Ortaköy-Kuzguncuk hattını birbirine bağlıyor. 1973'te Cumhuriyet'in 50. yılında açılan köprünün toplam uzunluğu 1560 metre. Fatih Sultan Mehmet Köprüsü açılana kadar dünyanın iki kıtayı birbirine bağlayan tek köprüsü olma unvanını elinde bulunduran 15 Temmuz Şehitler Köprüsü, günümüzde de şehir trafiğinin can damarı konumunda.</p>
+
+<p>26 Temmuz 2016'da resmî adı, 2016 Türkiye askerî darbe girişimi sırasında köprüde hayatını kaybeden vatandaşların anısına "15 Temmuz Şehitler Köprüsü" olarak değiştirilmiştir.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/15_Temmuz_Şehitler_Köprüsü_1.jpg');" title="15 Temmuz Şehitler Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/15_Temmuz_Şehitler_Köprüsü_2.jpg');" title="15 Temmuz Şehitler Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/15_Temmuz_Şehitler_Köprüsü_3.jpg');" title="15 Temmuz Şehitler Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/15_Temmuz_Şehitler_Köprüsü_4.jpg');" title="15 Temmuz Şehitler Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/15_Temmuz_Şehitler_Köprüsü_5.jpg');" title="15 Temmuz Şehitler Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/15_Temmuz_Şehitler_Köprüsü_6.jpg');" title="15 Temmuz Şehitler Köprüsü"></div>
+<span class="bridge-count">1 / 6</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+<button type="button" class="bridge-dot" data-index="5" aria-label="Görsel 6"></button>
+</div>
+</div>
+
+<h3>Harbour Köprüsü, Avustralya</h3>
+
+<p>Sidney Liman Köprüsü (İngilizce: Sydney Harbour Bridge), Avustralya'nın Sidney kentinde bulunan bir kemer köprüdür. İnşaatına 1923 yılında başlanmış olup 28 Temmuz 1932 tarihinde açılmıştır. Köprü, Sidney şehir merkezi ile North Shore arasında demiryolu, taşıt, bisiklet ve yaya trafiğini taşımaktadır. Köprünün, Port Jackson ve yakınlardaki Sidney Opera Binası ile birlikteki manzarası kentin ve Avustralya'nın simgesi konumundadır.</p>
+
+<p>Köprü, John Bradfield tarafından tasarlanmış olup tasarımı New York'taki Hell Gate Köprüsü'nden etkilenmiştir. Dünyanın altıncı en uzun kemer köprüsü olup 2012 yılına kadar da en uzun tek ayaklı köprüsüydü.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Harbour_Köprüsü_1.jpg');" title="Harbour Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Harbour_Köprüsü_2.jpg');" title="Harbour Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Harbour_Köprüsü_3.jpg');" title="Harbour Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Harbour_Köprüsü_4.jpg');" title="Harbour Köprüsü"></div>
+<span class="bridge-count">1 / 4</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+</div>
+</div>
+
+<h3>Jacques Chaban-Delmas Köprüsü, Fransa</h3>
+
+<p>Fransa'nın batısında yer alan Bordeaux kentindeki Jacques Chaban-Delmas Köprüsü, oldukça yeni bir köprü. 2013'te kullanıma açılan köprünün uzunluğu 575, yüksekliği de 77 metre. İkinci Dünya Savaşı sonrası Fransız siyasetindeki önemli isimlerden biri olan ve uzun süre de Bordeaux Belediye Başkanlığı görevini yürütmüş olan Jacques Chaban-Delmas'ın adını taşıyan köprü, bir modern mimari örneği konumunda.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Jacques_Chaban_Delmas_Köprüsü_1.jpg');" title="Jacques Chaban-Delmas Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Jacques_Chaban_Delmas_Köprüsü_2.jpg');" title="Jacques Chaban-Delmas Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Jacques_Chaban_Delmas_Köprüsü_3.jpg');" title="Jacques Chaban-Delmas Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Jacques_Chaban_Delmas_Köprüsü_4.jpg');" title="Jacques Chaban-Delmas Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Jacques_Chaban_Delmas_Köprüsü_5.jpg');" title="Jacques Chaban-Delmas Köprüsü"></div>
+<span class="bridge-count">1 / 5</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+</div>
+</div>
+
+<h3>Millau Viyadüğü, Fransa</h3>
+
+<p>Fransa'nın güneyinde, Millau kenti yakınlarında Tarn Nehri vadisinde bulunan Millau Viyadüğü, kendi alanında dünyanın en önemli yapılarından biri. 2.460 metre uzunluğundaki viyadük, nehir seviyesinden 240 metre yüksekliğe sahip. Yaşayan en ünlü mimarlardan biri olan Norman Foster'ın eseri olan viyadük, yedi ayak üzerine kurulu.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Millau_Viyadüğü_1.jpg');" title="Millau Viyadüğü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Millau_Viyadüğü_2.jpg');" title="Millau Viyadüğü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Millau_Viyadüğü_3.jpg');" title="Millau Viyadüğü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Millau_Viyadüğü_4.jpg');" title="Millau Viyadüğü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Millau_Viyadüğü_5.jpg');" title="Millau Viyadüğü"></div>
+<span class="bridge-count">1 / 5</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+</div>
+</div>
+
+<h3>Mostar Köprüsü, Bosna-Hersek</h3>
+
+<p>Mostar Köprüsü (Boşnakça: Stari Most), Bosna-Hersek'in Mostar şehrinden geçen Neretva Nehri üzerinde bulunan bir köprüdür. Orijinal köprü Mimar Sinan'ın öğrencisi Mimar Hayreddin tarafından 1566 yılında inşa edildi ve 9 Kasım 1993'te Boşnak-Hırvat Savaşı sırasında Hırvat güçleri tarafından yıkılıncaya dek 427 yıl kullanıldı. Mimar Hayreddin, köprü için 456 kalıp taş kullanmıştı. Köprü, çevresindeki kente adını da verdi. Mostar, Hersek bölgesinin ana kenti oldu.</p>
+
+<p>Köprüyü yeniden inşa etmek için bir proje hazırlandı ve 23 Temmuz 2004'te yeni köprü hizmete girdi. Köprü, 2005'te UNESCO tarafından Dünya Mirası ilan edildi.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Mostar_Köprüsü_1.jpg');" title="Mostar Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Mostar_Köprüsü_2.jpg');" title="Mostar Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Mostar_Köprüsü_3.jpg');" title="Mostar Köprüsü"></div>
+<span class="bridge-count">1 / 3</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+</div>
+</div>
+
+<h3>Nanpu Köprüsü, Çin</h3>
+
+<p>Çin'in en önemli kentlerinden biri olan Şangay'da bulunan Nanpu Köprüsü, Çin'deki ilk askılı köprüdür. Ana açıklığı 400 metreyi, kıyıdan kıyıya uzunluğu 846 metreyi bulan köprünün yapısı, her biri 150 metre yüksekliğinde iki büyük H şeklinde betonarme kuleden oluşur. Ana kirişleri desteklemek için 22 çift çelik kablo kullanılmıştır.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Nanpu_Köprüsü_1.jpg');" title="Nanpu Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Nanpu_Köprüsü_2.jpg');" title="Nanpu Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Nanpu_Köprüsü_3.jpg');" title="Nanpu Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Nanpu_Köprüsü_4.jpg');" title="Nanpu Köprüsü"></div>
+<span class="bridge-count">1 / 4</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+</div>
+</div>
+
+<h3>Rialto Köprüsü, İtalya</h3>
+
+<p>İtalya'nın kuzeyinde, Venedik'te yer alan Rialto Köprüsü hem kentin hem de ülkenin sembollerinden biri. 8 metre genişliğe sahip olan Rialto Köprüsü, kanallar şehri olarak anılan Venedik'teki onlarca köprüden biri. Ancak mimari estetiği nedeniyle diğerlerinden ayrılıyor. 1591 yılında açılan köprünün uzunluğu 31 metre.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Rialto_Köprüsü_1.jpg');" title="Rialto Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Rialto_Köprüsü_2.jpg');" title="Rialto Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Rialto_Köprüsü_3.jpg');" title="Rialto Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Rialto_Köprüsü_4.jpg');" title="Rialto Köprüsü"></div>
+<span class="bridge-count">1 / 4</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+</div>
+</div>
+
+<h3>Zincir Köprü, Macaristan</h3>
+
+<p>1849'da William T. Clark tarafından yapılan köprü, Tuna Nehri üzerinde Buda ve Peşte'yi birbirine bağlıyor. <b>Popüler bir şehir efsanesine göre</b>, köprü açıldığında mimar Clark, eserinin kusursuzluğu konusunda o kadar iddialıydı ki herhangi bir hata bulunursa kendisini Tuna'nın soğuk sularına bırakacağına iddiaya girdi. Çok geçmeden köprüde gezen küçük bir çocuk, aslan heykellerinin dilsiz olduğunu fark eder. Bunun üzerine sözünde durmak zorunda kalan Clark, kendisini Tuna'ya bırakır ve havanın sıcak olması sayesinde donmaktan kurtulur.</p>
+
+<p><b>Ancak tarihsel gerçeklere göre bu sadece dilden dile dolaşan bir efsanedir.</b> Aslanların dilleri vardır (sadece aşağıdan bakıldığında görünmezler) ve heykellerin tasarımcısı dâhil hiç kimse bu yüzden nehre atlamamıştır.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Zincir_Köprü_1.jpg');" title="Zincir Köprü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Zincir_Köprü_2.jpg');" title="Zincir Köprü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Zincir_Köprü_3.jpg');" title="Zincir Köprü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Zincir_Köprü_4.jpg');" title="Zincir Köprü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Zincir_Köprü_5.jpg');" title="Zincir Köprü"></div>
+<span class="bridge-count">1 / 5</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+</div>
+</div>
+
+<h3>Vasco da Gama Köprüsü, Portekiz</h3>
+
+<p>Lizbon Körfezi içinde yer alan ve kentin iki yakasını birbirine bağlayan Vasco da Gama Köprüsü, adını ünlü Portekizli kâşiften almakta. 148 metre yüksekliğe sahip olan köprünün toplam uzunluğu 17.185 metre.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Vasco_da_Gama_Köprüsü_1.jpg');" title="Vasco da Gama Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Vasco_da_Gama_Köprüsü_2.jpg');" title="Vasco da Gama Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Vasco_da_Gama_Köprüsü_3.jpg');" title="Vasco da Gama Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Vasco_da_Gama_Köprüsü_4.jpg');" title="Vasco da Gama Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Vasco_da_Gama_Köprüsü_5.jpg');" title="Vasco da Gama Köprüsü"></div>
+<span class="bridge-count">1 / 5</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+</div>
+</div>
+
+<h3>Vecchio Köprüsü, İtalya</h3>
+
+<p>Ponte Vecchio (Türkçe: "Eski Köprü"), Arno Nehri üzerinde bulunan, Floransa'nın en meşhur köprüsüdür. Nehrin en dar kısmında yer alan Ponte Vecchio 14. yüzyılda tamamlanmıştır. Köprünün üzerinde çok sayıda kuyumcu dükkânı bulunmaktadır. Köprünün ortasında Benvenuto Cellini'nin bronzdan bir büstü bulunur. 1117'de bir taşkın tarafından tahrip edildikten sonra taş olarak yeniden inşa edildi. Genişliği 32 metredir. 3 kemer üstüne kurulmuştur. Ana kemer 30, diğer iki kemer 27 metre açıklığa sahiptir.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Vecchio_Köprüsü_1.jpg');" title="Vecchio Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Vecchio_Köprüsü_2.jpg');" title="Vecchio Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Vecchio_Köprüsü_3.jpg');" title="Vecchio Köprüsü"></div>
+<span class="bridge-count">1 / 3</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+</div>
+</div>
+
+<h3>Tower Bridge, İngiltere</h3>
+
+<p>İngiltere'nin başkenti Londra'nın doğusunda yer alan Tower Bridge, kentin en önemli simgelerinden biri. İki kule şeklinde inşa edilen köprü, Thames Nehri üzerinde yer alıyor. Kentin kuzey ve güneyini birbirine bağlayan köprünün inşasına 1886 yılında başlanmış ve köprü <b>1894</b> yılında kullanıma açılmıştır. Kule uzunluğu 65 metre olan köprünün enine uzunluğuysa 244 metre.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Tower_Bridge_1.jpg');" title="Tower Bridge"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Tower_Bridge_2.jpg');" title="Tower Bridge"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Tower_Bridge_3.jpg');" title="Tower Bridge"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Tower_Bridge_4.jpg');" title="Tower Bridge"></div>
+<span class="bridge-count">1 / 4</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+</div>
+</div>
+
+<h3>Irgandı Köprüsü, Türkiye</h3>
+
+<p>Irgandı Köprüsü bilinirliği en yüksek olan köprülerden biri değil ama Bursa'da yaşayan bir insan olarak paylaşmak istedik. Irgandı Köprüsü Bursa'da, zanaatçıların geleneksel el sanatlarını icra ettiği köprüdür. 1442 yılında Irgandılı Ali'nin oğlu Hacı Muslihiddin tarafından inşa edildi. <b>1855</b> yılında Büyük Bursa Depremi'nde hasar gördü. Türk Kurtuluş Savaşı'nda Yunan ordusu tarafından bombalandı. Irgandı Köprüsü, 2004 yılında Osmangazi Belediyesi tarafından yenilendi ve kullanıma açıldı.</p>
+
+<div class="bridge-slider">
+<div class="bridge-slide active-slide" style="background-image: url('Veri/Irgandı_Köprüsü_1.jpg');" title="Irgandı Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Irgandı_Köprüsü_2.jpg');" title="Irgandı Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Irgandı_Köprüsü_3.jpg');" title="Irgandı Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Irgandı_Köprüsü_4.jpg');" title="Irgandı Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Irgandı_Köprüsü_5.jpg');" title="Irgandı Köprüsü"></div>
+<div class="bridge-slide" style="background-image: url('Veri/Irgandı_Köprüsü_6.jpg');" title="Irgandı Köprüsü"></div>
+<span class="bridge-count">1 / 6</span>
+<button type="button" class="bridge-arrow bridge-prev" aria-label="Önceki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><button type="button" class="bridge-arrow bridge-next" aria-label="Sonraki görsel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=" 3.5 " stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+<div class="bridge-dots">
+<button type="button" class="bridge-dot active-dot" data-index="0" aria-label="Görsel 1"></button>
+<button type="button" class="bridge-dot" data-index="1" aria-label="Görsel 2"></button>
+<button type="button" class="bridge-dot" data-index="2" aria-label="Görsel 3"></button>
+<button type="button" class="bridge-dot" data-index="3" aria-label="Görsel 4"></button>
+<button type="button" class="bridge-dot" data-index="4" aria-label="Görsel 5"></button>
+<button type="button" class="bridge-dot" data-index="5" aria-label="Görsel 6"></button>
+</div>
+</div>
+
+<h3>Üstünde Çarşı Bulunan Köprüler</h3>
+
+<p>Bu arada dünyada üstünde çarşı bulunan köprüler şunlardır:</p>
+
+<ul style="font-size: 15px; line-height: 1.9; color: #334155; padding-left: 24px;">
+
+<li>Bulgaristan'da Osma Köprüsü (Lofça)</li>
+
+<li>İtalya'da Ponte Vecchio Köprüsü (Floransa) ve Rialto Köprüsü (Venedik)</li>
+
+<li>Almanya'da Krämerbrücke (Erfurt)</li>
+
+<li>İngiltere'de Pulteney Köprüsü (Bath) ve High Bridge (Lincoln)</li>
+
+<li>Fransa'da Pont de Rohan (Landerneau) ve Pont des Marchands (Narbonne)</li>
+
+<li>Türkiye'de Irgandı Köprüsü (Bursa)</li>
+
+</ul>
+
+<div class="post-sources" style="margin-top: 36px; padding: 20px 24px; background: #f8fafc; border-left: 4px solid #0284c7; border-radius: 8px;">
+<h3 style="margin-top: 0; font-size: 17px; color: #0369a1;">Kaynaklar</h3>
+<ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.9; color: #334155;">
+<li>tr.wikipedia.org - Köprü (tr.wikipedia.org/wiki/Köprü)</li>
+<li>tr.wikipedia.org - Erasmusbrug (tr.wikipedia.org/wiki/Erasmusbrug)</li>
+<li>tr.wikipedia.org - Karl Köprüsü (tr.wikipedia.org/wiki/Karl_Köprüsü)</li>
+<li>tr.wikipedia.org - Sidney Liman Köprüsü (tr.wikipedia.org/wiki/Sidney_Liman_Köprüsü)</li>
+<li>tr.wikipedia.org - Mostar Köprüsü (tr.wikipedia.org/wiki/Mostar_Köprüsü)</li>
+<li>en.wikipedia.org - Nanpu Bridge (en.wikipedia.org/wiki/Nanpu_Bridge)</li>
+<li>tr.wikipedia.org - Ponte Vecchio (tr.wikipedia.org/wiki/Ponte_Vecchio)</li>
+<li>tr.wikipedia.org - Tower Bridge (tr.wikipedia.org/wiki/Tower_Bridge)</li>
+<li>tr.wikipedia.org - Irgandı Köprüsü (tr.wikipedia.org/wiki/Irgandı_Köprüsü)</li>
+</ul>
+</div>
+</div>
+
+            <!-- 5. Standart Etiketler (Hashtag Box) -->
+            <div class="hashtag-box">
+<span class="tag-badge">#Köprü</span>
+<span class="tag-badge">#MimariMühendislik</span>
+<span class="tag-badge">#TarihiKöprüler</span>
+<span class="tag-badge">#MühendislikHarikası</span>
+<span class="tag-badge">#DünyaKöprüleri</span>
+<span class="tag-badge">#CharlesKöprüsü</span>
+<span class="tag-badge">#ErasmusKöprüsü</span>
+<span class="tag-badge">#BrooklynKöprüsü</span>
+<span class="tag-badge">#GoldenGateKöprüsü</span>
+<span class="tag-badge">#15TemmuzŞehitlerKöprüsü</span>
+<span class="tag-badge">#HarbourKöprüsü</span>
+<span class="tag-badge">#JacquesChabanDelmasKöprüsü</span>
+<span class="tag-badge">#MillauViyadüğü</span>
+<span class="tag-badge">#MostarKöprüsü</span>
+<span class="tag-badge">#NanpuKöprüsü</span>
+<span class="tag-badge">#RialtoKöprüsü</span>
+<span class="tag-badge">#ZincirKöprü</span>
+<span class="tag-badge">#VascodaGamaKöprüsü</span>
+<span class="tag-badge">#VecchioKöprüsü</span>
+<span class="tag-badge">#TowerBridge</span>
+<span class="tag-badge">#IrgandıKöprüsü</span>
+<span class="tag-badge">#MimariTasarım</span>
+<span class="tag-badge">#YapıMühendisliği</span>
+<span class="tag-badge">#ŞehirSimgeleri</span>
+<span class="tag-badge">#TurizmNoktaları</span>
+<span class="tag-badge">#KültürelMiras</span>
+<span class="tag-badge">#MühendislikTarihi</span>
+<span class="tag-badge">#YenilikçiMimari</span>
+<span class="tag-badge">#TasarımHarikası</span>
+<span class="tag-badge">#MühendislikBaşarıları</span>
+<span class="tag-badge">#KöprüMimarisi</span>
+<span class="tag-badge">#ÜnlüKöprüler</span>
+<span class="tag-badge">#DünyaMirası</span>
+<span class="tag-badge">#MimariEserler</span>
+<span class="tag-badge">#KöprüTasarımı</span>
+<span class="tag-badge">#MühendislikSanatı</span>
+</div>
+
+            <!-- 5.5. İlgili İçerikler ve Benzer Etkinlikler (Etiketlerin Hemen Altında) -->
+            <section class="related-posts-section">
+                <h3 class="related-posts-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    İlgili İçerikler ve Benzer Etkinlikler
+                </h3>
+                <div class="related-posts-grid">
+                    <a href="../post-00028-Bilim-Insanlari/post-00028-preview.html" class="related-post-card">
+                        <img src="../post-00028-Bilim-Insanlari/Veri/post-00028-Kapak.jpg" alt="Çok Yönlü Bilim İnsanları" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Mucitler ve Bilim İnsanları</span>
+                            <div class="related-post-card-title">Tarihe Yön Veren Çok Yönlü Bilim İnsanları ve Hezarfenler (53 Öncü Zihin)</div>
+                        </div>
+                    </a>
+                    <a href="../post-00024-Beyin-Gelisimi/post-00024-preview.html" class="related-post-card">
+                        <img src="../post-00024-Beyin-Gelisimi/Veri/post-00024-Kapak.jpg" alt="Beyin Gelişimi" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Rehberlik</span>
+                            <div class="related-post-card-title">Teknoloji ve Tasarım Dersi ile Beyin Gelişimi: Sağ ve Sol Lobun Dengeli Kullanımı</div>
+                        </div>
+                    </a>
+                    <a href="../post-00065-Labirent-Oyunlari/post-00065-preview.html" class="related-post-card">
+                        <img src="../post-00065-Labirent-Oyunlari/Veri/post-00065-Kapak.jpg" alt="post-00065-Labirent-Oyunlari" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Zeka Oyunları</span>
+                            <div class="related-post-card-title">Labirent Oyunları: Zihinsel Becerileri Geliştiren 12 Sayfalık Etkinlik Seti</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. Tepki & Beğeni İkonları -->
+            <div class="reactions-box">
+                <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+                <div class="reactions-list">
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        Faydalı <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Harika <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Teşekkürler <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+                        Geliştirilmeli <span class="reaction-count">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. Yorum Bölümü -->
+            <section class="comments-section">
+                <h3 class="comments-header-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Yorumlar ve Değerlendirmeler
+                </h3>
+
+                <form class="comment-form" onsubmit="addComment(event)">
+                    <div class="form-group">
+                        <label for="comment-name">Adınız Soyadınız *</label>
+                        <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-body">Yorumunuz *</label>
+                        <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        Yorumu Gönder
+                    </button>
+                </form>
+
+                <div class="comments-list" id="comments-list">
+                    
+                </div>
+            </section>
+
+                        <script>
+                function copyPageUrl() {
+                    navigator.clipboard.writeText(window.location.href);
+                    const toast = document.getElementById('toast-notification');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2500);
+                }
+
+                                function toggleReaction(btn) {
+                    if (window.reactionsApi) {
+                        window.reactionsApi.toggleReaction(btn);
+                    }
+                }
+            </script>
+
+
+            <!-- 8. Alt Ana Sayfaya Dön Butonu -->
+            <div class="bottom-back-wrapper">
+                <a href="../preview.html" class="bottom-back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+
+        </article>
+
+        <!-- Sağ Yan Menü (Sidebar Widget) -->
+    </main>
+
+    <!-- 9. Standart Footer Telif Metni -->
+        <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase Entegrasyonu: yorum, gerçek sayaç ve kopyalama koruması -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/comments.js"></script>
+    <script src="../../js/views.js"></script>
+    <script src="../../js/reactions.js"></script>
+    <script src="../../js/protection.js"></script>
+    <script src="../../js/sidebar-scroll.js"></script>
+
+<script>
+(function () {
+    function initBridgeSliders() {
+        document.querySelectorAll('.bridge-slider').forEach(function (slider) {
+            var slides = slider.querySelectorAll('.bridge-slide');
+            var dots = slider.querySelectorAll('.bridge-dot');
+            var count = slider.querySelector('.bridge-count');
+            if (slides.length < 2) return;
+            var current = 0, timer = null;
+            function show(index) {
+                current = (index + slides.length) % slides.length;
+                slides.forEach(function (s, i) { s.classList.toggle('active-slide', i === current); });
+                dots.forEach(function (d, i) { d.classList.toggle('active-dot', i === current); });
+                if (count) count.textContent = (current + 1) + ' / ' + slides.length;
+            }
+            function start() { stop(); timer = setInterval(function () { show(current + 1); }, 4000); }
+            function stop() { if (timer) { clearInterval(timer); timer = null; } }
+            slider.querySelector('.bridge-prev').addEventListener('click', function () { stop(); show(current - 1); start(); });
+            slider.querySelector('.bridge-next').addEventListener('click', function () { stop(); show(current + 1); start(); });
+            dots.forEach(function (d) {
+                d.addEventListener('click', function () { stop(); show(parseInt(d.dataset.index, 10)); start(); });
+            });
+            slider.addEventListener('mouseenter', stop);
+            slider.addEventListener('mouseleave', start);
+            start();
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBridgeSliders);
+    } else {
+        initBridgeSliders();
+    }
+})();
+</script>
+
+<script src="../../js/menu.js" defer></script></body>
+</html>

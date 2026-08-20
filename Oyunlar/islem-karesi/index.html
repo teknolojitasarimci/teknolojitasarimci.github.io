@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="İşlem Karesi zekâ ve mantık oyunu. 1-9 arası rakamları yerleştirin, işlem önceliğine dikkat ederek satır ve sütun hedeflerine ulaşın." />
+  <title>İşlem Karesi - teknolojitasarimci</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    :root {
+      --brand: #0284c7;
+      --brand-dark: #0369a1;
+      --brand-light: #e0f2fe;
+      --brand-grad: #0284c7;
+      --danger: #fee2e2;
+      --danger-text: #dc2626;
+      --success: #dcfce7;
+      --success-text: #15803d;
+      --success-border: #22c55e;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-width: 320px;
+      color: var(--text);
+      background: #f8fafc;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible, .cell:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, .35);
+      outline-offset: 2px;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+      text-align: center;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+      text-align: left;
+    }
+    .header-row h1 {
+      margin: 0 0 4px 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rules-btn, .sound-btn {
+      padding: 8px 18px;
+      border-radius: 25px !important;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-outline {
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+    }
+    .btn-outline:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: #0284c7;
+      color: #ffffff;
+      border: 1.5px solid #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+      background: #0369a1;
+      border-color: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    /* Zorluk Filtre Butonları */
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 8px 0 16px;
+      flex-wrap: wrap;
+    }
+    .level-btn {
+      padding: 7px 16px;
+      border-radius: 25px !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+      transition: all 0.2s ease;
+    }
+    .level-btn:hover {
+      background: var(--brand-light);
+    }
+    .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Durum ve Seviye Bilgileri */
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .status-box {
+      background: var(--brand-light);
+      color: var(--brand-dark);
+      padding: 7px 16px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Bulmaca Gezinme Barı */
+    .puzzle-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .nav-arrow-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50% !important;
+      background: #ffffff;
+      color: var(--brand);
+      border: 1.5px solid rgba(2, 132, 199, 0.3);
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+    .nav-arrow-btn:hover:not(:disabled) {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: scale(1.05);
+    }
+    .nav-arrow-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .puzzle-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .puzzle-select {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(2, 132, 199, 0.3);
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* İŞLEM KARESİ MATRİS IZGARASI */
+    .grid-container {
+      display: flex;
+      justify-content: center;
+      margin: 12px 0 16px;
+    }
+    .math-grid {
+      display: grid;
+      grid-template-columns: minmax(52px, 68px) 30px minmax(52px, 68px) 30px minmax(52px, 68px) minmax(62px, 80px);
+      grid-template-rows: minmax(52px, 68px) 30px minmax(52px, 68px) 30px minmax(52px, 68px) minmax(52px, 68px);
+      gap: 6px;
+      align-items: center;
+      justify-items: center;
+      user-select: none;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 18px;
+    }
+
+    .grid-cell {
+      width: 100%;
+      height: 100%;
+      min-height: 52px;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .grid-cell:hover {
+      border-color: var(--brand);
+      background: #f0f9ff;
+    }
+    .grid-cell.selected {
+      background: #bae6fd !important;
+      color: #0369a1 !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+    }
+    .grid-cell.highlight-rowcol {
+      background: #e0f2fe;
+    }
+    .grid-cell.solution-mode {
+      color: #0284c7;
+      background: #f0f9ff;
+    }
+    .grid-cell.error {
+      background: #fee2e2 !important;
+      color: #dc2626 !important;
+      border-color: #ef4444 !important;
+    }
+
+    /* Operatör Simgeleri */
+    .operator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0284c7;
+      background: rgba(2, 132, 199, 0.1);
+      border-radius: 6px;
+    }
+
+    /* Hedef Sonuç Rozetleri */
+    .target-badge {
+      width: 100%;
+      height: 100%;
+      min-height: 48px;
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #334155;
+      transition: all 0.25s ease;
+      padding: 4px;
+    }
+    .target-badge .eq-sign {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: -2px;
+    }
+    .target-badge.correct {
+      background: #dcfce7 !important;
+      color: #15803d !important;
+      border-color: #22c55e !important;
+      box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+    }
+    .target-badge.wrong {
+      background: #fee2e2 !important;
+      color: #dc2626 !important;
+      border-color: #ef4444 !important;
+    }
+
+    .precedence-info {
+      font-size: 0.84rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 4px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .info-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand);
+      display: inline-block;
+    }
+
+    /* Rakam Tuş Takımı (Number Pad) */
+    .number-pad {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 12px 0 16px;
+      flex-wrap: wrap;
+    }
+    .num-btn {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(2, 132, 199, 0.25);
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .num-btn:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: translateY(-1px);
+    }
+    .num-btn.used {
+      background: #f1f5f9;
+      color: #94a3b8;
+      border-color: #e2e8f0;
+    }
+    .num-btn.used::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 5px;
+      height: 5px;
+      background: #0284c7;
+      border-radius: 50%;
+    }
+    .num-btn.erase {
+      width: auto;
+      padding: 0 14px;
+      font-size: 0.88rem;
+      color: var(--danger-text);
+      background: #ffffff;
+      border-color: rgba(220, 38, 38, 0.25);
+    }
+    .num-btn.erase:hover {
+      background: var(--danger);
+      border-color: var(--danger-text);
+    }
+
+    /* Durum / Mesaj Kutusu */
+    .hint-text {
+      min-height: 24px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #475569;
+      margin: 8px auto 14px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      width: fit-content;
+      transition: all 0.2s ease;
+    }
+    .hint-text.success {
+      background: var(--success);
+      color: var(--success-text);
+    }
+    .hint-text.error {
+      background: var(--danger);
+      color: var(--danger-text);
+    }
+
+    /* Aksiyon Butonları */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .action-row .btn {
+      padding: 8px 18px;
+      border-radius: 25px !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+
+    /* Kazanma / Zafer Bildirimi */
+    .win-banner {
+      margin: 14px auto;
+      padding: 12px 24px;
+      border-radius: 25px !important;
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      background: #dcfce7;
+      color: #15803d;
+      border: 1.5px solid #22c55e;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: fit-content !important;
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.25);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .win-banner.hidden { display: none !important; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Modal Pencere */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: left;
+    }
+    .modal-card h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--brand);
+      margin-bottom: 12px;
+    }
+    .modal-card p {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+    .modal-example {
+      background: #f0f9ff;
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 0.9rem;
+      color: #0369a1;
+    }
+    .modal-example strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #0284c7;
+    }
+    .modal-card ol {
+      padding-left: 20px;
+      color: #334155;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .modal-card ol li { margin-bottom: 6px; }
+    .modal-close-btn {
+      display: block !important;
+      margin: 14px auto 0 !important;
+      width: fit-content !important;
+      padding: 8px 24px;
+      border-radius: 25px !important;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .modal-close-btn:hover {
+      background: #0369a1;
+    }
+
+    /* Koyu Tema (body.dark) Standartları */
+    body.dark {
+      background: #0f172a !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .card {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    }
+    body.dark .header-row h1 {
+      color: #f8fafc !important;
+    }
+    body.dark .subtitle {
+      color: #94a3b8 !important;
+    }
+    body.dark .btn-outline {
+      background: #1e293b !important;
+      color: #38bdf8 !important;
+      border-color: #334155 !important;
+    }
+    body.dark .btn-outline:hover {
+      background: rgba(56, 189, 248, 0.12) !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .level-btn {
+      background: #1e293b !important;
+      color: #cbd5e1 !important;
+      border-color: #334155 !important;
+    }
+    body.dark .level-btn:hover {
+      background: rgba(56, 189, 248, 0.1) !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+    }
+    body.dark .status-box {
+      background: #0f172a !important;
+      color: #38bdf8 !important;
+      border: 1px solid #334155;
+    }
+    body.dark .puzzle-select {
+      background: #0f172a !important;
+      color: #e2e8f0 !important;
+      border-color: #334155 !important;
+    }
+    body.dark .nav-arrow-btn {
+      background: #0f172a !important;
+      color: #38bdf8 !important;
+      border-color: #334155 !important;
+    }
+    body.dark .nav-arrow-btn:hover:not(:disabled) {
+      background: rgba(56, 189, 248, 0.12) !important;
+    }
+    body.dark .math-grid {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+    }
+    body.dark .grid-cell {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+    body.dark .grid-cell:hover {
+      background: #253349 !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .grid-cell.selected {
+      background: rgba(56, 189, 248, 0.25) !important;
+      color: #38bdf8 !important;
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3) !important;
+    }
+    body.dark .grid-cell.highlight-rowcol {
+      background: #19273f !important;
+    }
+    body.dark .operator {
+      color: #38bdf8 !important;
+      background: rgba(56, 189, 248, 0.15) !important;
+    }
+    body.dark .target-badge {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    body.dark .target-badge .eq-sign {
+      color: #94a3b8 !important;
+    }
+    body.dark .target-badge.correct {
+      background: rgba(34, 197, 94, 0.2) !important;
+      color: #4ade80 !important;
+      border-color: #22c55e !important;
+    }
+    body.dark .target-badge.wrong {
+      background: rgba(220, 38, 38, 0.2) !important;
+      color: #f87171 !important;
+      border-color: #ef4444 !important;
+    }
+    body.dark .num-btn {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+    body.dark .num-btn:hover {
+      background: rgba(56, 189, 248, 0.15) !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .num-btn.used {
+      background: #0f172a !important;
+      color: #475569 !important;
+      border-color: #1e293b !important;
+    }
+    body.dark .num-btn.used::after {
+      background: #38bdf8 !important;
+    }
+    body.dark .num-btn.erase {
+      color: #f87171 !important;
+      border-color: rgba(239, 68, 68, 0.3) !important;
+    }
+    body.dark .num-btn.erase:hover {
+      background: rgba(239, 68, 68, 0.15) !important;
+    }
+    body.dark .hint-text {
+      color: #cbd5e1 !important;
+    }
+    body.dark .modal-card {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .modal-card h2 {
+      color: #38bdf8 !important;
+    }
+    body.dark .modal-card p, body.dark .modal-card ol {
+      color: #cbd5e1 !important;
+    }
+    body.dark .modal-example {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #38bdf8 !important;
+    }
+
+    @media (max-width: 520px) {
+      .game-wrapper { padding: 12px 8px; }
+      .card { padding: 20px 12px; }
+      .math-grid {
+        grid-template-columns: minmax(40px, 50px) 20px minmax(40px, 50px) 20px minmax(40px, 50px) minmax(48px, 58px);
+        grid-template-rows: minmax(40px, 50px) 20px minmax(40px, 50px) 20px minmax(40px, 50px) minmax(40px, 50px);
+        gap: 4px;
+        padding: 10px;
+      }
+      .grid-cell { font-size: 1.25rem; min-height: 40px; }
+      .target-badge { font-size: 0.95rem; min-height: 40px; }
+      .num-btn { width: 36px; height: 38px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <script src="../../js/theme.js"></script>
+
+  <!-- Site Üst Menüsü --><div class="game-wrapper">
+    <div class="card">
+      <div class="header-row">
+        <div>
+          <h1>İşlem Karesi</h1>
+          <p class="subtitle">Matematiksel mantık ve dört işlem zekâ oyunu</p>
+        </div>
+        <div class="header-actions">
+          <button class="sound-btn btn-outline" id="soundBtn" style="display:none;" aria-label="Ses Açık/Kapalı">
+            <svg id="soundIconOn" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg id="soundIconOff" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+          <button class="rules-btn btn-outline" id="rulesBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Kurallar
+          </button>
+        </div>
+      </div>
+
+      <!-- Zorluk Filtreleri -->
+      <div class="mode-selector">
+        <button class="level-btn active" data-filter="all">Tümü (80)</button>
+        <button class="level-btn" data-filter="easy">Kolay (20)</button>
+        <button class="level-btn" data-filter="medium">Orta (20)</button>
+        <button class="level-btn" data-filter="hard">Zor (20)</button>
+        <button class="level-btn" data-filter="very_hard">Çok Zor (20)</button>
+      </div>
+
+      <!-- Durum Bilgi Çubuğu -->
+      <div class="statusbar">
+        <span class="status-box" id="levelBadge">Kolay Seviye</span>
+        <div class="puzzle-select-wrap">
+          <button class="nav-arrow-btn" id="prevPuzzleBtn" title="Önceki Bulmaca" aria-label="Önceki Bulmaca">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <select id="puzzleSelect" class="puzzle-select" aria-label="Bulmaca Seç"></select>
+          <button class="nav-arrow-btn" id="nextPuzzleBtn" title="Sonraki Bulmaca" aria-label="Sonraki Bulmaca">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <span class="status-box">Süre: <b id="timer">00:00</b></span>
+        <span class="status-box">Çözülen: <b id="solvedCount">0</b> / 80</span>
+      </div>
+
+      <!-- Kazanma Bildirimi -->
+      <div id="winBanner" class="win-banner hidden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Harika! Tüm işlemler doğru çözüldü.</span>
+      </div>
+
+      <!-- 3x3 İşlem Karesi Alanı -->
+      <div class="grid-container">
+        <div class="math-grid" id="mathGrid" role="grid" aria-label="İşlem Karesi Tablosu">
+          <!-- JS ile dinamik oluşturulur -->
+        </div>
+      </div>
+
+      <div class="precedence-info">
+        <span class="info-dot"></span>
+        <span>İşlem önceliği geçerlidir: <b>Çarpma (×)</b> ve <b>bölme (÷)</b> önce yapılır. 1–9 rakamları birer kez kullanılır.</span>
+      </div>
+
+      <!-- Rakam Giriş Tuşları -->
+      <div class="number-pad" id="numberPad" aria-label="Rakam Tuş Takımı">
+        <button class="num-btn" data-val="1">1</button>
+        <button class="num-btn" data-val="2">2</button>
+        <button class="num-btn" data-val="3">3</button>
+        <button class="num-btn" data-val="4">4</button>
+        <button class="num-btn" data-val="5">5</button>
+        <button class="num-btn" data-val="6">6</button>
+        <button class="num-btn" data-val="7">7</button>
+        <button class="num-btn" data-val="8">8</button>
+        <button class="num-btn" data-val="9">9</button>
+        <button class="num-btn erase" data-val="0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+          Sil
+        </button>
+      </div>
+
+      <div id="statusMessage" class="hint-text">Bir kare seçin ve 1-9 arası bir rakam girin.</div>
+
+      <!-- Eylem Butonları -->
+      <div class="action-row">
+        <button id="checkBtn" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Kontrol Et
+        </button>
+        <button id="hintBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          İpucu Al
+        </button>
+        <button id="clearBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Temizle
+        </button>
+        <button id="solutionBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Çözümü Gör
+        </button>
+        <button id="randomBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+          Rastgele
+        </button>
+      </div>
+
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=%C4%B0%C5%9Flem%20Karesi%20Zek%C3%A2%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#İşlemKaresi</span>
+        <span class="tag-badge">#MatematikOyunları</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#MantıkBulmacaları</span>
+        <span class="tag-badge">#Dörtİşlem</span>
+        <span class="tag-badge">#ProblemÇözme</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+      <!-- Yorumlar Bölümü -->
+      <div class="comments-section">
+        <h3 class="comments-header-title">Yorumlar</h3>
+        <div id="commentsList" class="comments-list">
+          <p class="no-comments">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+        </div>
+        <form id="commentForm" class="comment-form" onsubmit="submitComment(event)">
+          <input type="text" id="commentName" placeholder="Adınız Soyadınız" required class="comment-input">
+          <textarea id="commentText" placeholder="Yorumunuzu yazın..." required class="comment-textarea" rows="3"></textarea>
+          <button type="submit" class="btn btn-primary" style="margin: 10px auto 0; display: block;">Yorum Gönder</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Kurallar Modal Penceresi -->
+  <div id="rulesModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
+    <div class="modal-card">
+      <h2 id="rulesModalTitle">İşlem Karesi Nasıl Oynanır?</h2>
+      <p><b>İşlem Karesi</b>, 3×3 karelik ızgara içerisine 1’den 9’a kadar rakamları yerleştirerek satır ve sütunlardaki matematiksel eşitlikleri sağlama oyunudur.</p>
+
+      <div class="modal-example">
+        <strong>Önemli Kural — İşlem Önceliği:</strong>
+        Çarpma (×) ve Bölme (÷) işlemleri, Toplama (+) ve Çıkarma (−) işlemlerinden daima <b>önce</b> yapılır.<br>
+        <i>Örnek:</i> <code>3 + 1 × 5 = 8</code> (Önce 1 × 5 = 5, sonra 3 + 5 = 8)
+      </div>
+
+      <ol>
+        <li><b>Tekrar Yok:</b> 1’den 9’a kadar tüm rakamlar tahtada <u>yalnızca birer kez</u> kullanılabilir.</li>
+        <li><b>Altı Hedef Eşitlik:</b> 3 yatay satır ve 3 dikey sütundaki tüm işlemlerin sonuçları, kenarlardaki hedef kutularındaki sayılara eşit olmalıdır.</li>
+        <li><b>Renk İpuçları:</b> Bir satır veya sütunun sonucu doğru olduğunda hedef kutusu yeşile döner.</li>
+        <li><b>Kontrol ve İpucu:</b> Takıldığınızda "İpucu Al" ile bir hücreyi öğrenebilir, "Kontrol Et" ile durumunuzu görebilirsiniz.</li>
+      </ol>
+      <button id="rulesCloseBtn" class="modal-close-btn">Anladım, Başla</button>
+    </div>
+  </div>
+
+  
+  
+  <div style="text-align:center; margin:18px 0;">
+    <a href="../../sayfalar/post-00069-Islem-Karesi/Veri/islem-karesi-(www.teknolojitasarimci.com).pdf" target="_blank" rel="noopener" class="btn btn-outline download-btn">Çalışma Kâğıdı PDF&rsquo;sini İndir</a>
+  </div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+    <div class="container">
+      <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+      <div class="footer-copyright-text">
+        Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+      </div>
+    </div>
+  </footer>
+  
+  
+  
+
+  <script>
+    (function() {
+      const PUZZLES = [{"grid":[[7,8,9],[6,2,5],[4,3,1]],"h_ops":["+","-","*","-","-","+"],"v_ops":["+","-","-","+","+","-"],"results":[6,7,2,9,9,13],"difficulty":"easy"},{"grid":[[8,9,5],[7,6,2],[4,3,1]],"h_ops":["+","+","*","-","+","+"],"v_ops":["+","-","-","/","+","+"],"results":[22,40,8,11,7,8],"difficulty":"easy"},{"grid":[[5,7,3],[4,2,1],[8,9,6]],"h_ops":["+","-","*","+","-","+"],"v_ops":["-","+","+","-","+","*"],"results":[9,9,5,9,0,9],"difficulty":"easy"},{"grid":[[9,7,3],[1,5,6],[8,4,2]],"h_ops":["+","-","-","+","-","+"],"v_ops":["*","-","*","+","*","-"],"results":[13,2,6,1,39,16],"difficulty":"easy"},{"grid":[[6,3,2],[5,7,4],[1,9,8]],"h_ops":["+","-","+","+","+","-"],"v_ops":["-","*","+","-","+","+"],"results":[7,16,2,1,1,14],"difficulty":"easy"},{"grid":[[2,6,8],[4,3,1],[5,9,7]],"h_ops":["+","-","+","+","*","-"],"v_ops":["*","-","-","+","-","+"],"results":[0,8,38,3,12,14],"difficulty":"easy"},{"grid":[[5,1,8],[6,4,2],[3,9,7]],"h_ops":["*","+","-","/","+","-"],"v_ops":["-","+","+","+","-","+"],"results":[13,4,5,2,14,13],"difficulty":"easy"},{"grid":[[2,9,6],[1,4,8],[5,3,7]],"h_ops":["+","-","-","+","*","+"],"v_ops":["+","+","-","-","*","+"],"results":[5,5,22,8,2,55],"difficulty":"easy"},{"grid":[[7,9,6],[4,2,1],[8,3,5]],"h_ops":["+","+","+","+","-","+"],"v_ops":["*","+","*","+","-","-"],"results":[22,7,10,36,21,0],"difficulty":"easy"},{"grid":[[4,8,7],[5,9,6],[3,1,2]],"h_ops":["-","+","+","-","-","*"],"v_ops":["+","-","*","+","+","-"],"results":[3,8,1,6,73,11],"difficulty":"easy"},{"grid":[[5,4,9],[2,1,3],[7,8,6]],"h_ops":["+","-","+","+","*","-"],"v_ops":["+","+","+","+","-","+"],"results":[0,6,50,14,13,12],"difficulty":"easy"},{"grid":[[2,7,9],[3,8,4],[5,6,1]],"h_ops":["+","-","+","+","*","-"],"v_ops":["+","+","-","+","-","+"],"results":[0,15,29,10,5,6],"difficulty":"easy"},{"grid":[[2,7,6],[3,4,5],[9,8,1]],"h_ops":["+","+","+","+","+","-"],"v_ops":["+","+","+","-","-","+"],"results":[15,12,16,14,3,2],"difficulty":"easy"},{"grid":[[9,3,1],[6,8,2],[5,7,4]],"h_ops":["+","+","*","-","-","+"],"v_ops":["+","+","-","+","+","+"],"results":[13,46,2,20,2,7],"difficulty":"easy"},{"grid":[[8,5,9],[4,3,6],[2,7,1]],"h_ops":["+","-","+","+","+","+"],"v_ops":["+","/","+","-","+","+"],"results":[4,13,10,10,1,16],"difficulty":"easy"},{"grid":[[3,2,4],[9,6,1],[8,5,7]],"h_ops":["+","+","*","/","+","-"],"v_ops":["+","-","+","-","*","+"],"results":[9,54,6,4,3,11],"difficulty":"easy"},{"grid":[[7,6,2],[8,9,4],[5,3,1]],"h_ops":["-","/","+","+","-","+"],"v_ops":["+","-","-","+","*","+"],"results":[4,21,3,10,0,9],"difficulty":"easy"},{"grid":[[6,9,4],[2,1,3],[7,8,5]],"h_ops":["-","+","+","+","+","-"],"v_ops":["+","-","+","+","-","+"],"results":[1,6,10,1,18,6],"difficulty":"easy"},{"grid":[[3,9,8],[6,1,4],[7,5,2]],"h_ops":["+","-","+","-","-","+"],"v_ops":["-","+","+","-","+","+"],"results":[4,3,4,4,5,14],"difficulty":"easy"},{"grid":[[9,3,4],[1,2,6],[7,5,8]],"h_ops":["+","+","*","+","+","-"],"v_ops":["-","+","*","-","*","-"],"results":[16,8,4,15,1,16],"difficulty":"easy"},{"grid":[[7,2,3],[8,1,6],[9,5,4]],"h_ops":["*","+","-","+","-","-"],"v_ops":["+","*","/","*","+","*"],"results":[17,13,0,79,10,27],"difficulty":"medium"},{"grid":[[5,1,3],[4,6,9],[2,8,7]],"h_ops":["-","-","+","*","-","+"],"v_ops":["+","+","*","*","+","*"],"results":[1,58,1,11,48,66],"difficulty":"medium"},{"grid":[[8,1,6],[9,3,5],[4,7,2]],"h_ops":["+","*","-","-","*","+"],"v_ops":["+","-","-","+","*","*"],"results":[14,1,30,13,5,60],"difficulty":"medium"},{"grid":[[3,7,9],[5,4,6],[2,1,8]],"h_ops":["+","-","+","-","*","+"],"v_ops":["+","*","*","+","*","+"],"results":[1,3,10,13,29,62],"difficulty":"medium"},{"grid":[[7,3,1],[9,8,6],[4,2,5]],"h_ops":["-","*","*","-","-","+"],"v_ops":["-","+","+","-","*","*"],"results":[4,66,7,2,9,30],"difficulty":"medium"},{"grid":[[2,4,9],[1,7,6],[8,3,5]],"h_ops":["+","*","*","+","+","+"],"v_ops":["/","*","-","+","+","-"],"results":[38,13,16,16,0,10],"difficulty":"medium"},{"grid":[[3,4,5],[6,1,7],[9,2,8]],"h_ops":["+","-","/","+","+","*"],"v_ops":["*","-","/","/","*","-"],"results":[2,13,25,9,2,27],"difficulty":"medium"},{"grid":[[5,6,7],[1,3,4],[9,8,2]],"h_ops":["+","+","-","+","+","/"],"v_ops":["-","+","+","-","+","-"],"results":[18,2,13,13,1,9],"difficulty":"medium"},{"grid":[[4,2,8],[9,5,3],[6,1,7]],"h_ops":["*","-","*","+","+","+"],"v_ops":["*","-","*","*","*","+"],"results":[0,48,14,30,10,31],"difficulty":"medium"},{"grid":[[7,9,8],[3,2,5],[6,4,1]],"h_ops":["*","+","*","*","*","-"],"v_ops":["-","+","*","*","+","+"],"results":[71,30,23,10,72,14],"difficulty":"medium"},{"grid":[[7,9,1],[3,4,2],[6,5,8]],"h_ops":["+","*","*","*","+","*"],"v_ops":["*","-","+","*","+","+"],"results":[16,24,46,15,29,11],"difficulty":"medium"},{"grid":[[9,2,8],[1,5,6],[3,7,4]],"h_ops":["*","-","+","-","*","+"],"v_ops":["*","+","-","+","*","-"],"results":[10,0,25,12,4,44],"difficulty":"medium"},{"grid":[[6,8,1],[3,5,7],[4,2,9]],"h_ops":["+","*","+","+","-","+"],"v_ops":["*","-","*","+","-","+"],"results":[14,15,11,14,42,3],"difficulty":"medium"},{"grid":[[9,4,6],[3,5,1],[8,7,2]],"h_ops":["+","-","*","*","-","+"],"v_ops":["/","+","*","-","*","+"],"results":[7,15,3,11,13,8],"difficulty":"medium"},{"grid":[[1,8,5],[4,3,2],[9,7,6]],"h_ops":["+","*","*","*","+","+"],"v_ops":["-","+","*","-","+","-"],"results":[41,24,22,6,17,1],"difficulty":"medium"},{"grid":[[5,2,3],[4,9,7],[1,6,8]],"h_ops":["-","+","+","*","*","*"],"v_ops":["*","-","*","+","*","-"],"results":[6,67,48,19,24,13],"difficulty":"medium"},{"grid":[[9,6,8],[4,3,1],[7,5,2]],"h_ops":["+","-","+","*","*","-"],"v_ops":["+","+","/","*","+","+"],"results":[7,7,33,20,10,11],"difficulty":"medium"},{"grid":[[8,6,9],[5,4,3],[2,1,7]],"h_ops":["+","-","+","*","+","*"],"v_ops":["+","+","+","*","+","+"],"results":[5,17,9,15,10,19],"difficulty":"medium"},{"grid":[[1,6,9],[5,2,8],[4,7,3]],"h_ops":["*","*","*","*","+","+"],"v_ops":["*","*","*","*","+","-"],"results":[54,80,14,20,84,14],"difficulty":"medium"},{"grid":[[8,4,2],[3,7,5],[1,6,9]],"h_ops":["+","/","-","+","+","*"],"v_ops":["+","/","*","-","+","+"],"results":[10,1,55,11,22,16],"difficulty":"medium"},{"grid":[[5,7,3],[9,1,8],[2,6,4]],"h_ops":["+","-","/","+","*","/"],"v_ops":["+","+","/","-","*","/"],"results":[9,17,3,16,1,6],"difficulty":"hard"},{"grid":[[2,9,6],[8,5,7],[4,1,3]],"h_ops":["*","/","*","+","+","*"],"v_ops":["*","*","-","*","+","*"],"results":[3,47,7,64,4,27],"difficulty":"hard"},{"grid":[[7,8,2],[9,4,5],[6,3,1]],"h_ops":["+","*","+","*","+","*"],"v_ops":["*","+","+","*","*","*"],"results":[23,29,9,69,20,10],"difficulty":"hard"},{"grid":[[4,9,7],[5,2,1],[6,3,8]],"h_ops":["*","+","*","/","*","+"],"v_ops":["+","+","-","*","/","*"],"results":[43,10,26,15,3,56],"difficulty":"hard"},{"grid":[[5,9,4],[3,8,2],[7,6,1]],"h_ops":["*","-","+","*","*","-"],"v_ops":["*","+","*","/","-","/"],"results":[41,19,41,22,12,2],"difficulty":"hard"},{"grid":[[3,4,8],[9,2,5],[1,7,6]],"h_ops":["*","*","*","*","*","+"],"v_ops":["*","/","*","*","*","-"],"results":[96,90,13,27,56,34],"difficulty":"hard"},{"grid":[[7,4,9],[2,5,6],[3,8,1]],"h_ops":["+","+","+","-","*","*"],"v_ops":["+","*","+","-","+","*"],"results":[20,1,24,13,1,15],"difficulty":"hard"},{"grid":[[8,5,9],[7,4,1],[2,3,6]],"h_ops":["+","-","*","/","*","*"],"v_ops":["*","/","*","-","*","*"],"results":[4,28,36,28,17,54],"difficulty":"hard"},{"grid":[[9,6,7],[8,2,1],[3,4,5]],"h_ops":["+","*","*","*","+","*"],"v_ops":["*","-","*","/","*","+"],"results":[51,16,23,69,3,12],"difficulty":"hard"},{"grid":[[1,9,8],[3,6,5],[7,2,4]],"h_ops":["*","+","*","-","-","+"],"v_ops":["*","*","*","/","*","/"],"results":[17,13,9,21,27,10],"difficulty":"hard"},{"grid":[[9,4,6],[3,8,5],[7,2,1]],"h_ops":["*","-","*","+","*","*"],"v_ops":["/","*","*","+","*","*"],"results":[30,29,14,21,34,30],"difficulty":"hard"},{"grid":[[7,5,3],[8,4,1],[9,6,2]],"h_ops":["+","+","/","*","*","/"],"v_ops":["+","-","*","-","/","*"],"results":[15,2,27,6,14,6],"difficulty":"hard"},{"grid":[[9,5,6],[3,8,7],[2,4,1]],"h_ops":["*","-","*","-","*","/"],"v_ops":["*","*","*","/","*","+"],"results":[39,17,8,54,10,43],"difficulty":"hard"},{"grid":[[9,5,8],[3,1,6],[2,4,7]],"h_ops":["*","-","*","*","+","*"],"v_ops":["+","*","*","*","+","-"],"results":[37,18,30,15,20,7],"difficulty":"hard"},{"grid":[[3,2,9],[4,7,8],[1,5,6]],"h_ops":["*","*","+","-","*","*"],"v_ops":["*","*","*","*","-","+"],"results":[54,3,30,12,70,7],"difficulty":"hard"},{"grid":[[2,4,7],[5,6,3],[8,1,9]],"h_ops":["*","*","*","*","*","*"],"v_ops":["*","-","*","-","*","+"],"results":[56,90,72,2,23,30],"difficulty":"hard"},{"grid":[[9,6,7],[2,5,4],[8,3,1]],"h_ops":["+","*","-","+","-","+"],"v_ops":["*","-","*","+","*","*"],"results":[51,1,6,10,33,28],"difficulty":"hard"},{"grid":[[8,6,9],[7,1,2],[4,5,3]],"h_ops":["*","+","/","*","*","*"],"v_ops":["+","-","*","*","+","-"],"results":[57,14,60,11,30,8],"difficulty":"hard"},{"grid":[[9,6,3],[1,2,7],[4,5,8]],"h_ops":["*","+","*","*","+","*"],"v_ops":["*","*","*","*","+","*"],"results":[57,14,44,36,60,59],"difficulty":"hard"},{"grid":[[7,8,6],[9,5,1],[3,4,2]],"h_ops":["+","*","+","/","*","*"],"v_ops":["*","/","*","+","-","*"],"results":[55,14,24,21,44,4],"difficulty":"hard"},{"grid":[[4,1,7],[9,5,6],[8,2,3]],"h_ops":["*","*","+","*","-","+"],"v_ops":["+","*","*","+","-","/"],"results":[28,39,9,76,7,5],"difficulty":"very_hard"},{"grid":[[8,2,4],[5,6,3],[7,9,1]],"h_ops":["/","-","-","/","*","-"],"v_ops":["*","-","*","-","*","/"],"results":[0,3,62,33,3,12],"difficulty":"very_hard"},{"grid":[[6,7,2],[9,5,8],[3,1,4]],"h_ops":["*","+","*","+","/","*"],"v_ops":["*","-","*","*","*","-"],"results":[44,53,12,51,35,12],"difficulty":"very_hard"},{"grid":[[9,5,1],[2,3,6],[7,4,8]],"h_ops":["*","*","+","*","*","+"],"v_ops":["+","*","*","+","*","*"],"results":[45,20,36,23,19,48],"difficulty":"very_hard"},{"grid":[[8,3,6],[2,5,1],[7,9,4]],"h_ops":["*","+","+","*","*","+"],"v_ops":["/","*","*","+","+","-"],"results":[30,7,67,28,24,3],"difficulty":"very_hard"},{"grid":[[5,1,3],[6,9,8],[7,2,4]],"h_ops":["+","*","*","+","-","+"],"v_ops":["+","*","+","-","+","*"],"results":[8,62,9,47,8,35],"difficulty":"very_hard"},{"grid":[[3,7,8],[4,1,5],[9,6,2]],"h_ops":["*","+","*","*","-","/"],"v_ops":["+","*","-","-","*","*"],"results":[29,20,6,39,0,80],"difficulty":"very_hard"},{"grid":[[9,8,5],[3,4,2],[1,7,6]],"h_ops":["*","+","*","+","*","*"],"v_ops":["/","*","+","*","*","*"],"results":[77,14,42,3,36,60],"difficulty":"very_hard"},{"grid":[[3,5,4],[8,9,1],[2,7,6]],"h_ops":["*","*","*","/","*","*"],"v_ops":["*","/","*","-","*","*"],"results":[60,72,84,12,38,24],"difficulty":"very_hard"},{"grid":[[7,3,5],[8,4,1],[2,6,9]],"h_ops":["*","+","-","/","-","+"],"v_ops":["-","/","*","-","/","*"],"results":[26,4,5,3,6,45],"difficulty":"very_hard"},{"grid":[[1,8,9],[7,5,2],[3,4,6]],"h_ops":["+","+","*","-","*","/"],"v_ops":["+","+","+","*","+","-"],"results":[18,33,2,11,28,5],"difficulty":"very_hard"},{"grid":[[6,5,3],[8,9,7],[2,1,4]],"h_ops":["*","+","*","-","/","+"],"v_ops":["+","/","*","*","*","+"],"results":[33,65,6,10,45,25],"difficulty":"very_hard"},{"grid":[[5,8,9],[3,1,4],[7,2,6]],"h_ops":["+","*","/","*","*","*"],"v_ops":["+","*","/","/","+","-"],"results":[77,12,84,26,4,7],"difficulty":"very_hard"},{"grid":[[4,6,8],[1,3,7],[5,2,9]],"h_ops":["+","*","*","*","*","+"],"v_ops":["/","+","*","*","+","*"],"results":[52,21,19,9,36,71],"difficulty":"very_hard"},{"grid":[[1,9,7],[2,6,5],[3,4,8]],"h_ops":["*","*","*","-","*","*"],"v_ops":["+","*","+","*","*","-"],"results":[63,7,96,7,33,27],"difficulty":"very_hard"},{"grid":[[8,2,4],[3,5,7],[1,9,6]],"h_ops":["*","/","*","-","+","*"],"v_ops":["*","*","+","*","*","-"],"results":[4,8,55,24,47,22],"difficulty":"very_hard"},{"grid":[[8,9,6],[5,3,7],[1,4,2]],"h_ops":["*","+","+","*","*","/"],"v_ops":["*","*","/","*","*","-"],"results":[78,26,2,40,12,40],"difficulty":"very_hard"},{"grid":[[7,1,6],[3,8,4],[9,5,2]],"h_ops":["*","*","*","/","-","-"],"v_ops":["*","+","*","+","*","-"],"results":[42,6,2,30,13,22],"difficulty":"very_hard"},{"grid":[[3,8,5],[6,1,9],[2,4,7]],"h_ops":["+","-","*","*","+","*"],"v_ops":["+","*","*","*","+","*"],"results":[6,54,30,15,32,68],"difficulty":"very_hard"},{"grid":[[5,9,8],[6,4,1],[3,2,7]],"h_ops":["*","-","-","/","*","*"],"v_ops":["*","*","*","/","/","*"],"results":[37,2,42,90,18,56],"difficulty":"very_hard"}];
+
+      const DIFFICULTY_LABELS = {
+        'easy': 'Kolay',
+        'medium': 'Orta',
+        'hard': 'Zor',
+        'very_hard': 'Çok Zor'
+      };
+
+      // Web Audio API Ses Sentezleyici
+      let audioCtx = null;
+      let soundEnabled = true;
+
+      function initAudio() {
+        if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+
+      function playTone(freq, type, duration, gainVal) {
+        if (!soundEnabled || localStorage.getItem('tt-sound') === 'off') return;
+        try {
+          initAudio();
+          if (!audioCtx) return;
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(gainVal || 0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      const Sounds = {
+        click: () => playTone(540, 'sine', 0.08, 0.08),
+        place: () => playTone(440, 'triangle', 0.1, 0.1),
+        erase: () => playTone(300, 'sawtooth', 0.08, 0.06),
+        targetSuccess: () => {
+          playTone(587.33, 'sine', 0.12, 0.1);
+          setTimeout(() => playTone(880, 'sine', 0.18, 0.12), 80);
+        },
+        puzzleComplete: () => {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            setTimeout(() => playTone(freq, 'triangle', 0.25, 0.15), i * 120);
+          });
+        },
+        error: () => {
+          playTone(220, 'sawtooth', 0.15, 0.1);
+          setTimeout(() => playTone(180, 'sawtooth', 0.2, 0.1), 100);
+        }
+      };
+
+      // Oyun Durumu
+      const state = {
+        filter: 'all',
+        currentIndex: 0,
+        values: Array(9).fill(''),
+        selectedCell: 0,
+        solutionMode: false,
+        solvedSet: new Set(),
+        timerSeconds: 0,
+        timerInterval: null
+      };
+
+      // LocalStorage Çözülenler Yükleme
+      try {
+        const saved = localStorage.getItem('islem-karesi-solved');
+        if (saved) {
+          const list = JSON.parse(saved);
+          if (Array.isArray(list)) state.solvedSet = new Set(list);
+        }
+      } catch (e) {}
+
+      // İşlem Önceliği Hesaplayıcı
+      function applyOp(a, op, b) {
+        if (op === '+') return a + b;
+        if (op === '-') return a - b;
+        if (op === '*' || op === '×') return a * b;
+        if (op === '/' || op === '÷') {
+          return (b !== 0 && a % b === 0) ? (a / b) : null;
+        }
+        return null;
+      }
+
+      function evaluateTriple(a, op1, b, op2, c) {
+        if (a === null || b === null || c === null) return null;
+        const isHigh1 = (op1 === '*' || op1 === '×' || op1 === '/' || op1 === '÷');
+        const isHigh2 = (op2 === '*' || op2 === '×' || op2 === '/' || op2 === '÷');
+
+        if (isHigh1 && !isHigh2) {
+          const f = applyOp(a, op1, b);
+          return f === null ? null : applyOp(f, op2, c);
+        }
+        if (!isHigh1 && isHigh2) {
+          const s = applyOp(b, op2, c);
+          return s === null ? null : applyOp(a, op1, s);
+        }
+        const f = applyOp(a, op1, b);
+        return f === null ? null : applyOp(f, op2, c);
+      }
+
+      function opDisplay(op) {
+        if (op === '*') return '×';
+        if (op === '/') return '÷';
+        if (op === '-') return '−';
+        return op;
+      }
+
+      // Filtrelenmiş indeks listesi
+      function getFilteredIndices() {
+        if (state.filter === 'all') return PUZZLES.map((_, i) => i);
+        return PUZZLES.reduce((acc, p, i) => {
+          if (p.difficulty === state.filter) acc.push(i);
+          return acc;
+        }, []);
+      }
+
+      // DOM Referansları
+      const mathGrid = document.getElementById('mathGrid');
+      const levelBadge = document.getElementById('levelBadge');
+      const puzzleSelect = document.getElementById('puzzleSelect');
+      const prevBtn = document.getElementById('prevPuzzleBtn');
+      const nextBtn = document.getElementById('nextPuzzleBtn');
+      const timerEl = document.getElementById('timer');
+      const solvedCountEl = document.getElementById('solvedCount');
+      const statusMsg = document.getElementById('statusMessage');
+      const winBanner = document.getElementById('winBanner');
+      const soundBtn = document.getElementById('soundBtn');
+      const soundIconOn = document.getElementById('soundIconOn');
+      const soundIconOff = document.getElementById('soundIconOff');
+
+      // Sayaç Yönetimi
+      function startTimer() {
+        clearInterval(state.timerInterval);
+        state.timerSeconds = 0;
+        updateTimerDisplay();
+        state.timerInterval = setInterval(() => {
+          state.timerSeconds++;
+          updateTimerDisplay();
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const m = String(Math.floor(state.timerSeconds / 60)).padStart(2, '0');
+        const s = String(state.timerSeconds % 60).padStart(2, '0');
+        timerEl.textContent = `${m}:${s}`;
+      }
+
+      // Dropdown Listesini Doldur
+      function populatePuzzleSelect() {
+        const indices = getFilteredIndices();
+        puzzleSelect.innerHTML = '';
+        indices.forEach((idx) => {
+          const opt = document.createElement('option');
+          opt.value = idx;
+          const isSolved = state.solvedSet.has(idx);
+          const diffText = DIFFICULTY_LABELS[PUZZLES[idx].difficulty] || '';
+          opt.textContent = `Bulmaca ${idx + 1} (${diffText})${isSolved ? ' ✓' : ''}`;
+          if (idx === state.currentIndex) opt.selected = true;
+          puzzleSelect.appendChild(opt);
+        });
+      }
+
+      // Tabloyu Oluştur (3x3 Hücreler, Operatörler, Hedefler)
+      function buildGrid() {
+        mathGrid.innerHTML = '';
+        const puzzle = PUZZLES[state.currentIndex];
+
+        // 1. Satır: C00 - H0 - C01 - H1 - C02 - Target R0
+        addCell(0, 0, 1, 1);
+        addOp(puzzle.h_ops[0], 1, 2);
+        addCell(0, 1, 1, 3);
+        addOp(puzzle.h_ops[1], 1, 4);
+        addCell(0, 2, 1, 5);
+        addTarget('row', 0, puzzle.results[0], 1, 6);
+
+        // 2. Satır: V0 - (boş) - V2 - (boş) - V4 - (boş)
+        addOp(puzzle.v_ops[0], 2, 1);
+        addOp(puzzle.v_ops[2], 2, 3);
+        addOp(puzzle.v_ops[4], 2, 5);
+
+        // 3. Satır: C10 - H2 - C11 - H3 - C12 - Target R1
+        addCell(1, 0, 3, 1);
+        addOp(puzzle.h_ops[2], 3, 2);
+        addCell(1, 1, 3, 3);
+        addOp(puzzle.h_ops[3], 3, 4);
+        addCell(1, 2, 3, 5);
+        addTarget('row', 1, puzzle.results[1], 3, 6);
+
+        // 4. Satır: V1 - (boş) - V3 - (boş) - V5 - (boş)
+        addOp(puzzle.v_ops[1], 4, 1);
+        addOp(puzzle.v_ops[3], 4, 3);
+        addOp(puzzle.v_ops[5], 4, 5);
+
+        // 5. Satır: C20 - H4 - C21 - H5 - C22 - Target R2
+        addCell(2, 0, 5, 1);
+        addOp(puzzle.h_ops[4], 5, 2);
+        addCell(2, 1, 5, 3);
+        addOp(puzzle.h_ops[5], 5, 4);
+        addCell(2, 2, 5, 5);
+        addTarget('row', 2, puzzle.results[2], 5, 6);
+
+        // 6. Satır: Target C0 - (boş) - Target C1 - (boş) - Target C2 - (boş)
+        addTarget('col', 0, puzzle.results[3], 6, 1);
+        addTarget('col', 1, puzzle.results[4], 6, 3);
+        addTarget('col', 2, puzzle.results[5], 6, 5);
+      }
+
+      function addCell(row, col, gridRow, gridCol) {
+        const index = row * 3 + col;
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell';
+        cell.id = `cell-${index}`;
+        cell.dataset.index = index;
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+        cell.style.gridRow = gridRow;
+        cell.style.gridColumn = gridCol;
+        cell.setAttribute('tabindex', '0');
+        cell.setAttribute('role', 'gridcell');
+        cell.setAttribute('aria-label', `${row + 1}. satır ${col + 1}. sütun hücresi`);
+
+        cell.addEventListener('click', () => {
+          selectCell(index);
+          Sounds.click();
+        });
+
+        mathGrid.appendChild(cell);
+      }
+
+      function addOp(op, gridRow, gridCol) {
+        const el = document.createElement('div');
+        el.className = 'operator';
+        el.textContent = opDisplay(op);
+        el.style.gridRow = gridRow;
+        el.style.gridColumn = gridCol;
+        mathGrid.appendChild(el);
+      }
+
+      function addTarget(type, index, value, gridRow, gridCol) {
+        const el = document.createElement('div');
+        el.className = 'target-badge';
+        el.id = `target-${type}-${index}`;
+        el.style.gridRow = gridRow;
+        el.style.gridColumn = gridCol;
+        el.innerHTML = `<span class="eq-sign">=</span><span>${value}</span>`;
+        mathGrid.appendChild(el);
+      }
+
+      function selectCell(index) {
+        state.selectedCell = index;
+        const selRow = Math.floor(index / 3);
+        const selCol = index % 3;
+
+        document.querySelectorAll('.grid-cell').forEach((c) => {
+          const idx = Number(c.dataset.index);
+          const r = Math.floor(idx / 3);
+          const cl = idx % 3;
+          c.classList.toggle('selected', idx === index);
+          c.classList.toggle('highlight-rowcol', idx !== index && (r === selRow || cl === selCol));
+        });
+      }
+
+      function updateBoardDisplay() {
+        const puzzle = PUZZLES[state.currentIndex];
+        const cells = document.querySelectorAll('.grid-cell');
+        const usedDigits = new Set();
+
+        cells.forEach((cell) => {
+          const index = Number(cell.dataset.index);
+          const row = Math.floor(index / 3);
+          const col = index % 3;
+
+          let val = '';
+          if (state.solutionMode) {
+            val = String(puzzle.grid[row][col]);
+            cell.classList.add('solution-mode');
+          } else {
+            val = state.values[index];
+            cell.classList.remove('solution-mode');
+          }
+
+          cell.textContent = val;
+          if (val && /^[1-9]$/.test(val)) usedDigits.add(val);
+        });
+
+        // Numpad butonlarının kullanıldı durumunu güncelle
+        document.querySelectorAll('.num-btn[data-val]').forEach((btn) => {
+          const v = btn.dataset.val;
+          if (v !== '0') {
+            btn.classList.toggle('used', usedDigits.has(v));
+          }
+        });
+      }
+
+      function clearTargetHighlights() {
+        document.querySelectorAll('.target-badge').forEach((el) => {
+          el.classList.remove('correct', 'wrong');
+        });
+      }
+
+      function setNumber(val) {
+        if (state.solutionMode) return;
+        const index = state.selectedCell;
+        if (index < 0 || index > 8) return;
+
+        if (val === 0 || val === '' || val === '0') {
+          state.values[index] = '';
+          Sounds.erase();
+        } else {
+          state.values[index] = String(val);
+          Sounds.place();
+        }
+
+        // Yeni bir rakam girildiğinde eski doğrulama şeritlerini temizle
+        winBanner.classList.add('hidden');
+        clearTargetHighlights();
+
+        updateBoardDisplay();
+
+        // Otomatik bir sonraki boş hücreye geçiş
+        if (val !== 0 && val !== '') {
+          findNextEmptyCell(index);
+        }
+      }
+
+      function findNextEmptyCell(fromIndex) {
+        for (let step = 1; step < 9; step++) {
+          const nextIdx = (fromIndex + step) % 9;
+          if (!state.values[nextIdx]) {
+            selectCell(nextIdx);
+            break;
+          }
+        }
+      }
+
+      // Hedefleri ve Eşitlikleri Doğrula (Sadece Kontrol Et tıklandığında)
+      function validateTargets(showFeedback) {
+        const puzzle = PUZZLES[state.currentIndex];
+        const gridVals = Array.from({ length: 3 }, (_, r) =>
+          Array.from({ length: 3 }, (_, c) => {
+            const v = state.values[r * 3 + c];
+            return v ? Number(v) : null;
+          })
+        );
+
+        let correctCount = 0;
+        let filledCount = 0;
+
+        // Satırları doğrula
+        for (let r = 0; r < 3; r++) {
+          const targetEl = document.getElementById(`target-row-${r}`);
+          const a = gridVals[r][0];
+          const b = gridVals[r][1];
+          const c = gridVals[r][2];
+          const op1 = puzzle.h_ops[r * 2];
+          const op2 = puzzle.h_ops[r * 2 + 1];
+          const expected = puzzle.results[r];
+
+          if (a !== null && b !== null && c !== null) {
+            filledCount++;
+            const calc = evaluateTriple(a, op1, b, op2, c);
+            if (calc === expected) {
+              if (targetEl) {
+                targetEl.classList.add('correct');
+                targetEl.classList.remove('wrong');
+              }
+              correctCount++;
+            } else if (targetEl) {
+              targetEl.classList.remove('correct');
+              if (showFeedback) targetEl.classList.add('wrong');
+            }
+          } else if (targetEl) {
+            targetEl.classList.remove('correct');
+            if (showFeedback) targetEl.classList.add('wrong');
+          }
+        }
+
+        // Sütunları doğrula
+        for (let c = 0; c < 3; c++) {
+          const targetEl = document.getElementById(`target-col-${c}`);
+          const a = gridVals[0][c];
+          const b = gridVals[1][c];
+          const cVal = gridVals[2][c];
+          const op1 = puzzle.v_ops[c * 2];
+          const op2 = puzzle.v_ops[c * 2 + 1];
+          const expected = puzzle.results[3 + c];
+
+          if (a !== null && b !== null && cVal !== null) {
+            filledCount++;
+            const calc = evaluateTriple(a, op1, b, op2, cVal);
+            if (calc === expected) {
+              if (targetEl) {
+                targetEl.classList.add('correct');
+                targetEl.classList.remove('wrong');
+              }
+              correctCount++;
+            } else if (targetEl) {
+              targetEl.classList.remove('correct');
+              if (showFeedback) targetEl.classList.add('wrong');
+            }
+          } else if (targetEl) {
+            targetEl.classList.remove('correct');
+            if (showFeedback) targetEl.classList.add('wrong');
+          }
+        }
+
+        const isFilled = state.values.every((v) => /^[1-9]$/.test(v));
+        const uniqueSet = new Set(state.values.filter(Boolean));
+        const hasUniqueDigits = uniqueSet.size === 9;
+        const allMatched = (correctCount === 6) && isFilled && hasUniqueDigits;
+
+        if (allMatched) {
+          handleVictory();
+        } else if (showFeedback) {
+          if (!isFilled) {
+            statusMsg.textContent = `${uniqueSet.size} / 9 rakam girildi. ${correctCount} / 6 hedef doğru. Kalan kutuları doldurun.`;
+            statusMsg.className = 'hint-text';
+            Sounds.click();
+          } else if (!hasUniqueDigits) {
+            statusMsg.textContent = 'Bazı rakamlar birden fazla kullanılmış. Her rakamı bir kez kullanın!';
+            statusMsg.className = 'hint-text error';
+            Sounds.error();
+          } else {
+            statusMsg.textContent = `${correctCount} / 6 hedef doğru. Kırmızı hedeflerdeki eşitlikleri kontrol edin.`;
+            statusMsg.className = 'hint-text error';
+            Sounds.error();
+          }
+        }
+      }
+
+      function handleVictory() {
+        winBanner.classList.remove('hidden');
+        statusMsg.textContent = 'Tebrikler! Bulmaca eksiksiz ve doğru çözüldü!';
+        statusMsg.className = 'hint-text success';
+        clearInterval(state.timerInterval);
+        Sounds.puzzleComplete();
+
+        if (!state.solvedSet.has(state.currentIndex)) {
+          state.solvedSet.add(state.currentIndex);
+          try {
+            localStorage.setItem('islem-karesi-solved', JSON.stringify(Array.from(state.solvedSet)));
+          } catch (e) {}
+          solvedCountEl.textContent = state.solvedSet.size;
+          populatePuzzleSelect();
+        }
+      }
+
+      // Bulmaca Yükle
+      function loadPuzzle(index) {
+        state.currentIndex = index;
+        state.values = Array(9).fill('');
+        state.solutionMode = false;
+        state.selectedCell = 0;
+        document.getElementById('solutionBtn').innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Çözümü Gör
+        `;
+        winBanner.classList.add('hidden');
+        statusMsg.textContent = 'Bir kare seçin ve 1-9 arası bir rakam girin.';
+        statusMsg.className = 'hint-text';
+
+        const puzzle = PUZZLES[index];
+        levelBadge.textContent = `${DIFFICULTY_LABELS[puzzle.difficulty] || 'Standart'} Seviye (Bulmaca ${index + 1})`;
+
+        buildGrid();
+        selectCell(0);
+        updateBoardDisplay();
+        populatePuzzleSelect();
+        startTimer();
+
+        // Önceki/Sonraki buton durumları
+        const indices = getFilteredIndices();
+        const pos = indices.indexOf(index);
+        prevBtn.disabled = (pos <= 0);
+        nextBtn.disabled = (pos >= indices.length - 1);
+      }
+
+      // İpucu Verme
+      function giveHint() {
+        if (state.solutionMode) return;
+        const puzzle = PUZZLES[state.currentIndex];
+        const candidates = [];
+
+        for (let i = 0; i < 9; i++) {
+          const r = Math.floor(i / 3);
+          const c = i % 3;
+          const correctVal = String(puzzle.grid[r][c]);
+          if (state.values[i] !== correctVal) {
+            candidates.push(i);
+          }
+        }
+
+        if (candidates.length === 0) return;
+
+        const chosenIdx = candidates[Math.floor(Math.random() * candidates.length)];
+        const r = Math.floor(chosenIdx / 3);
+        const c = chosenIdx % 3;
+        state.values[chosenIdx] = String(puzzle.grid[r][c]);
+        selectCell(chosenIdx);
+        updateBoardDisplay();
+        Sounds.targetSuccess();
+        statusMsg.textContent = 'Bir ipucu yerleştirildi!';
+        statusMsg.className = 'hint-text success';
+      }
+
+      // Temizleme
+      function clearBoard() {
+        if (state.solutionMode) return;
+        state.values = Array(9).fill('');
+        winBanner.classList.add('hidden');
+        statusMsg.textContent = 'Tahta temizlendi.';
+        statusMsg.className = 'hint-text';
+        updateBoardDisplay();
+        Sounds.erase();
+      }
+
+      // Çözümü Göster / Gizle
+      function toggleSolution() {
+        state.solutionMode = !state.solutionMode;
+        const btn = document.getElementById('solutionBtn');
+        if (state.solutionMode) {
+          btn.innerHTML = `
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            Çözümü Gizle
+          `;
+          statusMsg.textContent = 'Çözüm gösteriliyor. Gizleyip kendiniz çözebilirsiniz.';
+        } else {
+          btn.innerHTML = `
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Çözümü Gör
+          `;
+          statusMsg.textContent = 'Kendi çözümünüze geri dönüldü.';
+        }
+        updateBoardDisplay();
+      }
+
+      // Olay Dinleyicileri
+      document.querySelectorAll('.level-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.level-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.filter = btn.dataset.filter;
+          const indices = getFilteredIndices();
+          loadPuzzle(indices[0] || 0);
+        });
+      });
+
+      puzzleSelect.addEventListener('change', (e) => {
+        loadPuzzle(Number(e.target.value));
+      });
+
+      prevBtn.addEventListener('click', () => {
+        const indices = getFilteredIndices();
+        const pos = indices.indexOf(state.currentIndex);
+        if (pos > 0) loadPuzzle(indices[pos - 1]);
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const indices = getFilteredIndices();
+        const pos = indices.indexOf(state.currentIndex);
+        if (pos < indices.length - 1) loadPuzzle(indices[pos + 1]);
+      });
+
+      document.getElementById('randomBtn').addEventListener('click', () => {
+        const indices = getFilteredIndices().filter((i) => i !== state.currentIndex);
+        if (indices.length > 0) {
+          const rand = indices[Math.floor(Math.random() * indices.length)];
+          loadPuzzle(rand);
+        }
+      });
+
+      document.getElementById('checkBtn').addEventListener('click', () => {
+        validateTargets(true);
+        Sounds.click();
+      });
+
+      document.getElementById('hintBtn').addEventListener('click', giveHint);
+      document.getElementById('clearBtn').addEventListener('click', clearBoard);
+      document.getElementById('solutionBtn').addEventListener('click', toggleSolution);
+
+      // Numpad Tıklamaları
+      document.querySelectorAll('.num-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          setNumber(Number(btn.dataset.val));
+        });
+      });
+
+      // Klavye Dinleyicisi
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        if (/^[1-9]$/.test(e.key)) {
+          setNumber(Number(e.key));
+        } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
+          setNumber(0);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          selectCell((state.selectedCell + 1) % 9);
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          selectCell((state.selectedCell - 1 + 9) % 9);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectCell((state.selectedCell + 3) % 9);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectCell((state.selectedCell - 3 + 9) % 9);
+        }
+      });
+
+      // Ses Butonu
+      soundBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        soundIconOn.style.display = soundEnabled ? 'block' : 'none';
+        soundIconOff.style.display = soundEnabled ? 'none' : 'block';
+        if (soundEnabled) Sounds.click();
+      });
+
+      // Kurallar Modal
+      const rulesModal = document.getElementById('rulesModal');
+      document.getElementById('rulesBtn').addEventListener('click', () => {
+        rulesModal.classList.add('open');
+      });
+      document.getElementById('rulesCloseBtn').addEventListener('click', () => {
+        rulesModal.classList.remove('open');
+      });
+      rulesModal.addEventListener('click', (e) => {
+        if (e.target === rulesModal) rulesModal.classList.remove('open');
+      });
+
+      // Başlatma
+      solvedCountEl.textContent = state.solvedSet.size;
+      loadPuzzle(0);
+    })();
+  </script>
+
+  
+
+<script src="../../js/menu.js" defer></script>  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

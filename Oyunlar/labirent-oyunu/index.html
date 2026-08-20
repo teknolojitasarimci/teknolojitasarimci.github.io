@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labirent Bulmacaları - teknolojitasarimci</title>
+<link rel="stylesheet" href="../../css/style.css">
+<style>
+:root {
+  --brand: #0284c7;
+  --brand-dark: #0369a1;
+  --brand-light: #e0f2fe;
+  --brand-grad: #0284c7;
+  --text: #1e293b;
+  --muted: #64748b;
+  --line-base: #cbd5e1;
+  --shadow: 0 16px 40px rgba(2, 132, 199, 0.18);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f8fafc;
+  color: var(--text);
+}
+.game-wrapper {
+    width: 100%;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 24px 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+.card {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+  width: 100%;
+}
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+h1 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: var(--brand-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 2px 0 12px;
+  text-align: left;
+}
+.btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 25px;
+  transition: all 0.2s ease;
+}
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+.btn-primary {
+  background: var(--brand-grad);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--brand-dark); }
+.btn-outline {
+  background: #fff;
+  color: var(--brand-dark);
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+}
+.btn-outline:hover { background: var(--brand-light); }
+.btn-light {
+  background: #fff;
+  color: var(--brand-dark);
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+}
+.btn-light:hover { background: var(--brand-light); }
+.btn.active { background: var(--brand-grad); color: #fff; border-color: transparent; }
+.layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  margin-top: 8px;
+}
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.side-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(44, 62, 80, 0.06);
+}
+.side-card h3 {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.side-card h4 { font-size: 0.8rem; color: var(--text); margin-bottom: 8px; }
+.side-card p { font-size: 0.75rem; line-height: 1.5; color: #475569; margin-bottom: 6px; }
+.side-card p b { color: var(--text); }
+.diff-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  font-size: 0.78rem;
+  margin-bottom: 8px;
+  padding: 9px 14px;
+}
+.diff-btn small { font-size: 0.68rem; opacity: 0.75; }
+.board-wrap {
+  position: relative;
+  border: 2px solid #1e293b;
+  border-radius: 12px;
+  background: #fffdf8;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.board-wrap canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+}
+.board-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #475569;
+}
+.board-meta .giris { color: #047857; }
+.board-meta .cikis { color: #b91c1c; text-transform: uppercase; letter-spacing: 0.08em; }
+.board-meta .zorluk { text-transform: uppercase; color: #b91c1c; letter-spacing: 0.08em; }
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.status-row .msg { display: flex; align-items: center; gap: 6px; color: #1e293b; font-weight: 500; }
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 25px;
+  border: 1.5px solid rgba(2, 132, 199, 0.35);
+  color: var(--brand-dark);
+  background: #fff;
+}
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(2, 132, 199, 0.35);
+  background: #fff;
+  color: var(--brand-dark);
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn:hover { background: var(--brand-light); }
+.icon-btn .ico-vol-off { display: none; }
+.icon-btn.muted .ico-vol-on { display: none; }
+.icon-btn.muted .ico-vol-off { display: inline; }
+.dpad {
+  display: none;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(3, 48px);
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+}
+.dpad button {
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text);
+}
+.dpad button:hover { background: var(--brand-light); }
+.dpad .center { display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.05em; }
+.winner-banner {
+  margin-top: 16px;
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+.winner-banner h2 { font-size: 0.95rem; color: #065f46; margin-bottom: 4px; }
+.winner-banner p { font-size: 0.78rem; color: #047857; margin-bottom: 10px; }
+.hidden { display: none; }
+footer { margin-top: 8px; }
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+  .dpad { display: grid; }
+  .side-panel { order: 2; }
+}
+@media (min-width: 721px) {
+  .dpad { display: none; }
+}
+
+/* ==========================================================================
+   OYUNLAR STANDART KONTRAST VE BUTON DÜZENİ (Tüm Oyunlar İçin Evrensel)
+   ========================================================================== */
+
+/* 1. Başlama / Sıfırlama Butonları (Asla boydan boya değil, ortalanmış 25px hap buton) */
+button#reset-button,
+button#btn-reset,
+button#btn-restart,
+button#start-btn,
+button#restart-btn,
+.btn-reset,
+.btn-restart,
+.btn-start,
+.game-btn-primary,
+.main-game-btn {
+    width: auto !important;
+    min-width: 170px !important;
+    max-width: 240px !important;
+    margin: 14px auto !important;
+    display: block !important;
+    padding: 10px 24px !important;
+    border-radius: 25px !important;
+    border: none !important;
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 15px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25) !important;
+    transition: all 0.2s ease !important;
+}
+
+button#reset-button:hover,
+button#btn-reset:hover,
+button#btn-restart:hover,
+button#start-btn:hover,
+.btn-reset:hover,
+.btn-restart:hover,
+.btn-start:hover {
+    background: #0369a1 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
+}
+
+body.dark button#reset-button,
+body.dark button#btn-reset,
+body.dark button#btn-restart,
+body.dark button#start-btn,
+body.dark button#restart-btn,
+body.dark .btn-reset,
+body.dark .btn-restart,
+body.dark .btn-start,
+body.dark .game-btn-primary,
+body.dark .main-game-btn {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+}
+
+body.dark button#reset-button:hover,
+body.dark button#btn-reset:hover,
+body.dark button#btn-restart:hover,
+body.dark .btn-reset:hover,
+body.dark .btn-start:hover {
+    background: #7dd3e8 !important;
+}
+
+/* 2. Mod & Boyut Seçici Butonları (Yüksek Kontrast & Düz Renk) */
+.btn-mode,
+.size-btn,
+.level-btn,
+.amt-btn,
+.controls span,
+.option-btn {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #334155 !important;
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-mode.active,
+.size-btn.active,
+.level-btn.active,
+.amt-btn.active,
+.controls input[type="radio"]:checked + span,
+.option-btn.active {
+    background: #0284c7 !important;
+    border-color: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+body.dark .btn-mode,
+body.dark .size-btn,
+body.dark .level-btn,
+body.dark .amt-btn,
+body.dark .controls span,
+body.dark .option-btn {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark .btn-mode.active,
+body.dark .size-btn.active,
+body.dark .level-btn.active,
+body.dark .amt-btn.active,
+body.dark .controls input[type="radio"]:checked + span,
+body.dark .option-btn.active {
+    background: #38bdf8 !important;
+    border-color: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+/* 3. Durum Çubuğu / Sıra Göstergesi */
+.status-badge,
+.status-box,
+.statusbar,
+.turn-badge,
+#status-text,
+#turn-indicator {
+    background: #e0f2fe !important;
+    border: 1px solid rgba(2, 132, 199, 0.2) !important;
+    color: #0369a1 !important;
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+}
+
+body.dark .status-badge,
+body.dark .status-box,
+body.dark .statusbar,
+body.dark .turn-badge,
+body.dark #status-text,
+body.dark #turn-indicator {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #38bdf8 !important;
+    font-weight: 700 !important;
+}
+
+/* 4. Skor Panelleri */
+.score-card,
+.score-box,
+.scoreboard {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+    border-radius: 14px !important;
+}
+
+body.dark .score-card,
+body.dark .score-box,
+body.dark .scoreboard {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+/* 5. Kurallar / Yardım Butonları */
+.action-btn,
+.rules-btn,
+.btn-rules {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0369a1 !important;
+    border-radius: 20px !important;
+}
+
+body.dark .action-btn,
+body.dark .rules-btn,
+body.dark .btn-rules {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #38bdf8 !important;
+}
+
+
+/* ==========================================================================
+   STANDART KURALLAR VE AKSİYON BUTONLARI (Tüm Oyunlar İçin Şık 25px Hap Buton)
+   ========================================================================== */
+.action-btn,
+.btn-rules,
+.rules-btn,
+#btn-rules,
+#rules-btn,
+button#rules-btn,
+button.rules-btn,
+.rules-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 7px 18px !important;
+    min-width: 95px !important;
+    height: 36px !important;
+    border-radius: 25px !important;
+    border: 1.5px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #0ea5e9 !important;
+    font-weight: 800 !important;
+    font-size: 13.5px !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+.action-btn:hover,
+.btn-rules:hover,
+.rules-btn:hover,
+#btn-rules:hover,
+#rules-btn:hover,
+.rules-trigger:hover {
+    background: #e0f2fe !important;
+    border-color: #0ea5e9 !important;
+    color: #0284c7 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2) !important;
+}
+
+body.dark .action-btn,
+body.dark .btn-rules,
+body.dark .rules-btn,
+body.dark #btn-rules,
+body.dark #rules-btn,
+body.dark button#rules-btn,
+body.dark button.rules-btn,
+body.dark .rules-trigger {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark .action-btn:hover,
+body.dark .btn-rules:hover,
+body.dark .rules-btn:hover,
+body.dark #btn-rules:hover,
+body.dark #rules-btn:hover,
+body.dark .rules-trigger:hover {
+    background: #1e293b !important;
+    border-color: #38bdf8 !important;
+    color: #7dd3e8 !important;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+
+/* ==========================================================================
+   STANDART ORTALANMIŞ BUTONLAR VE MODAL ONAY BUTONLARI (Boydan boya yasak)
+   ========================================================================== */
+.modal-footer,
+.modal-actions,
+.dialog-footer,
+.rules-modal-footer,
+.rules-footer {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 18px !important;
+    padding-top: 10px !important;
+    text-align: center !important;
+}
+
+.modal-footer button,
+.modal-actions button,
+.modal-close-btn,
+.btn-understand,
+#btn-understand,
+#rules-close-btn,
+#btn-rules-close,
+.rules-modal-close,
+.rules-close,
+button.btn-understand,
+button.modal-close-btn,
+#restartBtn,
+#resetBtn,
+#startBtn,
+.btn-start,
+.btn-reset,
+.btn-restart {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 160px !important;
+    max-width: 240px !important;
+    width: auto !important;
+    margin: 12px auto !important;
+    padding: 10px 24px !important;
+    border-radius: 25px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+
+/* ==========================================================================
+   ANLADIM / OYUNA BAŞLA BUTONU (Kesinlikle Boydan Boya Değil, Ortalanmış 25px Hap Buton)
+   ========================================================================== */
+.modal-close,
+#rulesClose,
+#closeRulesBtn,
+#rules-close,
+.btn-understand,
+#btn-understand,
+.modal-close-btn,
+button.modal-close,
+button#rulesClose,
+button#closeRulesBtn,
+button#rules-close {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 170px !important;
+    max-width: 240px !important;
+    width: auto !important;
+    margin: 22px auto 6px auto !important;
+    padding: 11px 26px !important;
+    border-radius: 25px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    background: #0ea5e9 !important;
+    color: #ffffff !important;
+    border: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3) !important;
+    transition: all 0.25s ease !important;
+    box-sizing: border-box !important;
+}
+
+.modal-close:hover,
+#rulesClose:hover,
+#closeRulesBtn:hover,
+#rules-close:hover,
+.btn-understand:hover,
+#btn-understand:hover {
+    background: #0284c7 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.4) !important;
+}
+
+body.dark .modal-close,
+body.dark #rulesClose,
+body.dark #closeRulesBtn,
+body.dark #rules-close,
+body.dark .btn-understand,
+body.dark #btn-understand {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+}
+
+body.dark .modal-close:hover,
+body.dark #rulesClose:hover,
+body.dark #closeRulesBtn:hover,
+body.dark #rules-close:hover {
+    background: #7dd3e8 !important;
+}
+
+
+body.dark .modal ol,
+body.dark .modal ol li,
+body.dark .modal ul,
+body.dark .modal ul li,
+body.dark .modal p,
+body.dark .rules-content,
+body.dark .rules-modal ol,
+body.dark .rules-modal ol li {
+    color: #e2e8f0 !important;
+}
+body.dark .subtitle, body.dark p.subtitle {
+    color: #cbd5e1 !important;
+}
+body.dark #counts, body.dark #turn, body.dark .statusbar {
+    color: #e2e8f0 !important;
+}
+
+
+
+
+
+.status, .game-info, .statusbar-wrap, .info-row, .header-row,
+.mode-selector, .mode-row, .controls, .controls-wrapper, .size-bar, .level-bar, .grid-select, .tabs, .btn-row,
+body.dark .status, body.dark .game-info, body.dark .statusbar-wrap, body.dark .info-row, body.dark .header-row,
+body.dark .mode-selector, body.dark .mode-row, body.dark .controls, body.dark .controls-wrapper, body.dark .size-bar, body.dark .level-bar, body.dark .grid-select, body.dark .tabs, body.dark .btn-row {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+</style>
+    <script src="../../js/theme.js"></script>
+</head>
+<body><div class="game-wrapper">
+  <main class="card">
+    <div class="header-row">
+      <div>
+        <h1>Labirent Bulmacaları</h1>
+        <p class="subtitle">Kediyi yön tuşları veya tıklayarak çıkışa ulaştır.</p>
+      </div>
+      <div class="topbar">
+        <span class="badge" id="timerBadge">Süre 0:00</span>
+        <span class="badge" id="movesBadge">Hamle 0</span>
+        <button id="muteBtn" class="icon-btn" type="button" aria-label="Sesi kapat">
+          <svg class="ico-vol-on" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          <svg class="ico-vol-off" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="side-panel">
+        <div class="side-card">
+          <h3>Zorluk Seviyeleri</h3>
+          <div id="levelList"></div>
+          <button id="restartBtn" class="btn btn-primary" style="width:100%; margin-top:4px;" type="button">↻ &nbsp;Yeni Labirent</button>
+        </div>
+        <div class="side-card">
+          <h4>Nasıl Oynanır?</h4>
+          <p><b>Yön tuşları:</b> Kediyi anında bir kare hareket ettirir.</p>
+          <p><b>Tıklama:</b> Tıkladığın yöne doğru kedi sınırlı sayıda (3-5 adım) ilerler; çıkışa direkt ışınlanmaz.</p>
+          <p><b>Ses:</b> İlk hamlede sesler aktifleşir.</p>
+        </div>
+      </aside>
+
+      <section>
+        <div class="board-meta">
+          <span class="giris">← GİRİŞ (sol üst, yeşil kapı)</span>
+          <span class="zorluk" id="levelLabel">orta</span>
+          <span class="cikis">ÇIKIŞ (sağ alt, kırmızı ok) →</span>
+        </div>
+
+        <div class="board-wrap">
+          <canvas id="mazeCanvas" width="960" height="600" aria-label="Labirent oyun tahtası"></canvas>
+        </div>
+
+        <div class="status-row">
+          <span class="msg" id="statusMsg">Bir yöne tıkla; kedi o yönde 3-5 adım ilerlesin.</span>
+          <span id="statusState">Keşif Yapılıyor</span>
+        </div>
+
+        <div class="dpad" id="dpad">
+          <div></div>
+          <button data-dx="0" data-dy="-1" aria-label="Yukarı"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <div></div>
+          <button data-dx="-1" data-dy="0" aria-label="Sol"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="center">YÖN</div>
+          <button data-dx="1" data-dy="0" aria-label="Sağ"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div></div>
+          <button data-dx="0" data-dy="1" aria-label="Aşağı"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div></div>
+        </div>
+
+        <div id="winBanner" class="winner-banner hidden">
+          <h2>Tebrikler, Çıkışı Buldun!</h2>
+          <p id="winText"></p>
+          <button id="winRestartBtn" class="btn btn-primary" type="button">Yeni Labirent Başlat</button>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Labirent%20Bulmacalar%C4%B1%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#LabirentOyunu</span>
+        <span class="tag-badge">#LabirentBulmacaları</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#AkılOyunları</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+<div style="text-align:center; margin:18px 0;">
+
+  <a href="../../sayfalar/post-00065-Labirent-Oyunlari/Veri/Labirentler-(www.teknolojitasarimci.com).pdf" target="_blank" rel="noopener" class="btn btn-outline download-btn">Çalışma Kâğıdı PDF&rsquo;sini İndir</a>
+
+</div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+    <div class="container">
+        <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+        <div class="footer-copyright-text">
+            Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+        </div>
+    </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  var DIFFICULTIES = [
+    { id: 'kolay', label: '1. Kolay', grid: '9 × 15' },
+    { id: 'orta', label: '2. Orta', grid: '13 × 21' },
+    { id: 'zor', label: '3. Zor', grid: '17 × 27' },
+    { id: 'cok-zor', label: '4. Çok Zor', grid: '21 × 33' },
+    { id: 'ekstra-zor', label: '5. Ekstra Zor', grid: '25 × 39' }
+  ];
+
+  function getDims(diff) {
+    if (diff === 'kolay') return { rows: 9, cols: 15 };
+    if (diff === 'orta') return { rows: 13, cols: 21 };
+    if (diff === 'zor') return { rows: 17, cols: 27 };
+    if (diff === 'cok-zor') return { rows: 21, cols: 33 };
+    return { rows: 25, cols: 39 };
+  }
+
+  function createEngine(difficulty) {
+    var dims = getDims(difficulty);
+    return {
+      difficulty: difficulty,
+      rows: dims.rows,
+      cols: dims.cols,
+      grid: [],
+      player: { x: 0.5, y: 0.5, look: 'right' },
+      goalPos: { x: dims.cols - 1, y: dims.rows - 1 },
+      isWon: false,
+      movesCount: 0
+    };
+  }
+
+  function initMaze(game) {
+    game.grid = [];
+    var r, c;
+    for (r = 0; r < game.rows; r += 1) {
+      game.grid.push([]);
+      for (c = 0; c < game.cols; c += 1) {
+        game.grid[r].push({ x: c, y: r, visited: false, walls: { top: true, right: true, bottom: true, left: true } });
+      }
+    }
+
+    var stack = [];
+    var current = game.grid[0][0];
+    current.visited = true;
+
+    while (true) {
+      var next = checkUnvisitedNeighbors(game, current);
+      if (next) {
+        next.visited = true;
+        stack.push(current);
+        removeWalls(current, next);
+        current = next;
+      } else if (stack.length > 0) {
+        current = stack.pop();
+      } else {
+        break;
+      }
+    }
+
+    game.grid[0][0].walls.left = false;
+    game.grid[game.rows - 1][game.cols - 1].walls.right = false;
+    game.player = { x: 0.5, y: 0.5, look: 'right' };
+    game.isWon = false;
+    game.movesCount = 0;
+  }
+
+  function checkUnvisitedNeighbors(game, cell) {
+    var neighbors = [];
+    var x = cell.x, y = cell.y;
+    if (y > 0 && !game.grid[y - 1][x].visited) neighbors.push(game.grid[y - 1][x]);
+    if (x < game.cols - 1 && !game.grid[y][x + 1].visited) neighbors.push(game.grid[y][x + 1]);
+    if (y < game.rows - 1 && !game.grid[y + 1][x].visited) neighbors.push(game.grid[y + 1][x]);
+    if (x > 0 && !game.grid[y][x - 1].visited) neighbors.push(game.grid[y][x - 1]);
+    return neighbors.length ? neighbors[Math.floor(Math.random() * neighbors.length)] : undefined;
+  }
+
+  function removeWalls(a, b) {
+    var x = a.x - b.x;
+    if (x === 1) { a.walls.left = false; b.walls.right = false; }
+    if (x === -1) { a.walls.right = false; b.walls.left = false; }
+    var y = a.y - b.y;
+    if (y === 1) { a.walls.top = false; b.walls.bottom = false; }
+    if (y === -1) { a.walls.bottom = false; b.walls.top = false; }
+  }
+
+  function getPlayerCell(game) {
+    return {
+      x: Math.max(0, Math.min(game.cols - 1, Math.floor(game.player.x))),
+      y: Math.max(0, Math.min(game.rows - 1, Math.floor(game.player.y)))
+    };
+  }
+
+  function canTravel(game, fromX, fromY, toX, toY) {
+    if (toX < 0 || toX >= game.cols || toY < 0 || toY >= game.rows) return false;
+    var cell = game.grid[fromY] && game.grid[fromY][fromX];
+    if (!cell) return false;
+    if (toX === fromX + 1) return !cell.walls.right;
+    if (toX === fromX - 1) return !cell.walls.left;
+    if (toY === fromY + 1) return !cell.walls.bottom;
+    if (toY === fromY - 1) return !cell.walls.top;
+    return false;
+  }
+
+  function setLook(game, dx, dy) {
+    if (dx > 0) game.player.look = 'right';
+    else if (dx < 0) game.player.look = 'left';
+    else if (dy > 0) game.player.look = 'down';
+    else if (dy < 0) game.player.look = 'up';
+  }
+
+  
+  function moveOneCell(game, dx, dy) {
+    if (game.isWon) return 'won';
+    setLook(game, dx, dy);
+    var from = getPlayerCell(game);
+    var to = { x: from.x + dx, y: from.y + dy };
+    if (!canTravel(game, from.x, from.y, to.x, to.y)) return 'blocked';
+
+    game.player.x = to.x;
+    game.player.y = to.y;
+    game.movesCount += 1;
+    if (to.x === game.goalPos.x && to.y === game.goalPos.y) {
+      game.isWon = true;
+      return 'won';
+    }
+    return 'moved';
+  }
+
+  function moveLimitedInDirection(game, dx, dy) {
+    var result = moveOneCell(game, dx, dy);
+    return { moved: (result === 'moved' || result === 'won') ? 1 : 0, result: result };
+  }
+
+
+  // ---------- UI State ----------
+  var canvas = document.getElementById('mazeCanvas');
+  var ctx = canvas.getContext('2d');
+  var engine = createEngine('orta');
+  var difficulty = 'orta';
+  var seconds = 0;
+  var isWon = false;
+  var isMuted = false;
+  var isWalking = false;
+  var audioContext = null;
+  var timerId = null;
+
+  var levelLabel = document.getElementById('levelLabel');
+  var timerBadge = document.getElementById('timerBadge');
+  var movesBadge = document.getElementById('movesBadge');
+  var statusMsg = document.getElementById('statusMsg');
+  var statusState = document.getElementById('statusState');
+  var winBanner = document.getElementById('winBanner');
+  var winText = document.getElementById('winText');
+  var levelList = document.getElementById('levelList');
+
+  function formatTime(total) {
+    return Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
+  }
+
+  function renderHUD() {
+    timerBadge.textContent = 'Süre ' + formatTime(seconds);
+    movesBadge.textContent = 'Hamle ' + engine.movesCount;
+    levelLabel.textContent = difficulty.replace('-', ' ');
+  }
+
+  function playSound(name) {
+    if (isMuted || typeof window.AudioContext === 'undefined') return;
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    var context = audioContext;
+    if (context.state === 'suspended') context.resume();
+
+    var settings = {
+      step: { start: 260, end: 190, duration: 0.07, wave: 'triangle', volume: 0.05 },
+      blocked: { start: 130, end: 80, duration: 0.12, wave: 'sine', volume: 0.08 },
+      win: { start: 440, end: 780, duration: 0.35, wave: 'sine', volume: 0.1 }
+    };
+    var setting = settings[name];
+    var oscillator = context.createOscillator();
+    var gain = context.createGain();
+    var now = context.currentTime;
+    oscillator.type = setting.wave;
+    oscillator.frequency.setValueAtTime(setting.start, now);
+    oscillator.frequency.exponentialRampToValueAtTime(setting.end, now + setting.duration);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(setting.volume, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + setting.duration);
+    oscillator.connect(gain).connect(context.destination);
+    oscillator.start(now);
+    oscillator.stop(now + setting.duration + 0.02);
+
+    if (name === 'win') {
+      window.setTimeout(function(){ playSound('step'); }, 140);
+      window.setTimeout(function(){ playSound('step'); }, 260);
+    }
+  }
+
+  
+  // ---------- Rendering (Solid Opaque Vector Cat) ----------
+  function drawVectorCat(ctx, x, y, size, look) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    var r = size * 0.42;
+
+    // Outer Shadow / Glow
+    ctx.shadowColor = 'rgba(0,0,0,0.15)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetY = 2;
+
+    // 1. Cat Ears (Outer)
+    ctx.fillStyle = '#f59e0b';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = Math.max(1.5, size * 0.04);
+    ctx.lineJoin = 'round';
+
+    // Left Ear
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.75, -r * 0.3);
+    ctx.lineTo(-r * 0.9, -r * 1.15);
+    ctx.lineTo(-r * 0.15, -r * 0.8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Right Ear
+    ctx.beginPath();
+    ctx.moveTo(r * 0.75, -r * 0.3);
+    ctx.lineTo(r * 0.9, -r * 1.15);
+    ctx.lineTo(r * 0.15, -r * 0.8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Inner Ears (Pink)
+    ctx.fillStyle = '#f472b6';
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.65, -r * 0.4);
+    ctx.lineTo(-r * 0.78, -r * 0.95);
+    ctx.lineTo(-r * 0.25, -r * 0.75);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(r * 0.65, -r * 0.4);
+    ctx.lineTo(r * 0.78, -r * 0.95);
+    ctx.lineTo(r * 0.25, -r * 0.75);
+    ctx.closePath();
+    ctx.fill();
+
+    // 2. Head (Solid Golden Amber)
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 3. Cheeks / Muzzle (Natural Soft Cream)
+    ctx.fillStyle = '#fef3c7';
+    ctx.beginPath();
+    ctx.ellipse(0, r * 0.3, r * 0.55, r * 0.38, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4. Eyes (Big Expressive Glossy Black with Sparkle)
+    ctx.fillStyle = '#0f172a';
+    var eyeOffsetX = look === 'left' ? -r * 0.08 : (look === 'right' ? r * 0.08 : 0);
+    var eyeOffsetY = look === 'up' ? -r * 0.08 : (look === 'down' ? r * 0.06 : 0);
+
+    // Left Eye
+    ctx.beginPath();
+    ctx.ellipse(-r * 0.38 + eyeOffsetX, -r * 0.05 + eyeOffsetY, r * 0.18, r * 0.24, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Right Eye
+    ctx.beginPath();
+    ctx.ellipse(r * 0.38 + eyeOffsetX, -r * 0.05 + eyeOffsetY, r * 0.18, r * 0.24, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Eye Sparkle (White Dots)
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(-r * 0.42 + eyeOffsetX, -r * 0.12 + eyeOffsetY, r * 0.08, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(r * 0.34 + eyeOffsetX, -r * 0.12 + eyeOffsetY, r * 0.08, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 5. Nose (Cute Soft Coral)
+    ctx.fillStyle = '#f43f5e';
+    ctx.beginPath();
+    ctx.moveTo(0, r * 0.12);
+    ctx.lineTo(-r * 0.14, r * 0.24);
+    ctx.lineTo(r * 0.14, r * 0.24);
+    ctx.closePath();
+    ctx.fill();
+
+    // 6. Mouth
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = Math.max(1.2, size * 0.035);
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.2, r * 0.35);
+    ctx.quadraticCurveTo(-r * 0.1, r * 0.45, 0, r * 0.25);
+    ctx.quadraticCurveTo(r * 0.1, r * 0.45, r * 0.2, r * 0.35);
+    ctx.stroke();
+
+    // 7. Whiskers (Sharp & Thin)
+    ctx.lineWidth = Math.max(1, size * 0.025);
+    ctx.strokeStyle = '#334155';
+
+    // Left Whiskers
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.3, r * 0.22); ctx.lineTo(-r * 0.85, r * 0.12);
+    ctx.moveTo(-r * 0.3, r * 0.32); ctx.lineTo(-r * 0.9, r * 0.35);
+    ctx.moveTo(-r * 0.3, r * 0.42); ctx.lineTo(-r * 0.82, r * 0.58);
+    // Right Whiskers
+    ctx.moveTo(r * 0.3, r * 0.22); ctx.lineTo(r * 0.85, r * 0.12);
+    ctx.moveTo(r * 0.3, r * 0.32); ctx.lineTo(r * 0.9, r * 0.35);
+    ctx.moveTo(r * 0.3, r * 0.42); ctx.lineTo(r * 0.82, r * 0.58);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function renderCanvas(frame) {
+    var width = canvas.width;
+    var height = canvas.height;
+    var cellW = width / engine.cols;
+    var cellH = height / engine.rows;
+    var minCell = Math.min(cellW, cellH);
+    var isDark = document.body.classList.contains('dark');
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Background
+    ctx.fillStyle = isDark ? '#0f172a' : '#f8fafc';
+    ctx.fillRect(0, 0, width, height);
+
+    // Coordinates of Exit
+    var ex = (engine.cols - 1) * cellW;
+    var ey = (engine.rows - 1) * cellH;
+
+    // 1. Start Cell (Green Background Highlight)
+    ctx.fillStyle = isDark ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.16)';
+    ctx.fillRect(0, 0, cellW, cellH);
+
+    // 2. Exit Cell (Red Background Highlight)
+    ctx.fillStyle = isDark ? 'rgba(239, 68, 68, 0.24)' : 'rgba(239, 68, 68, 0.18)';
+    ctx.fillRect(ex, ey, cellW, cellH);
+
+    // 3. Start: Green Inward Arrow (Pointing right into the maze →)
+    ctx.save();
+    ctx.strokeStyle = isDark ? '#34d399' : '#059669';
+    ctx.fillStyle = isDark ? '#34d399' : '#059669';
+    ctx.lineWidth = Math.max(2.2, minCell * 0.07);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    var sx = cellW * 0.48;
+    var sy = cellH * 0.5;
+    var sSize = minCell * 0.36;
+
+    ctx.beginPath();
+    ctx.moveTo(sx - sSize * 0.45, sy);
+    ctx.lineTo(sx + sSize * 0.45, sy);
+    ctx.lineTo(sx + sSize * 0.1, sy - sSize * 0.32);
+    ctx.moveTo(sx + sSize * 0.45, sy);
+    ctx.lineTo(sx + sSize * 0.1, sy + sSize * 0.32);
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. Exit: Red Outward Arrow (Pointing right out of the maze →)
+    ctx.save();
+    ctx.strokeStyle = isDark ? '#f87171' : '#dc2626';
+    ctx.fillStyle = isDark ? '#f87171' : '#dc2626';
+    ctx.lineWidth = Math.max(2.5, minCell * 0.08);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    var gx = ex + cellW * 0.52;
+    var gy = ey + cellH * 0.5;
+    var gSize = minCell * 0.42;
+
+    ctx.beginPath();
+    ctx.moveTo(gx - gSize * 0.45, gy);
+    ctx.lineTo(gx + gSize * 0.45, gy);
+    ctx.lineTo(gx + gSize * 0.1, gy - gSize * 0.35);
+    ctx.moveTo(gx + gSize * 0.45, gy);
+    ctx.lineTo(gx + gSize * 0.1, gy + gSize * 0.35);
+    ctx.stroke();
+    ctx.restore();
+
+    // 5. Maze Walls
+    ctx.strokeStyle = isDark ? '#38bdf8' : '#1e293b';
+    ctx.lineWidth = Math.max(2.5, minCell * 0.09);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    var r, c;
+    for (r = 0; r < engine.rows; r += 1) {
+      for (c = 0; c < engine.cols; c += 1) {
+        var cell = engine.grid[r][c];
+        var x = c * cellW;
+        var y = r * cellH;
+        if (cell.walls.top) { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + cellW, y); ctx.stroke(); }
+        if (cell.walls.right) { ctx.beginPath(); ctx.moveTo(x + cellW, y); ctx.lineTo(x + cellW, y + cellH); ctx.stroke(); }
+        if (cell.walls.bottom) { ctx.beginPath(); ctx.moveTo(x, y + cellH); ctx.lineTo(x + cellW, y + cellH); ctx.stroke(); }
+        if (cell.walls.left) { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + cellH); ctx.stroke(); }
+      }
+    }
+
+    // 6. Player Cat (Precise cell center)
+    var pCell = getPlayerCell(engine);
+    var px = pCell.x * cellW + cellW / 2;
+    var py = pCell.y * cellH + cellH / 2;
+
+    drawVectorCat(ctx, px, py, minCell * 0.88, engine.player.look);
+  }
+
+
+  // ---------- Game Loop ----------
+  function animate(frame) {
+    renderCanvas(frame);
+    window.requestAnimationFrame(animate);
+  }
+  window.requestAnimationFrame(animate);
+
+  // ---------- Timer ----------
+  function startTimer() {
+    if (timerId) return;
+    timerId = window.setInterval(function(){
+      if (isWon) return;
+      seconds += 1;
+      renderHUD();
+    }, 1000);
+  }
+
+  // ---------- Move handling ----------
+  function syncAfterMove(result, movedCount) {
+    isWalking = false;
+    renderHUD();
+    if (result === 'blocked' || movedCount === 0) {
+      playSound('blocked');
+      statusMsg.textContent = 'Duvar var! Kedi bu yönde ilerleyemedi.';
+      return;
+    }
+    playSound(result === 'won' ? 'win' : 'step');
+    if (result === 'won') {
+      isWon = true;
+      statusMsg.textContent = 'Tebrikler! Çıkışa ulaştın.';
+      statusState.textContent = 'Tamamlandı';
+      winText.textContent = seconds + ' saniye içinde ' + engine.movesCount + ' hamle ile tamamladın.';
+      winBanner.classList.remove('hidden');
+    } else {
+      statusMsg.textContent = movedCount + ' adım ilerlendi.';
+    }
+  }
+
+  function handleMove(dx, dy) {
+    if (isWon) return;
+    startTimer();
+    isWalking = false;
+    var result = moveOneCell(engine, dx, dy);
+    syncAfterMove(result, result === 'moved' || result === 'won' ? 1 : 0);
+  }
+
+  // ---------- Input ----------
+  window.addEventListener('keydown', function(event){
+    var directions = {
+      ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
+      w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0],
+      W: [0, -1], S: [0, 1], A: [-1, 0], D: [1, 0]
+    };
+    var dir = directions[event.key];
+    if (!dir) return;
+    event.preventDefault();
+    handleMove(dir[0], dir[1]);
+  });
+
+  canvas.addEventListener('click', function(event){
+    if (isWon) return;
+    startTimer();
+    var rect = canvas.getBoundingClientRect();
+    var clickX = (event.clientX - rect.left) / rect.width;
+    var clickY = (event.clientY - rect.top) / rect.height;
+    var deltaX = clickX - engine.player.x / engine.cols;
+    var deltaY = clickY - engine.player.y / engine.rows;
+    var dx = Math.abs(deltaX) >= Math.abs(deltaY) ? (deltaX >= 0 ? 1 : -1) : 0;
+    var dy = dx === 0 ? (deltaY >= 0 ? 1 : -1) : 0;
+    isWalking = true;
+    var outcome = moveLimitedInDirection(engine, dx, dy);
+    window.setTimeout(function(){ syncAfterMove(outcome.result, outcome.moved); }, 220);
+  });
+
+  // ---------- Controls ----------
+  document.querySelectorAll('#dpad button[data-dx]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      handleMove(parseInt(btn.getAttribute('data-dx'), 10), parseInt(btn.getAttribute('data-dy'), 10));
+    });
+  });
+
+  document.getElementById('muteBtn').addEventListener('click', function(){
+    isMuted = !isMuted;
+    this.classList.toggle('muted', isMuted);
+  });
+
+  function restart() {
+    initMaze(engine);
+    seconds = 0;
+    isWon = false;
+    isWalking = false;
+    statusState.textContent = 'Keşif Yapılıyor';
+    winBanner.classList.add('hidden');
+    statusMsg.textContent = 'Yeni labirent kuruldu. Yön seç veya tıklayarak ilerle.';
+    renderHUD();
+  }
+
+  document.getElementById('restartBtn').addEventListener('click', restart);
+  document.getElementById('winRestartBtn').addEventListener('click', restart);
+
+  // ---------- Difficulty ----------
+  function buildLevelList() {
+    levelList.innerHTML = '';
+    DIFFICULTIES.forEach(function(level){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-light diff-btn' + (difficulty === level.id ? ' active' : '');
+      btn.innerHTML = '<span>' + level.label + '</span><small>' + level.grid + '</small>';
+      btn.addEventListener('click', function(){
+        changeDifficulty(level.id);
+      });
+      levelList.appendChild(btn);
+    });
+  }
+
+  function changeDifficulty(next) {
+    difficulty = next;
+    engine = createEngine(next);
+    initMaze(engine);
+    seconds = 0;
+    isWon = false;
+    isWalking = false;
+    statusState.textContent = 'Keşif Yapılıyor';
+    winBanner.classList.add('hidden');
+    statusMsg.textContent = 'Zorluk güncellendi.';
+    buildLevelList();
+    renderHUD();
+  }
+
+  buildLevelList();
+  renderHUD();
+  initMaze(engine);
+})();
+</script>
+
+<script src="../../js/menu.js" defer></script>  
+  
+  
+  
+  
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

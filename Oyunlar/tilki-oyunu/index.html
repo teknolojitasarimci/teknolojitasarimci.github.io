@@ -1,0 +1,2708 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tilki ve Yumurtalar - Dört rampadan yuvarlanan yumurtaları sepetinle yakalama refleksi oyunu.">
+  <title>Tilki ve Yumurtalar - teknolojitasarimci</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    :root {
+      --brand: #0284c7;
+      --brand-dark: #0369a1;
+      --brand-light: #e0f2fe;
+      --brand-grad: #0284c7;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, .35);
+      outline-offset: 3px;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+      text-align: center;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-row h1 {
+      margin: 0 0 4px 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #64748b;
+      text-align: left;
+    }
+
+    .rules-btn {
+      padding: 8px 18px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-outline {
+      background: #fff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+    }
+    .btn-outline:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: translateY(-1px);
+    }
+
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 4px 0 14px;
+      flex-wrap: wrap;
+    }
+    .level-btn {
+      padding: 7px 18px;
+      border-radius: 25px !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+      transition: all 0.2s ease;
+    }
+    .level-btn:hover { background: var(--brand-light); }
+    .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .status-box {
+      font-size: 0.94rem;
+      font-weight: 800;
+      background: var(--brand-light);
+      color: var(--brand-dark);
+      padding: 7px 16px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hearts-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .heart-icon {
+      width: 18px;
+      height: 18px;
+      fill: #ef4444;
+      transition: opacity 0.2s ease;
+    }
+    .heart-icon.lost {
+      fill: #cbd5e1;
+      opacity: 0.5;
+    }
+
+    /* Oyun Sahnesi (Büyük & Geniş 720x460 Arena) */
+    .arena-container {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      background: #bae6fd;
+      border: 2.5px solid #0284c7;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(2, 132, 199, 0.15);
+      aspect-ratio: 720 / 460;
+      user-select: none;
+      touch-action: none;
+      cursor: pointer;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: pointer;
+    }
+
+    /* Sahne İçi Başla ve Bitiş Katmanı (Buzlu Cam Efekti) */
+    .arena-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(2.5px);
+      -webkit-backdrop-filter: blur(2.5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 10;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .arena-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .arena-card {
+      background: rgba(255, 255, 255, 0.94);
+      padding: 22px 28px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(2, 132, 199, 0.25);
+      box-shadow: 0 12px 32px rgba(2, 132, 199, 0.18);
+      text-align: center;
+      max-width: 330px;
+      width: 100%;
+    }
+    .arena-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      color: #0284c7;
+      font-weight: 800;
+    }
+    .arena-card p {
+      margin: 0 0 16px;
+      font-size: 0.9rem;
+      color: #334155;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .arena-start-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px;
+      padding: 11px 32px !important;
+      min-width: 180px !important;
+      width: fit-content !important;
+      margin: 0 auto !important;
+      border-radius: 25px !important;
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      font-size: 0.98rem !important;
+      border: none !important;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .arena-start-btn:hover {
+      background: #0369a1 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45) !important;
+    }
+
+    /* Sahne İçi Bildirim ve Güç Göstergesi HUD (Sayfayı Asla Kaydırmaz) */
+    .arena-hud-bar {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 6;
+      pointer-events: none;
+      width: 92%;
+      max-width: 500px;
+    }
+
+    /* Aktif Güçler / Power-Up Rozetleri */
+    .powerups-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 0;
+    }
+    .powerup-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      animation: pulsePowerup 1.2s infinite alternate ease-in-out;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    }
+    @keyframes pulsePowerup {
+      from { transform: scale(1); }
+      to { transform: scale(1.04); }
+    }
+    .powerup-badge.freeze {
+      background: #e0f2fe;
+      color: #0284c7;
+      border: 1.5px solid #38bdf8;
+    }
+    .powerup-badge.double {
+      background: #f3e8ff;
+      color: #7e22ce;
+      border: 1.5px solid #c084fc;
+    }
+    body.dark .powerup-badge.freeze {
+      background: rgba(14, 165, 233, 0.35);
+      color: #7dd3fc;
+      border-color: #38bdf8;
+    }
+    body.dark .powerup-badge.double {
+      background: rgba(168, 85, 247, 0.35);
+      color: #e9d5ff;
+      border-color: #c084fc;
+    }
+
+    /* Canlı Yumurta Yakalama Bildirim Şeridi (Floating HUD Banner) */
+    .egg-alert-banner {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 7px 18px;
+      border-radius: 25px !important;
+      font-size: 0.84rem;
+      font-weight: 800;
+      width: fit-content !important;
+      max-width: 95%;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      animation: slideInDown 0.22s ease-out;
+    }
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .egg-alert-banner.freeze {
+      display: inline-flex;
+      background: rgba(224, 242, 254, 0.96);
+      color: #0369a1;
+      border: 1.5px solid #38bdf8;
+    }
+    .egg-alert-banner.double {
+      display: inline-flex;
+      background: rgba(243, 232, 255, 0.96);
+      color: #6b21a8;
+      border: 1.5px solid #c084fc;
+    }
+    .egg-alert-banner.gold {
+      display: inline-flex;
+      background: rgba(254, 249, 195, 0.96);
+      color: #854d0e;
+      border: 1.5px solid #eab308;
+    }
+    .egg-alert-banner.pink {
+      display: inline-flex;
+      background: rgba(253, 242, 248, 0.96);
+      color: #9d174d;
+      border: 1.5px solid #f472b6;
+    }
+    .egg-alert-banner.danger {
+      display: inline-flex;
+      background: rgba(247, 254, 231, 0.96);
+      color: #365314;
+      border: 1.5px solid #65a30d;
+    }
+    body.dark .egg-alert-banner.freeze {
+      background: rgba(15, 23, 42, 0.94);
+      color: #7dd3fc;
+      border-color: #38bdf8;
+    }
+    body.dark .egg-alert-banner.double {
+      background: rgba(15, 23, 42, 0.94);
+      color: #e9d5ff;
+      border-color: #c084fc;
+    }
+    body.dark .egg-alert-banner.gold {
+      background: rgba(15, 23, 42, 0.94);
+      color: #fef08a;
+      border-color: #eab308;
+    }
+    body.dark .egg-alert-banner.pink {
+      background: rgba(15, 23, 42, 0.94);
+      color: #f472b6;
+      border-color: #f472b6;
+    }
+    body.dark .egg-alert-banner.danger {
+      background: rgba(15, 23, 42, 0.94);
+      color: #bef264;
+      border-color: #65a30d;
+    }
+
+    /* Yumurta Türü Bilgi Rehberi (Egg Legend) */
+    .egg-legend-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .egg-legend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+    .egg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .egg-dot.classic { background: #e2e8f0; border: 1.2px solid #94a3b8; }
+    .egg-dot.freeze { background: #38bdf8; border: 1.2px solid #0284c7; }
+    .egg-dot.double { background: #c084fc; border: 1.2px solid #7e22ce; }
+    .egg-dot.pink { background: #f472b6; border: 1.2px solid #db2777; }
+    .egg-dot.gold { background: #facc15; border: 1.2px solid #ca8a04; }
+    .egg-dot.rotten { background: #65a30d; border: 1.2px solid #3f6212; }
+
+    /* Alt Eylem Butonları */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .action-row .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;;
+      padding: 9px 22px;
+      border-radius: 25px !important;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+    .btn-primary {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    .keys-hint {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 540px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 30px 28px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    .modal h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 16px;
+    }
+    .modal ol {
+      padding-left: 20px;
+      color: #334155;
+      line-height: 1.7;
+      font-size: 0.93rem;
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .modal ol li { margin-bottom: 8px; }
+
+    /* Koyu Tema */
+    body.dark {
+      background: #0f172a !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .card {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+    }
+    body.dark .header-row h1 { color: #f8fafc !important; }
+    body.dark .subtitle, body.dark .keys-hint { color: #cbd5e1 !important; }
+    body.dark .btn-outline, body.dark .level-btn {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    body.dark .btn-outline:hover, body.dark .level-btn:hover {
+      background: rgba(2, 132, 199, 0.2) !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .statusbar, body.dark .status-box {
+      background: #0f172a !important;
+      border: 1px solid #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    body.dark .arena-container {
+      background: #0f172a !important;
+      border-color: #38bdf8 !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    }
+    body.dark .modal {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .modal h2 { color: #38bdf8 !important; }
+    body.dark .modal ol { color: #cbd5e1 !important; }
+  </style>
+  <script src="../../js/game-sounds.js"></script>
+</head>
+<body>
+  <!-- Site Üst Menüsü --><div class="game-wrapper">
+    <div class="card">
+      <div class="header-row">
+        <div>
+          <h1>Tilki ve Yumurtalar</h1>
+          <p class="subtitle">Nostaljik refleks ve yumurta yakalama oyunu</p>
+        </div>
+        <button class="rules-btn btn-outline" id="rulesBtn">Kurallar</button>
+      </div>
+
+      <div class="mode-selector">
+        <button id="modeSolo" class="level-btn active" onclick="setGameMode('solo')">Tek Kişilik (Arcade)</button>
+        <button id="modePvP" class="level-btn" onclick="setGameMode('pvp')">2 Oyuncu (Skor Yarışı)</button>
+      </div>
+
+      <div class="statusbar">
+        <span class="status-box" id="scoreBadge">Skor: 0</span>
+        <span class="status-box" id="levelBadge">Seviye: 1</span>
+        <span class="status-box" id="livesBadge">
+          Can:
+          <span class="hearts-box" id="heartsBox">
+            <svg class="heart-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <svg class="heart-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <svg class="heart-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </span>
+          <span id="livesCountBadge" style="font-size:0.86rem; font-weight:800; color:#ef4444; margin-left:3px;">(3)</span>
+        </span>
+        <span class="status-box" id="highBadge">En Yüksek: 0</span>
+      </div>
+
+      <!-- Yumurta Türleri Hızlı Bilgi Rehberi -->
+      <div class="egg-legend-bar">
+        <span class="egg-legend-pill"><span class="egg-dot classic"></span> Klasik: +1 Puan</span>
+        <span class="egg-legend-pill"><span class="egg-dot freeze"></span> Mavi: Ağır Çekim (6s)</span>
+        <span class="egg-legend-pill"><span class="egg-dot double"></span> Mor: 2X Çift Puan (6s)</span>
+        <span class="egg-legend-pill"><span class="egg-dot pink"></span> Pembe: Hızı Yavaşlatır</span>
+        <span class="egg-legend-pill"><span class="egg-dot gold"></span> Altın: +1 Can & +5 Puan</span>
+        <span class="egg-legend-pill" style="border-color:#65a30d;"><span class="egg-dot rotten"></span> Bozuk: Tutma! (-1 Can)</span>
+      </div>
+
+      <div class="arena-container">
+        <!-- Sahne İçi Yüzen Bildirim ve Güç Paneli (Sıfır Kayma) -->
+        <div class="arena-hud-bar">
+          <div class="egg-alert-banner" id="eggAlertBanner"></div>
+          <div class="powerups-bar" id="powerupsBar"></div>
+        </div>
+
+        <canvas id="gameCanvas" width="720" height="460"></canvas>
+        
+        <!-- Sahne İçi Başla ve Bitiş Katmanı (Buzlu Cam) -->
+        <div id="arenaOverlay" class="arena-overlay">
+          <div class="arena-card">
+            <h2 id="arenaTitle">Tilki ve Yumurtalar</h2>
+            <p id="arenaMsg">Yumurtaları yakalamak için başla butonuna tıkla!</p>
+            <button class="arena-start-btn" id="arenaBtn" onclick="userStartGame()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Oyuna Başla
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-primary" id="startBtn" onclick="userStartGame()">Yeni Oyun / Sıfırla</button>
+      </div>
+
+      <p class="keys-hint">Klavye: <b>Ok Tuşları (↑, ↓, ←, →)</b>, <b>W, A, S, D / Q, A, E, D</b> veya <b>Ekrana / Rampalara Tıklayarak (Dokunarak)</b> tilkiyi yönlendirebilirsin.</p>
+
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Tilki%20ve%20Yumurtalar%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#TilkiVeYumurtalar</span>
+        <span class="tag-badge">#RefleksOyunu</span>
+        <span class="tag-badge">#RetroOyunlar</span>
+        <span class="tag-badge">#NostaljiOyunları</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+</div>
+  </div>
+
+  <!-- Kurallar Modal -->
+  <div class="modal-overlay" id="rulesModal">
+    <div class="modal">
+      <h2>Tilki ve Yumurtalar Kuralları</h2>
+      <ol>
+        <li>Dört ayrı rampadan aşağı doğru yuvarlanan yumurtaları sepetinle yakala.</li>
+        <li>Tilkiyi yönlendirmek için ekrandaki rampalara doğrudan tıklayabilir veya klavyenden <strong>Ok Tuşlarını (↑, ↓, ←, →)</strong>, <strong>W, A, S, D</strong> ve <strong>Q, A, E, D</strong> tuşlarını kullanabilirsin.</li>
+        <li><strong>Klasik Yumurta (Beyaz)</strong>: Her yakalanan normal yumurta <strong>+1 Puan</strong> kazandırır.</li>
+        <li><strong>Nadir Altın Yumurta (Sarı)</strong>: Çok nadir gelir; yakalandığında <strong>+5 Puan</strong> ve <strong>+1 Ekstra Can</strong> kazandırır (Canlar sınırsız birikebilir).</li>
+        <li><strong>Pembe Yumurta (Hız Yavaşlatıcı)</strong>: Oyunun giderek artan zorluk seviyesini ve akış hızını <strong>kalıcı olarak yavaşlatır (1 kademe düşürür)</strong> ve +2 Puan kazandırır.</li>
+        <li><strong>Buzul Yumurtası (Mavi - Ağır Çekim)</strong>: Yakalandığında <strong>6 saniye boyunca oyunu %50 yavaşlatır</strong> ve yumurtaların ağır çekimde akmasını sağlar.</li>
+        <li><strong>Yıldız Yumurtası (Mor - 2X Çift Puan)</strong>: Yakalandığında <strong>6 saniye boyunca toplanan tüm yumurtalardan 2 kat puan</strong> kazandırır!</li>
+        <li><strong>Bozuk Yumurta (Çürük Yeşil - TUTMA!)</strong>: Bu yumurta çürük ve bozuktur! Sepetle <strong>tutarsan 1 can kaybedersin</strong>. Sepetini çekip yere düşüp kırılmasına izin verirsen <strong>civciv çıkmaz, canın gitmez ve bozuk yumurtayı atlatmış olursun!</strong></li>
+        <li>Normal yumurtaları kaçırdığında kırılır ve 1 can hakkı kaybedersin (Başlangıçta 3 can).</li>
+        <li><strong>2 Oyuncu Modu</strong>: Sırayla oynanır; en çok yumurta toplayan taraf oyunu kazanır.</li>
+      </ol>
+      <button class="modal-close" id="rulesClose">Anladım, Oyuna Başla</button>
+    </div>
+  </div>
+
+  <!-- Oyun Sonu Modal -->
+  <div class="modal-overlay" id="goModal">
+    <div class="modal">
+      <h2 id="goTitle">Oyun Bitti!</h2>
+      <p id="goMsg" style="margin: 14px 0 20px; font-weight:700; color:#334155; font-size:1.1rem;">Skorun: 0</p>
+      <button class="modal-close" id="goBtn" onclick="startNewGame();closeGameOverModal()" style="display:inline-flex; align-items:center; justify-content:center; padding:10px 28px; min-width:170px; width:fit-content; margin:0 auto; border-radius:25px !important; font-weight:800; font-size:0.95rem;">Yeniden Oyna</button>
+    </div>
+  </div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+    <div class="container">
+      <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+      <div class="footer-copyright-text">
+        Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/theme.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      const scoreBadge = document.getElementById('scoreBadge');
+      const levelBadge = document.getElementById('levelBadge');
+      const highBadge = document.getElementById('highBadge');
+
+      let gameMode = 'solo'; // 'solo' or 'pvp'
+      let pvpTurn = 1;
+      let p1Score = 0;
+      let p2Score = 0;
+
+      let score = 0;
+      let lives = 3;
+      let level = 1;
+      let highScore = parseInt(localStorage.getItem('tt_fox_highscore') || '0', 10);
+      highBadge.textContent = `En Yüksek: ${highScore}`;
+
+      let isRunning = false;
+      let foxPos = 'bottom-left';
+
+      let eggs = [];
+      let chicks = [];
+      let brokenEggs = [];
+      let particles = [];
+      let floatingTexts = [];
+      let lastSpawn = 0;
+      let spawnInterval = 1800;
+      let animFrameId = null;
+
+      // Özel Güç Zamanlayıcıları (Frames)
+      let slowTimer = 0; // Mavi Yumurta (Buzul Yavaşlatma)
+      let doublePointsTimer = 0; // Mor Yumurta (2X Çift Puan)
+
+      // 4 Rampanın Başlangıç ve Sepet Hedef Koordinatları (720x460 Arena)
+      const RAMPS = {
+        'top-left': {
+          nest: { x: 50, y: 80 },
+          start: { x: 60, y: 90 },
+          end: { x: 290, y: 205 },
+          catchBox: { x: 295, y: 213 }
+        },
+        'bottom-left': {
+          nest: { x: 50, y: 250 },
+          start: { x: 60, y: 260 },
+          end: { x: 290, y: 315 },
+          catchBox: { x: 295, y: 321 }
+        },
+        'top-right': {
+          nest: { x: 670, y: 80 },
+          start: { x: 660, y: 90 },
+          end: { x: 430, y: 205 },
+          catchBox: { x: 425, y: 213 }
+        },
+        'bottom-right': {
+          nest: { x: 670, y: 250 },
+          start: { x: 660, y: 260 },
+          end: { x: 430, y: 315 },
+          catchBox: { x: 425, y: 321 }
+        }
+      };
+
+      // Gökyüzünde Süzülen Beyaz Bulutlar
+      const clouds = [
+        { x: 80, y: 35, s: 1.15, v: 0.22 },
+        { x: 270, y: 22, s: 0.88, v: 0.16 },
+        { x: 480, y: 45, s: 1.25, v: 0.20 },
+        { x: 660, y: 26, s: 0.80, v: 0.15 }
+      ];
+
+      function drawClouds() {
+        clouds.forEach(c => {
+          c.x += c.v;
+          if (c.x > 800) c.x = -90;
+
+          ctx.save();
+          ctx.translate(c.x, c.y);
+          ctx.scale(c.s, c.s);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 18, 0, Math.PI * 2);
+          ctx.arc(14, -6, 14, 0, Math.PI * 2);
+          ctx.arc(28, 0, 16, 0, Math.PI * 2);
+          ctx.arc(14, 6, 15, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        });
+      }
+
+      // Canlı Yemyeşil Çimenlik Zemin (Zemine Sağlam Basan Duruş)
+      function drawGrassGround(isDark) {
+        const grassTop = isDark ? '#15803d' : '#22c55e';
+        const grassBottom = isDark ? '#14532d' : '#16a34a';
+
+        // Ana çimenlik tepe çizgisi (385px seviyesi)
+        ctx.fillStyle = grassTop;
+        ctx.beginPath();
+        ctx.moveTo(0, 385);
+        ctx.quadraticCurveTo(180, 380, 360, 384);
+        ctx.quadraticCurveTo(540, 388, 720, 385);
+        ctx.lineTo(720, 460);
+        ctx.lineTo(0, 460);
+        ctx.closePath();
+        ctx.fill();
+
+        // Koyu çimen derinlik katmanı
+        ctx.fillStyle = grassBottom;
+        ctx.beginPath();
+        ctx.moveTo(0, 412);
+        ctx.quadraticCurveTo(360, 406, 720, 412);
+        ctx.lineTo(720, 460);
+        ctx.lineTo(0, 460);
+        ctx.closePath();
+        ctx.fill();
+
+        // Çimen püskülleri
+        ctx.strokeStyle = isDark ? '#166534' : '#15803d';
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        for (let gx = 15; gx < 720; gx += 26) {
+          ctx.beginPath();
+          ctx.moveTo(gx, 385); ctx.lineTo(gx - 4, 375);
+          ctx.moveTo(gx, 385); ctx.lineTo(gx + 3, 373);
+          ctx.stroke();
+        }
+
+        // Sevimli Minik Papatyalar
+        for (let fx = 35; fx < 700; fx += 85) {
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(fx - 2.5, 400, 2.5, 0, Math.PI * 2);
+          ctx.arc(fx + 2.5, 400, 2.5, 0, Math.PI * 2);
+          ctx.arc(fx, 397.5, 2.5, 0, Math.PI * 2);
+          ctx.arc(fx, 402.5, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath();
+          ctx.arc(fx, 400, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      window.setGameMode = function(m) {
+        gameMode = m;
+        document.getElementById('modeSolo').classList.toggle('active', m === 'solo');
+        document.getElementById('modePvP').classList.toggle('active', m === 'pvp');
+        pvpTurn = 1;
+        p1Score = 0;
+        p2Score = 0;
+        startNewGame();
+      };
+
+      function setFoxPosition(pos) {
+        if (!isRunning) {
+          userStartGame();
+        }
+        foxPos = pos;
+        try { GameSounds.click(); } catch(e){}
+      }
+
+      function updateUI() {
+        if (gameMode === 'pvp') {
+          scoreBadge.textContent = `${pvpTurn}. Oyuncu: ${score}`;
+        } else {
+          scoreBadge.textContent = `Skor: ${score}`;
+        }
+        levelBadge.textContent = `Seviye: ${level}`;
+
+        // Dinamik Kalp Gösterimi
+        const heartsBox = document.getElementById('heartsBox');
+        const countBadge = document.getElementById('livesCountBadge');
+        if (heartsBox) {
+          let html = '';
+          const displayCount = Math.min(lives, 8);
+          for (let i = 0; i < displayCount; i++) {
+            html += `<svg class="heart-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+          }
+          heartsBox.innerHTML = html;
+        }
+        if (countBadge) {
+          countBadge.textContent = `(${lives})`;
+        }
+
+        // Aktif Güç / Power-Up Rozetleri
+        const powerupsBar = document.getElementById('powerupsBar');
+        if (powerupsBar) {
+          let phtml = '';
+          if (slowTimer > 0) {
+            const sec = (slowTimer / 60).toFixed(1);
+            phtml += `<span class="powerup-badge freeze">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5l-5 5-5-5M17 19l-5-5-5 5M2 12h20M5 7l5 5-5 5M19 7l-5 5 5 5"/></svg>
+              Yavaşlatma: ${sec}s
+            </span>`;
+          }
+          if (doublePointsTimer > 0) {
+            const sec = (doublePointsTimer / 60).toFixed(1);
+            phtml += `<span class="powerup-badge double">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              2X Çift Puan: ${sec}s
+            </span>`;
+          }
+          powerupsBar.innerHTML = phtml;
+        }
+      }
+
+      let alertTimeout = null;
+      function showEggAlert(type, message) {
+        const banner = document.getElementById('eggAlertBanner');
+        if (!banner) return;
+        banner.className = `egg-alert-banner ${type}`;
+        banner.innerHTML = message;
+        if (alertTimeout) clearTimeout(alertTimeout);
+        alertTimeout = setTimeout(() => {
+          banner.className = 'egg-alert-banner';
+          banner.innerHTML = '';
+        }, 4500);
+      }
+
+      function spawnEgg() {
+        const keys = Object.keys(RAMPS);
+        const rampKey = keys[Math.floor(Math.random() * keys.length)];
+        const speed = 0.0065 + (level * 0.0011);
+        
+        // Yumurta Türü Olasılık Dağılımı:
+        // Altın (%3.5), Bozuk Çürük Yeşil (%7.0), Pembe Yavaşlatıcı (%6.0), Mavi Ağır Çekim (%6.5), Mor 2X (%7.0), Klasik (%70.0)
+        const rand = Math.random();
+        let type = 'normal';
+        if (rand < 0.035) {
+          type = 'gold'; // Çok nadir altın can yumurtası (+1 Can & +5 Puan)
+        } else if (rand < 0.105) {
+          type = 'rotten'; // BOZUK YUMURTA (ÇÜRÜK YEŞİL - TUTULMAMASI GEREKEN!)
+        } else if (rand < 0.165) {
+          type = 'pink'; // Pembe kalıcı hız yavaşlatıcı yumurta (-1 Seviye)
+        } else if (rand < 0.23) {
+          type = 'freeze'; // Mavi buzul ağır çekim (6s)
+        } else if (rand < 0.30) {
+          type = 'double'; // Mor 2X çift puan (6s)
+        }
+
+        eggs.push({
+          rampKey,
+          progress: 0,
+          speed: type === 'gold' ? speed * 1.05 : (type === 'rotten' ? speed * 1.08 : speed),
+          rot: 0,
+          type,
+          state: 'rolling'
+        });
+      }
+
+      function createSplash(x, y, type) {
+        let color = '#f59e0b';
+        if (type === 'freeze') color = '#38bdf8';
+        else if (type === 'double') color = '#c084fc';
+        else if (type === 'gold') color = '#fbbf24';
+        else if (type === 'pink') color = '#f472b6';
+        else if (type === 'rotten') color = '#65a30d';
+
+        for (let i = 0; i < 12; i++) {
+          particles.push({
+            x, y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.8) * 5,
+            color: type === 'rotten' && Math.random() > 0.5 ? '#3f6212' : color,
+            radius: Math.random() * 3 + 2,
+            life: 1
+          });
+        }
+      }
+
+      function createCatchStars(x, y, type) {
+        const count = type === 'normal' ? 8 : 16;
+        for (let i = 0; i < count; i++) {
+          let pColor = '#38bdf8';
+          if (type === 'gold') {
+            pColor = Math.random() > 0.5 ? '#fbbf24' : '#fef08a';
+          } else if (type === 'freeze') {
+            pColor = Math.random() > 0.5 ? '#38bdf8' : '#e0f2fe';
+          } else if (type === 'double') {
+            pColor = Math.random() > 0.5 ? '#c084fc' : '#fde047';
+          } else if (type === 'pink') {
+            pColor = Math.random() > 0.5 ? '#f472b6' : '#fbcfe8';
+          } else if (type === 'rotten') {
+            pColor = Math.random() > 0.5 ? '#65a30d' : '#3f6212';
+          }
+
+          particles.push({
+            x, y,
+            vx: (Math.random() - 0.5) * 7,
+            vy: (Math.random() - 0.5) * 7,
+            color: pColor,
+            radius: Math.random() * 3 + 1.5,
+            life: 1
+          });
+        }
+      }
+
+      // Canlı, Organik, 6 Farklı Türde Yumurta Çizimi
+      function drawNiceEgg(ctx, type, now) {
+        let baseFill = '#fffbeb';
+        let strokeColor = '#d97706';
+        let shadowColor = '#fed7aa';
+
+        if (type === 'gold') {
+          baseFill = '#fbbf24';
+          strokeColor = '#b45309';
+          shadowColor = '#d97706';
+        } else if (type === 'freeze') {
+          baseFill = '#38bdf8';
+          strokeColor = '#0284c7';
+          shadowColor = '#0369a1';
+        } else if (type === 'double') {
+          baseFill = '#c084fc';
+          strokeColor = '#7e22ce';
+          shadowColor = '#6b21a8';
+        } else if (type === 'pink') {
+          baseFill = '#f472b6';
+          strokeColor = '#db2777';
+          shadowColor = '#be185d';
+        } else if (type === 'rotten') {
+          baseFill = '#65a30d'; // Çürük / Bozuk Küf Yeşili
+          strokeColor = '#3f6212';
+          shadowColor = '#1a2e05';
+        }
+
+        // Özel Yumurtalarda Dinamik Işıltı Halkası
+        if (type !== 'normal') {
+          const pulse = Math.sin((now || 0) * 0.009) * 2.5;
+          let haloColor = 'rgba(251, 191, 36, 0.3)';
+          if (type === 'freeze') haloColor = 'rgba(56, 189, 248, 0.38)';
+          if (type === 'double') haloColor = 'rgba(192, 132, 252, 0.38)';
+          if (type === 'pink') haloColor = 'rgba(244, 114, 182, 0.38)';
+          if (type === 'rotten') haloColor = 'rgba(101, 163, 13, 0.38)';
+
+          ctx.fillStyle = haloColor;
+          ctx.beginPath();
+          ctx.ellipse(0, 1, 16 + pulse, 19 + pulse, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Pürüzsüz Yumurta Formu
+        ctx.fillStyle = baseFill;
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(0, -12);
+        ctx.bezierCurveTo(6.5, -12, 10, -2, 10, 4);
+        ctx.bezierCurveTo(10, 10, 5.5, 13, 0, 13);
+        ctx.bezierCurveTo(-5.5, 13, -10, 10, -10, 4);
+        ctx.bezierCurveTo(-10, -2, -6.5, -12, 0, -12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Alt gölge
+        ctx.fillStyle = shadowColor;
+        ctx.globalAlpha = 0.25;
+        ctx.beginPath();
+        ctx.ellipse(0, 7, 7, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        // Üst parlama vurgusu
+        ctx.fillStyle = type === 'rotten' ? '#a3e635' : '#ffffff';
+        ctx.globalAlpha = type === 'rotten' ? 0.6 : 1;
+        ctx.beginPath();
+        ctx.ellipse(-3, -4.5, 2.5, 4.2, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        // Yumurta Türü Özel İkon/Desen Süslemesi
+        if (type === 'freeze') {
+          // Beyaz Kar Kristali / Buz Yıldızı
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(0, -3); ctx.lineTo(0, 6);
+          ctx.moveTo(-4.5, 1.5); ctx.lineTo(4.5, 1.5);
+          ctx.moveTo(-3.5, -1); ctx.lineTo(3.5, 4);
+          ctx.moveTo(-3.5, 4); ctx.lineTo(3.5, -1);
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(0, 1.5, 1.3, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (type === 'double') {
+          // Altın 4 Köşeli Parlayan Yıldız
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.moveTo(0, -3);
+          ctx.quadraticCurveTo(0, 1.5, 4.5, 1.5);
+          ctx.quadraticCurveTo(0, 1.5, 0, 6);
+          ctx.quadraticCurveTo(0, 1.5, -4.5, 1.5);
+          ctx.quadraticCurveTo(0, 1.5, 0, -3);
+          ctx.fill();
+        } else if (type === 'gold') {
+          // Altın Işıltı Noktaları
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(3.2, 3.5, 1.6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fde68a';
+          ctx.beginPath();
+          ctx.arc(-2.2, 5.5, 1.2, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (type === 'pink') {
+          // Pembe Kalp / Narin Sevimli Motif
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(-2, 1, 2.5, 0, Math.PI * 2);
+          ctx.arc(2, 1, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(-4.5, 2);
+          ctx.lineTo(0, 6.5);
+          ctx.lineTo(4.5, 2);
+          ctx.closePath();
+          ctx.fill();
+        } else if (type === 'rotten') {
+          // Çürük Lekeler & Küf Çatlakları
+          ctx.fillStyle = '#3f6212';
+          ctx.beginPath();
+          ctx.arc(-3, 2, 2.8, 0, Math.PI * 2);
+          ctx.arc(3.5, 4, 2.2, 0, Math.PI * 2);
+          ctx.arc(1, -3, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#1a2e05';
+          ctx.lineWidth = 1.8;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(-4, -1); ctx.lineTo(4, 7);
+          ctx.moveTo(4, -1); ctx.lineTo(-4, 7);
+          ctx.stroke();
+        }
+      }
+
+      // Ahşap Çiftlik Kümesleri (Sol ve Sağ Köşk / Barn Yapısı - Zemine Kadar İnen Destekler)
+      function drawHenCoops(isDark) {
+        const barnWall = isDark ? '#1e293b' : '#92400e';
+        const barnEdge = isDark ? '#334155' : '#713f12';
+        const roofColor = isDark ? '#0f172a' : '#78350f';
+        const beamColor = isDark ? '#334155' : '#451a03';
+        const innerDark = isDark ? '#090d16' : '#451a03';
+
+        // 1. SOL KÜMES BİNASI (0 -> 82px, çimene kadar)
+        // Ana Ahşap Duvar
+        ctx.fillStyle = barnWall;
+        ctx.strokeStyle = barnEdge;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(0, 45);
+        ctx.lineTo(80, 58);
+        ctx.lineTo(80, 386);
+        ctx.lineTo(0, 386);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Yatay Ahşap Tahta Çizgileri
+        ctx.strokeStyle = isDark ? 'rgba(51, 65, 85, 0.6)' : 'rgba(113, 63, 18, 0.45)';
+        ctx.lineWidth = 1.6;
+        for (let py = 65; py <= 375; py += 16) {
+          ctx.beginPath();
+          ctx.moveTo(0, py);
+          ctx.lineTo(80, py);
+          ctx.stroke();
+        }
+
+        // Dikey Taşıyıcı Ahşap Direkler (Zemine Saplanan Kalaslar)
+        ctx.fillStyle = beamColor;
+        ctx.fillRect(0, 40, 10, 348);
+        ctx.fillRect(72, 54, 10, 334);
+
+        // Çapraz Destek Kirişleri (X-Bracing)
+        ctx.strokeStyle = isDark ? '#334155' : '#78350f';
+        ctx.lineWidth = 2;
+        // Üst ve alt kat arası çapraz kiriş
+        ctx.beginPath();
+        ctx.moveTo(8, 140); ctx.lineTo(74, 210);
+        ctx.moveTo(74, 140); ctx.lineTo(8, 210);
+        // Alt kat altı çapraz kiriş
+        ctx.moveTo(8, 305); ctx.lineTo(74, 375);
+        ctx.moveTo(74, 305); ctx.lineTo(8, 375);
+        ctx.stroke();
+
+        // Sol Kümes Çatı Saçağı (Kiremit / Ahşap Gölgelik)
+        ctx.fillStyle = roofColor;
+        ctx.strokeStyle = beamColor;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(-6, 38);
+        ctx.lineTo(92, 52);
+        ctx.lineTo(90, 62);
+        ctx.lineTo(-6, 48);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Sol Kümes Üst ve Alt Yuva Pencereleri (Karanlık Yuva İçi)
+        [80, 250].forEach(wy => {
+          ctx.fillStyle = innerDark;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(14, wy - 16, 56, 34, [10, 10, 0, 0]) : ctx.rect(14, wy - 16, 56, 34);
+          ctx.fill();
+        });
+
+        // 2. SAĞ KÜMES BİNASI (638 -> 720px, çimene kadar)
+        // Ana Ahşap Duvar
+        ctx.fillStyle = barnWall;
+        ctx.strokeStyle = barnEdge;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(720, 45);
+        ctx.lineTo(640, 58);
+        ctx.lineTo(640, 386);
+        ctx.lineTo(720, 386);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Yatay Ahşap Tahta Çizgileri
+        ctx.strokeStyle = isDark ? 'rgba(51, 65, 85, 0.6)' : 'rgba(113, 63, 18, 0.45)';
+        ctx.lineWidth = 1.6;
+        for (let py = 65; py <= 375; py += 16) {
+          ctx.beginPath();
+          ctx.moveTo(640, py);
+          ctx.lineTo(720, py);
+          ctx.stroke();
+        }
+
+        // Dikey Taşıyıcı Ahşap Direkler
+        ctx.fillStyle = beamColor;
+        ctx.fillRect(710, 40, 10, 348);
+        ctx.fillRect(638, 54, 10, 334);
+
+        // Çapraz Destek Kirişleri
+        ctx.strokeStyle = isDark ? '#334155' : '#78350f';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(712, 140); ctx.lineTo(646, 210);
+        ctx.moveTo(646, 140); ctx.lineTo(712, 210);
+        ctx.moveTo(712, 305); ctx.lineTo(646, 375);
+        ctx.moveTo(646, 305); ctx.lineTo(712, 375);
+        ctx.stroke();
+
+        // Sağ Kümes Çatı Saçağı
+        ctx.fillStyle = roofColor;
+        ctx.strokeStyle = beamColor;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(726, 38);
+        ctx.lineTo(628, 52);
+        ctx.lineTo(630, 62);
+        ctx.lineTo(726, 48);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Sağ Kümes Üst ve Alt Yuva Pencereleri
+        [80, 250].forEach(wy => {
+          ctx.fillStyle = innerDark;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(650, wy - 16, 56, 34, [10, 10, 0, 0]) : ctx.rect(650, wy - 16, 56, 34);
+          ctx.fill();
+        });
+      }
+
+      // Ayrıntılı, Canlı, Boyunlu ve Kuyruklu Köy Tavuğu Çizimi
+      function drawHen(ctx, nx, ny, isLeft, isDark, now, idx) {
+        const henBreath = Math.sin((now * 0.003) + idx) * 1.5;
+        const tailTwitch = Math.sin((now * 0.005) + idx * 2) * 2;
+        const headNod = Math.sin((now * 0.004) + idx * 1.5) * 1.2;
+
+        const bodyFill = isDark ? '#e2e8f0' : '#fffbeb';
+        const bodyStroke = isDark ? '#475569' : '#b45309';
+        const wingFill = isDark ? '#cbd5e1' : '#fef3c7';
+        const wingAccent = isDark ? '#94a3b8' : '#f59e0b';
+        const featherStroke = isDark ? '#64748b' : '#d97706';
+
+        ctx.save();
+        ctx.translate(nx, ny + henBreath);
+        if (!isLeft) ctx.scale(-1, 1); // Sağa bakış standardında çizip sağ kümesler için çeviriyoruz
+
+        // 1. KUYRUK TÜYLERİ (Arkada -X yönünde yukarı açılan yelpaze kuyruk)
+        ctx.save();
+        ctx.translate(-14, -2);
+        ctx.rotate((tailTwitch * Math.PI) / 180);
+
+        // Alt Kuyruk Tüyü
+        ctx.fillStyle = isDark ? '#94a3b8' : '#d97706';
+        ctx.strokeStyle = bodyStroke;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(-14, -4, -18, -10);
+        ctx.quadraticCurveTo(-8, -8, 2, -2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Orta Büyük Kuyruk Tüyü
+        ctx.fillStyle = isDark ? '#cbd5e1' : '#f59e0b';
+        ctx.beginPath();
+        ctx.moveTo(2, -2);
+        ctx.quadraticCurveTo(-16, -12, -22, -22);
+        ctx.quadraticCurveTo(-10, -16, 4, -6);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Üst Ana Kuyruk Dikmesi (En uzun, kavisli horoz/tavuk teleği)
+        ctx.fillStyle = bodyFill;
+        ctx.beginPath();
+        ctx.moveTo(4, -4);
+        ctx.quadraticCurveTo(-14, -18, -18, -27);
+        ctx.quadraticCurveTo(-6, -20, 6, -8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Kuyruk Uç Vurgusu
+        ctx.fillStyle = isDark ? '#64748b' : '#b45309';
+        ctx.beginPath();
+        ctx.ellipse(-17, -24, 2.5, 4.5, -0.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore(); // Kuyruk sonu
+
+        // 2. GÖVDE (Folluğa oturan tombul tavuk gövdesi)
+        ctx.fillStyle = bodyFill;
+        ctx.strokeStyle = bodyStroke;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.ellipse(-2, 3, 19, 13, -0.05, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Gövde alt gölge detayı
+        ctx.fillStyle = isDark ? 'rgba(30, 41, 59, 0.15)' : 'rgba(217, 119, 6, 0.12)';
+        ctx.beginPath();
+        ctx.ellipse(-2, 7, 15, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 3. KANAT (Gövde üzerindeki katmanlı kanat tüyleri)
+        ctx.fillStyle = wingFill;
+        ctx.strokeStyle = featherStroke;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-11, -1);
+        ctx.quadraticCurveTo(6, -3, 8, 5);
+        ctx.quadraticCurveTo(-2, 12, -12, 6);
+        ctx.quadraticCurveTo(-14, 2, -11, -1);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Kanat İçi Telek Çizgileri
+        ctx.fillStyle = wingAccent;
+        ctx.beginPath();
+        ctx.ellipse(-4, 4, 7, 4, -0.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = featherStroke;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(-9, 2); ctx.quadraticCurveTo(-2, 4, 5, 4);
+        ctx.moveTo(-10, 5); ctx.quadraticCurveTo(-3, 7, 3, 8);
+        ctx.stroke();
+
+        // 4. BOYUN (Gövdeden yukarı kafaya uzanan belirgin, zarif kavisli boyun kolonu)
+        ctx.fillStyle = bodyFill;
+        ctx.strokeStyle = bodyStroke;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(11, 4); // Göğüs önü
+        ctx.quadraticCurveTo(15, -4, 14, -13 + headNod); // Ön boyun kavisi
+        ctx.lineTo(6, -13 + headNod); // Kafa altı
+        ctx.quadraticCurveTo(4, -5, -4, -3); // Ense arkası
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Boyun / Gerdanlık Tüyü (Hackle Feathers)
+        ctx.fillStyle = isDark ? '#94a3b8' : '#f59e0b';
+        ctx.beginPath();
+        ctx.moveTo(3, -4 + headNod);
+        ctx.lineTo(7, 1 + headNod);
+        ctx.lineTo(10, -4 + headNod);
+        ctx.lineTo(13, 0 + headNod);
+        ctx.lineTo(14, -6 + headNod);
+        ctx.closePath();
+        ctx.fill();
+
+        // 5. KAFA (Boyun üstündeki sevimli kafa)
+        ctx.save();
+        ctx.translate(11, -13 + headNod);
+
+        ctx.fillStyle = bodyFill;
+        ctx.strokeStyle = bodyStroke;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(0, 0, 8.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // 6. İBİK (Kafanın üstündeki 3 tepeli canlı kırmızı taç)
+        ctx.fillStyle = '#dc2626';
+        ctx.strokeStyle = '#991b1b';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(-6, -6);
+        ctx.quadraticCurveTo(-6, -13, -2, -11);
+        ctx.quadraticCurveTo(1, -17, 4, -12);
+        ctx.quadraticCurveTo(8, -15, 7, -5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // 7. GERDAN / SAKALLIK (Gaganın altından sarkan kırmızı gerdanlık)
+        ctx.fillStyle = '#dc2626';
+        ctx.strokeStyle = '#991b1b';
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.ellipse(3, 8, 3, 4.8, 0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // 8. GAGA (Sarı-Turuncu parlak gaga)
+        ctx.fillStyle = '#f59e0b';
+        ctx.strokeStyle = '#b45309';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(6, -3);
+        ctx.lineTo(16, 0);
+        ctx.lineTo(6, 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Gaga orta çizgisi
+        ctx.strokeStyle = '#92400e';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(6, 0.5);
+        ctx.lineTo(14, 0.5);
+        ctx.stroke();
+
+        // 9. GÖZ (Canlı göz ve göz kırpma)
+        const henBlink = (now + idx * 800) % 3200 < 160;
+        const eyeX = 2.5;
+        const eyeY = -1.5;
+
+        if (henBlink) {
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(eyeX, eyeY, 3, 0.2, Math.PI - 0.2);
+          ctx.stroke();
+        } else {
+          // Göz halkası
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(eyeX, eyeY, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+          // Göz bebeği
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.arc(eyeX + 0.5, eyeY, 2, 0, Math.PI * 2);
+          ctx.fill();
+          // Işıltı
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(eyeX, eyeY - 0.7, 0.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore(); // Kafa sonu
+
+        ctx.restore(); // Tavuk ana transform sonu
+      }
+
+      // Ana Çizim Fonksiyonu (720x460 Geniş Sahne)
+      function drawScene() {
+        ctx.clearRect(0, 0, 720, 460);
+
+        const isDark = document.body.classList.contains('dark');
+        
+        // 1. Gökyüzü Mavisi
+        const skyFill = isDark ? '#0f172a' : '#bae6fd';
+        ctx.fillStyle = skyFill;
+        ctx.fillRect(0, 0, 720, 460);
+
+        // 2. Süzülen Beyaz Bulutlar
+        drawClouds();
+
+        // 3. Sol ve Sağ Çiftlik Kümes Yapıları (Zemine Kadar İnen Ahşap Duvar ve Kirişler)
+        drawHenCoops(isDark);
+
+        // 4. Yemyeşil Çimenlik Zemin (Kümeslerin ve Tilkinin Altını Sarar)
+        drawGrassGround(isDark);
+
+        // Buzul Yavaşlatma Aktifken Serin Buzlu Atmosfer
+        if (slowTimer > 0) {
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.10)';
+          ctx.fillRect(0, 0, 720, 460);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 3.5;
+          ctx.strokeRect(2, 2, 716, 456);
+        }
+
+        const now = Date.now();
+
+        // 5. Rampaları ve Follukta Oturan Tavukları Çiz
+        Object.entries(RAMPS).forEach(([key, r], idx) => {
+          const isLeft = key.includes('left');
+          const nx = r.nest.x;
+          const ny = r.nest.y;
+
+          // Ahşap Yuva Tüneği & Samanlı Folluk
+          ctx.fillStyle = isDark ? '#1e293b' : '#78350f';
+          ctx.strokeStyle = isDark ? '#334155' : '#451a03';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(nx - 24, ny - 14, 48, 36, 8) : ctx.rect(nx - 24, ny - 14, 48, 36);
+          ctx.fill();
+          ctx.stroke();
+
+          // Saman yatağı
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath();
+          ctx.ellipse(nx, ny + 8, 22, 10, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#ca8a04';
+          ctx.lineWidth = 1.6;
+          for (let s = -16; s <= 16; s += 6) {
+            ctx.beginPath();
+            ctx.moveTo(nx + s, ny + 8);
+            ctx.lineTo(nx + s * 1.3, ny + 15 + (s % 4));
+            ctx.stroke();
+          }
+
+          // Ayrıntılı, Canlı, Boyunlu ve Kuyruklu Köy Tavuğu
+          drawHen(ctx, nx, ny, isLeft, isDark, now, idx);
+
+          // Folluk Ön Ahşap Korkuluğu
+          ctx.fillStyle = isDark ? '#334155' : '#92400e';
+          ctx.strokeStyle = isDark ? '#475569' : '#713f12';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(nx - 24, ny + 10, 48, 14, [0, 0, 6, 6]) : ctx.rect(nx - 24, ny + 10, 48, 14);
+          ctx.fill();
+          ctx.stroke();
+
+          // 4.1 Rampa Ahşap Destek Yapısı (Duvar Payandaları ve Destek Kirişleri)
+          const rdx = r.end.x - r.start.x;
+          const rdy = r.end.y - r.start.y;
+          const rlen = Math.hypot(rdx, rdy);
+          
+          // Her rampa yönü (sol/sağ) için DAİMA YUKARI bakan dikme vektörü (Upward Normal)
+          const angle = Math.atan2(rdy, rdx);
+          const normalAngle = rdx > 0 ? angle - Math.PI / 2 : angle + Math.PI / 2;
+          const rnx = Math.cos(normalAngle);
+          const rny = Math.sin(normalAngle); // Her iki tarafta da daima negatif (yukarı)
+
+          const wallX = isLeft ? 82 : 638;
+          const isTopRamp = idx === 0 || idx === 2;
+          const strutY = r.start.y + (isTopRamp ? 60 : 50);
+          const strutRampX = r.start.x + rdx * 0.45;
+          const strutRampY = r.start.y + rdy * 0.45;
+
+          // Açılı Duvar Payandası (Duvara Sabitli Üçgen Ahşap Destek Kirişi)
+          ctx.strokeStyle = isDark ? '#1e293b' : '#78350f';
+          ctx.lineWidth = 8;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(wallX, strutY);
+          ctx.lineTo(strutRampX, strutRampY);
+          ctx.stroke();
+
+          ctx.strokeStyle = isDark ? '#334155' : '#b45309';
+          ctx.lineWidth = 4.5;
+          ctx.beginPath();
+          ctx.moveTo(wallX, strutY);
+          ctx.lineTo(strutRampX, strutRampY);
+          ctx.stroke();
+
+          // Payanda Metal Perçin / Çivileri
+          ctx.fillStyle = isDark ? '#94a3b8' : '#451a03';
+          ctx.beginPath();
+          ctx.arc(wallX + (isLeft ? 4 : -4), strutY, 2.4, 0, Math.PI * 2);
+          ctx.arc(strutRampX, strutRampY, 2.4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Yalnızca Alt Rampalar İçin Çimene Kadar İnen Dikey Destek Direği
+          if (!isTopRamp) {
+            const midX = r.start.x + rdx * 0.65;
+            const midY = r.start.y + rdy * 0.65;
+
+            ctx.strokeStyle = isDark ? '#1e293b' : '#78350f';
+            ctx.lineWidth = 7;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(midX, midY);
+            ctx.lineTo(midX, 385);
+            ctx.stroke();
+
+            ctx.strokeStyle = isDark ? '#334155' : '#92400e';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(midX, midY);
+            ctx.lineTo(midX, 385);
+            ctx.stroke();
+
+            // Çimen Zemin Takozu
+            ctx.fillStyle = isDark ? '#334155' : '#78350f';
+            ctx.beginPath();
+            ctx.ellipse(midX, 385, 6, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // 4.2 Kalın ve Sağlam Ahşap Rampa Gövdesi
+          // Alt Ahşap Çerçeve / Kalas Tabanı
+          ctx.strokeStyle = isDark ? '#0f172a' : '#78350f';
+          ctx.lineWidth = 11;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(r.start.x, r.start.y);
+          ctx.lineTo(r.end.x, r.end.y);
+          ctx.stroke();
+
+          // Üst Sıcak Ahşap Oluk Yüzeyi
+          ctx.strokeStyle = isDark ? '#334155' : '#b45309';
+          ctx.lineWidth = 7;
+          ctx.beginPath();
+          ctx.moveTo(r.start.x, r.start.y);
+          ctx.lineTo(r.end.x, r.end.y);
+          ctx.stroke();
+
+          // Üst Ahşap Ray / Işık Vurgusu Şeridi (Daima Üst Yüzeyde)
+          ctx.strokeStyle = isDark ? '#64748b' : '#fde68a';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(r.start.x + rnx * 2.5, r.start.y + rny * 2.5);
+          ctx.lineTo(r.end.x + rnx * 2.5, r.end.y + rny * 2.5);
+          ctx.stroke();
+
+          // Duvar Çıkış Takozu / Ahşap Flanş
+          ctx.fillStyle = isDark ? '#334155' : '#78350f';
+          ctx.beginPath();
+          ctx.ellipse(r.start.x, r.start.y, 5, 8, 0, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // 5. Merkezdeki Uzun Boylu, Çimene Basan Tilki ve Sepet
+        drawFox(foxPos, isDark);
+
+        // Yuvarlanan ve Havada Düşen Yumurtalar (Kusursuz Yörünge)
+        eggs.forEach(egg => {
+          let curX, curY;
+          if (egg.state === 'falling') {
+            curX = egg.x;
+            curY = egg.y;
+          } else {
+            const r = RAMPS[egg.rampKey];
+            const rdx = r.end.x - r.start.x;
+            const rdy = r.end.y - r.start.y;
+
+            // Her iki taraf için (sol ve sağ) daima yukarı doğru dikme açısı
+            const angle = Math.atan2(rdy, rdx);
+            const normalAngle = rdx > 0 ? angle - Math.PI / 2 : angle + Math.PI / 2;
+            const rnx = Math.cos(normalAngle);
+            const rny = Math.sin(normalAngle);
+
+            // Yumurtanın tabanının tahtanın üst yüzeyine oturması için yukarı doğru ofset
+            const eggOffset = 13.5;
+            curX = (r.start.x + rdx * egg.progress) + (rnx * eggOffset);
+            curY = (r.start.y + rdy * egg.progress) + (rny * eggOffset);
+          }
+
+          ctx.save();
+          ctx.translate(curX, curY);
+          ctx.rotate(egg.rot);
+
+          drawNiceEgg(ctx, egg.type, now);
+          ctx.restore();
+        });
+
+        // Kırılan Yumurtalar & Kabuklar
+        brokenEggs.forEach(b => {
+          let bColor = '#f59e0b';
+          let bShell = '#fffbeb';
+          if (b.type === 'freeze') { bColor = '#38bdf8'; bShell = '#e0f2fe'; }
+          else if (b.type === 'double') { bColor = '#c084fc'; bShell = '#f3e8ff'; }
+          else if (b.type === 'gold') { bColor = '#fbbf24'; bShell = '#fef08a'; }
+          else if (b.type === 'pink') { bColor = '#f472b6'; bShell = '#fbcfe8'; }
+          else if (b.type === 'rotten') { bColor = '#3f6212'; bShell = '#65a30d'; }
+
+          ctx.fillStyle = bColor;
+          ctx.beginPath();
+          ctx.arc(b.x, 385, 10, 0, Math.PI);
+          ctx.fill();
+
+          ctx.fillStyle = bShell;
+          ctx.strokeStyle = bColor;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(b.x - 13, 386);
+          ctx.lineTo(b.x - 7, 374);
+          ctx.lineTo(b.x, 386);
+          ctx.lineTo(b.x + 7, 374);
+          ctx.lineTo(b.x + 13, 386);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        });
+
+        // Kırılan Yumurtadan Çıkıp Koşan Civcivler
+        drawChicks(now);
+
+        // Parçacık Efektleri
+        particles.forEach(p => {
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+
+        // Uçuşan Bildirim Metinleri
+        floatingTexts.forEach(ft => {
+          ctx.fillStyle = ft.color;
+          ctx.font = '800 14px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.globalAlpha = Math.max(0, ft.life);
+          ctx.fillText(ft.text, ft.x, ft.y);
+          ctx.globalAlpha = 1;
+        });
+      }
+
+      // Kırılan Yumurtadan Çıkan ve Çimende Koşan Civcivler
+      function drawChicks(now) {
+        for (let i = chicks.length - 1; i >= 0; i--) {
+          const c = chicks[i];
+          let chickColor = '#fde047';
+          if (c.type === 'freeze') chickColor = '#7dd3fc';
+          else if (c.type === 'double') chickColor = '#d8b4fe';
+          else if (c.type === 'gold') chickColor = '#fbbf24';
+          else if (c.type === 'pink') chickColor = '#f472b6';
+
+          if (c.hatchTimer > 0) {
+            c.hatchTimer--;
+            ctx.save();
+            ctx.translate(c.x, c.y);
+            ctx.fillStyle = chickColor;
+            ctx.strokeStyle = '#059669';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(0, -6, 7.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(c.dir > 0 ? 3 : -3, -7, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ea580c';
+            ctx.beginPath();
+            ctx.moveTo(c.dir > 0 ? 5 : -5, -6);
+            ctx.lineTo(c.dir > 0 ? 11 : -11, -5);
+            ctx.lineTo(c.dir > 0 ? 5 : -5, -3);
+            ctx.fill();
+            ctx.restore();
+          } else {
+            c.x += c.vx;
+            c.legPhase += 0.42;
+
+            ctx.save();
+            ctx.translate(c.x, c.y);
+            if (c.dir < 0) ctx.scale(-1, 1);
+
+            const legSwing = Math.sin(c.legPhase) * 4.5;
+            ctx.strokeStyle = '#ea580c';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+
+            ctx.beginPath();
+            ctx.moveTo(-2, 4);
+            ctx.lineTo(-2 + legSwing, 9);
+            ctx.lineTo(2 + legSwing, 9);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(2, 4);
+            ctx.lineTo(2 - legSwing, 9);
+            ctx.lineTo(6 - legSwing, 9);
+            ctx.stroke();
+
+            ctx.fillStyle = chickColor;
+            ctx.strokeStyle = '#059669';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 9, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            const wingWiggle = Math.sin(now * 0.03) * 3;
+            ctx.fillStyle = c.type === 'gold' ? '#f59e0b' : (c.type === 'pink' ? '#ec4899' : '#facc15');
+            ctx.beginPath();
+            ctx.ellipse(-3, -1 + wingWiggle, 5, 3.2, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = chickColor;
+            ctx.beginPath();
+            ctx.arc(4, -5, 6.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            const chickBlink = (now + c.id * 1000) % 2400 < 150;
+            if (chickBlink) {
+              ctx.strokeStyle = '#0f172a';
+              ctx.lineWidth = 1.6;
+              ctx.beginPath();
+              ctx.arc(6, -6, 2.2, 0.2, Math.PI - 0.2);
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = '#0f172a';
+              ctx.beginPath();
+              ctx.arc(6, -6, 2, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.fillStyle = '#ffffff';
+              ctx.beginPath();
+              ctx.arc(5.4, -6.6, 0.8, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            ctx.fillStyle = '#ea580c';
+            ctx.beginPath();
+            ctx.moveTo(8, -6);
+            ctx.lineTo(14, -5);
+            ctx.lineTo(8, -3);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = c.type === 'gold' ? '#fef08a' : '#fffbeb';
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(1, -10);
+            ctx.lineTo(4, -13);
+            ctx.lineTo(7, -10);
+            ctx.lineTo(9, -8);
+            ctx.lineTo(0, -8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.restore();
+
+            if (c.x < -40 || c.x > 760) {
+              chicks.splice(i, 1);
+            }
+          }
+        }
+      }
+
+      // Canlı, Karizmatik, Uzun Boylu, Pürüzsüz Kollar ve Çimene Düzgün Basan Patili Tilki
+      function drawFox(pos, isDark) {
+        const isLeft = pos.includes('left');
+        const isTop = pos.includes('top');
+        const time = Date.now();
+
+        // 720x460 Arena Merkezi
+        const centerX = 360;
+        const centerY = 285;
+
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        if (!isLeft) ctx.scale(-1, 1);
+
+        // Sepet Konumu (Kollara Uygun Doğal ve Yakın Mesafe)
+        const basketX = -65;
+        const basketY = isTop ? -72 : 36;
+
+        // 1. İkonik, Sivrilerek Kıvrılan Görkemli Tilki Kuyruğu
+        const tailWag = Math.sin(time * 0.0055) * 0.18;
+        ctx.save();
+        ctx.translate(26, 26);
+        ctx.rotate(tailWag);
+
+        // Kuyruk Ana Gövdesi
+        ctx.fillStyle = '#ea580c';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(0, 10);
+        ctx.quadraticCurveTo(28, 16, 42, -8);
+        ctx.quadraticCurveTo(56, -30, 46, -48);
+        ctx.quadraticCurveTo(36, -54, 26, -40);
+        ctx.quadraticCurveTo(12, -22, 0, -6);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Sivrilerek Giden Beyaz Alev/Tüy Kuyruk Ucu
+        ctx.fillStyle = '#fff7ed';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(30, -36);
+        ctx.lineTo(38, -32);
+        ctx.lineTo(40, -38);
+        ctx.lineTo(46, -34);
+        ctx.quadraticCurveTo(54, -48, 48, -58);
+        ctx.quadraticCurveTo(38, -56, 28, -42);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // İç Sıcak Tüy Detayı
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.moveTo(34, -38);
+        ctx.quadraticCurveTo(46, -44, 42, -54);
+        ctx.quadraticCurveTo(34, -50, 32, -40);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // 2. Uzun, Boylu, Çimene Sağlam ve Yatay Basan Doğal Bacaklar ve Patiler (Y = 100 -> World 385px Çimen)
+        function drawLeg(lx, isRight) {
+          ctx.save();
+          // Üst Bacak / Uyluk
+          ctx.fillStyle = '#ea580c';
+          ctx.strokeStyle = '#9a3412';
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.ellipse(lx, 52, 13, 22, isRight ? 0.12 : -0.12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // İncik / Siyah Çorap (Keskin düz hat yerine yumuşak kavisli tüy geçişi)
+          ctx.fillStyle = '#431407';
+          ctx.strokeStyle = '#270e04';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(lx - 8.5, 72);
+          ctx.quadraticCurveTo(lx - 4, 66, lx, 69);
+          ctx.quadraticCurveTo(lx + 4, 66, lx + 8.5, 72);
+          ctx.lineTo(lx + 7.5, 94);
+          ctx.lineTo(lx - 7.5, 94);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Turuncu Tüy Geçiş Detayı (Siyah çorapla yumuşak harmanlanma)
+          ctx.fillStyle = '#ea580c';
+          ctx.strokeStyle = '#9a3412';
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(lx - 8, 70);
+          ctx.quadraticCurveTo(lx - 4, 64, lx, 67);
+          ctx.quadraticCurveTo(lx + 4, 64, lx + 8, 70);
+          ctx.stroke();
+
+          // Çimene Yatay Düzgün Basan Pati
+          ctx.fillStyle = '#431407';
+          ctx.strokeStyle = '#270e04';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.ellipse(lx, 96, 12, 5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Sevimli Pati Parmakları / Tırnak Uçları
+          ctx.fillStyle = '#fff7ed';
+          ctx.beginPath();
+          ctx.arc(lx - 6, 97.5, 2.2, 0, Math.PI * 2);
+          ctx.arc(lx, 98.5, 2.5, 0, Math.PI * 2);
+          ctx.arc(lx + 6, 97.5, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        drawLeg(-18, false);
+        drawLeg(18, true);
+
+        // 3. Uzun, Dik, Boylu Tilki Gövdesi (Geniş Omuzlu ve Atletik)
+        ctx.fillStyle = '#ea580c';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(-20, 62);
+        ctx.quadraticCurveTo(-30, 18, -22, -24); // Sol Omuz
+        ctx.quadraticCurveTo(-12, -34, 0, -34);  // Boyun Tabanı
+        ctx.quadraticCurveTo(12, -34, 22, -22);  // Sağ Omuz
+        ctx.quadraticCurveTo(30, 18, 20, 62);
+        ctx.quadraticCurveTo(0, 72, -20, 62);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Zengin Göğüs & Yele Beyazlığı
+        ctx.fillStyle = '#fff7ed';
+        ctx.beginPath();
+        ctx.moveTo(-14, 56);
+        ctx.quadraticCurveTo(-18, 16, -14, -20);
+        ctx.quadraticCurveTo(-6, -30, 0, -30);
+        ctx.quadraticCurveTo(6, -30, 14, -20);
+        ctx.quadraticCurveTo(18, 16, 14, 56);
+        ctx.quadraticCurveTo(0, 64, -14, 56);
+        ctx.closePath();
+        ctx.fill();
+
+        // 4. Belirgin ve Zarif Tilki Boynu (Gövde ile Kafa Arasında Net Görünen Boyun Kolonu)
+        ctx.fillStyle = '#ea580c';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(-11, -30);
+        ctx.lineTo(-10, -54);
+        ctx.lineTo(10, -54);
+        ctx.lineTo(11, -30);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Boyun Önündeki Beyaz Gerdanlık / Tüyler
+        ctx.fillStyle = '#fff7ed';
+        ctx.beginPath();
+        ctx.moveTo(-6, -30);
+        ctx.lineTo(-5, -52);
+        ctx.lineTo(5, -52);
+        ctx.lineTo(6, -30);
+        ctx.closePath();
+        ctx.fill();
+
+        // 5. GÖVDENİN ÖNÜNDEN GEÇEN ÇAPRAZ KOL (Sağ omuzdan çıkarak göğsün ve karnın ÖNÜNDEN sepete uzanır)
+        ctx.save();
+        ctx.strokeStyle = '#ea580c';
+        ctx.lineWidth = 13;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(18, -18);
+        ctx.quadraticCurveTo(-8, isTop ? -48 : 12, basketX + 18, basketY - 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2.4;
+        ctx.stroke();
+
+        // Çapraz Kol Pençesi (Sepetin Üst/İç Kenarını Kavrayan Pati)
+        ctx.fillStyle = '#431407';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(basketX + 18, basketY - 2, 6.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // 6. Sol / Ön Kol (Sol Omuzdan Çıkarak Doğal ve Pürüzsüz Kavisle Sepete Uzanır)
+        ctx.save();
+        ctx.strokeStyle = '#ea580c';
+        ctx.lineWidth = 14;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-20, -20);
+        ctx.quadraticCurveTo(-42, isTop ? -54 : 14, basketX + 8, basketY + 4);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2.4;
+        ctx.stroke();
+        ctx.restore();
+
+        // 7. Örgü Ahşap Sepet
+        ctx.fillStyle = '#b45309';
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(basketX, basketY, 26, 0, Math.PI);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#d97706';
+        ctx.beginPath();
+        ctx.ellipse(basketX, basketY, 26, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+
+        // Sepet örgü çizgileri
+        ctx.strokeStyle = 'rgba(120, 53, 15, 0.5)';
+        ctx.lineWidth = 1.6;
+        for (let i = -16; i <= 16; i += 8) {
+          ctx.beginPath();
+          ctx.moveTo(basketX + i, basketY);
+          ctx.quadraticCurveTo(basketX + i * 0.5, basketY + 15, basketX + i * 0.2, basketY + 22);
+          ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.moveTo(basketX - 20, basketY + 8); ctx.lineTo(basketX + 20, basketY + 8);
+        ctx.moveTo(basketX - 14, basketY + 18); ctx.lineTo(basketX + 14, basketY + 18);
+        ctx.stroke();
+
+        // Sepeti Önden Tutan Sol Pençe
+        ctx.fillStyle = '#431407';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(basketX + 8, basketY + 4, 7.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#fff7ed';
+        ctx.beginPath();
+        ctx.arc(basketX + 4, basketY + 3, 2, 0, Math.PI * 2);
+        ctx.arc(basketX + 8, basketY + 5, 2.2, 0, Math.PI * 2);
+        ctx.arc(basketX + 12, basketY + 6, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 8. Boynun Üzerinde Yükseltilmiş, Canlı ve Yakışıklı Tilki Kafası & Kulakları
+        const headY = isTop ? -56 : -46;
+        const headRot = isTop ? -0.20 : 0.08;
+
+        ctx.save();
+        ctx.translate(-4, headY);
+        ctx.rotate(headRot);
+
+        // Kulaklar
+        // Sol Kulak
+        ctx.fillStyle = '#ea580c';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(-16, -10);
+        ctx.quadraticCurveTo(-24, -28, -20, -42);
+        ctx.quadraticCurveTo(-12, -36, 0, -16);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        // Sol Kulak Uç Siyahlığı & İçi
+        ctx.fillStyle = '#431407';
+        ctx.beginPath();
+        ctx.moveTo(-20, -42); ctx.lineTo(-18, -34); ctx.lineTo(-13, -37);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.moveTo(-14, -12); ctx.lineTo(-17, -32); ctx.lineTo(-5, -16);
+        ctx.closePath(); ctx.fill();
+
+        // Sağ Kulak
+        ctx.fillStyle = '#ea580c';
+        ctx.strokeStyle = '#9a3412';
+        ctx.beginPath();
+        ctx.moveTo(2, -16);
+        ctx.quadraticCurveTo(8, -32, 18, -44);
+        ctx.quadraticCurveTo(19, -29, 16, -10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        // Sağ Kulak Uç Siyahlığı & İçi
+        ctx.fillStyle = '#431407';
+        ctx.beginPath();
+        ctx.moveTo(18, -44); ctx.lineTo(14, -35); ctx.lineTo(18, -33);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.moveTo(4, -15); ctx.lineTo(14, -32); ctx.lineTo(14, -12);
+        ctx.closePath(); ctx.fill();
+
+        // Tilki Kafası (Pofuduk Yanaklı Yakışıklı Çene)
+        ctx.fillStyle = '#ea580c';
+        ctx.strokeStyle = '#9a3412';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(-18, 16);
+        ctx.lineTo(-28, 5);
+        ctx.lineTo(-24, 0);
+        ctx.lineTo(-30, -7);
+        ctx.lineTo(-22, -9);
+        ctx.quadraticCurveTo(-14, -22, 0, -22);
+        ctx.quadraticCurveTo(16, -22, 20, -5);
+        ctx.quadraticCurveTo(24, 7, 14, 18);
+        ctx.quadraticCurveTo(0, 22, -18, 16);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Beyaz Pofuduk Yanaklar ve Çene
+        ctx.fillStyle = '#fff7ed';
+        ctx.beginPath();
+        ctx.moveTo(-18, 16);
+        ctx.lineTo(-28, 5);
+        ctx.lineTo(-24, 0);
+        ctx.lineTo(-30, -7);
+        ctx.quadraticCurveTo(-18, -3, -12, 4);
+        ctx.quadraticCurveTo(2, 6, 12, 0);
+        ctx.quadraticCurveTo(18, 9, 10, 18);
+        ctx.quadraticCurveTo(0, 21, -18, 16);
+        ctx.closePath();
+        ctx.fill();
+
+        // Kaş Üstü Sevimli Açık Renk Noktalar
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.ellipse(-14, -12, 3, 2, -0.2, 0, Math.PI * 2);
+        ctx.ellipse(2, -12, 3, 2, 0.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Göz Kırpma & Bakış Takibi
+        const blinkCycle = time % 3600;
+        const isBlinking = blinkCycle < 180;
+        const pupilOffsetY = isTop ? -2.2 : 1.4;
+
+        function drawEye(ex, ey) {
+          if (isBlinking) {
+            ctx.strokeStyle = '#7c2d12';
+            ctx.lineWidth = 2.4;
+            ctx.beginPath();
+            ctx.arc(ex, ey + 1, 4.5, 0.2, Math.PI - 0.2);
+            ctx.stroke();
+          } else {
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.ellipse(ex, ey, 7, 6.2, -0.05, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#7c2d12';
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+            // İris
+            ctx.fillStyle = '#78350f';
+            ctx.beginPath();
+            ctx.arc(ex - 0.8, ey + pupilOffsetY, 3.6, 0, Math.PI * 2);
+            ctx.fill();
+            // Gözbebeği
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(ex - 1.4, ey + pupilOffsetY, 2, 0, Math.PI * 2);
+            ctx.fill();
+            // Çift Işık Yansıması
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(ex - 2.4, ey + pupilOffsetY - 1.2, 1.2, 0, Math.PI * 2);
+            ctx.arc(ex + 0.6, ey + pupilOffsetY + 1, 0.6, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        drawEye(-13, -3);
+        drawEye(2, -3);
+
+        // Sevimli Siyah Burun
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.ellipse(-24, 3, 4.2, 3.2, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-25, 2, 1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Gülümseyen Ağız Çizgisi
+        ctx.strokeStyle = '#7c2d12';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(-24, 6);
+        ctx.quadraticCurveTo(-18, 12, -9, 9);
+        ctx.stroke();
+
+        // Bıyıklar
+        ctx.strokeStyle = '#431407';
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.moveTo(-22, 4); ctx.lineTo(-36, 2);
+        ctx.moveTo(-22, 7); ctx.lineTo(-34, 9);
+        ctx.moveTo(-22, 10); ctx.lineTo(-32, 14);
+        ctx.stroke();
+
+        ctx.restore(); // Kafa sonu
+
+        ctx.restore(); // Ana transform sonu
+      }
+
+      // Oyun Döngüsü
+      function gameLoop(timestamp) {
+        if (!isRunning) return;
+
+        // Zamanlayıcıları Güncelle
+        if (slowTimer > 0) slowTimer--;
+        if (doublePointsTimer > 0) doublePointsTimer--;
+
+        // Hız Çarpanı (Buzul Yavaşlatma aktifken %50 hız)
+        const speedMult = slowTimer > 0 ? 0.48 : 1.0;
+        const currentInterval = slowTimer > 0 ? spawnInterval * 1.5 : spawnInterval;
+
+        // Yumurta Üretimi
+        if (timestamp - lastSpawn > currentInterval) {
+          spawnEgg();
+          lastSpawn = timestamp;
+        }
+
+        // Yumurta Hareketi, Yakalama ve Havada Düşüş Fiziği
+        for (let i = eggs.length - 1; i >= 0; i--) {
+          const egg = eggs[i];
+          const isLeft = egg.rampKey.includes('left');
+
+          if (egg.state === 'falling') {
+            // Havada yerçekimiyle parabolik düşüş
+            egg.vy += 0.42 * speedMult;
+            egg.x += egg.vx * speedMult;
+            egg.y += egg.vy * speedMult;
+            egg.rot += (isLeft ? 0.12 : -0.12) * speedMult;
+
+            // Zemine (çimene) ulaştığında tam o noktada kırılma!
+            if (egg.y >= 385) {
+              const impactX = Math.max(100, Math.min(620, egg.x));
+
+              if (egg.type === 'rotten') {
+                // BOZUK YUMURTAYI TUTMAYIP YERE DÜŞÜRDÜN -> CAN GİTMEZ! CİVCİV ÇIKMAZ!
+                brokenEggs.push({ x: impactX, time: Date.now(), type: 'rotten' });
+                createSplash(impactX, 385, 'rotten');
+                floatingTexts.push({
+                  x: impactX,
+                  y: 365,
+                  text: `+BOZUK YUMURTAYI ATLATTIK!`,
+                  color: '#65a30d',
+                  life: 1.0
+                });
+                try { GameSounds.place(); } catch(e){}
+              } else {
+                // Normal yumurtayı kaçırdın -> -1 Can! (Civciv çıkar)
+                lives--;
+                brokenEggs.push({ x: impactX, time: Date.now(), type: egg.type });
+                createSplash(impactX, 385, egg.type);
+
+                // Kırılan yumurtadan sevimli civciv çıksın ve çimende koşsun!
+                chicks.push({
+                  x: impactX,
+                  y: 380,
+                  vx: isLeft ? -1.8 : 1.8,
+                  dir: isLeft ? -1 : 1,
+                  hatchTimer: 24,
+                  legPhase: 0,
+                  type: egg.type,
+                  id: Math.random()
+                });
+
+                try { GameSounds.wrong(); } catch(e){}
+                updateUI();
+
+                if (lives <= 0) {
+                  gameOver();
+                  return;
+                }
+              }
+              eggs.splice(i, 1);
+            }
+          } else {
+            // Rampa üzerinde yuvarlanma
+            egg.progress += egg.speed * speedMult;
+            egg.rot += (isLeft ? 0.08 : -0.08) * speedMult;
+
+            if (egg.progress >= 1) {
+              const r = RAMPS[egg.rampKey];
+              if (foxPos === egg.rampKey) {
+                // Sepetle Yakalandı!
+                if (egg.type === 'rotten') {
+                  // BOZUK YUMURTAYI TUTTUN -> -1 CAN!
+                  lives--;
+                  createCatchStars(r.catchBox.x, r.catchBox.y, 'rotten');
+                  try { GameSounds.wrong(); } catch(e){}
+                  floatingTexts.push({
+                    x: r.catchBox.x,
+                    y: r.catchBox.y - 14,
+                    text: `-1 CAN! BOZUK YUMURTAYI TUTTUN!`,
+                    color: '#65a30d',
+                    life: 1.3
+                  });
+                  showEggAlert('danger', '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <b>Bozuk Yumurta!</b> Çürük yumurtayı tuttun, 1 can kaybettin!');
+                  updateUI();
+                  if (lives <= 0) {
+                    gameOver();
+                    return;
+                  }
+                } else {
+                  let basePts = 1;
+                  if (egg.type === 'gold') basePts = 5;
+                  else if (egg.type === 'freeze') basePts = 2;
+                  else if (egg.type === 'double') basePts = 3;
+                  else if (egg.type === 'pink') basePts = 2;
+
+                  const earned = basePts * (doublePointsTimer > 0 ? 2 : 1);
+                  score += earned;
+
+                  createCatchStars(r.catchBox.x, r.catchBox.y, egg.type);
+
+                  if (egg.type === 'gold') {
+                    lives++;
+                    try { GameSounds.point(); } catch(e){}
+                    floatingTexts.push({
+                      x: r.catchBox.x,
+                      y: r.catchBox.y - 14,
+                      text: `+1 CAN! +${earned} ALTIN PUAN`,
+                      color: '#eab308',
+                      life: 1.1
+                    });
+                    showEggAlert('gold', '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> <b>Altın Can Yumurtası!</b> +1 Ekstra Can Eklendi ve +5 Puan Kazandınız!');
+                  } else if (egg.type === 'pink') {
+                    // Kalıcı Hız Düşürme (Seviyeyi 1 Kademe Düşür)
+                    if (level > 1) {
+                      level--;
+                      spawnInterval = Math.min(1800, 1800 - (level * 105));
+                    }
+                    try { GameSounds.point(); } catch(e){}
+                    floatingTexts.push({
+                      x: r.catchBox.x,
+                      y: r.catchBox.y - 14,
+                      text: `HIZ YAVAŞLADI! +${earned} PUAN`,
+                      color: '#db2777',
+                      life: 1.2
+                    });
+                    showEggAlert('pink', '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg> <b>Pembe Yumurta!</b> Oyun hızı kalıcı olarak yavaşlatıldı (Seviye ' + level + ')!');
+                  } else if (egg.type === 'freeze') {
+                    slowTimer = 360;
+                    try { GameSounds.point(); } catch(e){}
+                    floatingTexts.push({
+                      x: r.catchBox.x,
+                      y: r.catchBox.y - 14,
+                      text: `AĞIR ÇEKİM (6s)! +${earned} PUAN`,
+                      color: '#0284c7',
+                      life: 1.1
+                    });
+                    showEggAlert('freeze', '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5l-5 5-5-5M17 19l-5-5-5 5M2 12h20M5 7l5 5-5 5M19 7l-5 5 5 5"/></svg> <b>Mavi Buzul Yumurtası!</b> Zaman 6 saniye boyunca %50 yavaşlatıldı!');
+                  } else if (egg.type === 'double') {
+                    doublePointsTimer = 360;
+                    try { GameSounds.point(); } catch(e){}
+                    floatingTexts.push({
+                      x: r.catchBox.x,
+                      y: r.catchBox.y - 14,
+                      text: `2X ÇİFT PUAN (6s)! +${earned} PUAN`,
+                      color: '#9333ea',
+                      life: 1.1
+                    });
+                    showEggAlert('double', '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <b>Mor Yıldız Yumurtası!</b> 6 saniye boyunca 2X Çift Puan aktif!');
+                  } else {
+                    try { GameSounds.place(); } catch(e){}
+                    if (doublePointsTimer > 0) {
+                      floatingTexts.push({
+                        x: r.catchBox.x,
+                        y: r.catchBox.y - 12,
+                        text: `+${earned} PUAN (2X)`,
+                        color: '#c084fc',
+                        life: 0.85
+                      });
+                    }
+                  }
+
+                  if (score % 6 === 0 && egg.type !== 'pink') {
+                    level++;
+                    spawnInterval = Math.max(600, 1800 - (level * 105));
+                  }
+                  updateUI();
+                }
+                eggs.splice(i, 1);
+              } else {
+                // Kaçırıldı -> Rampa ucundan yerçekimiyle havada parabolik düşüşe geç!
+                const rdx = r.end.x - r.start.x;
+                const rdy = r.end.y - r.start.y;
+                const rlen = Math.hypot(rdx, rdy);
+                const rtx = rdx / rlen;
+                const rty = rdy / rlen;
+                const angle = Math.atan2(rdy, rdx);
+                const normalAngle = rdx > 0 ? angle - Math.PI / 2 : angle + Math.PI / 2;
+                const rnx = Math.cos(normalAngle);
+                const rny = Math.sin(normalAngle);
+                const eggOffset = 13.5;
+
+                egg.state = 'falling';
+                egg.x = r.end.x + (rnx * eggOffset);
+                egg.y = r.end.y + (rny * eggOffset);
+                const launchSpeed = Math.max(1.8, egg.speed * 320);
+                egg.vx = rtx * launchSpeed;
+                egg.vy = rty * launchSpeed;
+              }
+            }
+          }
+        }
+
+        // Parçacık Güncellemesi
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.life -= 0.03;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+
+        // Uçuşan Bildirim Metinleri Güncellemesi
+        for (let i = floatingTexts.length - 1; i >= 0; i--) {
+          const ft = floatingTexts[i];
+          ft.y -= 0.8;
+          ft.life -= 0.02;
+          if (ft.life <= 0) floatingTexts.splice(i, 1);
+        }
+
+        // Eski Kırık Yumurtaları Temizle
+        const now = Date.now();
+        brokenEggs = brokenEggs.filter(b => now - b.time < 3000);
+
+        updateUI();
+        drawScene();
+        animFrameId = requestAnimationFrame(gameLoop);
+      }
+
+      window.userStartGame = function() {
+        document.getElementById('arenaOverlay').classList.add('hidden');
+        startNewGame();
+      };
+
+      window.closeGameOverModal = function() {
+        const gm = document.getElementById('goModal');
+        if (gm) gm.classList.remove('open');
+      };
+
+      window.startNewGame = function() {
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        score = 0;
+        lives = 3;
+        level = 1;
+        spawnInterval = 1800;
+        slowTimer = 0;
+        doublePointsTimer = 0;
+        const banner = document.getElementById('eggAlertBanner');
+        if (banner) { banner.className = 'egg-alert-banner'; banner.innerHTML = ''; }
+        if (alertTimeout) clearTimeout(alertTimeout);
+        eggs = [];
+        chicks = [];
+        brokenEggs = [];
+        particles = [];
+        floatingTexts = [];
+        lastSpawn = performance.now();
+        isRunning = true;
+        document.getElementById('arenaOverlay').classList.add('hidden');
+        foxPos = 'bottom-left';
+        updateUI();
+        animFrameId = requestAnimationFrame(gameLoop);
+      };
+
+      function gameOver() {
+        isRunning = false;
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        try { GameSounds.win(); } catch(e){}
+
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('tt_fox_highscore', String(highScore));
+          highBadge.textContent = `En Yüksek: ${highScore}`;
+        }
+
+        const arenaOverlay = document.getElementById('arenaOverlay');
+        const arenaTitle = document.getElementById('arenaTitle');
+        const arenaMsg = document.getElementById('arenaMsg');
+        const arenaBtn = document.getElementById('arenaBtn');
+
+        if (gameMode === 'pvp') {
+          if (pvpTurn === 1) {
+            p1Score = score;
+            arenaTitle.textContent = '1. Oyuncu Tamamladı!';
+            arenaMsg.textContent = `1. Oyuncu Skoru: ${p1Score}. Şimdi sıra 2. Oyuncuda!`;
+            arenaBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 2. Oyuncu Başlasın';
+            pvpTurn = 2;
+          } else {
+            p2Score = score;
+            let result = '';
+            if (p1Score > p2Score) result = `1. Oyuncu Kazandı! (${p1Score} - ${p2Score})`;
+            else if (p2Score > p1Score) result = `2. Oyuncu Kazandı! (${p2Score} - ${p1Score})`;
+            else result = `Berabere Bitti! (${p1Score} - ${p2Score})`;
+
+            arenaTitle.textContent = 'Skor Yarışı Bitti!';
+            arenaMsg.textContent = result;
+            arenaBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Yeni Yarış Başlat';
+            pvpTurn = 1;
+          }
+        } else {
+          arenaTitle.textContent = 'Oyun Bitti!';
+          arenaMsg.textContent = `Toplam Toplanan Yumurta: ${score} (En Yüksek: ${highScore})`;
+          arenaBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Yeniden Oyna';
+        }
+        arenaOverlay.classList.remove('hidden');
+      }
+
+      // Ekrana / Rampalara Tıklayarak (Dokunarak) Oynama
+      canvas.addEventListener('pointerdown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        if (x < 0.5 && y < 0.5) setFoxPosition('top-left');
+        else if (x < 0.5 && y >= 0.5) setFoxPosition('bottom-left');
+        else if (x >= 0.5 && y < 0.5) setFoxPosition('top-right');
+        else setFoxPosition('bottom-right');
+      });
+
+      // Klavye Yön Tuşları ve WASD / QAED Kontrolleri
+      window.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'q', 'a', 'e', 'd', 'w', 's', ' '].includes(key)) {
+          e.preventDefault();
+        }
+        if (key === ' ' && !isRunning) { userStartGame(); return; }
+        if (key === 'q' || key === 'w') setFoxPosition('top-left');
+        else if (key === 'a' || key === 's') setFoxPosition('bottom-left');
+        else if (key === 'e') setFoxPosition('top-right');
+        else if (key === 'd') setFoxPosition('bottom-right');
+        else if (key === 'arrowup') setFoxPosition(foxPos.includes('left') ? 'top-left' : 'top-right');
+        else if (key === 'arrowdown') setFoxPosition(foxPos.includes('left') ? 'bottom-left' : 'bottom-right');
+        else if (key === 'arrowleft') setFoxPosition(foxPos.includes('top') ? 'top-left' : 'bottom-left');
+        else if (key === 'arrowright') setFoxPosition(foxPos.includes('top') ? 'top-right' : 'bottom-right');
+      });
+
+      // Modal Olayları
+      document.getElementById('rulesBtn').addEventListener('click', () => document.getElementById('rulesModal').classList.add('open'));
+      document.getElementById('rulesClose').addEventListener('click', () => document.getElementById('rulesModal').classList.remove('open'));
+
+      drawScene();
+    })();
+  </script>
+
+<script src="../../js/menu.js" defer></script>  
+  
+  
+  
+  
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

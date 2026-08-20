@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-Okul Fotoğraf Boyutlandırıcısı - Profil Fotoğraflarını 133x171 Yap</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/theme.js"></script>
+<style>
+    :root {
+        --primary-color: #0284c7;
+        --primary-hover: #0369a1;
+        --text-color: #1e293b;
+        --muted-text: #475569;
+        --border-color: #cbd5e1;
+        --bg-color: #f8fafc;
+        --panel-bg: #ffffff;
+        --head-bg: #e0f2fe;
+        --ok-color: #16a34a;
+        --err-color: #dc2626;
+    }
+    .ekf-page-container, .ekf-page-container * { box-sizing: border-box; }
+    body { background-color: var(--bg-color); }
+    .ekf-page-container { max-width: 1100px; margin: 0 auto; padding: 20px 15px 40px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: var(--text-color); font-size: 14px; line-height: 1.5; }
+    .ekf-page-container .main-title { font-size: 24px; text-align: center; margin: 10px 0 6px; font-weight: 700; color: var(--primary-color); }
+    .ekf-page-container .main-subtitle { text-align: center; color: var(--muted-text); margin: 0 auto 18px; max-width: 860px; font-size: 14px; }
+
+    .collapsible-instructions-container { margin-bottom: 18px; width: 100%; text-align: left; }
+    .collapsible-instructions { border: none; width: 100%; display: inline-block; position: relative; }
+    .collapsible-trigger { background-color: #1e293b; color: #ffffff; padding: 10px 18px; width: auto; border: none; text-align: left; font-size: 14px; font-family: inherit; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border-radius: 25px !important; transition: background-color 0.2s ease; }
+    .collapsible-trigger:hover { background-color: #0f172a; color: #ffffff; }
+    .collapsible-trigger .arrow-icon { font-size: 11px; transition: transform 0.3s ease; margin-left: 8px; }
+    .collapsible-trigger.active .arrow-icon { transform: rotate(180deg); }
+    .collapsible-content { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; background-color: var(--panel-bg); border: 1px solid transparent; border-top: none; border-radius: 14px; }
+    .collapsible-content.open { padding: 20px; border-color: var(--border-color); }
+    .collapsible-content p, .collapsible-content li { text-align: justify; margin-bottom: 10px; line-height: 1.6; font-size: 14px; }
+    .collapsible-content ol { padding-left: 22px; margin: 8px 0 12px; }
+    .collapsible-content li::marker { color: var(--primary-color); font-weight: 700; }
+    .collapsible-content strong { color: var(--text-color); }
+
+    .ekf-panel { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; margin: 0 0 14px; }
+    .ekf-panel-title { font-size: 15px; font-weight: 700; color: var(--primary-color); margin: 0 0 10px; display: flex; align-items: center; gap: 7px; }
+
+    .ekf-dropzone { border: 2px dashed var(--border-color); border-radius: 14px; padding: 26px 16px; text-align: center; cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease; background: var(--bg-color); }
+    .ekf-dropzone.dragover { border-color: var(--primary-color); background: var(--head-bg); }
+    .ekf-dropzone .dz-icon { color: #94a3b8; }
+    .ekf-dropzone .dz-title { font-weight: 700; font-size: 14px; margin: 8px 0 4px; }
+    .ekf-dropzone .dz-sub { color: var(--muted-text); font-size: 12.5px; margin: 0; }
+    .ekf-btn-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px auto; }
+    .ekf-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 26px; min-width: 170px; max-width: 440px; justify-content: center; border-radius: 25px !important; border: none; background: var(--primary-color); color: #ffffff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background-color 0.2s ease; width: fit-content; }
+    .ekf-btn:hover { background: var(--primary-hover); color: #ffffff; }
+    .ekf-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .ekf-btn.secondary { background: #334155; }
+    .ekf-btn.secondary:hover { background: #1e293b; }
+    .ekf-btn.outline { background: var(--panel-bg); color: var(--primary-color); border: 2px solid var(--primary-color); }
+    .ekf-btn.outline:hover { background: var(--head-bg); color: var(--primary-hover); }
+    .ekf-btn.danger-outline { background: var(--panel-bg); color: var(--err-color); border: 2px solid #fca5a5; }
+    .ekf-btn.danger-outline:hover { background: #fee2e2; color: #b91c1c; }
+
+    .ekf-options { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center; margin: 4px 0 2px; }
+    .ekf-option { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--text-color); cursor: pointer; }
+    .ekf-option input { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
+
+    .ekf-status-badge { margin: 8px auto 0; padding: 6px 18px; border-radius: 25px !important; font-size: 12.5px; font-weight: 700; width: fit-content; text-align: center; background: var(--head-bg); color: var(--primary-hover); border: 1px solid var(--primary-color); }
+    .ekf-status-badge.warn { background: #e0f2fe; color: #0369a1; border-color: #0284c7; }
+
+    .ekf-progress-wrap { display: none; margin: 10px 0 0; }
+    .ekf-progress-wrap.visible { display: block; }
+    .ekf-progress-bar { width: 100%; height: 12px; appearance: none; -webkit-appearance: none; border: 1px solid var(--border-color); border-radius: 25px; overflow: hidden; accent-color: var(--primary-color); }
+    .ekf-progress-bar::-webkit-progress-bar { background: var(--bg-color); border-radius: 25px; }
+    .ekf-progress-bar::-webkit-progress-value { background: var(--primary-color); border-radius: 25px; }
+    .ekf-progress-bar::-moz-progress-bar { background: var(--primary-color); border-radius: 25px; }
+    .ekf-progress-text { text-align: center; font-size: 12.5px; color: var(--muted-text); margin-top: 5px; }
+
+    .ekf-log { margin: 10px 0 0; padding: 10px 14px; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.65; max-height: 240px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; display: none; }
+    .ekf-log.visible { display: block; }
+    .ekf-log div { margin: 0; }
+    .ekf-log .l-green { color: #4ade80; }
+    .ekf-log .l-red { color: #f87171; }
+    .ekf-log .l-blue { color: #60a5fa; }
+    .ekf-log .l-orange { color: #fb923c; }
+    .ekf-log .l-gray { color: #94a3b8; }
+    .ekf-log .l-white { color: #e2e8f0; }
+
+    .ekf-results { display: none; margin-top: 4px; }
+    .ekf-results.visible { display: block; }
+    .ekf-results-summary { text-align: center; font-size: 13.5px; font-weight: 700; color: var(--primary-hover); margin: 0 0 12px; }
+    .ekf-results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+    .ekf-result-card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .ekf-card-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted-text); margin: 0 0 3px; }
+    .ekf-card-img { display: block; margin: 0 auto; max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border-color); }
+    .ekf-card-name { font-size: 11px; color: var(--muted-text); word-break: break-all; text-align: center; }
+    .ekf-card-size { font-size: 11px; font-weight: 700; color: var(--ok-color); text-align: center; }
+    .ekf-card-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+    .ekf-modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .ekf-modal-backdrop.open { display: flex; }
+    .ekf-modal { background: var(--panel-bg); border-radius: 14px; padding: 16px; max-width: 780px; width: 100%; max-height: 92vh; overflow: auto; text-align: center; }
+    .ekf-modal h3 { margin: 0 0 8px; font-size: 16px; color: var(--primary-color); }
+    .ekf-modal-canvas { max-width: 100%; max-height: 62vh; border: 1px solid var(--border-color); border-radius: 10px; touch-action: none; }
+    .ekf-modal-note { font-size: 12px; color: var(--muted-text); margin: 8px 0; }
+
+    .ekf-warning { display: flex; align-items: flex-start; gap: 10px; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 25px; padding: 12px 16px; font-size: 13px; line-height: 1.6; color: #78350f; margin: 12px auto; width: fit-content; max-width: 440px; }
+    .ekf-warning-icon { flex: 0 0 auto; width: 20px; height: 20px; color: #b45309; margin-top: 2px; }
+
+    body.dark .ekf-page-container { color: #e2e8f0; }
+    body.dark .main-title, body.dark .ekf-panel-title, body.dark .ekf-modal h3 { color: #38bdf8; }
+    body.dark .main-subtitle, body.dark .ekf-card-label, body.dark .ekf-card-name, body.dark .ekf-dropzone .dz-sub, body.dark .ekf-modal-note, body.dark .ekf-progress-text { color: #cbd5e1; }
+    body.dark .ekf-panel, body.dark .ekf-modal, body.dark .ekf-result-card, body.dark .collapsible-content { background: #1e293b; border-color: #334155; }
+    body.dark .ekf-dropzone { background: #0f172a; border-color: #475569; }
+    body.dark .ekf-dropzone.dragover { background: #1e293b; border-color: #38bdf8; }
+    body.dark .collapsible-trigger { background: #38bdf8; color: #0f172a; }
+    body.dark .collapsible-trigger:hover { background: #7dd3e8; color: #0f172a; }
+    body.dark .collapsible-content strong, body.dark .ekf-option { color: #e2e8f0; }
+    body.dark .ekf-warning { background: #423214; border-color: #b45309; color: #fde68a; }
+    body.dark .ekf-warning-icon { color: #fbbf24; }
+    body.dark .ekf-status-badge { background: #1e293b; color: #7dd3e8; border-color: #38bdf8; }
+    body.dark .ekf-status-badge.warn { background: #1e293b; color: #fdba74; border-color: #f59e0b; }
+    body.dark .ekf-btn.outline { background: #1e293b; color: #38bdf8; border-color: #38bdf8; }
+    body.dark .ekf-btn.outline:hover { background: #334155; color: #7dd3e8; }
+    body.dark .ekf-btn.secondary { background: #334155; }
+    body.dark .ekf-btn.secondary:hover { background: #475569; }
+    body.dark .ekf-card-img { border-color: #334155; }
+    body.dark .ekf-progress-bar { border-color: #334155; }
+</style>
+</head>
+<body>
+
+    <!-- Header / Üst Menü -->
+
+    <main class="ekf-page-container">
+
+        <div class="app-privacy-banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span><strong>Gizlilik Güvencesi:</strong> Bu uygulama internet üzerinden değil, bir script (kod) olarak doğrudan kendi cihazınızda çalışır. Girdiğiniz veriler ve dosyalar hiçbir sunucuya gönderilemez, kopyalanamaz, saklanamaz ve paylaşılamaz. Uygulamada veri toplama veya takip yoktur; tüm veriler yalnızca size aittir.</span>
+        </div>
+
+        <!-- Standart Uygulama Başlık Şeridi -->
+        <div class="app-main-header">
+            <div class="app-main-header-left">
+                <div class="app-logo-badge">
+                    <img src="fotograf-boyutlandirici-icon.jpg" alt="e-Okul Fotoğraf Boyutlandırıcısı Logo" class="app-logo-img">
+                </div>
+                <div class="app-title-group">
+                    <h1 class="app-title">e-Okul Fotoğraf Boyutlandırıcısı v1.0</h1>
+                </div>
+            </div>
+            <div class="app-main-header-right">
+                <button type="button" class="how-to-use-btn" onclick="document.getElementById('instructionsModal').classList.add('open')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span>Nasıl Kullanılır?</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="ekf-panel">
+            <div class="ekf-panel-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Kaynak Fotoğraflar
+            </div>
+            <div class="ekf-dropzone" id="ekfDropzone">
+                <svg class="dz-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p class="dz-title">Fotoğrafların bulunduğu klasörü buraya sürükleyin</p>
+                <p class="dz-sub">PNG, JPG ve JPEG dosyaları desteklenir. Tüm alt klasörler otomatik işlenir.</p>
+            </div>
+            <div class="ekf-btn-row">
+                <label class="ekf-btn" style="cursor:pointer;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    Kaynak Klasörü Seç
+                    <input type="file" id="ekfFolderInput" webkitdirectory directory multiple style="display:none;">
+                </label>
+            </div>
+            <div class="ekf-status-badge" id="ekfFileInfo" style="display:none;"></div>
+        </div>
+
+        <div class="ekf-panel">
+            <div class="ekf-panel-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                İşlem Ayarları ve Başlatma
+            </div>
+            <div class="ekf-options">
+                <label class="ekf-option">
+                    <input type="checkbox" id="ekfSuffix" checked>
+                    İşlenen dosyaları "_eokul" sonekiyle kaydet (örnek: fotograf_eokul.jpg)
+                </label>
+                <label class="ekf-option">
+                    <input type="checkbox" id="ekfFaceDetect" checked>
+                    Yüz tespiti ile akıllı kırpma
+                </label>
+            </div>
+            <div class="ekf-status-badge" id="ekfEngineStatus" title="Yüz tespiti tarayıcıda WebGL kullanır. Donanım hızlandırma kapalıysa veya tarayıcı desteklemiyorsa otomatik olarak merkez kırpma yöntemine geçilir.">Yüz tespit motoru hazırlanıyor...</div>
+            <div class="ekf-btn-row">
+                <button class="ekf-btn" id="ekfStartBtn" disabled>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Boyutlandırmayı Başlat
+                </button>
+                <button class="ekf-btn secondary" id="ekfCancelBtn" style="display:none;">İptal Et</button>
+            </div>
+            <div class="ekf-progress-wrap" id="ekfProgressWrap">
+                <progress class="ekf-progress-bar" id="ekfProgressBar" max="100" value="0"></progress>
+                <div class="ekf-progress-text" id="ekfProgressText">0 / 0</div>
+            </div>
+            <div class="ekf-log" id="ekfLog"></div>
+        </div>
+
+        <div class="ekf-panel ekf-results" id="ekfResults">
+            <div class="ekf-panel-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Sonuçları İncele ve Düzenle
+            </div>
+            <p class="ekf-results-summary" id="ekfResultsSummary"></p>
+            <div class="ekf-btn-row">
+                <button class="ekf-btn" id="ekfZipBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Tümünü ZIP Olarak İndir
+                </button>
+            </div>
+            <div class="ekf-results-grid" id="ekfResultsGrid"></div>
+        </div>
+
+        <div class="hashtag-box">
+            <span class="tag-badge">#eOkul</span>
+            <span class="tag-badge">#FotoğrafBoyutlandırma</span>
+            <span class="tag-badge">#ÖğretmenRehberi</span>
+            <span class="tag-badge">#ÖğrenciFotoğrafı</span>
+            <span class="tag-badge">#TeknolojiVeTasarım</span>
+        </div>
+
+        <div class="reactions-box">
+            <div class="reactions-title">Bu uygulamayı nasıl buldunuz? Tepkinizi belirtin:</div>
+            <div class="reactions-list">
+                <button class="reaction-btn" onclick="toggleReaction(this)">
+                    <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                    Faydalı <span class="reaction-count">0</span>
+                </button>
+                <button class="reaction-btn" onclick="toggleReaction(this)">
+                    <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    Harika <span class="reaction-count">0</span>
+                </button>
+                <button class="reaction-btn" onclick="toggleReaction(this)">
+                    <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Teşekkürler <span class="reaction-count">0</span>
+                </button>
+                <button class="reaction-btn" onclick="toggleReaction(this)">
+                    <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+                    Geliştirilmeli <span class="reaction-count">0</span>
+                </button>
+            </div>
+        </div>
+
+        <section class="comments-section">
+            <h3 class="comments-header-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Yorumlar ve Değerlendirmeler
+            </h3>
+            <form class="comment-form" onsubmit="addComment(event)">
+                <div class="form-group">
+                    <label for="comment-name">Adınız Soyadınız *</label>
+                    <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+                </div>
+                <div class="form-group">
+                    <label for="comment-body">Yorumunuz *</label>
+                    <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Yorumu Gönder
+                </button>
+            </form>
+            <div class="comments-list" id="comments-list"></div>
+        </section>
+
+    </main>
+
+    <!-- Talimatlar Modali -->
+    <div class="ekf-modal-backdrop" id="instructionsModal" onclick="if(event.target === this) this.classList.remove('open');">
+        <div class="ekf-modal" style="max-width: 600px; text-align: left;">
+            <h3 style="margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Uygulama Talimatları</h3>
+            <div style="font-size: 14px; line-height: 1.6;">
+                <ol style="padding-left: 20px; margin-bottom: 15px;">
+                    <li style="margin-bottom: 8px;"><strong>Klasörü Seçin:</strong> Orijinal fotoğrafların bulunduğu klasörü "Kaynak Klasörü Seç" butonuyla seçin veya klasörü bırakma alanına sürükleyin. Tüm alt klasörler otomatik olarak işleme dahil edilir.</li>
+                    <li style="margin-bottom: 8px;"><strong>Boyutlandırmayı Başlatın:</strong> "Boyutlandırmayı Başlat" butonuna tıklayın. Yüz tespiti uygun ise yüz, yüz tanınamazsa merkez kırpma kullanılır; her fotoğraf 133x171 piksel boyutuna getirilir.</li>
+                    <li style="margin-bottom: 8px;"><strong>İnceleyin ve Düzenleyin:</strong> İşlem bittikten sonra her fotoğrafın altındaki "Düzenle" butonu ile kırpmayı elle düzeltebilirsiniz.</li>
+                    <li style="margin-bottom: 8px;"><strong>İndirin:</strong> "Tümünü ZIP Olarak İndir" butonu tüm fotoğrafları klasör yapısı korunarak tek dosya halinde indirir; "İndir" butonları tek tek indirme sağlar.</li>
+                </ol>
+                <p style="margin-bottom: 10px;"><strong>Dosya Boyutu Optimizasyonu:</strong> Her fotoğraf e-Okul yüklemesine uygun olacak şekilde (mümkün olduğunca 150 KB'ın altında, en az 20 KB kalitede) JPEG olarak optimize edilir.</p>
+                <p style="margin-bottom: 10px;"><strong>Sorumluluk Reddi Beyanı:</strong> Bu uygulama, seçtiğiniz fotoğrafları yalnızca tarayıcınızda işler ve orijinal dosyalarınız üzerinde <strong>hiçbir değişiklik yapmaz</strong>. İndirilen dosyalar yeni dosyalardır. Yedeklemeniz önerilir.</p>
+            </div>
+            <div class="ekf-btn-row" style="margin-top: 20px;">
+                <button class="ekf-btn secondary" onclick="document.getElementById('instructionsModal').classList.remove('open')">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manuel Kırpma Modali -->
+    <div class="ekf-modal-backdrop" id="ekfCropModal">
+        <div class="ekf-modal">
+            <h3>Fotoğrafı Manuel Olarak Kırp</h3>
+            <p class="ekf-modal-note">Kırpma kutusunu sürükleyin veya köşelerinden boyutlandırın. Oran 133:171'e kilitlidir. En iyi sonuç için kafa, çerçevenin üst kısmında ve kutu içinde kalmalıdır.</p>
+            <canvas class="ekf-modal-canvas" id="ekfCropCanvas"></canvas>
+            <div class="ekf-btn-row">
+                <button class="ekf-btn" id="ekfCropSave">Kaydet ve Uygula</button>
+                <button class="ekf-btn secondary" id="ekfCropClose">Vazgeç</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/reactions.js"></script>
+    <script src="../js/comments.js"></script>
+    <script src="../js/lib/jszip.min.js"></script>
+    <script>
+    /* file:// protokolünde Chrome fetch/XHR'i engellediği için yüz tespit
+       motorunun binary dosyaları gömülü (gzip+base64) kopyalardan yüklenir.
+       Bu yalnızca dosyayı çift tıklayarak açtığınızda devreye girer. */
+    (function () {
+        if (location.protocol !== "file:") return;
+        var orjFetch = window.fetch;
+        var orjCreate = document.createElement.bind(document);
+        document.createElement = function (etiket) {
+            var el = orjCreate(etiket);
+            if (etiket === "script") {
+                var orjSet = el.setAttribute;
+                el.setAttribute = function (ad, deger) {
+                    if (ad === "crossorigin") return;
+                    return orjSet.call(this, ad, deger);
+                };
+            }
+            return el;
+        };
+        window.__MD_EMBED = window.__MD_EMBED || {};
+        var cache = {};
+        function coz(b64) {
+            var bin = atob(b64), u8 = new Uint8Array(bin.length);
+            for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+            var ds = new DecompressionStream("gzip");
+            return new Response(new Response(new Blob([u8])).body.pipeThrough(ds)).arrayBuffer()
+                .then(function (ab) { return new Uint8Array(ab); });
+        }
+        window.__MD_gomuluYukle = function () {
+            var adlar = ["face_detection_short.binarypb", "face_detection_short_range.tflite", "face_detection_solution_simd_wasm_bin.wasm"];
+            return Promise.all(adlar.map(function (ad) {
+                var b64 = window.__MD_EMBED[ad];
+                if (!b64) return Promise.reject(new Error("Gömülü dosya yok: " + ad));
+                return coz(b64).then(function (u8) { cache[ad] = u8; });
+            }));
+        };
+        window.fetch = function (girdi, secenekler) {
+            if (typeof girdi === "string") {
+                var ad = girdi.split("/").pop();
+                if (ad === "face_detection_short.binarypb" || ad === "face_detection_short_range.tflite" || ad === "face_detection_solution_simd_wasm_bin.wasm" || ad === "face_detection_solution_wasm_bin.wasm") {
+                    var u8 = cache[ad];
+                    if (!u8) return Promise.reject(new Error("Gömülü dosya bulunamadı: " + ad));
+                    var tip = ad.indexOf(".wasm") !== -1 ? "application/wasm" : "application/octet-stream";
+                    return Promise.resolve(new Response(u8, { status: 200, headers: { "Content-Type": tip } }));
+                }
+            }
+            return orjFetch.apply(this, arguments);
+        };
+    })();
+    </script>
+    <script src="../js/lib/mediapipe/face_detection.js"></script>
+    <script>
+    (function () {
+        "use strict";
+
+        var HEDEF_W = 133;
+        var HEDEF_H = 171;
+        var HEDEF_ORAN = HEDEF_W / HEDEF_H;
+        var HEAD_TO_FACE_HEIGHT_RATIO = 1.8;
+        var HEAD_IN_FRAME_RATIO = 0.60;
+        var HEAD_VERTICAL_OFFSET = 0.45;
+        var DESTEKLENEN = [".png", ".jpg", ".jpeg"];
+
+        var state = {
+            files: [],
+            results: [],
+            faceDetector: null,
+            faceEngineReady: false,
+            cancelled: false,
+            running: false,
+            crop: null
+        };
+
+        var el = {
+            dropzone: document.getElementById("ekfDropzone"),
+            folderInput: document.getElementById("ekfFolderInput"),
+            fileInfo: document.getElementById("ekfFileInfo"),
+            engineStatus: document.getElementById("ekfEngineStatus"),
+            startBtn: document.getElementById("ekfStartBtn"),
+            cancelBtn: document.getElementById("ekfCancelBtn"),
+            progressWrap: document.getElementById("ekfProgressWrap"),
+            progressBar: document.getElementById("ekfProgressBar"),
+            progressText: document.getElementById("ekfProgressText"),
+            log: document.getElementById("ekfLog"),
+            results: document.getElementById("ekfResults"),
+            resultsSummary: document.getElementById("ekfResultsSummary"),
+            resultsGrid: document.getElementById("ekfResultsGrid"),
+            zipBtn: document.getElementById("ekfZipBtn"),
+            cropModal: document.getElementById("ekfCropModal"),
+            cropCanvas: document.getElementById("ekfCropCanvas"),
+            cropSave: document.getElementById("ekfCropSave"),
+            cropClose: document.getElementById("ekfCropClose")
+        };
+
+        function toggleInstructions(btn) {
+            btn.classList.toggle("active");
+            var content = btn.parentElement.querySelector(".collapsible-content");
+            content.classList.toggle("open");
+            btn.setAttribute("aria-expanded", content.classList.contains("open") ? "true" : "false");
+        }
+        window.toggleInstructions = toggleInstructions;
+
+        function logYaz(mesaj, renk) {
+            if (!el.log.classList.contains("visible")) el.log.classList.add("visible");
+            var div = document.createElement("div");
+            div.className = "l-" + (renk || "white");
+            div.textContent = mesaj;
+            el.log.appendChild(div);
+            el.log.scrollTop = el.log.scrollHeight;
+        }
+
+        function byteToKB(b) { return (b / 1024).toFixed(1); }
+
+        function uyari(mesaj) { logYaz(mesaj, "orange"); }
+
+        function dosyaUzantiIsim(ad) {
+            var i = ad.lastIndexOf(".");
+            return i === -1 ? "" : ad.substring(i).toLowerCase();
+        }
+
+        function dosyaKok(ad) {
+            var i = ad.lastIndexOf(".");
+            return i === -1 ? ad : ad.substring(0, i);
+        }
+
+        /* ---------- Yüz tespit motoru (Native Shape Detection API) ---------- */
+        function yuzMotorunuBaslat() {
+            if (!('FaceDetector' in window)) {
+                el.engineStatus.textContent = "Yüz tespiti bu tarayıcıda desteklenmiyor. Merkez kırpma kullanılacak.";
+                el.engineStatus.classList.add("warn");
+                state.faceEngineReady = false;
+                return;
+            }
+            try {
+                state.faceDetector = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+                // Test detection to confirm it works
+                var testCanvas = document.createElement("canvas");
+                testCanvas.width = 4; testCanvas.height = 4;
+                testCanvas.getContext("2d").fillRect(0, 0, 4, 4);
+                state.faceDetector.detect(testCanvas).then(function () {
+                    state.faceEngineReady = true;
+                    el.engineStatus.textContent = "Yüz tespit motoru hazır. Otomatik akıllı kırpma aktif.";
+                    el.engineStatus.classList.remove("warn");
+                }).catch(function () {
+                    state.faceEngineReady = false;
+                    el.engineStatus.textContent = "Yüz tespiti çalışmıyor. Merkez kırpma kullanılacak.";
+                    el.engineStatus.classList.add("warn");
+                });
+            } catch (e) {
+                state.faceEngineReady = false;
+                el.engineStatus.textContent = "Yüz tespiti desteklenmiyor. Merkez kırpma kullanılacak.";
+                el.engineStatus.classList.add("warn");
+            }
+        }
+
+        /* ---------- Dosya seçimi ---------- */
+        function dosyalariAl(files) {
+            var list = [];
+            for (var i = 0; i < files.length; i++) {
+                var f = files[i];
+                if (DESTEKLENEN.indexOf(dosyaUzantiIsim(f.name)) === -1) continue;
+                list.push({
+                    file: f,
+                    relPath: f.webkitRelativePath || f.name
+                });
+            }
+            if (list.length === 0) {
+                el.fileInfo.textContent = "Desteklenen formatta (PNG/JPG/JPEG) fotoğraf bulunamadı.";
+                el.fileInfo.style.display = "block";
+                el.fileInfo.classList.add("warn");
+                return;
+            }
+            state.files = list;
+            el.fileInfo.style.display = "block";
+            el.fileInfo.classList.remove("warn");
+            el.fileInfo.textContent = state.files.length + " fotoğraf yüklendi. Boyutlandırmayı başlatabilirsiniz.";
+            el.startBtn.disabled = false;
+        }
+
+        el.folderInput.addEventListener("change", function () {
+            dosyalariAl(this.files);
+            this.value = "";
+        });
+
+        ["dragenter", "dragover"].forEach(function (ev) {
+            el.dropzone.addEventListener(ev, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                el.dropzone.classList.add("dragover");
+            });
+        });
+        ["dragleave", "drop"].forEach(function (ev) {
+            el.dropzone.addEventListener(ev, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                el.dropzone.classList.remove("dragover");
+            });
+        });
+        el.dropzone.addEventListener("drop", function (e) {
+            if (e.dataTransfer && e.dataTransfer.files.length) dosyalariAl(e.dataTransfer.files);
+        });
+
+        /* ---------- Görüntü yükleme ---------- */
+        function gorselYukle(file) {
+            return new Promise(function (res, rej) {
+                var url = URL.createObjectURL(file);
+                var img = new Image();
+                img.onload = function () {
+                    URL.revokeObjectURL(url);
+                    res(img);
+                };
+                img.onerror = function () {
+                    URL.revokeObjectURL(url);
+                    rej(new Error("Görüntü okunamadı"));
+                };
+                img.src = url;
+            });
+        }
+
+        /* ---------- Kırpma hesapları (Python sürümüyle birebir) ---------- */
+        function vesikalikKutuyuHesapla(imgW, imgH, yuz) {
+            var yuzW = yuz.width * imgW;
+            var yuzH = yuz.height * imgH;
+            var yuzMx = yuz.xCenter * imgW;
+            var yuzMy = yuz.yCenter * imgH;
+
+            var kafaH = yuzH * HEAD_TO_FACE_HEIGHT_RATIO;
+            var finalH = kafaH / HEAD_IN_FRAME_RATIO;
+            var finalW = finalH * HEDEF_ORAN;
+
+            if (finalH > imgH || finalW > imgW) {
+                var olc = Math.min(imgH / finalH, imgW / finalW);
+                finalH = finalH * olc;
+                finalW = finalW * olc;
+            }
+
+            var x1 = yuzMx - finalW / 2;
+            var y1 = yuzMy - finalH * HEAD_VERTICAL_OFFSET;
+
+            if (x1 < 0) x1 = 0;
+            if (y1 < 0) y1 = 0;
+            if (x1 + finalW > imgW) x1 = imgW - finalW;
+            if (y1 + finalH > imgH) y1 = imgH - finalH;
+
+            return {
+                x: Math.round(x1),
+                y: Math.round(y1),
+                w: Math.round(finalW),
+                h: Math.round(finalH)
+            };
+        }
+
+        function merkezKutuyuHesapla(imgW, imgH) {
+            var cw, ch;
+            if (imgW / imgH > HEDEF_ORAN) {
+                cw = imgH * HEDEF_ORAN;
+                ch = imgH;
+            } else {
+                cw = imgW;
+                ch = imgW / HEDEF_ORAN;
+            }
+            return {
+                x: Math.round((imgW - cw) / 2),
+                y: Math.round((imgH - ch) / 2),
+                w: Math.round(cw),
+                h: Math.round(ch)
+            };
+        }
+
+        function ciz(img, kutu) {
+            var c = document.createElement("canvas");
+            c.width = HEDEF_W;
+            c.height = HEDEF_H;
+            var ctx = c.getContext("2d");
+            ctx.imageSmoothingQuality = "high";
+            ctx.drawImage(img, kutu.x, kutu.y, kutu.w, kutu.h, 0, 0, HEDEF_W, HEDEF_H);
+            return c;
+        }
+
+        /* ---------- JPEG kalite optimizasyonu (Python sürümüyle birebir) ---------- */
+        function jpegOptimize(canvas) {
+            return new Promise(function (res) {
+                var q = 95;
+                var iter = 0;
+                var blob = null;
+                function adim() {
+                    canvas.toBlob(function (b) {
+                        if (!b) { res(null); return; }
+                        blob = b;
+                        var kb = b.size / 1024;
+                        if (((kb > 150 && q > 45) || (kb < 20 && q < 100)) && iter < 10) {
+                            q += (kb > 150 ? -5 : 5);
+                            q = Math.max(45, Math.min(100, q));
+                            iter++;
+                            adim();
+                        } else {
+                            res({ blob: blob, quality: q, kb: kb });
+                        }
+                    }, "image/jpeg", q / 100);
+                }
+                adim();
+            });
+        }
+
+        /* ---------- Yüz tespiti ---------- */
+        function yuzTespit(canvas) {
+            if (!state.faceDetector) return Promise.resolve(null);
+            return state.faceDetector.detect(canvas).then(function (faces) {
+                if (!faces || faces.length === 0) return null;
+                var f = faces[0];
+                // Native API returns boundingBox as DOMRectReadOnly
+                return {
+                    boundingBox: {
+                        xCenter: (f.boundingBox.x + f.boundingBox.width / 2) / canvas.width,
+                        yCenter: (f.boundingBox.y + f.boundingBox.height / 2) / canvas.height,
+                        width:   f.boundingBox.width / canvas.width,
+                        height:  f.boundingBox.height / canvas.height
+                    },
+                    score: undefined
+                };
+            }).catch(function () { return null; });
+        }
+
+        /* ---------- İşlem ---------- */
+        function islemBaslat() {
+            if (state.running || state.files.length === 0) return;
+            state.running = true;
+            state.cancelled = false;
+            state.results = [];
+            el.startBtn.disabled = true;
+            el.cancelBtn.style.display = "inline-flex";
+            el.results.classList.remove("visible");
+            el.resultsGrid.innerHTML = "";
+            el.log.innerHTML = "";
+            el.progressWrap.classList.add("visible");
+            el.progressBar.value = 0;
+
+            var sonek = document.getElementById("ekfSuffix").checked;
+            var yuzAktif = document.getElementById("ekfFaceDetect").checked && state.faceEngineReady;
+
+            logYaz("İşlem başlatıldı: " + state.files.length + " fotoğraf", "white");
+            logYaz(yuzAktif ? "Yöntem: yüz tespiti + akıllı kırpma" : "Yöntem: merkez kırpma", "blue");
+
+            var toplam = state.files.length;
+            var basarisiz = 0;
+            var sira = 0;
+
+            function sonraki() {
+                if (state.cancelled) {
+                    islemBitti(true);
+                    return;
+                }
+                if (sira >= toplam) {
+                    islemBitti(false);
+                    return;
+                }
+                var kayit = state.files[sira];
+                sira++;
+                logYaz("(" + sira + "/" + toplam + ") İşleniyor: " + kayit.file.name, "white");
+                el.progressBar.value = Math.round((sira / toplam) * 100);
+                el.progressText.textContent = sira + " / " + toplam;
+
+                gorselYukle(kayit.file).then(function (img) {
+                    var kutu;
+                    if (yuzAktif) {
+                        var c1 = document.createElement("canvas");
+                        c1.width = img.naturalWidth;
+                        c1.height = img.naturalHeight;
+                        c1.getContext("2d").drawImage(img, 0, 0);
+                        return yuzTespit(c1).then(function (det) {
+                            if (det) {
+                                kutu = vesikalikKutuyuHesapla(img.naturalWidth, img.naturalHeight, det.boundingBox);
+                                logYaz("--> Yüz tespit edildi, akıllı kırpma uygulandı.", "green");
+                            } else {
+                                kutu = merkezKutuyuHesapla(img.naturalWidth, img.naturalHeight);
+                                logYaz("--> Yüz tespit edilemedi, merkez kırpma uygulandı", "red");
+                            }
+                            return islenmisKaydet(img, kutu, kayit, sonek);
+                        });
+                    }
+                    kutu = merkezKutuyuHesapla(img.naturalWidth, img.naturalHeight);
+                    return islenmisKaydet(img, kutu, kayit, sonek);
+                }).then(function () {
+                    sonraki();
+                }).catch(function (err) {
+                    basarisiz++;
+                    logYaz("-> HATA: " + kayit.file.name + " - " + err.message, "red");
+                    sonraki();
+                });
+            }
+
+            function islenmisKaydet(img, kutu, kayit, sonek) {
+                var cikti = ciz(img, kutu);
+                return jpegOptimize(cikti).then(function (opt) {
+                    if (!opt) throw new Error("JPEG kodlama hatası");
+                    var hedefAd = dosyaKok(kayit.file.name) + (sonek ? "_eokul" : "") + ".jpg";
+                    state.results.push({
+                        name: hedefAd,
+                        relPath: kayit.relPath,
+                        blob: opt.blob,
+                        kb: opt.kb,
+                        quality: opt.quality,
+                        kutu: kutu,
+                        img: img,
+                        origURL: URL.createObjectURL(kayit.file),
+                        resURL: URL.createObjectURL(opt.blob)
+                    });
+                    logYaz("-> Başarıyla işlendi. " + byteToKB(opt.blob.size) + " KB (Kalite: " + opt.quality + ")", "green");
+                });
+            }
+
+            function islemBitti(iptal) {
+                state.running = false;
+                el.startBtn.disabled = state.files.length === 0;
+                el.cancelBtn.style.display = "none";
+                el.cancelBtn.disabled = false;
+                el.cancelBtn.textContent = "İptal Et";
+                el.progressWrap.classList.remove("visible");
+                var basarili = state.results.length;
+                logYaz("=".repeat(50), "blue");
+                if (iptal) logYaz("İŞLEM İPTAL EDİLDİ", "orange");
+                else logYaz("İŞLEM RAPORU", "blue");
+                logYaz("Toplam dosya: " + toplam + " | Başarılı: " + basarili + " | Başarısız: " + basarisiz, "white");
+                logYaz("=".repeat(50), "blue");
+                if (basarili > 0 && !iptal) sonuclariGoster();
+            }
+
+            sonraki();
+        }
+
+        function sonuclariGoster() {
+            el.results.classList.add("visible");
+            el.resultsSummary.textContent = state.results.length + " fotoğraf başarıyla işlendi. Düzenlemek için kartların altındaki butonları kullanın.";
+            el.resultsGrid.innerHTML = "";
+            state.results.forEach(function (r, idx) {
+                var kart = document.createElement("div");
+                kart.className = "ekf-result-card";
+
+                var origLabel = document.createElement("p");
+                origLabel.className = "ekf-card-label";
+                origLabel.textContent = "Orijinal";
+                var origImg = document.createElement("img");
+                origImg.className = "ekf-card-img";
+                origImg.src = r.origURL;
+                origImg.alt = r.name;
+                origImg.loading = "lazy";
+
+                var resLabel = document.createElement("p");
+                resLabel.className = "ekf-card-label";
+                resLabel.textContent = "Sonuç (133x171)";
+                var resImg = document.createElement("img");
+                resImg.className = "ekf-card-img";
+                resImg.src = r.resURL;
+                resImg.alt = r.name;
+                resImg.loading = "lazy";
+
+                var isim = document.createElement("p");
+                isim.className = "ekf-card-name";
+                isim.textContent = r.name;
+                var boyut = document.createElement("p");
+                boyut.className = "ekf-card-size";
+                boyut.textContent = byteToKB(r.blob.size) + " KB (Kalite: " + r.quality + ")";
+
+                var aks = document.createElement("div");
+                aks.className = "ekf-card-actions";
+
+                var duzenle = document.createElement("button");
+                duzenle.className = "ekf-btn outline small";
+                duzenle.textContent = "Düzenle";
+                duzenle.addEventListener("click", function () { manuelKirma(idx); });
+
+                var indir = document.createElement("a");
+                indir.className = "ekf-btn small";
+                indir.textContent = "İndir";
+                indir.href = r.resURL;
+                indir.download = r.name;
+                indir.style.textDecoration = "none";
+
+                aks.appendChild(duzenle);
+                aks.appendChild(indir);
+
+                kart.appendChild(origLabel);
+                kart.appendChild(origImg);
+                kart.appendChild(resLabel);
+                kart.appendChild(resImg);
+                kart.appendChild(isim);
+                kart.appendChild(boyut);
+                kart.appendChild(aks);
+                el.resultsGrid.appendChild(kart);
+            });
+        }
+
+        /* ---------- Manuel kırpma ---------- */
+        var cr = { idx: -1, img: null, scale: 1, ox: 0, oy: 0, box: null, drag: null };
+
+        function manuelKirma(idx) {
+            var r = state.results[idx];
+            if (!r) return;
+            cr.idx = idx;
+            cr.img = r.img;
+
+            var cv = el.cropCanvas;
+            var maxW = 700;
+            var maxH = Math.min(600, window.innerHeight * 0.55);
+            var olc = Math.min(maxW / cr.img.naturalWidth, maxH / cr.img.naturalHeight, 1);
+            cv.width = Math.round(cr.img.naturalWidth * olc);
+            cv.height = Math.round(cr.img.naturalHeight * olc);
+            cr.scale = olc;
+
+            var bw = Math.min(cv.width, cv.height) * 0.75;
+            var bh = bw / HEDEF_ORAN;
+            if (bh > cv.height) { bh = cv.height * 0.8; bw = bh * HEDEF_ORAN; }
+            cr.box = {
+                x: (cv.width - bw) / 2,
+                y: (cv.height - bh) / 2,
+                w: bw,
+                h: bh
+            };
+            cr.drag = null;
+            kirmaCiz();
+            el.cropModal.classList.add("open");
+        }
+
+        function kirmaCiz() {
+            var cv = el.cropCanvas;
+            var ctx = cv.getContext("2d");
+            ctx.clearRect(0, 0, cv.width, cv.height);
+            ctx.drawImage(cr.img, 0, 0, cv.width, cv.height);
+            var b = cr.box;
+            ctx.save();
+            ctx.fillStyle = "rgba(0,0,0,0.45)";
+            ctx.fillRect(0, 0, cv.width, b.y);
+            ctx.fillRect(0, b.y + b.h, cv.width, cv.height - b.y - b.h);
+            ctx.fillRect(0, b.y, b.x, b.h);
+            ctx.fillRect(b.x + b.w, b.y, cv.width - b.x - b.w, b.h);
+            ctx.strokeStyle = "#0284c7";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 4]);
+            ctx.strokeRect(b.x, b.y, b.w, b.h);
+            ctx.restore();
+        }
+
+        function kisitla() {
+            var b = cr.box;
+            if (b.x < 0) b.x = 0;
+            if (b.y < 0) b.y = 0;
+            if (b.x + b.w > el.cropCanvas.width) b.x = el.cropCanvas.width - b.w;
+            if (b.y + b.h > el.cropCanvas.height) b.y = el.cropCanvas.height - b.h;
+        }
+
+        el.cropCanvas.addEventListener("mousedown", function (e) {
+            var r = el.cropCanvas.getBoundingClientRect();
+            var x = e.clientX - r.left;
+            var y = e.clientY - r.top;
+            var b = cr.box;
+            var kose = 10;
+            if (x >= b.x - kose && x <= b.x + kose && y >= b.y - kose && y <= b.y + kose) { cr.drag = "tl"; return; }
+            if (x >= b.x + b.w - kose && x <= b.x + b.w + kose && y >= b.y - kose && y <= b.y + kose) { cr.drag = "tr"; return; }
+            if (x >= b.x - kose && x <= b.x + kose && y >= b.y + b.h - kose && y <= b.y + b.h + kose) { cr.drag = "bl"; return; }
+            if (x >= b.x + b.w - kose && x <= b.x + b.w + kose && y >= b.y + b.h - kose && y <= b.y + b.h + kose) { cr.drag = "br"; return; }
+            if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) {
+                cr.drag = "move";
+                cr.dragStart = { x: x, y: y, bx: b.x, by: b.y };
+            }
+        });
+
+        window.addEventListener("mousemove", function (e) {
+            if (!cr.drag) return;
+            var r = el.cropCanvas.getBoundingClientRect();
+            var x = Math.max(0, Math.min(el.cropCanvas.width, e.clientX - r.left));
+            var y = Math.max(0, Math.min(el.cropCanvas.height, e.clientY - r.top));
+            var b = cr.box;
+            if (cr.drag === "move" && cr.dragStart) {
+                b.x = cr.dragStart.bx + (x - cr.dragStart.x);
+                b.y = cr.dragStart.by + (y - cr.dragStart.y);
+            } else {
+                var anahtar = cr.drag;
+                if (anahtar.indexOf("r") !== -1) b.w = x - b.x;
+                else b.w = b.x + b.w - x;
+                if (anahtar.indexOf("b") !== -1) b.h = y - b.y;
+                else b.h = b.y + b.h - y;
+                if (b.w < 40) b.w = 40;
+                b.h = b.w / HEDEF_ORAN;
+                if (b.h > el.cropCanvas.height) { b.h = el.cropCanvas.height; b.w = b.h * HEDEF_ORAN; }
+                if (anahtar.indexOf("l") !== -1) b.x = x;
+                if (anahtar.indexOf("t") !== -1) b.y = y;
+                if (anahtar.indexOf("r") !== -1) b.x = x - b.w;
+                if (anahtar.indexOf("b") !== -1) b.y = y - b.h;
+            }
+            kisitla();
+            kirmaCiz();
+        });
+
+        window.addEventListener("mouseup", function () { cr.drag = null; });
+
+        el.cropClose.addEventListener("click", function () { el.cropModal.classList.remove("open"); });
+
+        el.cropSave.addEventListener("click", function () {
+            if (cr.idx < 0) return;
+            var r = state.results[cr.idx];
+            var kutu = {
+                x: Math.round(cr.box.x / cr.scale),
+                y: Math.round(cr.box.y / cr.scale),
+                w: Math.round(cr.box.w / cr.scale),
+                h: Math.round(cr.box.h / cr.scale)
+            };
+            var cikti = ciz(cr.img, kutu);
+            jpegOptimize(cikti).then(function (opt) {
+                if (!opt) return;
+                var onceki = r.resURL;
+                r.blob = opt.blob;
+                r.kb = opt.kb;
+                r.quality = opt.quality;
+                r.kutu = kutu;
+                r.resURL = URL.createObjectURL(opt.blob);
+                if (onceki) URL.revokeObjectURL(onceki);
+                el.cropModal.classList.remove("open");
+                logYaz("--> " + r.name + " elle kırpıldı: " + byteToKB(opt.blob.size) + " KB (Kalite: " + opt.quality + ")", "blue");
+                sonuclariGoster();
+            });
+        });
+
+        /* ---------- İndirme ---------- */
+        el.zipBtn.addEventListener("click", function () {
+            if (!state.results.length || typeof JSZip === "undefined") return;
+            var zip = new JSZip();
+            state.results.forEach(function (r) {
+                zip.file(r.relPath.replace(/[^/\\]*$/, "") + r.name, r.blob);
+            });
+            logYaz("ZIP oluşturuluyor...", "blue");
+            zip.generateAsync({ type: "blob" }).then(function (blob) {
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = url;
+                a.download = "eOkul-Fotograflari.zip";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+                logYaz("ZIP indirildi: eOkul-Fotograflari.zip", "green");
+            });
+        });
+
+        el.cancelBtn.addEventListener("click", function () {
+            state.cancelled = true;
+            el.cancelBtn.disabled = true;
+            el.cancelBtn.textContent = "Durduruluyor...";
+            logYaz("İptal isteği alındı; mevcut dosya tamamlandıktan sonra durdurulacak.", "orange");
+        });
+
+        el.startBtn.addEventListener("click", islemBaslat);
+
+        yuzMotorunuBaslat();
+    })();
+    </script>
+<script src="../js/menu.js" defer></script></body>
+</html>

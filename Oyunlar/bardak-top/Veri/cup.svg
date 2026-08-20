@@ -1,0 +1,10 @@
+<!-- Bardak SVG - %100 metinsiz, safe vektörel illüstrasyon -->
+<!-- Renk paleti: #0284c7 ana renk, #0ea5e9 vurgu rengi -->
+<svg width="80" height="120" viewBox="0 0 80 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cup body -->
+  <path d="M 10 10 L 70 10 L 70 100 L 10 100 Z" fill="#0284c7"/>
+  <!-- Cup rim -->
+  <path d="M 10 10 Q 20 5 30 5 Q 50 5 60 5 Q 70 5 70 10 Z" fill="#0284c7" stroke="#e0f2fe" stroke-width="1"/>
+  <!-- Decorative line -->
+  <path d="M 15 60 Q 35 60 L 55 60 Q 65 60" stroke="#0ea5e9" stroke-width="2" fill="none"/>
+</svg>

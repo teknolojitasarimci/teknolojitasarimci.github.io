@@ -1,25 +1,2190 @@
----
-layout: default
----
-<section class="hero container">
-    <h1 class="slogan">{{ site.description }}</h1>
-    <p class="hero-desc">Teknoloji ve tasarıma dair yenilikçi fikirler, kültürel birikimler ve kişisel gelişim notları paylaştığım bloguma hoş geldiniz.</p>
-</section>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>teknolojitasarimci</title>
+    <meta name="description" content="Teknoloji ve Tasarım dersi etkinlikleri, 7. ve 8. sınıf sunuları, öğretmen evrakları, zeka oyunları ve öğrenci çalışmaları arşivi.">
+    
+    <!-- Google Fonts Entegrasyonu -->
 
-<section class="blog-grid container">
-    <!-- Jekyll burada _posts klasöründeki yazıları döngüyle otomatik çeker -->
-    {% for post in site.posts %}
-    <article class="post-card">
-        <div class="post-image" style="background-image: url('{{ post.image }}');"></div>
-        <div class="post-content">
-            <span class="category">{{ post.category }}</span>
-            <h2 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-            <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
-            <div class="post-meta">
-                <span>{{ post.date | date: "%d.%m.%Y" }}</span>
-                <a href="{{ post.url | relative_url }}" class="read-more">Devamını Oku &rarr;</a>
+
+<link rel="stylesheet" href="css/style.css">
+
+    <!-- Özel Master Template Premium Tipografi -->
+    <style>
+        :root {
+            --font-heading: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --font-body: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --primary-gradient: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+        }
+
+        body {
+            font-family: var(--font-body);
+        }
+
+        h1, h2, h3, h4, h5, .logo, .post-title, .slide-title {
+            font-family: var(--font-heading);
+        }
+        /* Fotoğraf Boyutlandırıcı Modal */
+        .app-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(2, 6, 23, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .app-modal-overlay[hidden] { display: none; }
+        .app-modal-box {
+            width: 100%;
+            max-width: 860px;
+            max-height: 90vh;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 24px 60px rgba(2, 6, 23, 0.35);
+        }
+        .app-modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            flex-shrink: 0;
+        }
+        .app-modal-close {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 8px 22px;
+            border-radius: 25px !important;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .app-modal-close:hover { background: #0369a1; }
+        .app-modal-frame {
+            width: 100%;
+            height: 78vh;
+            border: none;
+            display: block;
+            background: #f8fafc;
+        }
+        body.dark .app-modal-box { background: #1e293b; border-color: #334155; }
+        body.dark .app-modal-head { color: #e2e8f0; border-color: #334155; }
+        body.dark .app-modal-frame { background: #0f172a; }
+    </style>
+    <script src="js/theme.js"></script>
+</head>
+<body class="home-page">
+
+        <!-- Ana Düzen (3 Sütunlu Tam Genişlik Izgara) -->
+    <main class="container home-layout-full">
+
+        <!-- HERO BÖLÜMÜ: SOLDA SLIDER (%65), SAĞDA 3 SABİT POPÜLER KART (%35) -->
+        <section class="hero-section" id="hero-section" style="grid-template-columns:minmax(0,2fr) 240px;">
+            <!-- Sol: Dönen Slayt -->
+            <div class="hero-slider-wrap">
+                <section class="featured-slider" id="featured-slider">
+                <!-- Slayt 1 -->
+                <div class="slide active-slide" style="background-image: url('sayfalar/post-00067-Klasik-Sudoku/Veri/post-00067-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Zeka Oyunları / Etkinlik</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00067-Klasik-Sudoku/post-00067-preview.html">Sudoku: Ne Nedir, Nasıl Çözülür ve Ne İşe Yarar?</a></h2>
+                        <p class="slide-desc">9x9 klasik sudoku bulmacaları: 5 set ve cevap anahtarları PDF olarak ücretsiz. Mantık yürütme, odaklanma ve beyin egzersizi.</p>
+                        <a href="sayfalar/post-00067-Klasik-Sudoku/post-00067-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► Setleri İndir</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 2 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00066-Bolgesel-Sudoku/Veri/post-00066-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Zeka Oyunları / Etkinlik</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00066-Bolgesel-Sudoku/post-00066-preview.html">Bölgesel Sudoku: Ne Nedir, Nasıl Çözülür ve Ne İşe Yarar?</a></h2>
+                        <p class="slide-desc">3x3 kutular yerine düzensiz bölgelerle oynanan 9x9 sudoku bulmacaları: 5 set (her sette 4 bulmaca) ve cevap anahtarları PDF olarak ücretsiz.</p>
+                        <a href="sayfalar/post-00066-Bolgesel-Sudoku/post-00066-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► Setleri İndir</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 3 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00022-SOKToplanti-Dosyalari/Veri/post-00022-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Dosyalar / Eğitim Yönetimi</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00022-SOKToplanti-Dosyalari/post-00022-preview.html">Şube Öğretmenler Kurulu (Ş.Ö.K.) ve Hazır Evrak Şablonları</a></h2>
+                        <p class="slide-desc">Dönem içi ve yıl sonu toplantı tutanağı, öğrenci listesi formu. Maarif Modeli bütüncül eğitim yaklaşımıyla Ş.Ö.K. rehberi.</p>
+                        <a href="sayfalar/post-00022-SOKToplanti-Dosyalari/post-00022-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► Evrakları İndir</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 3 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00021-Gezi-Dosyalari/Veri/post-00021-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Dosyalar / Okul Dışı Öğrenme</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00021-Gezi-Dosyalari/post-00021-preview.html">Gezi Dosyaları: Okul Dışı Öğrenme Ortamları ve Gezi Dosyalar ve Evraklar Rehberi</a></h2>
+                        <p class="slide-desc">Gezi planı ve idare onay dilekçesi, veli izin belgesi, öğrenci listeleri. Gezi bürokrasisi için hazır evrak şablonları.</p>
+                        <a href="sayfalar/post-00021-Gezi-Dosyalari/post-00021-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► Evrakları İndir</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 4 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00065-Labirent-Oyunlari/Veri/post-00065-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Zeka Oyunları / Etkinlik</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00065-Labirent-Oyunlari/post-00065-preview.html">Labirent Oyunları: Zihinsel Becerileri Geliştiren 12 Sayfalık İnovasyon ve Yenilikçi Düşünce Seti</a></h2>
+                        <p class="slide-desc">Yön bulma, problem çözme, planlama ve stratejik düşünme becerilerini geliştiren 12 sayfalık ücretsiz labirent etkinlik seti.</p>
+                        <a href="sayfalar/post-00065-Labirent-Oyunlari/post-00065-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► Seti İndir</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 5 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00020-Atolye-Is-Guvenligi/Veri/post-00020-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Dosyalar / İş Güvenliği</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00020-Atolye-Is-Guvenligi/post-00020-preview.html">Atölye İş Güvenliği ve Uyarı Levhaları: Ücretsiz PDF Şablonları</a></h2>
+                        <p class="slide-desc">İSG mevzuatına uygun, A4 boyutunda yazdırılmaya hazır atölye uyarı levhaları: koşma, temizlik, elektrik, yangın ve çıkış yönlendirme setleri.</p>
+                        <a href="sayfalar/post-00020-Atolye-Is-Guvenligi/post-00020-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► Levhaları İndir</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 1 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00024-Beyin-Gelisimi/Veri/post-00024-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">İnovasyon / Dosyalar</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00024-Beyin-Gelisimi/post-00024-preview.html">Teknoloji ve Tasarım Dersi ile Beyin Gelişimi: Sağ ve Sol Lobun Dengeli Kullanımı</a></h2>
+                        <p class="slide-desc">Üst düzey düşünme becerileri, sağ ve sol beyin loblarının birlikte çalışması ve Teknoloji ve Tasarım dersinin üretken zekâdaki kritik rolü.</p>
+                        <a href="sayfalar/post-00024-Beyin-Gelisimi/post-00024-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► Yazıyı Oku</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 2 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00019-TTDosyalari/Veri/post-00019-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Dosyalar / Evraklar</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00019-TTDosyalari/post-00019-preview.html">Teknoloji ve Tasarım Dersi İçin Dosyalar: Güncel Evrak Arşivi</a></h2>
+                        <p class="slide-desc">Yıllık planlar, zümre tutanakları, not çizelgeleri, BEP planlama araçları, veli toplantısı ve ŞÖK dosyaları arşivi.</p>
+                        <a href="sayfalar/post-00019-TTDosyalari/post-00019-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► İncele</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 3 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00001-Ogretim-Programlari/Veri/post-00001-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">Öğretim Programı</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00001-Ogretim-Programlari/post-00001-preview.html">2018 ve 2025 (Taslak) Teknoloji ve Tasarım Dersi Öğretim Programları Karşılaştırması</a></h2>
+                        <p class="slide-desc">MEB'in Türkiye Yüzyılı Maarif Modeli taslağı ile 2018 programının detaylı karşılaştırma rehberi.</p>
+                        <a href="sayfalar/post-00001-Ogretim-Programlari/post-00001-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► İncele</a>
+                    </div>
+                </div>
+
+
+                <!-- Slayt 6 -->
+                <div class="slide" style="background-image: url('sayfalar/post-00098-7-Sinif-Etkinlikleri/Veri/post-00098-Kapak.jpg');">
+                    <div class="slide-overlay">
+                        <span class="slide-category">7. Sınıf Etkinlikleri</span>
+                        <h2 class="slide-title"><a href="sayfalar/post-00098-7-Sinif-Etkinlikleri/post-00098-preview.html">7. Sınıf Teknoloji ve Tasarım Dersi Etkinlikleri ve Sunuları</a></h2>
+                        <p class="slide-desc">7. sınıf düzeyine özel hazırlanmış ünite sunumları, etkinlik kağıtları ve uygulama çalışma dosyaları arşivi.</p>
+                        <a href="sayfalar/post-00098-7-Sinif-Etkinlikleri/post-00098-preview.html" class="download-btn" style="padding: 8px 18px; font-size: 13px;">► İncele</a>
+                    </div>
+                </div>
+
+                <!-- Slayt 7 -->
+                <!-- Slider Controls -->
+                <button class="slider-arrow prev" onclick="changeSlide(-1)" aria-label="Önceki slayt"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <button class="slider-arrow next" onclick="changeSlide(1)" aria-label="Sonraki slayt"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <div class="slider-dots">
+                    <span class="dot active-dot" onclick="setSlide(0)">1</span>
+                    <span class="dot" onclick="setSlide(1)">2</span>
+                    <span class="dot" onclick="setSlide(2)">3</span>
+                    <span class="dot" onclick="setSlide(3)">4</span>
+                    <span class="dot" onclick="setSlide(4)">5</span>
+                    <span class="dot" onclick="setSlide(5)">6</span>
+                    <span class="dot" onclick="setSlide(6)">7</span>
+                    <span class="dot" onclick="setSlide(7)">8</span>
+                    <span class="dot" onclick="setSlide(8)">9</span>
+                    <span class="dot" onclick="setSlide(9)">10</span>
+                    <span class="dot" onclick="setSlide(10)">11</span>
+                    <span class="dot" onclick="setSlide(11)">12</span>
+                </div>
+            </section>
+            </div>
+
+             <!-- Sağ: Öne Çıkan Gönderiler -->
+             <div class="hero-quick-cards homepage-featured-posts homepage-side-container" style="display:flex !important;">
+                 <div class="quick-card-head">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                     <span>Öne Çıkan Gönderiler</span>
+                 </div>
+                 <a href="sayfalar/post-00007-Yillik-Planlari/post-00007-preview.html" class="home-featured-card">
+                     <img src="sayfalar/post-00007-Yillik-Planlari/Veri/post-00007-Kapak.jpg" alt="Yıllık Planlar" loading="lazy" onerror="this.style.display='none';">
+                     <span class="home-featured-title">Teknoloji ve Tasarım Yıllık Planları</span>
+                 </a>
+                 <a href="sayfalar/post-00008-Zumre-Toplanti-Tutanaklari/post-00008-preview.html" class="home-featured-card">
+                     <img src="sayfalar/post-00008-Zumre-Toplanti-Tutanaklari/Veri/post-00008-Kapak.jpg" alt="Zümre Toplantı Tutanakları" loading="lazy" onerror="this.style.display='none';">
+                     <span class="home-featured-title">Zümre Toplantı Tutanakları</span>
+                 </a>
+                 <a href="sayfalar/post-00006-e-Okul-Not-Cizelgeleri/post-00006-preview.html" class="home-featured-card">
+                     <img src="sayfalar/post-00006-e-Okul-Not-Cizelgeleri/Veri/post-00006-Kapak.jpg" alt="Not Çizelgeleri" loading="lazy" onerror="this.style.display='none';">
+                     <span class="home-featured-title">Teknoloji ve Tasarım Not Çizelgeleri</span>
+                 </a>
+             </div>
+        </section>
+
+        <!-- Arama / Filtre Başlığı & Butonu -->
+        <div id="grid-header-title" style="margin-bottom: 20px; font-size: 19px; font-weight: 800; color: #0284c7;"></div>
+        <button id="reset-filter-btn" style="display: none; margin-bottom: 20px; padding: 7px 18px; border-radius: 20px; background: #ef4444; color: #ffffff; border: none; font-weight: 700; cursor: pointer;" onclick="searchPosts('')">Filtreyi Temizle</button>
+        <div id="no-results-msg" style="display: none; padding: 30px; text-align: center; background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; color: #64748b; font-size: 16px; font-weight: 600; margin-bottom: 30px;">Aradığınız kriterlere uygun içerik bulunamadı.</div>
+
+        <!-- TÜM GÖNDERİ KARTLARI (3 SÜTUNLU IZGARA) -->
+        <section class="posts-grid" id="main-blog-grid">
+<!-- Post 00098: post-00098-7-Sinif-Etkinlikleri -->
+                
+                <article class="post-card" data-categories="7. Sınıf Etkinlikleri,Dosyalar">
+                    <a href="sayfalar/post-00098-7-Sinif-Etkinlikleri/post-00098-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00098-7-Sinif-Etkinlikleri/Veri/post-00098-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">7. Sınıf Etkinlikleri</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00098-7-Sinif-Etkinlikleri/post-00098-preview.html">7. Sınıf Teknoloji ve Tasarım Dersi Etkinlikleri ve Sunuları</a></h2>
+                        <p class="post-excerpt">7. sınıf Teknoloji ve Tasarım dersi ünite sunumları, etkinlik kağıtları ve uygulama çalışma dosyaları arşivi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00098-7-Sinif-Etkinlikleri/post-00098-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00097: post-00097-8-Sinif-Etkinlikleri -->
+                
+                <article class="post-card" data-categories="8. Sınıf Etkinlikleri,Dosyalar">
+                    <a href="sayfalar/post-00097-8-Sinif-Etkinlikleri/post-00097-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00097-8-Sinif-Etkinlikleri/Veri/post-00097-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">8. Sınıf Etkinlikleri</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00097-8-Sinif-Etkinlikleri/post-00097-preview.html">8. Sınıf Teknoloji ve Tasarım Dersi Etkinlikleri ve Sunuları</a></h2>
+                        <p class="post-excerpt">8. sınıf Teknoloji ve Tasarım dersi ünite sunumları, etkinlik kağıtları ve uygulama çalışma dosyaları arşivi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00097-8-Sinif-Etkinlikleri/post-00097-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00096: post-00096-Giyilebilir-Urun-Sablonlari -->
+                
+                <article class="post-card" data-categories="Etkinlik,Temel Tasarım">
+                    <a href="sayfalar/post-00096-Giyilebilir-Urun-Sablonlari/post-00096-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00096-Giyilebilir-Urun-Sablonlari/Veri/post-00096-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00096-Giyilebilir-Urun-Sablonlari/post-00096-preview.html">Temel Tasarıma Yenilikçi Yaklaşım: Giyilebilir Ürün Şablonları Etkinliği</a></h2>
+                        <p class="post-excerpt">Ayakkabı, tişört, kazak ve gömlek şablonlarıyla temel tasarım etkinliği: Öğrenciler günlük ürünler üzerinde tasarım elemanlarını kullanarak özgün tasarımlar oluşturur.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00096-Giyilebilir-Urun-Sablonlari/post-00096-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00095: post-00095-Mobilya-Ergonomi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Ergonomi">
+                    <a href="sayfalar/post-00095-Mobilya-Ergonomi/post-00095-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00095-Mobilya-Ergonomi/Veri/post-00095-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00095-Mobilya-Ergonomi/post-00095-preview.html">Bu Mobilyayı Tekrar Düşünüp Tasarlayalım Etkinliği (Ergonomi)</a></h2>
+                        <p class="post-excerpt">Bu Mobilyayı Tekrar Düşünüp Tasarlayalım etkinliği: Düşün ve Tekrar Tasarla tekniğiyle ergonomik ilkeleri göz önünde bulundurarak yenilikçi mobilya tasarımları üretin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00095-Mobilya-Ergonomi/post-00095-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00094: post-00094-This-Way-Tersine-Muhendislik -->
+                
+                <article class="post-card" data-categories="Etkinlik,Ulaşım Teknolojileri">
+                    <a href="sayfalar/post-00094-This-Way-Tersine-Muhendislik/post-00094-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00094-This-Way-Tersine-Muhendislik/Veri/post-00094-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00094-This-Way-Tersine-Muhendislik/post-00094-preview.html">İcadı Çözmek: &quot;ThisWay&quot; Bisikleti ile Tersine Mühendislik Etkinliği</a></h2>
+                        <p class="post-excerpt">ThisWay bisikleti ile tersine mühendislik etkinliği: Torkel Dohmers&#x27;ın inovatif tasarımını analiz edin ve kendi yenilikçi bisiklet tasarımınızı geliştirin. PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00094-This-Way-Tersine-Muhendislik/post-00094-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00093: post-00093-Benzer-Durumlardan-Yola-Cikma -->
+                
+                <article class="post-card" data-categories="Etkinlik,Engelsiz Hayat Teknolojileri">
+                    <a href="sayfalar/post-00093-Benzer-Durumlardan-Yola-Cikma/post-00093-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00093-Benzer-Durumlardan-Yola-Cikma/Veri/post-00093-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00093-Benzer-Durumlardan-Yola-Cikma/post-00093-preview.html">Engelsiz Yaşam İçin Yenilikçi Tasarımlar: &quot;Benzer Durumlardan Yola Çıkma&quot; Etkinliği</a></h2>
+                        <p class="post-excerpt">Benzer Durumlardan Yola Çıkma (Analoji) etkinliği: Engelsiz Hayat Teknolojileri ünitesinde empati kurun, benzer çözümlerden ilham alarak yenilikçi tasarımlar üretin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00093-Benzer-Durumlardan-Yola-Cikma/post-00093-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00092: post-00092-Cevre-Muhendisi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Mühendislik ve Tasarım">
+                    <a href="sayfalar/post-00092-Cevre-Muhendisi/post-00092-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00092-Cevre-Muhendisi/Veri/post-00092-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00092-Cevre-Muhendisi/post-00092-preview.html">Doğanın Kahramanları: Çevre Mühendisi Rol Yapma ve Tasarım Etkinliği</a></h2>
+                        <p class="post-excerpt">Çevre Mühendisi rol yapma etkinliği: Ekosistemi keşfedin, çevre sorunlarını araştırın ve yenilikçi çevre dostu teknolojiler tasarlayın. PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00092-Cevre-Muhendisi/post-00092-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00091: post-00091-Kesif-Kartlari -->
+                
+                <article class="post-card" data-categories="Etkinlik,Biyotaklit">
+                    <a href="sayfalar/post-00091-Kesif-Kartlari/post-00091-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00091-Kesif-Kartlari/Veri/post-00091-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00091-Kesif-Kartlari/post-00091-preview.html">Doğanın Sırlarını Çözmek: &quot;Biyotaklit Keşif Kartları&quot; Etkinliği</a></h2>
+                        <p class="post-excerpt">Biyotaklit Keşif Kartları etkinliği: 12 kartlık keşif setiyle doğadaki canlıların özelliklerini ve biyomimikri örneklerini inceleyin. Şablonlar ve PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00091-Kesif-Kartlari/post-00091-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00090: post-00090-Doga-Gozlem -->
+                
+                <article class="post-card" data-categories="Etkinlik,Biyotaklit">
+                    <a href="sayfalar/post-00090-Doga-Gozlem/post-00090-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00090-Doga-Gozlem/Veri/post-00090-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00090-Doga-Gozlem/post-00090-preview.html">Doğanın Laboratuvarında: Doğa Gözlem Etkinliği (Biyotaklit)</a></h2>
+                        <p class="post-excerpt">Doğa Gözlem etkinliği: Saha çalışmasıyla doğayı gözlemleyerek biyotaklit (biyomimikri) mantığını öğrenin ve yenilikçi fikirler üretin. PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00090-Doga-Gozlem/post-00090-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00089: post-00089-Desen-Dedektifi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Biyotaklit">
+                    <a href="sayfalar/post-00089-Desen-Dedektifi/post-00089-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00089-Desen-Dedektifi/Veri/post-00089-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00089-Desen-Dedektifi/post-00089-preview.html">Doğanın İzinde: &quot;Desen Dedektifi&quot; Etkinliği (Biyotaklit)</a></h2>
+                        <p class="post-excerpt">Desen Dedektifi etkinliği: Açık havada doğadaki örüntüleri gözlemleyerek biyotaklit (biyomimikri) ile yenilikçi tasarımlar üretin. PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00089-Desen-Dedektifi/post-00089-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00088: post-00088-Dusunce-Kaliplarini-Kir -->
+                
+                <article class="post-card" data-categories="Etkinlik,Biyotaklit">
+                    <a href="sayfalar/post-00088-Dusunce-Kaliplarini-Kir/post-00088-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00088-Dusunce-Kaliplarini-Kir/Veri/post-00088-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00088-Dusunce-Kaliplarini-Kir/post-00088-preview.html">Düşünce Kalıplarını Kır: Doğadan İlham Alan Çözümler (Biyotaklit Etkinliği)</a></h2>
+                        <p class="post-excerpt">Düşünce Kalıplarını Kır etkinliği: Biyotaklit (Biyomimikri) ile doğadan ilham alarak günlük sorunlara yenilikçi çözümler üretin. Sorun kartı şablonları ve PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00088-Dusunce-Kaliplarini-Kir/post-00088-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00087: post-00087-Inovasyon-Zari -->
+                
+                <article class="post-card" data-categories="Etkinlik,Biyotaklit">
+                    <a href="sayfalar/post-00087-Inovasyon-Zari/post-00087-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00087-Inovasyon-Zari/Veri/post-00087-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00087-Inovasyon-Zari/post-00087-preview.html">Doğadan İlham Alan Çözümler: &quot;İnovasyon Zarı&quot; Etkinliği</a></h2>
+                        <p class="post-excerpt">İnovasyon Zarı etkinliği: Biyotaklit (Biyomimikri) ile doğadan ilham alarak rastgele eşleştirmelerle yenilikçi çözümler üretin. Zar şablonları ve PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00087-Inovasyon-Zari/post-00087-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00086: post-00086-Gorselden-Inovasyona -->
+                
+                <article class="post-card" data-categories="Etkinlik,İnovasyon - İnovatif Düşünce">
+                    <a href="sayfalar/post-00086-Gorselden-Inovasyona/post-00086-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00086-Gorselden-Inovasyona/Veri/post-00086-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00086-Gorselden-Inovasyona/post-00086-preview.html">Görselden İnovasyona: &quot;Rastgele Bir Resimden Yola Çıkma&quot; Etkinliği</a></h2>
+                        <p class="post-excerpt">Rastgele bir resimden yola çıkarak inovatif ürün fikirleri üretme etkinliği: Görsel okuryazarlık, beyin fırtınası ve ürün tasarımı adımları. PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00086-Gorselden-Inovasyona/post-00086-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00085: post-00085-Sifir-Atik -->
+                
+                <article class="post-card" data-categories="Etkinlik,Sürdürülebilirlik">
+                    <a href="sayfalar/post-00085-Sifir-Atik/post-00085-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00085-Sifir-Atik/Veri/post-00085-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00085-Sifir-Atik/post-00085-preview.html">Sıfır Atık ve Sürdürülebilir Tasarımlar Etkinliği</a></h2>
+                        <p class="post-excerpt">Sıfır Atık ve Sürdürülebilir Tasarımlar etkinliği: Öğrenciler atık malzemelerle yenilikçi ürünler tasarlar. Uygulama adımları ve PDF indirme bağlantısı.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00085-Sifir-Atik/post-00085-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00084: post-00084-Robot-Tasarimi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Robotik ve Kodlama">
+                    <a href="sayfalar/post-00084-Robot-Tasarimi/post-00084-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00084-Robot-Tasarimi/Veri/post-00084-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00084-Robot-Tasarimi/post-00084-preview.html">Geleceği Çizmek: İnovatif Robot Tasarımı Etkinliği</a></h2>
+                        <p class="post-excerpt">İnovatif Robot Tasarımı etkinliği: Robotun amacını, algılama ve hareket sistemlerini, güç kaynağını planlayıp özgün bir robot çizin. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00084-Robot-Tasarimi/post-00084-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00083: post-00083-Yenilikci-Kalem-Tasarimi -->
+                
+                <article class="post-card" data-categories="Etkinlik,İnovasyon - İnovatif Düşünce">
+                    <a href="sayfalar/post-00083-Yenilikci-Kalem-Tasarimi/post-00083-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00083-Yenilikci-Kalem-Tasarimi/Veri/post-00083-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00083-Yenilikci-Kalem-Tasarimi/post-00083-preview.html">Sıradanlıktan İnovasyona: Yenilikçi Kalem Tasarımı Etkinliği</a></h2>
+                        <p class="post-excerpt">Yenilikçi Kalem Tasarımı etkinliği: Sıradan bir kalemi mekanik, dijital ve sensörlü özellikler ekleyerek yeniden tasarlayın. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00083-Yenilikci-Kalem-Tasarimi/post-00083-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00082: post-00082-DCMotor -->
+                
+                <article class="post-card" data-categories="Etkinlik,Maker Eğitimi">
+                    <a href="sayfalar/post-00082-DCMotor/post-00082-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00082-DCMotor/Veri/post-00082-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00082-DCMotor/post-00082-preview.html">DC Motor Etkinliği (Özgün Ürünümü Tasarlıyorum)</a></h2>
+                        <p class="post-excerpt">DC motor etkinliği: Özgün Ürünümü Tasarlıyorum ünitesi kapsamında DC motor içeren özgün bir ürün tasarlama, test etme ve sunma adımları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00082-DCMotor/post-00082-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00081: post-00081-Zihin-Haritasi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Yenilikçi Düşünce">
+                    <a href="sayfalar/post-00081-Zihin-Haritasi/post-00081-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00081-Zihin-Haritasi/Veri/post-00081-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00081-Zihin-Haritasi/post-00081-preview.html">Zihin Haritası Tekniğiyle Hayal Ettiğim Okulu Tasarlıyorum Etkinliği</a></h2>
+                        <p class="post-excerpt">Zihin Haritası tekniği etkinliği: ana fikir, ana dallar ve alt dallarla hayal edilen okulu planlama ve tasarlama adımları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00081-Zihin-Haritasi/post-00081-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00080: post-00080-Morfolojik-Analiz -->
+                
+                <article class="post-card" data-categories="Etkinlik,Yenilikçi Düşünce">
+                    <a href="sayfalar/post-00080-Morfolojik-Analiz/post-00080-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00080-Morfolojik-Analiz/Veri/post-00080-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00080-Morfolojik-Analiz/post-00080-preview.html">Morfolojik Analiz Tekniğiyle Geleceğin Sınıfını Tasarlayalım Etkinliği</a></h2>
+                        <p class="post-excerpt">Morfolojik Analiz tekniği etkinliği: parametreleri belirleme, morfolojik kutu oluşturma ve kombinasyonlarla geleceğin sınıfını tasarlama adımları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00080-Morfolojik-Analiz/post-00080-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00079: post-00079-Lateral-Dusunme -->
+                
+                <article class="post-card" data-categories="Etkinlik,Yenilikçi Düşünce">
+                    <a href="sayfalar/post-00079-Lateral-Dusunme/post-00079-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00079-Lateral-Dusunme/Veri/post-00079-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00079-Lateral-Dusunme/post-00079-preview.html">Lateral Düşünme Tekniğiyle Yenilikçi Fikirler Üretelim Etkinliği</a></h2>
+                        <p class="post-excerpt">Lateral düşünme tekniği etkinliği: sıra dışı düşünme, rastgele kelime, odak değiştirme, fikir yelpazesi ve alternatifler adımlarıyla yenilikçi fikir üretme. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00079-Lateral-Dusunme/post-00079-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00078: post-00078-Nominal-Grup-Teknigi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Problem Çözme">
+                    <a href="sayfalar/post-00078-Nominal-Grup-Teknigi/post-00078-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00078-Nominal-Grup-Teknigi/Veri/post-00078-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00078-Nominal-Grup-Teknigi/post-00078-preview.html">Nominal Grup Tekniğiyle Yenilikçi Fikirler Üretelim Etkinliği</a></h2>
+                        <p class="post-excerpt">Nominal Grup Tekniği etkinliği: sessiz beyin fırtınası, fikirlerin toplanması, sınıflandırılması ve demokratik oylamayla en iyi çözümü belirleme adımları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00078-Nominal-Grup-Teknigi/post-00078-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00077: post-00077-SCAMPER -->
+                
+                <article class="post-card" data-categories="Etkinlik,Yenilikçi Düşünce">
+                    <a href="sayfalar/post-00077-SCAMPER/post-00077-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00077-SCAMPER/Veri/post-00077-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00077-SCAMPER/post-00077-preview.html">SCAMPER Tekniğiyle Yenilikçi Fikirler Üretelim Etkinliği</a></h2>
+                        <p class="post-excerpt">SCAMPER tekniği etkinliği: yer değiştirme, birleştirme, uyarlama, büyütme, başka amaçla kullanma, eleme ve tersine çevirme adımlarıyla yenilikçi fikir üretme. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00077-SCAMPER/post-00077-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00076: post-00076-Akilli-Ev-Tasarimi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Bilgisayar Destekli Tasarım">
+                    <a href="sayfalar/post-00076-Akilli-Ev-Tasarimi/post-00076-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00076-Akilli-Ev-Tasarimi/Veri/post-00076-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00076-Akilli-Ev-Tasarimi/post-00076-preview.html">Disiplinler Arası Akıllı Ev Tasarım Etkinliği</a></h2>
+                        <p class="post-excerpt">Disiplinler arası akıllı ev tasarım etkinliği: meslek rolleriyle takım çalışması, enerji verimliliği, güvenlik ve sağlık izleme sistemleri. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00076-Akilli-Ev-Tasarimi/post-00076-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00075: post-00075-Tersine-Beyin-Firtinasi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Problem Çözme">
+                    <a href="sayfalar/post-00075-Tersine-Beyin-Firtinasi/post-00075-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00075-Tersine-Beyin-Firtinasi/Veri/post-00075-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00075-Tersine-Beyin-Firtinasi/post-00075-preview.html">Tersten Düşünmenin Gücü: &quot;Tersine Beyin Fırtınası&quot; Etkinliği</a></h2>
+                        <p class="post-excerpt">Tersine Beyin Fırtınası (Reverse Brainstorming) etkinliği: Sorunları nasıl çözeceğimizi değil, nasıl kötüleştireceğimizi düşünerek inovatif çözümler üretiyoruz. PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00075-Tersine-Beyin-Firtinasi/post-00075-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00074: post-00074-Nesnelere-Yenilikci-Dokunus -->
+                
+                <article class="post-card" data-categories="Etkinlik,İnovasyon - İnovatif Düşünce">
+                    <a href="sayfalar/post-00074-Nesnelere-Yenilikci-Dokunus/post-00074-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00074-Nesnelere-Yenilikci-Dokunus/Veri/post-00074-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00074-Nesnelere-Yenilikci-Dokunus/post-00074-preview.html">Sıradanlıktan İnovasyona: Günlük Nesneleri Yeniden Tasarlama Etkinliği</a></h2>
+                        <p class="post-excerpt">Günlük nesneleri yeniden tasarlama etkinliği: Sıradan eşyalara yenilikçi özellikler kazandırın. Tasarım döngüsü adımları ve PDF indirme bağlantısı.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00074-Nesnelere-Yenilikci-Dokunus/post-00074-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00073: post-00073-Kelime-Avi -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Etkinlik">
+                    <a href="sayfalar/post-00073-Kelime-Avi/post-00073-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00073-Kelime-Avi/Veri/post-00073-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00073-Kelime-Avi/post-00073-preview.html">Kelime Avı Zeka Oyunu</a></h2>
+                        <p class="post-excerpt">Kelime Avı zeka oyunu: Teknoloji, tasarım, biyotaklit ve mühendislik temalarıyla gizli kelimeleri bulmaca ızgarasında sürükleyerek bul. Etkileşimli sesler ve kutlama animasyonu.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00073-Kelime-Avi/post-00073-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00072: post-00072-ABCBaglamaca -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Zeka Oyunları">
+                    <a href="sayfalar/post-00072-ABCBaglamaca/post-00072-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00072-ABCBaglamaca/Veri/post-00072-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00072-ABCBaglamaca/post-00072-preview.html">Zihninizi Bağlayın: &quot;ABC Bağlamaca&quot; Zekâ Oyunu</a></h2>
+                        <p class="post-excerpt">ABC Bağlamaca zekâ oyunu: Aynı harfleri yatay ve dikey çizgilerle eşleştir. Oyun kuralları, örnek şekiller ve çalışma kâğıdı PDF dosyası.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00072-ABCBaglamaca/post-00072-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00071: post-00071-Carpmaca -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Zeka Oyunları">
+                    <a href="sayfalar/post-00071-Carpmaca/post-00071-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00071-Carpmaca/Veri/post-00071-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00071-Carpmaca/post-00071-preview.html">Çarpmaca Zekâ Oyunu</a></h2>
+                        <p class="post-excerpt">Çarpmaca zekâ oyunu ile matematiksel düşünme, analiz, strateji ve dikkat becerilerini destekleyen bir sayı bulmacasını keşfedin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00071-Carpmaca/post-00071-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00070: post-00070-Engelsiz-Patika-Oyunu -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Zeka Oyunları">
+                    <a href="sayfalar/post-00070-Engelsiz-Patika-Oyunu/post-00070-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00070-Engelsiz-Patika-Oyunu/Veri/post-00070-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00070-Engelsiz-Patika-Oyunu/post-00070-preview.html">Patika Oluşturma Oyunu</a></h2>
+                        <p class="post-excerpt">Patika Oluşturma Oyunu ile problem çözme, stratejik düşünme ve uzamsal farkındalık becerilerini geliştirin. Çalışma kâğıdı ve cevap anahtarı PDF olarak sunulmaktadır.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00070-Engelsiz-Patika-Oyunu/post-00070-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00069: post-00069-Islem-Karesi -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Matematik Etkinlikleri">
+                    <a href="sayfalar/post-00069-Islem-Karesi/post-00069-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00069-Islem-Karesi/Veri/post-00069-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00069-Islem-Karesi/post-00069-preview.html">Matematik ve Zekânın Buluşması: &quot;İşlem Karesi&quot; Oyunu</a></h2>
+                        <p class="post-excerpt">İşlem Karesi oyunu ile öğrencilerin matematiksel ve mantıksal düşünme, problem çözme ve odaklanma becerilerini geliştirin. Çalışma kâğıdı PDF olarak indirilebilir.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00069-Islem-Karesi/post-00069-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00068: post-00068-Patika-Oyunu -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Zeka Oyunları">
+                    <a href="sayfalar/post-00068-Patika-Oyunu/post-00068-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00068-Patika-Oyunu/Veri/post-00068-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00068-Patika-Oyunu/post-00068-preview.html">Zekâ ve Strateji: &quot;Patika&quot; Bulmaca Oyunu</a></h2>
+                        <p class="post-excerpt">Patika bulmaca oyunu ile problem çözme, stratejik düşünme, uzamsal farkındalık ve dikkat becerilerini geliştirin. Çalışma kâğıdı ve cevap anahtarı PDF olarak indirilebilir.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00068-Patika-Oyunu/post-00068-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00067: post-00067-Klasik-Sudoku -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Etkinlik">
+                    <a href="sayfalar/post-00067-Klasik-Sudoku/post-00067-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00067-Klasik-Sudoku/Veri/post-00067-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00067-Klasik-Sudoku/post-00067-preview.html">Sudoku: Ne Nedir, Nasıl Çözülür ve Ne İşe Yarar?</a></h2>
+                        <p class="post-excerpt">Sudoku nedir, nasıl çözülür, ne işe yarar? 9x9 klasik sudoku bulmaca setleri ve cevap anahtarlarını PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00067-Klasik-Sudoku/post-00067-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00066: post-00066-Bolgesel-Sudoku -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Etkinlik">
+                    <a href="sayfalar/post-00066-Bolgesel-Sudoku/post-00066-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00066-Bolgesel-Sudoku/Veri/post-00066-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00066-Bolgesel-Sudoku/post-00066-preview.html">Bölgesel Sudoku: Ne Nedir, Nasıl Çözülür ve Ne İşe Yarar?</a></h2>
+                        <p class="post-excerpt">Bölgesel Sudoku nedir, nasıl çözülür, ne işe yarar? Düzensiz bölgeli 9x9 sudoku bulmaca setleri ve cevap anahtarlarını PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00066-Bolgesel-Sudoku/post-00066-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00065: post-00065-Labirent-Oyunlari -->
+                
+                <article class="post-card" data-categories="Zeka Oyunları,Etkinlik">
+                    <a href="sayfalar/post-00065-Labirent-Oyunlari/post-00065-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00065-Labirent-Oyunlari/Veri/post-00065-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zeka Oyunları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00065-Labirent-Oyunlari/post-00065-preview.html">Labirent Oyunları: Zihinsel Becerileri Geliştiren 12 Sayfalık Etkinlik Seti</a></h2>
+                        <p class="post-excerpt">Labirent oyunları: yön bulma, problem çözme, planlama ve stratejik düşünme becerilerini geliştiren 12 sayfalık ücretsiz etkinlik seti. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00065-Labirent-Oyunlari/post-00065-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00064: post-00064-Felipe-Castro-Mimari-Tasarim -->
+                
+                <article class="post-card" data-categories="Etkinlik,Mimari Tasarım">
+                    <a href="sayfalar/post-00064-Felipe-Castro-Mimari-Tasarim/post-00064-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00064-Felipe-Castro-Mimari-Tasarim/Veri/post-00064-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00064-Felipe-Castro-Mimari-Tasarim/post-00064-preview.html">Nesnelerden Mimari Tasarıma: Felipe de Castro İlhamlı Beyin Fırtınası</a></h2>
+                        <p class="post-excerpt">Felipe de Castro ilhamlı mimari tasarım etkinliği: Analojik düşünme tekniğiyle günlük nesneleri devasa yapılara dönüştürün. Uygulama adımları, PowerPoint sunumu ve 92 görsellik ilham galerisi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00064-Felipe-Castro-Mimari-Tasarim/post-00064-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00063: post-00063-Deprem-Bina-Tasarimi -->
+                
+                <article class="post-card" data-categories="Etkinlik,Mühendislik ve Tasarım">
+                    <a href="sayfalar/post-00063-Deprem-Bina-Tasarimi/post-00063-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00063-Deprem-Bina-Tasarimi/Veri/post-00063-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00063-Deprem-Bina-Tasarimi/post-00063-preview.html">Depreme Dayanıklı Bina Tasarımı (STEAM Etkinliği)</a></h2>
+                        <p class="post-excerpt">Depreme Dayanıklı Bina Tasarımı (STEAM) etkinliği: Öğrenciler imar kurallarıyla sınırlı, depreme dayanıklı bina modelleri inşa eder ve test eder. PDF indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00063-Deprem-Bina-Tasarimi/post-00063-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00062: post-00062-Kurndan-Kule -->
+                
+                <article class="post-card" data-categories="Etkinlik,Mühendislik ve Tasarım">
+                    <a href="sayfalar/post-00062-Kurndan-Kule/post-00062-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00062-Kurndan-Kule/Veri/post-00062-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00062-Kurndan-Kule/post-00062-preview.html">Kürdan ve Oyun Hamuru ile Kule İnşası (STEM Etkinliği)</a></h2>
+                        <p class="post-excerpt">Kürdan ve oyun hamuru ile kule inşası (STEM) etkinliği: En yüksek ve dayanıklı kuleyi inşa edin. Uygulama adımları, değerlendirme kriterleri. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00062-Kurndan-Kule/post-00062-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00061: post-00061-Cop-Sis-Kopru -->
+                
+                <article class="post-card" data-categories="Etkinlik,Mühendislik ve Tasarım">
+                    <a href="sayfalar/post-00061-Cop-Sis-Kopru/post-00061-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00061-Cop-Sis-Kopru/Veri/post-00061-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00061-Cop-Sis-Kopru/post-00061-preview.html">Çöp Şişlerle Köprü İnşası: Mühendislik ve Tasarım Etkinliği (STEM)</a></h2>
+                        <p class="post-excerpt">Çöp Şişlerle Köprü İnşası (STEM) etkinliği: Kısıtlı malzemeyle dayanıklı bir köprü tasarlayıp inşa edin. Kurallar, uygulama adımları ve video kaynakları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00061-Cop-Sis-Kopru/post-00061-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00060: post-00060-Mimari-Tasarim -->
+                
+                <article class="post-card" data-categories="Etkinlik,Mimari Tasarım">
+                    <a href="sayfalar/post-00060-Mimari-Tasarim/post-00060-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00060-Mimari-Tasarim/Veri/post-00060-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00060-Mimari-Tasarim/post-00060-preview.html">3 Boyutlu Mimari Tasarım ve Maket Etkinliği</a></h2>
+                        <p class="post-excerpt">Mimari Tasarım etkinliği: 2 boyutlu eskizlerden 3 boyutlu uzamsal maketlere. Yapı türleri, uygulama adımları ve kazanımlar. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00060-Mimari-Tasarim/post-00060-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00059: post-00059-Kopruler -->
+                
+                <article class="post-card" data-categories="Mimari Tasarım,Genel Kültür">
+                    <a href="sayfalar/post-00059-Kopruler/post-00059-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00059-Kopruler/Veri/post-00059-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Mimari Tasarım</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00059-Kopruler/post-00059-preview.html">Dünyanın Bilinen 16 Köprüsü: Tarihi ve Mühendislik Özellikleri</a></h2>
+                        <p class="post-excerpt">Charles Köprüsü&#x27;nden Millau Viyadüğü&#x27;ne, Zincir Köprü&#x27;nün şehir efsanesinden Irgandı Köprüsü&#x27;ne: dünyanın bilinen köprülerini tarihleri ve mimari özellikleriyle derledik.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00059-Kopruler/post-00059-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00058: post-00058-Engelli-Yenilikci-Tasarimlar -->
+                
+                <article class="post-card" data-categories="Konu Anlatımı,Yenilikçi Tasarım">
+                    <a href="sayfalar/post-00058-Engelli-Yenilikci-Tasarimlar/post-00058-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00058-Engelli-Yenilikci-Tasarimlar/Veri/post-00058-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Konu Anlatımı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00058-Engelli-Yenilikci-Tasarimlar/post-00058-preview.html">Engellilerin Hayatını Kolaylaştıran 50 Yenilikçi Tasarım</a></h2>
+                        <p class="post-excerpt">Engelli bireylerin yaşam kalitesini artıran 50 yenilikçi tasarım: konuşan saatler, akıllı bastonlar, robot protezler, tekerlekli sandalye tasarımları ve daha fazlası.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00058-Engelli-Yenilikci-Tasarimlar/post-00058-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00057: post-00057-Evrensel-Tasarim -->
+                
+                <article class="post-card" data-categories="Konu Anlatımı,Evrensel Tasarım">
+                    <a href="sayfalar/post-00057-Evrensel-Tasarim/post-00057-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00057-Evrensel-Tasarim/Veri/post-00057-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Konu Anlatımı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00057-Evrensel-Tasarim/post-00057-preview.html">Evrensel Tasarım ve İlkeleri</a></h2>
+                        <p class="post-excerpt">Evrensel tasarım (herkes için tasarım): Ronald L. Mace, Goldsmith&#x27;in evrensel tasarım piramidi, 7 temel ilke ve engelli bireyler için erişilebilir tasarım örnekleri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00057-Evrensel-Tasarim/post-00057-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00056: post-00056-Engelsiz-Yasam-Farkindaligi -->
+                
+                <article class="post-card" data-categories="Konu Anlatımı,Farkındalık">
+                    <a href="sayfalar/post-00056-Engelsiz-Yasam-Farkindaligi/post-00056-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00056-Engelsiz-Yasam-Farkindaligi/Veri/post-00056-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Konu Anlatımı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00056-Engelsiz-Yasam-Farkindaligi/post-00056-preview.html">Engelsiz Yaşam İçin Farkındalık</a></h2>
+                        <p class="post-excerpt">Engelli bireylerin hayatı, yaşadığı sorunlar, engel türleri, dünyada ve Türkiye&#x27;de engelli istatistikleri ve toplumsal farkındalık.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00056-Engelsiz-Yasam-Farkindaligi/post-00056-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00055: post-00055-Engelleri-Asanlar -->
+                
+                <article class="post-card" data-categories="İçerik,Engelsiz Hayat Teknolojileri">
+                    <a href="sayfalar/post-00055-Engelleri-Asanlar/post-00055-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00055-Engelleri-Asanlar/Veri/post-00055-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">İçerik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00055-Engelleri-Asanlar/post-00055-preview.html">İmkânsızı Başaranlar: Engelleri Aşan İlham Verici İsimler</a></h2>
+                        <p class="post-excerpt">Engellere rağmen büyük başarılara imza atan ilham verici isimler: Beethoven, Frida Kahlo, Stephen Hawking, Helen Keller, Âşık Veysel ve daha fazlası. Sunum dosyası ile birlikte.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00055-Engelleri-Asanlar/post-00055-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00054: post-00054-Engelsiz-Yenilikci-Cozumler -->
+                
+                <article class="post-card" data-categories="Etkinlik,Engelsiz Hayat Teknolojileri">
+                    <a href="sayfalar/post-00054-Engelsiz-Yenilikci-Cozumler/post-00054-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00054-Engelsiz-Yenilikci-Cozumler/Veri/post-00054-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00054-Engelsiz-Yenilikci-Cozumler/post-00054-preview.html">Kapsayıcı İnovasyon: Engelsiz Bir Dünya İçin Yenilikçi Çözümler Etkinliği</a></h2>
+                        <p class="post-excerpt">Engelsiz Bir Dünya İçin Yenilikçi Çözümler etkinliği: Engelli bireylerin sorunlarını fark edin, empati kurun ve yenilikçi ürünler tasarlayın. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00054-Engelsiz-Yenilikci-Cozumler/post-00054-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00053: post-00053-Engelsiz-Hayat-Teknolojileri -->
+                
+                <article class="post-card" data-categories="Etkinlik,Engelsiz Hayat Teknolojileri">
+                    <a href="sayfalar/post-00053-Engelsiz-Hayat-Teknolojileri/post-00053-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00053-Engelsiz-Hayat-Teknolojileri/Veri/post-00053-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00053-Engelsiz-Hayat-Teknolojileri/post-00053-preview.html">Empati Kuruyorum: Engelsiz Hayat Teknolojileri Etkinliği</a></h2>
+                        <p class="post-excerpt">Empati odaklı Engelsiz Hayat Teknolojileri etkinliği: engel gruplarını deneyimleme, problem tanımlama, yenilikçi tasarım ve prototip üretme adımları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00053-Engelsiz-Hayat-Teknolojileri/post-00053-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00052: post-00052-Engelsiz-Hayat-Teknolojileri -->
+                
+                <article class="post-card" data-categories="Engelsiz Hayat Teknolojileri,Öğrenci Fikirleri">
+                    <a href="sayfalar/post-00052-Engelsiz-Hayat-Teknolojileri/post-00052-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00052-Engelsiz-Hayat-Teknolojileri/Veri/post-00052-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Engelsiz Hayat Teknolojileri</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00052-Engelsiz-Hayat-Teknolojileri/post-00052-preview.html">Teknolojinin Kalbi Engel Tanımaz: Engelsiz Hayat Teknolojileri ve Geleceğin Tasarımcılarına İlham Notları</a></h2>
+                        <p class="post-excerpt">Engelsiz hayat teknolojileri (assistive technology) nedir? Giyilebilir teknolojiler, nöroteknoloji, robotik ve yapay zekâ çözümleri ile öğrenciler için ilham verici proje fikirleri. Teknoloji ve Tasarım dersi öğrencileri için hazırlandı.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00052-Engelsiz-Hayat-Teknolojileri/post-00052-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00051: post-00051-Dogadan-Tasarima-Biyotaklit -->
+                
+                <article class="post-card" data-categories="Konu Anlatımı,Biyotaklit">
+                    <a href="sayfalar/post-00051-Dogadan-Tasarima-Biyotaklit/post-00051-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00051-Dogadan-Tasarima-Biyotaklit/Veri/post-00051-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Konu Anlatımı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00051-Dogadan-Tasarima-Biyotaklit/post-00051-preview.html">Doğadan Tasarıma Biyotaklit</a></h2>
+                        <p class="post-excerpt">Biyotaklit disiplini: Doğadan ilham alan tasarımlar, Leonardo da Vinci&#x27;den Velcro&#x27;ya, Bullet treninden yapay zekaya kadar biyotaklit örnekleri ve uygulama alanları.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00051-Dogadan-Tasarima-Biyotaklit/post-00051-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00050: post-00050-Biyotaklit-Otomobiller -->
+                
+                <article class="post-card" data-categories="Konu Anlatımı,Biyotaklit">
+                    <a href="sayfalar/post-00050-Biyotaklit-Otomobiller/post-00050-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00050-Biyotaklit-Otomobiller/Veri/post-00050-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Konu Anlatımı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00050-Biyotaklit-Otomobiller/post-00050-preview.html">Biyotaklit Otomobiller (Doğadan Tasarıma)</a></h2>
+                        <p class="post-excerpt">Otomobil sektöründe biyotaklit disiplininden ilham alınarak tasarlanmış 8 otomobil konsepti: Yez, Stout Scarab, Tang Hua Detroit Balığı, Volkswagen Beetle, Mercedes-Benz Bionic-Car, Toyota Rhombus, Mako Shark Corvette, Mercedes-Benz 300 SL.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00050-Biyotaklit-Otomobiller/post-00050-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00049: post-00049-Biyotaklit-Ornekleri -->
+                
+                <article class="post-card" data-categories="Konu Anlatımı,Biyotaklit">
+                    <a href="sayfalar/post-00049-Biyotaklit-Ornekleri/post-00049-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00049-Biyotaklit-Ornekleri/Veri/post-00049-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Konu Anlatımı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00049-Biyotaklit-Ornekleri/post-00049-preview.html">Biyotaklit Örnekleri (Doğadan Tasarıma)</a></h2>
+                        <p class="post-excerpt">Doğadan ilham alan biyotaklit tasarımları: 92 örnek görselle biyotaklit disiplininin otomobil, mimari, ürün tasarımı ve günlük hayattaki uygulamaları.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00049-Biyotaklit-Ornekleri/post-00049-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00048: post-00048-Biyotaklit-Video-Arsivi -->
+                
+                <article class="post-card" data-categories="İçerik,Biyotaklit">
+                    <a href="sayfalar/post-00048-Biyotaklit-Video-Arsivi/post-00048-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00048-Biyotaklit-Video-Arsivi/Veri/post-00048-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">İçerik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00048-Biyotaklit-Video-Arsivi/post-00048-preview.html">Biyotaklit (Biyomimikri) Konusu İçin Video Arşivi</a></h2>
+                        <p class="post-excerpt">Biyotaklit (Biyomimikri) konusu için derlenmiş eğitim video arşivi: Biyomimetik, robot hayvanlar, doğadan ilham alan tasarımlar ve öğrenci projeleri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00048-Biyotaklit-Video-Arsivi/post-00048-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00047: post-00047-Biyotaklit -->
+                
+                <article class="post-card" data-categories="Etkinlik,Biyotaklit">
+                    <a href="sayfalar/post-00047-Biyotaklit/post-00047-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00047-Biyotaklit/Veri/post-00047-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00047-Biyotaklit/post-00047-preview.html">Biyotaklit (Biyomimikri) Etkinliği</a></h2>
+                        <p class="post-excerpt">Biyotaklit (Biyomimikri) etkinliği: Doğadan İlham Alan Tasarımlar. İnsan yapımı ürünleri doğadaki esin kaynaklarıyla eşleştirin. PDF ve cevap anahtarı ile indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00047-Biyotaklit/post-00047-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00046: post-00046-Biyotaklit -->
+                
+                <article class="post-card" data-categories="Biyotaklit,İnovasyon - İnovatif Düşünce,Mühendislik ve Tasarım">
+                    <a href="sayfalar/post-00046-Biyotaklit/post-00046-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00046-Biyotaklit/Veri/post-00046-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Biyotaklit</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00046-Biyotaklit/post-00046-preview.html">Doğanın Tasarım Dehaları: Biyotaklit (Biyomimikri) Nedir? İnovasyonda Doğadan İlham Almak</a></h2>
+                        <p class="post-excerpt">Doğadan ilham alan inovasyon felsefesi Biyotaklit (Biyomimikri) nedir? Yalıçapkınından Hızlı Trene, Dulavratotundan Cırt Cırta doğanın mühendislik çözümleri ve derste uygulama örnekleri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00046-Biyotaklit/post-00046-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00045: post-00045-Inovasyon-Dongusu -->
+                
+                <article class="post-card" data-categories="Eğitim Teknolojisi,Robotik ve Kodlama">
+                    <a href="sayfalar/post-00045-Inovasyon-Dongusu/post-00045-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00045-Inovasyon-Dongusu/Veri/post-00045-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Eğitim Teknolojisi</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00045-Inovasyon-Dongusu/post-00045-preview.html">Teknoloji ve Tasarım Dersinde İnovasyon Döngüsü: Robotik, Kodlama ve Ters Yüz Öğrenme Entegrasyonu</a></h2>
+                        <p class="post-excerpt">Teknoloji ve Tasarım dersinde robotik ve kodlama entegrasyonu: MEB öğretim programı eşleştirmeleri, ters yüz öğrenme modeli ve sahadaki yapısal engeller için çözüm önerileri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00045-Inovasyon-Dongusu/post-00045-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00044: post-00044-AIEgitim-Donusumu -->
+                
+                <article class="post-card" data-categories="Eğitim Teknolojisi,STEAM">
+                    <a href="sayfalar/post-00044-AIEgitim-Donusumu/post-00044-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00044-AIEgitim-Donusumu/Veri/post-00044-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Eğitim Teknolojisi</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00044-AIEgitim-Donusumu/post-00044-preview.html">Eğitimin Geleceğini Şekillendirmek: Yapay Zekâ (AI) Eğitim Sistemimizi Nasıl Dönüştürüyor?</a></h2>
+                        <p class="post-excerpt">Yapay zekânın eğitim sistemine makro boyuttaki etkileri: kişiselleştirilmiş öğrenme, anlık geri bildirim, kapsayıcılık, büyük veri, sanal gerçeklik, riskler ve etik sorunlar üzerine kapsamlı bir öğretmen rehberi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00044-AIEgitim-Donusumu/post-00044-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00043: post-00043-Ucretsiz-Tasarim-Yazilimlari -->
+                
+                <article class="post-card" data-categories="Eğitim Teknolojisi,STEAM">
+                    <a href="sayfalar/post-00043-Ucretsiz-Tasarim-Yazilimlari/post-00043-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00043-Ucretsiz-Tasarim-Yazilimlari/Veri/post-00043-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Eğitim Teknolojisi</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00043-Ucretsiz-Tasarim-Yazilimlari/post-00043-preview.html">Teknoloji ve Tasarım Dersi İçin 6 Ücretsiz Tasarım Yazılımı</a></h2>
+                        <p class="post-excerpt">Kısıtlı okul bütçelerine çözüm: Planner 5D, TinkerCAD, Canva, GIMP, Inkscape ve FreeCAD ile Teknoloji ve Tasarım dersine entegre edilebilecek 6 ücretsiz ve açık kaynaklı yazılım.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00043-Ucretsiz-Tasarim-Yazilimlari/post-00043-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00042: post-00042-Yapay-Zeka-Io-Tegrasyonu -->
+                
+                <article class="post-card" data-categories="Eğitim Teknolojisi,STEAM">
+                    <a href="sayfalar/post-00042-Yapay-Zeka-Io-Tegrasyonu/post-00042-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00042-Yapay-Zeka-Io-Tegrasyonu/Veri/post-00042-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Eğitim Teknolojisi</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00042-Yapay-Zeka-Io-Tegrasyonu/post-00042-preview.html">Geleceği Tasarlamak: Teknoloji ve Tasarım Dersine Yapay Zekâ (AI) Entegrasyonu</a></h2>
+                        <p class="post-excerpt">Türkiye Yüzyılı Maarif Modeli&#x27;ne uyumlu, kodlama bilgisi gerektirmeyen 4 yapay zekâ etkinliği: Yapay Zekâ Avcıları, Akıllı Ürün Tasarımcıları, Doğadan İlham Alan Yapay Zekâ ve Yapay Zekâ ile Yeşil Gelecek.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00042-Yapay-Zeka-Io-Tegrasyonu/post-00042-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00041: post-00041-STEAMEgitimi -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00041-STEAMEgitimi/post-00041-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00041-STEAMEgitimi/Veri/post-00041-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00041-STEAMEgitimi/post-00041-preview.html">Geleceğin İnovasyon Liderlerini Yetiştirmek: S.T.E.A.M. Eğitimi Neden Bu Kadar Kritik?</a></h2>
+                        <p class="post-excerpt">S.T.E.A.M.&#x27;in sanat ve tasarım ayağı, Türkiye Yüzyılı Maarif Modeli ile uyumu, ebeveyn ve öğretmenlere altın öneriler: geleceğin becerilerine giden yol.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00041-STEAMEgitimi/post-00041-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00040: post-00040-Markalarin-Sloganlari -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00040-Markalarin-Sloganlari/post-00040-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00040-Markalarin-Sloganlari/Veri/post-00040-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00040-Markalarin-Sloganlari/post-00040-preview.html">Dünyaca Ünlü Markaların Sloganları ve Tüketici Psikolojisi</a></h2>
+                        <p class="post-excerpt">Nike&#x27;tan Apple&#x27;a, BMW&#x27;den Patek Philippe&#x27;e dünyanın önde gelen markalarının bilinen sloganları ve arkasındaki tüketici psikolojisi: kapsamlı slogan arşivi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00040-Markalarin-Sloganlari/post-00040-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00039: post-00039-Slogan-Yazmanin-Altin-Kurallari -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00039-Slogan-Yazmanin-Altin-Kurallari/post-00039-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00039-Slogan-Yazmanin-Altin-Kurallari/Veri/post-00039-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00039-Slogan-Yazmanin-Altin-Kurallari/post-00039-preview.html">Slogan Yazma Rehberi: 7 Kural ve Örnekler</a></h2>
+                        <p class="post-excerpt">Slogan yazmanın stratejileri, pazarlama psikolojisi ve kurallar; Türkiye&#x27;den ve dünyadan bilinen slogan örnekleri ve adım adım slogan oluşturma kılavuzu.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00039-Slogan-Yazmanin-Altin-Kurallari/post-00039-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00038: post-00038-Tersyuz-Ogrenme -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00038-Tersyuz-Ogrenme/post-00038-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00038-Tersyuz-Ogrenme/Veri/post-00038-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00038-Tersyuz-Ogrenme/post-00038-preview.html">Tersyüz Öğrenme (Flipped Learning) ile Teknoloji ve Tasarım Dersi</a></h2>
+                        <p class="post-excerpt">Tersyüz Öğrenme yaklaşımı nedir? Bloom Taksonomisi, aşamalar, faydalar ve zorluklar ile Teknoloji ve Tasarım dersi için uygulama örnekleri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00038-Tersyuz-Ogrenme/post-00038-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00037: post-00037-Sinif-Bolunmesi-Norm-Kadro -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00037-Sinif-Bolunmesi-Norm-Kadro/post-00037-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00037-Sinif-Bolunmesi-Norm-Kadro/Veri/post-00037-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00037-Sinif-Bolunmesi-Norm-Kadro/post-00037-preview.html">Teknoloji ve Tasarım Dersinde Sınıfların Bölünmesi ve Norm Kadro Sorunu (Mevzuat Ne Diyor?)</a></h2>
+                        <p class="post-excerpt">2018 Öğretim Programı&#x27;nın 10. sayfasındaki sınıf bölme kuralı, idari bahaneler, norm kadro hesaplama hataları ve 2006 tarihli yazıların neden kullanılmaması gerektiği.</p>
+                        <div class="post-meta">
+                            <span>11.06.2013</span>
+                            <a href="sayfalar/post-00037-Sinif-Bolunmesi-Norm-Kadro/post-00037-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00036: post-00036-Utangaclik-Kader-Mi -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00036-Utangaclik-Kader-Mi/post-00036-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00036-Utangaclik-Kader-Mi/Veri/post-00036-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00036-Utangaclik-Kader-Mi/post-00036-preview.html">Utangaçlık Kader mi? Sosyal Kaygıyı Aşmanın ve Özgüvenin Bilimsel Sırları</a></h2>
+                        <p class="post-excerpt">Utangaçlık genetik mi, çevresel mi? Bilimsel araştırmalar, BDT, içe dönüklük farkı ve yaş dönemlerine göre pratik tavsiyelerle sosyal kaygıyı aşmanın yolları.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00036-Utangaclik-Kader-Mi/post-00036-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00035: post-00035-Neden-Kitap-Okumuyoruz -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00035-Neden-Kitap-Okumuyoruz/post-00035-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00035-Neden-Kitap-Okumuyoruz/Veri/post-00035-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00035-Neden-Kitap-Okumuyoruz/post-00035-preview.html">Neden Kitap Okumuyoruz? Bahaneler, Çözümler ve Okumanın Faydaları</a></h2>
+                        <p class="post-excerpt">Okuma alışkanlığına dair şehir efsaneleri ayıklanmış, kaynakları teyit edilmiş rehber: bahaneler, çözümler ve okumanın bilimsel-ruhsal faydaları.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00035-Neden-Kitap-Okumuyoruz/post-00035-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00034: post-00034-Proje-Odevi -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00034-Proje-Odevi/post-00034-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00034-Proje-Odevi/Veri/post-00034-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00034-Proje-Odevi/post-00034-preview.html">Teknoloji ve Tasarım Dersinde Neden Proje Ödevi Verilemez? Kafa Karıştıran Sorunun Cevabı</a></h2>
+                        <p class="post-excerpt">Yönetmelikte açık bir yasak olmamasına rağmen e-Okul neden Teknoloji ve Tasarım dersine proje notu girmiyor? Mevzuat, sistem gerçeği ve pedagojik gerekçelerle açıklıyoruz.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00034-Proje-Odevi/post-00034-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00033: post-00033-Egitim-Atasozleri -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Rehberlik ve Kişisel Gelişim">
+                    <a href="sayfalar/post-00033-Egitim-Atasozleri/post-00033-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00033-Egitim-Atasozleri/Veri/post-00033-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00033-Egitim-Atasozleri/post-00033-preview.html">Eğitime Dair Atasözleri: Japonya&#x27;dan Dünyaya 55 Bilgelik</a></h2>
+                        <p class="post-excerpt">Koji Kotowaza Jiten&#x27;den TDK Sözlüğü&#x27;ne: Japonya&#x27;nın 15 atasözü ve dünyanın dört bir yanından 40 evrensel eğitim bilgeliği — kaynakları ve açıklamalarıyla birlikte.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00033-Egitim-Atasozleri/post-00033-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00032: post-00032-Einstein-Sozleri -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mucitler ve Bilim İnsanları">
+                    <a href="sayfalar/post-00032-Einstein-Sozleri/post-00032-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00032-Einstein-Sozleri/Veri/post-00032-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00032-Einstein-Sozleri/post-00032-preview.html">Albert Einstein&#x27;ın Gerçekten Söylediği 8 Söz (Kaynaklarıyla)</a></h2>
+                        <p class="post-excerpt">İnternette dolaşan Einstein sözlerinin çoğu uydurma. Her sözü mektup, dergi yazısı ya da kitaba dayandırarak teyit ettiğimiz, gerçekten ona ait 8 söz.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00032-Einstein-Sozleri/post-00032-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00031: post-00031-Polimatlar -->
+                
+                <article class="post-card" data-categories="Mucitler ve Bilim İnsanları,Genel Kültür,Rehberlik ve Kişisel Gelişim">
+                    <a href="sayfalar/post-00031-Polimatlar/post-00031-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00031-Polimatlar/Veri/post-00031-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Mucitler ve Bilim İnsanları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00031-Polimatlar/post-00031-preview.html">Çok Yönlü Düşünmenin Zirvesi: Polimat (Hezarfen) Nedir? Sınırsız Zihinlerin Hikâyesi</a></h2>
+                        <p class="post-excerpt">Bilim, sanat ve felsefeyi birleştiren evrensel dehalar: Polimat (Hezarfen) kimdir? Da Vinci&#x27;den Biruni&#x27;ye zihinsel esneklik, disiplinlerarası düşünce ve modern çağda polimat olmak.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00031-Polimatlar/post-00031-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00030: post-00030-Nikola-Tesla -->
+                
+                <article class="post-card" data-categories="Mucitler ve Bilim İnsanları,Genel Kültür">
+                    <a href="sayfalar/post-00030-Nikola-Tesla/post-00030-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00030-Nikola-Tesla/Veri/post-00030-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Mucitler ve Bilim İnsanları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00030-Nikola-Tesla/post-00030-preview.html">Gerçek Nikola Tesla: Bilim Kurgu Efsanelerinin Ardındaki Mucit</a></h2>
+                        <p class="post-excerpt">Tesla&#x27;yı asılsız komplo teorilerinden arındırarak, tarihsel gerçekler ve belgeler ışığında yeniden tanıyalım: zihninde makine inşa eden çocukluk, Akımlar Savaşı, uzaktan kumanda ve Wardenclyffe Kulesi&#x27;nin hikâyesi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00030-Nikola-Tesla/post-00030-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00029: post-00029-Bilimde-Iz-Birakan13-Kadin -->
+                
+                <article class="post-card" data-categories="Mucitler ve Bilim İnsanları,Genel Kültür">
+                    <a href="sayfalar/post-00029-Bilimde-Iz-Birakan13-Kadin/post-00029-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00029-Bilimde-Iz-Birakan13-Kadin/Veri/post-00029-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Mucitler ve Bilim İnsanları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00029-Bilimde-Iz-Birakan13-Kadin/post-00029-preview.html">Bilimde İz Bırakan 13 Kadın</a></h2>
+                        <p class="post-excerpt">Marie Curie&#x27;den Ada Lovelace&#x27;e, Mary Anning&#x27;den Lise Meitner&#x27;e: toplumsal önyargılara rağmen bilimin gidişatını değiştiren kadın bilim insanlarının hikâyesi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00029-Bilimde-Iz-Birakan13-Kadin/post-00029-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00028: post-00028-Bilim-Insanlari -->
+                
+                <article class="post-card" data-categories="Mucitler ve Bilim İnsanları,Genel Kültür">
+                    <a href="sayfalar/post-00028-Bilim-Insanlari/post-00028-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00028-Bilim-Insanlari/Veri/post-00028-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Mucitler ve Bilim İnsanları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00028-Bilim-Insanlari/post-00028-preview.html">Tarihe Yön Veren Çok Yönlü Bilim İnsanları ve Hezarfenler (53 Öncü Zihin)</a></h2>
+                        <p class="post-excerpt">Sınırsız merak ve disiplinler arası düşünme becerisiyle tarihe ve bilime damga vurmuş, Ali Kuşçu&#x27;dan Da Vinci&#x27;ye, Biruni&#x27;den Aziz Sancar&#x27;a 53 çok yönlü bilim insanı.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00028-Bilim-Insanlari/post-00028-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00027: post-00027-Okul-Aile-Rehberi -->
+                
+                <article class="post-card" data-categories="Rehberlik ve Kişisel Gelişim,Veli Toplantısı">
+                    <a href="sayfalar/post-00027-Okul-Aile-Rehberi/post-00027-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00027-Okul-Aile-Rehberi/Veri/post-00027-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Rehberlik ve Kişisel Gelişim</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00027-Okul-Aile-Rehberi/post-00027-preview.html">Öğretmen ve Velinin Ortak Gücü: Başarılı ve Mutlu Bir Çocuk Yetiştirme Rehberi</a></h2>
+                        <p class="post-excerpt">Okul ve ailenin ortak gücüyle çocuğu yetiştirme rehberi: yaşam rutinleri, psikolojik destek, akademik sorumluluk ve dijital sınırlar.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00027-Okul-Aile-Rehberi/post-00027-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00026: post-00026-Ders-Etkinliklerine-Katilim -->
+                
+                <article class="post-card" data-categories="Rehberlik ve Kişisel Gelişim,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00026-Ders-Etkinliklerine-Katilim/post-00026-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00026-Ders-Etkinliklerine-Katilim/Veri/post-00026-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Rehberlik ve Kişisel Gelişim</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00026-Ders-Etkinliklerine-Katilim/post-00026-preview.html">Ders Etkinliklerine Katılım (D.E.K.) Sütununda Ürün Değerlendirilmesi Yapılır mı?</a></h2>
+                        <p class="post-excerpt">Öğrencilerin emek vererek ortaya çıkardığı ürünlerin değerlendirilmesi ile derse katılım süreçlerinin birbirine karıştırılmaması gerektiğini; e-Okul&#x27;daki D.E.K. puanının doğru kullanımını açıklıyoruz.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00026-Ders-Etkinliklerine-Katilim/post-00026-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00025: post-00025-Yaz-Tatili-Etkinlikleri -->
+                
+                <article class="post-card" data-categories="Rehberlik ve Kişisel Gelişim,Genel Kültür">
+                    <a href="sayfalar/post-00025-Yaz-Tatili-Etkinlikleri/post-00025-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00025-Yaz-Tatili-Etkinlikleri/Veri/post-00025-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Rehberlik ve Kişisel Gelişim</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00025-Yaz-Tatili-Etkinlikleri/post-00025-preview.html">Yaz Tatilinde Çocuklar İçin 45 Etkinlik: Ekranlardan Uzak, Dolu Dolu Bir Yaz</a></h2>
+                        <p class="post-excerpt">Doğadan mutfağa, sanattan aile bağlarına: çocuklarınızla yaz tatilini hem eğlenceli hem öğretici geçirmenizi sağlayacak 45 zenginleştirilmiş etkinlik önerisi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00025-Yaz-Tatili-Etkinlikleri/post-00025-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00024: post-00024-Beyin-Gelisimi -->
+                
+                <article class="post-card" data-categories="Rehberlik ve Kişisel Gelişim,Genel Kültür">
+                    <a href="sayfalar/post-00024-Beyin-Gelisimi/post-00024-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00024-Beyin-Gelisimi/Veri/post-00024-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Rehberlik ve Kişisel Gelişim</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00024-Beyin-Gelisimi/post-00024-preview.html">Teknoloji ve Tasarım Dersi ile Beyin Gelişimi: Sağ ve Sol Lobun Dengeli Kullanımı</a></h2>
+                        <p class="post-excerpt">Teknoloji ve Tasarım dersi ile beyin gelişimi arasındaki ilişki: sağ ve sol beynin dengeli kullanımı ve üst düzey düşünme becerileri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00024-Beyin-Gelisimi/post-00024-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00023: post-00023-Okul-Belgeleri -->
+                
+                <article class="post-card" data-categories="Dosyalar,Belge ve Davetiye Şablonları">
+                    <a href="sayfalar/post-00023-Okul-Belgeleri/post-00023-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00023-Okul-Belgeleri/Veri/post-00023-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00023-Okul-Belgeleri/post-00023-preview.html">Başarı ve Teşekkür Belgeleri İçin PPTX Şablonları</a></h2>
+                        <p class="post-excerpt">Başarı, teşekkür, katılım ve kitap okuma çalışmaları için düzenlenebilir PPTX belge şablonları.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00023-Okul-Belgeleri/post-00023-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00022: post-00022-SOKToplanti-Dosyalari -->
+                
+                <article class="post-card" data-categories="Dosyalar,Dosyalar">
+                    <a href="sayfalar/post-00022-SOKToplanti-Dosyalari/post-00022-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00022-SOKToplanti-Dosyalari/Veri/post-00022-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00022-SOKToplanti-Dosyalari/post-00022-preview.html">Şube Öğretmenler Kurulu (Ş.Ö.K.) ve Hazır Evrak Şablonları</a></h2>
+                        <p class="post-excerpt">Şube Öğretmenler Kurulu (Ş.Ö.K.) toplantıları için hazır evrak şablonları: dönem içi ve yıl sonu toplantı tutanağı, öğrenci listesi formu. Maarif Modeli bütüncül eğitim yaklaşımıyla Ş.Ö.K. rehberi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00022-SOKToplanti-Dosyalari/post-00022-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00021: post-00021-Gezi-Dosyalari -->
+                
+                <article class="post-card" data-categories="Dosyalar,Okul Dışı Öğrenme Ortamları">
+                    <a href="sayfalar/post-00021-Gezi-Dosyalari/post-00021-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00021-Gezi-Dosyalari/Veri/post-00021-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00021-Gezi-Dosyalari/post-00021-preview.html">Okul Gezisi Dosyaları ve Gezi Planlama Rehberi</a></h2>
+                        <p class="post-excerpt">Okul dışı öğrenme ortamları ve MEB Sosyal Etkinlikler Yönetmeliği kapsamındaki gezi bürokrasisi için hazır evrak şablonları: gezi planı ve idare onay dilekçesi, veli izin belgesi (muvafakatname), öğrenci listeleri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00021-Gezi-Dosyalari/post-00021-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00020: post-00020-Atolye-Is-Guvenligi -->
+                
+                <article class="post-card" data-categories="İş Güvenliği,Atölye Uyarı Levhaları">
+                    <a href="sayfalar/post-00020-Atolye-Is-Guvenligi/post-00020-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00020-Atolye-Is-Guvenligi/Veri/post-00020-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">İş Güvenliği</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00020-Atolye-Is-Guvenligi/post-00020-preview.html">Atölye İş Güvenliği ve Uyarı Levhaları: Öğretmenler İçin Ücretsiz PDF Şablonları</a></h2>
+                        <p class="post-excerpt">Atölye iş güvenliği ve uyarı levhaları: öğrencilere kuralları görsel olarak hatırlatan, İSG mevzuatına uygun, A4 boyutunda ücretsiz PDF levha şablonları.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00020-Atolye-Is-Guvenligi/post-00020-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00019: post-00019-TTDosyalari -->
+                
+                <article class="post-card" data-categories="Dosyalar,Dosyalar">
+                    <a href="sayfalar/post-00019-TTDosyalari/post-00019-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00019-TTDosyalari/Veri/post-00019-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00019-TTDosyalari/post-00019-preview.html">Teknoloji ve Tasarım Dersi İçin Dosyalar: Güncel Evrak Arşivi</a></h2>
+                        <p class="post-excerpt">Teknoloji ve Tasarım dersi için ihtiyacınız olan tüm dosyalar tek sayfada: atölye uyarı levhaları, BEP, belge ve davetiye şablonları, not çizelgeleri, yıllık planlar, zümre toplantıları ve MEB öğretim programı PDF&#x27;leri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00019-TTDosyalari/post-00019-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00018: post-00018-BEPHazirlama-Programi -->
+                
+                <article class="post-card" data-categories="Dosyalar,Özel Eğitim">
+                    <a href="sayfalar/post-00018-BEPHazirlama-Programi/post-00018-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00018-BEPHazirlama-Programi/Veri/post-00018-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00018-BEPHazirlama-Programi/post-00018-preview.html">Özel Eğitimde Teknoloji ve Tasarım: BEP Hazırlama Rehberi ve Pratik Çözümler</a></h2>
+                        <p class="post-excerpt">Teknoloji ve Tasarım dersi için Bireyselleştirilmiş Eğitim Programı (BEP) hazırlama rehberi: 7. ve 8. sınıf örnekleri, Sorgun RAM BEP Hazırlama Programı, MEB güncel formatı ve yol haritası.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00018-BEPHazirlama-Programi/post-00018-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00017: post-00017-Ogrenci-Bilgi-Formlari -->
+                
+                <article class="post-card" data-categories="Dosyalar,Rehberlik ve Kişisel Gelişim,Rehberlik ve Kişisel Gelişim">
+                    <a href="sayfalar/post-00017-Ogrenci-Bilgi-Formlari/post-00017-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00017-Ogrenci-Bilgi-Formlari/Veri/post-00017-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00017-Ogrenci-Bilgi-Formlari/post-00017-preview.html">Sınıf Yönetimi Evrakları: Öğrenci Bilgi Formları ve Oturma Planı</a></h2>
+                        <p class="post-excerpt">Sınıf rehber ve branş öğretmenleri için 3 ücretsiz şablon: tek öğrenci bilgi formu, tüm sınıf liste formu ve oturma planı (DOCX ve kapak).</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00017-Ogrenci-Bilgi-Formlari/post-00017-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00016: post-00016-Disiplin-Tutanagi -->
+                
+                <article class="post-card" data-categories="Dosyalar,Öğretmen Rehberi">
+                    <a href="sayfalar/post-00016-Disiplin-Tutanagi/post-00016-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00016-Disiplin-Tutanagi/Veri/post-00016-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00016-Disiplin-Tutanagi/post-00016-preview.html">Okullarda Disiplin Tutanağı Nasıl Tutulur? (Örnek Şablonlar)</a></h2>
+                        <p class="post-excerpt">Eğitim kurumlarında düzen ve disiplini sağlamak amacıyla tutulacak disiplin tutanağı hazırlama adımları, dikkat edilmesi gerekenler ve hazır tutanak örnekleri.</p>
+                        <div class="post-meta">
+                            <span>05.10.2040</span>
+                            <a href="sayfalar/post-00016-Disiplin-Tutanagi/post-00016-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00015: post-00015-Veli-Toplantisi-Dosyalari -->
+                
+                <article class="post-card" data-categories="Dosyalar,Veli Toplantısı">
+                    <a href="sayfalar/post-00015-Veli-Toplantisi-Dosyalari/post-00015-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00015-Veli-Toplantisi-Dosyalari/Veri/post-00015-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Dosyalar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00015-Veli-Toplantisi-Dosyalari/post-00015-preview.html">Veli Toplantısı Dosyaları: Tutanak, Dilekçe, Davetiye ve İmza Çizelgesi Seti</a></h2>
+                        <p class="post-excerpt">Veli toplantısı için ihtiyacınız olan tüm evraklar: toplantı tutanağı, idareye sunulacak dilekçe, veli davetiyesi ve imza çizelgesi. Ayrıca veli toplantısında neler konuşulur rehberi ve velilere dağıtılacak tavsiyeler.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00015-Veli-Toplantisi-Dosyalari/post-00015-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00014: post-00014-Veli-Toplantisi-Konusma-Metni -->
+                
+                <article class="post-card" data-categories="Rehberlik ve Kişisel Gelişim,Veli Toplantısı">
+                    <a href="sayfalar/post-00014-Veli-Toplantisi-Konusma-Metni/post-00014-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00014-Veli-Toplantisi-Konusma-Metni/Veri/post-00014-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Rehberlik ve Kişisel Gelişim</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00014-Veli-Toplantisi-Konusma-Metni/post-00014-preview.html">Yeni Atanan Öğretmenler İçin &quot;Fark Oluşturan&quot; İlk Veli Toplantısı Şablonu</a></h2>
+                        <p class="post-excerpt">Veli toplantısında gururla okunabilecek vizyoner konuşma metni: pedagojik kuramlarla beslenmiş, veliye güven veren, dijital vatandaşlıktan kapsayıcı eğitime uzanan derinlikli ilk veli toplantısı şablonu — PDF indirme imkânıyla.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00014-Veli-Toplantisi-Konusma-Metni/post-00014-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00013: post-00013-Veli-Toplantisi-Rehberi -->
+                
+                <article class="post-card" data-categories="Rehberlik ve Kişisel Gelişim,Veli Toplantısı">
+                    <a href="sayfalar/post-00013-Veli-Toplantisi-Rehberi/post-00013-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00013-Veli-Toplantisi-Rehberi/Veri/post-00013-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Rehberlik ve Kişisel Gelişim</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00013-Veli-Toplantisi-Rehberi/post-00013-preview.html">Yeni Atanan Öğretmenler İçin Başucu Rehberi: İlk Veli Toplantısını Unutulmaz Kılmanın 10 Altın Kuralı</a></h2>
+                        <p class="post-excerpt">İlk veli toplantısına yeni atanan öğretmenler için başucu rehberi: iletişim sınırları, öğrenci güvenliği, ödev takibi, pozitif disiplin, kapsayıcı eğitim ve daha fazlası — örnek söylemlerle 10 altın kural.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00013-Veli-Toplantisi-Rehberi/post-00013-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00012: post-00012-Turk-Patent-Arastirma -->
+                
+                <article class="post-card" data-categories="Etkinlik,Araştırma">
+                    <a href="sayfalar/post-00012-Turk-Patent-Arastirma/post-00012-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00012-Turk-Patent-Arastirma/Veri/post-00012-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00012-Turk-Patent-Arastirma/post-00012-preview.html">Türk Patent ve Marka Kurumunu Keşfedelim: Patent Araştırma Etkinliği</a></h2>
+                        <p class="post-excerpt">TÜRKPATENT veri tabanında patent araştırma etkinliği: buluşları inceleme, teknik çizimleri yorumlama ve yenilikçi fikir geliştirme adımları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00012-Turk-Patent-Arastirma/post-00012-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00011: post-00011-Bilim-Kurgu -->
+                
+                <article class="post-card" data-categories="Etkinlik,Yenilikçi Düşünce">
+                    <a href="sayfalar/post-00011-Bilim-Kurgu/post-00011-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00011-Bilim-Kurgu/Veri/post-00011-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Etkinlik</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00011-Bilim-Kurgu/post-00011-preview.html">Bilim Kurgu Etkinliği: Geleceğin Teknolojilerini ve Toplumlarını Kurgulama</a></h2>
+                        <p class="post-excerpt">Bilim kurgu etkinliği: geleceğin teknolojilerini ve toplumlarını kurgulama, akıllı ürün tasarlama, hikaye yazma ve görsel tasarım adımları. PDF olarak indirin.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00011-Bilim-Kurgu/post-00011-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00010: post-00010-Patent-Kulubu -->
+                
+                <article class="post-card" data-categories="Genel Kültür,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00010-Patent-Kulubu/post-00010-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00010-Patent-Kulubu/Veri/post-00010-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Genel Kültür</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00010-Patent-Kulubu/post-00010-preview.html">Okulunuzda &quot;Teknoloji, İnovasyon ve Patent Kulübü&quot; Nasıl Kurulur? (Mevzuat ve Rehber)</a></h2>
+                        <p class="post-excerpt">MEB Sosyal Etkinlikler Yönetmeliği EK-4 açıklama maddesiyle kulüp kurmanın yasal dayanağı, 2 kurulum yolu, faaliyet önerileri ve indirilebilir evrak paketi.</p>
+                        <div class="post-meta">
+                            <span>12.09.2019</span>
+                            <a href="sayfalar/post-00010-Patent-Kulubu/post-00010-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00009: post-00009-Uluslararasi-Teknoloji-Yarismalari-Kulup-Yillik-Plan -->
+                
+                <article class="post-card" data-categories="Kulüp,Yıllık Plan">
+                    <a href="sayfalar/post-00009-Uluslararasi-Teknoloji-Yarismalari-Kulup-Yillik-Plan/post-00009-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00009-Uluslararasi-Teknoloji-Yarismalari-Kulup-Yillik-Plan/Veri/post-00009-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Kulüp</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00009-Uluslararasi-Teknoloji-Yarismalari-Kulup-Yillik-Plan/post-00009-preview.html">Uluslararası Teknoloji Yarışmaları ve Projeleri Kulübü Çerçeve Yıllık Planı</a></h2>
+                        <p class="post-excerpt">Uluslararası Teknoloji Yarışmaları ve Projeleri Kulübü çerçeve yıllık planı: Teknofest, Deneyap, uluslararası teknoloji yarışmaları, Ar-Ge atölyeleri ve takım çalışması içerikli yıllık plan (DOCX).</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00009-Uluslararasi-Teknoloji-Yarismalari-Kulup-Yillik-Plan/post-00009-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00008: post-00008-Zumre-Toplanti-Tutanaklari -->
+                
+                <article class="post-card" data-categories="Zümre Toplantı Tutanakları,Dosyalar">
+                    <a href="sayfalar/post-00008-Zumre-Toplanti-Tutanaklari/post-00008-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00008-Zumre-Toplanti-Tutanaklari/Veri/post-00008-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Zümre Toplantı Tutanakları</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00008-Zumre-Toplanti-Tutanaklari/post-00008-preview.html">Teknoloji ve Tasarım Dersi Zümre Toplantı Tutanakları (Güncel)</a></h2>
+                        <p class="post-excerpt">Teknoloji ve Tasarım dersi zümre toplantı tutanakları, imza çizelgeleri ve Türkiye Yüzyılı Maarif Modeli odaklı güncel belgeler.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00008-Zumre-Toplanti-Tutanaklari/post-00008-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00007: post-00007-Yillik-Planlari -->
+                
+                <article class="post-card" data-categories="Yıllık Planlar,Öğretim Programı">
+                    <a href="sayfalar/post-00007-Yillik-Planlari/post-00007-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00007-Yillik-Planlari/Veri/post-00007-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Yıllık Planlar</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00007-Yillik-Planlari/post-00007-preview.html">2026 - 2027 Eğitim-Öğretim Yılı Teknoloji ve Tasarım Dersi Yıllık Planları</a></h2>
+                        <p class="post-excerpt">2026-2027 eğitim-öğretim yılı 7. ve 8. sınıf Teknoloji ve Tasarım dersi yıllık planları. Tek sayfada hazırlanmış, e-Okul uyumlu planlar ve indirme bağlantısı.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00007-Yillik-Planlari/post-00007-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00006: post-00006-e-Okul-Not-Cizelgeleri -->
+                
+                <article class="post-card" data-categories="Ölçme Değerlendirme,Excel">
+                    <a href="sayfalar/post-00006-e-Okul-Not-Cizelgeleri/post-00006-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00006-e-Okul-Not-Cizelgeleri/Veri/post-00006-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Ölçme Değerlendirme</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00006-e-Okul-Not-Cizelgeleri/post-00006-preview.html">Teknoloji ve Tasarım - e-Okul Uyumlu Otomatik Not Çizelgeleri (7. ve 8. Sınıf)</a></h2>
+                        <p class="post-excerpt">Not girişlerinizi kolaylaştırmak için hazırlanan e-Okul uyumlu Excel çizelgeleri. 1. ve 2. dönem, 25 ve 40 öğrencilik seçenekler ile 2. değerlendirme sütunu kopyalama sorununun çözüm önerileri.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00006-e-Okul-Not-Cizelgeleri/post-00006-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00005: post-00005-Turkiye-Yuzyili-Maarif-Modeli -->
+                
+                <article class="post-card" data-categories="Öğretim Programı,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00005-Turkiye-Yuzyili-Maarif-Modeli/post-00005-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00005-Turkiye-Yuzyili-Maarif-Modeli/Veri/post-00005-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Öğretim Programı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00005-Turkiye-Yuzyili-Maarif-Modeli/post-00005-preview.html">Türkiye Yüzyılı Maarif Modeli ve Teknoloji ve Tasarım Dersi: Köklerden Geleceğe Bütünleşik Bir Vizyon</a></h2>
+                        <p class="post-excerpt">Türkiye Yüzyılı Maarif Modeli&#x27;nin (TYMM) felsefesi, öğrenci profili, beceri ve değer çerçevesi ile Teknoloji ve Tasarım dersinin kazanımları arasındaki uyumun kapsamlı analizi.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00005-Turkiye-Yuzyili-Maarif-Modeli/post-00005-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00004: post-00004-Sube-Rehber-Ogretmenligi -->
+                
+                <article class="post-card" data-categories="Mevzuat ve Yönetmelikler,Rehberlik ve Kişisel Gelişim">
+                    <a href="sayfalar/post-00004-Sube-Rehber-Ogretmenligi/post-00004-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00004-Sube-Rehber-Ogretmenligi/Veri/post-00004-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Mevzuat ve Yönetmelikler</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00004-Sube-Rehber-Ogretmenligi/post-00004-preview.html">Teknoloji ve Tasarım Öğretmenine Şube Rehber Öğretmenliği Verilebilir mi? (Mevzuat Ne Diyor?)</a></h2>
+                        <p class="post-excerpt">MEB Ders ve Ek Ders Saatleri Kararı 6. maddesi 5. fıkrasına göre şube rehber öğretmenliğinden muaf tutulanlar kimler? Teknoloji ve Tasarım öğretmenleri görevi reddedebilir mi?</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00004-Sube-Rehber-Ogretmenligi/post-00004-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00003: post-00003-Ders-Bolunmesi-Mevzuat -->
+                
+                <article class="post-card" data-categories="Öğretim Programı,Mevzuat ve Yönetmelikler">
+                    <a href="sayfalar/post-00003-Ders-Bolunmesi-Mevzuat/post-00003-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00003-Ders-Bolunmesi-Mevzuat/Veri/post-00003-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Öğretim Programı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00003-Ders-Bolunmesi-Mevzuat/post-00003-preview.html">Teknoloji ve Tasarım Dersi Farklı Günlere Bölünebilir mi? (Mevzuat Ne Diyor?)</a></h2>
+                        <p class="post-excerpt">2018 Öğretim Programı&#x27;nın 10. sayfası Madde 6: ders saatleri bölünemez, blok (peş peşe) uygulanır. İdareye sunulacak mevzuat dayanağı ve pedagojik gerekçeler.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00003-Ders-Bolunmesi-Mevzuat/post-00003-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00002: post-00002-Sinif-Defteri-Kazanim -->
+                
+                <article class="post-card" data-categories="Mevzuat ve Yönetmelikler,Dosyalar">
+                    <a href="sayfalar/post-00002-Sinif-Defteri-Kazanim/post-00002-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00002-Sinif-Defteri-Kazanim/Veri/post-00002-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Mevzuat ve Yönetmelikler</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00002-Sinif-Defteri-Kazanim/post-00002-preview.html">Sınıf Defterine Sadece Kazanım Numarası Yazılabilir mi? (MEB Yönetmeliği ve İspatı)</a></h2>
+                        <p class="post-excerpt">Öğretmenlerin merak ettiği &quot;Sınıf defterine sadece kazanım numarası mı yoksa kazanım ifadesi mi yazılır?&quot; sorusuna MEB yönergesi ve resmi maddelerle kesin yanıt.</p>
+                        <div class="post-meta">
+                            <span>14.09.2022</span>
+                            <a href="sayfalar/post-00002-Sinif-Defteri-Kazanim/post-00002-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 00001: post-00001-Ogretim-Programlari -->
+                
+                <article class="post-card" data-categories="Öğretim Programı,İnovasyon - İnovatif Düşünce">
+                    <a href="sayfalar/post-00001-Ogretim-Programlari/post-00001-preview.html">
+                        <div class="post-image" style="background-image: url('sayfalar/post-00001-Ogretim-Programlari/Veri/post-00001-Kapak.jpg?v=3'); cursor: pointer;"></div>
+                    </a>
+                    <div class="post-content">
+                        <span class="category">Öğretim Programı</span>
+                        <h2 class="post-title"><a href="sayfalar/post-00001-Ogretim-Programlari/post-00001-preview.html">2018 ve 2025 (Taslak) Teknoloji ve Tasarım Dersi Öğretim Programları Karşılaştırması</a></h2>
+                        <p class="post-excerpt">MEB&#x27;in Türkiye Yüzyılı Maarif Modeli kapsamındaki 2025 (taslak) ile 2018 Teknoloji ve Tasarım dersi öğretim programlarının detaylı karşılaştırması.</p>
+                        <div class="post-meta">
+                            <span></span>
+                            <a href="sayfalar/post-00001-Ogretim-Programlari/post-00001-preview.html" class="read-more">Devamını Oku ►</a>
+                        </div>
+                    </div>
+                </article>
+            
+
+            </section>
+
+        <!-- SAYFA ALTI ZİYARETÇİ SAYACI (ORTALANMIŞ ROZET) -->
+        <div class="bottom-visitor-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Ziyaretçi Sayısı (Son 30 Gün):</span>
+            <strong class="bottom-visitor-num" id="bottom-visitor-count">1,420+</strong>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+        <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
             </div>
         </div>
-    </article>
-    {% endfor %}
-</section>
+    </footer>
+
+    <!-- Supabase Entegrasyonu + Kopyalama Koruması (ana sayfa) -->
+    <script src="js/config.js"></script>
+    <script src="js/comments.js"></script>
+    <script src="js/views.js"></script>
+    <script src="js/protection.js"></script>
+    <script src="js/sidebar-scroll.js"></script>
+
+    <!-- Slayt & Filtreleme JavaScript Kodları -->
+    <script>
+        // Slayt (Carousel) Mantığı - Güvenli ve Dinamik
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.querySelector('.slider-dots');
+        
+        if (dotsContainer && slides.length > 0) {
+            dotsContainer.innerHTML = '';
+            slides.forEach((_, i) => {
+                const dot = document.createElement('span');
+                dot.className = i === 0 ? 'dot active-dot' : 'dot';
+                dot.textContent = String(i + 1);
+                dot.setAttribute('onclick', `setSlide(${i})`);
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        let dots = document.querySelectorAll('.dot');
+        let slideInterval = setInterval(nextSlide, 5000);
+        showSlide(0);
+
+        function showSlide(index) {
+            slides.forEach((slide) => {
+                slide.classList.remove('active-slide');
+            });
+            dots.forEach((dot) => {
+                dot.classList.remove('active-dot');
+            });
+
+            currentSlide = (index + slides.length) % slides.length;
+            if (slides[currentSlide]) {
+                slides[currentSlide].classList.add('active-slide');
+            }
+            if (dots[currentSlide]) {
+                dots[currentSlide].classList.add('active-dot');
+            }
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function changeSlide(direction) {
+            clearInterval(slideInterval);
+            showSlide(currentSlide + direction);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function setSlide(index) {
+            clearInterval(slideInterval);
+            showSlide(index);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        // Kategori Filtreleme Mantığı
+        function filterCategory(targetCat) {
+            const sidebarItems = document.querySelectorAll('.sidebar-cat-item');
+            const posts = document.querySelectorAll('#main-blog-grid .post-card');
+            const resetBtn = document.getElementById('reset-filter-btn');
+            const titleEl = document.getElementById('grid-header-title');
+            const noResults = document.getElementById('no-results-msg');
+            let matchCount = 0;
+
+            // Sidebar aktif stilini değiştir
+            sidebarItems.forEach(item => {
+                if (item.getAttribute('data-cat') === targetCat) {
+                    item.classList.add('active-sidebar-cat');
+                } else {
+                    item.classList.remove('active-sidebar-cat');
+                }
+            });
+
+            // Post kartlarını filtrele
+            posts.forEach(post => {
+                const postCats = post.getAttribute('data-categories') || '';
+                if (targetCat === 'ALL' || postCats.includes(targetCat)) {
+                    post.style.display = 'flex';
+                    matchCount++;
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+
+            // Slayt (Carousel) gizleme/gösterme
+            const sliderEl = document.getElementById('featured-slider');
+
+            // Başlık ve Temizle Butonu
+            if (targetCat === 'ALL') {
+                if (sliderEl) sliderEl.style.display = 'block';
+                resetBtn.style.display = 'none';
+                titleEl.innerHTML = '';
+                noResults.style.display = 'none';
+            } else {
+                if (sliderEl) sliderEl.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+                titleEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Seçili Kategori: "${targetCat}" (${matchCount})`;
+                if (matchCount === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+        }
+
+        function trNormalize(str) {
+            if (!str) return '';
+            return str.toString()
+                .replace(/İ/g, 'i')
+                .replace(/I/g, 'ı')
+                .replace(/ı/g, 'i')
+                .replace(/İ/g, 'i')
+                .replace(/ğ/g, 'g').replace(/Ğ/g, 'g')
+                .replace(/ü/g, 'u').replace(/Ü/g, 'u')
+                .replace(/ş/g, 's').replace(/Ş/g, 's')
+                .replace(/ö/g, 'o').replace(/Ö/g, 'o')
+                .replace(/ç/g, 'c').replace(/Ç/g, 'c')
+                .replace(/[\.\,\-\_\:\;\(\)\"\'\”\“\/]/g, ' ')
+                .toLowerCase()
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        // Arama Çubuğu Canlı Mantığı & URL Yönlendirmesi
+        function handleSearchSubmit(e) {
+            if (e) e.preventDefault();
+            const input = document.getElementById('site-search-input');
+            const val = input ? input.value.trim() : '';
+            searchPosts(val);
+        }
+
+        function searchPosts(query) {
+            const rawQ = (query || '').trim();
+            const normQ = trNormalize(rawQ);
+            const queryWords = normQ.split(' ').filter(Boolean);
+            const posts = document.querySelectorAll('#main-blog-grid .post-card');
+            const noResults = document.getElementById('no-results-msg');
+            const sliderEl = document.getElementById('featured-slider');
+            const titleEl = document.getElementById('grid-header-title');
+            const resetBtn = document.getElementById('reset-filter-btn');
+            let matchCount = 0;
+
+            posts.forEach(post => {
+                if (queryWords.length === 0) {
+                    post.style.display = 'flex';
+                    matchCount++;
+                    return;
+                }
+                const cardText = trNormalize(post.textContent + ' ' + (post.getAttribute('data-categories') || ''));
+                const isMatch = queryWords.every(word => cardText.includes(word));
+                if (isMatch) {
+                    post.style.display = 'flex';
+                    matchCount++;
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+
+            if (rawQ.length > 0) {
+                if (sliderEl) sliderEl.style.display = 'none';
+                if (resetBtn) resetBtn.style.display = 'inline-block';
+                if (titleEl) titleEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Arama Sonuçları: "${rawQ}" (${matchCount} Gönderi)`;
+                if (matchCount === 0 && noResults) {
+                    noResults.style.display = 'block';
+                } else if (noResults) {
+                    noResults.style.display = 'none';
+                }
+            } else {
+                if (sliderEl) sliderEl.style.display = 'block';
+                if (resetBtn) resetBtn.style.display = 'none';
+                if (titleEl) titleEl.innerHTML = '';
+                if (noResults) noResults.style.display = 'none';
+            }
+        }
+
+        // URL'den ve sessionStorage'dan Arama Parametresi Kontrolü (?q=kelime)
+        window.addEventListener('DOMContentLoaded', () => {
+            let q = '';
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                q = urlParams.get('q') || '';
+            } catch (e) {}
+            if (!q) {
+                try {
+                    q = sessionStorage.getItem('site_search_query') || localStorage.getItem('site_search_query') || '';
+                    if (q) {
+                        sessionStorage.removeItem('site_search_query');
+                        localStorage.removeItem('site_search_query');
+                    }
+                } catch (e) {}
+            }
+            if (q) {
+                const input = document.getElementById('site-search-input');
+                if (input) {
+                    input.value = q;
+                    searchPosts(q);
+                }
+            }
+        });
+    </script>
+<script src="js/menu.js" defer></script>
+
+<!-- Fotoğraf Boyutlandırıcı Modal -->
+<div class="app-modal-overlay" id="foto-modal" hidden>
+    <div class="app-modal-box" role="dialog" aria-modal="true" aria-label="e-Okul Fotoğraf Boyutlandırıcısı">
+        <div class="app-modal-head">
+            <span>e-Okul Fotoğraf Boyutlandırıcısı</span>
+            <button type="button" class="app-modal-close" id="foto-modal-close">Kapat</button>
+        </div>
+        <iframe class="app-modal-frame" id="foto-modal-frame" src="uygulamalar/fotograf-boyutlandirici.html?embed=1" title="e-Okul Fotoğraf Boyutlandırıcısı"></iframe>
+    </div>
+</div>
+<script>
+(function () {
+    var modal = document.getElementById('foto-modal');
+    var openBtn = document.getElementById('foto-app-open');
+    var closeBtn = document.getElementById('foto-modal-close');
+    var frame = document.getElementById('foto-modal-frame');
+
+    function openModal(e) {
+        if (!modal) return;
+        e.preventDefault();
+        frame.src = 'uygulamalar/fotograf-boyutlandirici.html?embed=1';
+        modal.hidden = false;
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        if (!modal) return;
+        modal.hidden = true;
+        document.body.style.overflow = '';
+        frame.src = 'about:blank';
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (modal) modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal && !modal.hidden) closeModal();
+    });
+})();
+</script></body>
+</html>

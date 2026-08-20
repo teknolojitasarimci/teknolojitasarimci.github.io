@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelime Avı Zeka Oyunu - teknolojitasarimci</title>
+    <meta name="description" content="44 farklı kategoride yüzlerce kelime içeren etkileşimli Kelime Avı zeka oyunu. 11x11 ve 15x15 ızgaralar, Türkçe karakter desteği ve ses efektleri.">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src="../../js/theme.js"></script>
+    <style>
+    .game-container {
+        max-width: 1200px;
+        margin: 26px auto 40px !important;
+        padding: 0 16px;
+    }
+    .game-top-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 24px 28px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.08);
+    }
+    .game-header-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .game-title-group h1 {
+        margin: 0 0 6px;
+        font-size: clamp(22px, 3.5vw, 32px);
+        color: #0f172a;
+        letter-spacing: -0.02em;
+    }
+    .game-title-group p {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+    .game-selector-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .game-selector-wrap label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #475569;
+    }
+    .puzzle-select {
+        padding: 10px 16px;
+        border-radius: 25px !important;
+        border: 1.5px solid #bae6fd;
+        background: #f0f9ff;
+        color: #0369a1;
+        font-weight: 700;
+        font-size: 13.5px;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        max-width: 320px;
+    }
+    .puzzle-select:hover, .puzzle-select:focus {
+        border-color: #0284c7;
+        background: #e0f2fe;
+    }
+    .game-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.8fr);
+        gap: 24px;
+        align-items: start;
+    }
+    .panel {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.08);
+    }
+    .topline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+    .badges {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .badge {
+        padding: 6px 12px;
+        border-radius: 25px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+    .badge.theme {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+    }
+    .badge.type {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+    }
+    .timer {
+        padding: 6px 14px;
+        border-radius: 25px;
+        font-size: 13px;
+        font-weight: 800;
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .grid-shell {
+        position: relative;
+        width: min(100%, 650px);
+        margin: 0 auto;
+        padding: 10px;
+        border-radius: 18px;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+    .grid {
+        display: grid;
+        gap: 3px;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+    .cell {
+        aspect-ratio: 1;
+        min-width: 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #1e293b;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        font-size: clamp(10px, 2vw, 18px);
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s, transform 0.12s, box-shadow 0.12s;
+        touch-action: none;
+    }
+    .cell:hover {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
+    .cell.selected {
+        background: #0284c7 !important;
+        color: #ffffff !important;
+        transform: scale(0.94);
+        box-shadow: 0 0 0 2px #7dd3e8;
+    }
+    .cell.found {
+        background: #10b981 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 2px #a7f3d0;
+    }
+    .cell.solution {
+        background: #f59e0b !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 2px #fde68a;
+    }
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .game-btn {
+        border: 0;
+        border-radius: 25px !important;
+        padding: 9px 18px;
+        font-weight: 700;
+        font-size: 13.5px;
+        cursor: pointer;
+        transition: transform 0.12s, filter 0.12s, background 0.12s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        text-decoration: none;
+        width: fit-content !important;
+    }
+    .game-btn:active {
+        transform: scale(0.97);
+    }
+    .game-btn.primary {
+        background: #0284c7;
+        color: #ffffff !important;
+    }
+    .game-btn.soft {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+    }
+    .game-btn.soft:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+    .game-btn.answer {
+        background: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #fed7aa;
+    }
+    .game-btn.answer:hover {
+        background: #ffedd5;
+    }
+    .side h2 {
+        margin: 0 0 14px;
+        font-size: 16px;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .counter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+    .word-list {
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 0 16px !important;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .word-list li {
+        padding: 9px 12px 9px 30px !important;
+        position: relative !important;
+        border-radius: 10px !important;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        line-height: 1.2 !important;
+        margin-bottom: 0 !important;
+        transition: all 0.2s ease;
+    }
+    .word-list li::before {
+        content: '►' !important;
+        position: absolute !important;
+        left: 11px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        font-size: 10px !important;
+        line-height: 1 !important;
+        color: #0284c7 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .word-list li.found {
+        background: #e0f2fe;
+        border-color: #7dd3e8;
+        color: #0369a1;
+    }
+    .word-list li.found::before {
+        color: #10b981 !important;
+    }
+    .word-list li .badge-state {
+        font-size: 11px;
+        font-weight: 800;
+        color: #10b981;
+    }
+    .side-bottom {
+        margin-top: 18px;
+        border-top: 1px solid #eef2f7;
+        padding-top: 16px;
+    }
+    .status-msg {
+        min-height: 22px;
+        margin-top: 12px;
+        text-align: center;
+        color: #0284c7;
+        font-size: 12.5px;
+        font-weight: 800;
+        line-height: 1.4;
+    }
+
+    /* Celebration Modal */
+    .celebration-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.85);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        padding: 16px;
+    }
+    .celebration-overlay.active {
+        display: flex;
+    }
+    .celebration-box {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 36px 28px;
+        text-align: center;
+        max-width: 440px;
+        width: 100%;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+    }
+    .celebration-box h2 {
+        font-size: 24px;
+        color: #0f172a;
+        margin: 0 0 10px;
+    }
+    .celebration-box p {
+        color: #475569;
+        margin: 0 0 20px;
+        font-size: 14.5px;
+        line-height: 1.5;
+    }
+
+    /* Dark Mode */
+    body.dark .game-top-card,
+    body.dark .panel {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: none;
+    }
+    body.dark .game-title-group h1,
+    body.dark .side h2 {
+        color: #e2e8f0;
+    }
+    body.dark .game-title-group p,
+    body.dark .game-selector-wrap label {
+        color: #cbd5e1;
+    }
+    body.dark .puzzle-select {
+        background: #0f172a;
+        color: #38bdf8;
+        border-color: #334155;
+    }
+    body.dark .badge.theme {
+        background: #0f172a;
+        color: #38bdf8;
+        border-color: #334155;
+    }
+    body.dark .badge.type,
+    body.dark .timer {
+        background: #0f172a;
+        color: #cbd5e1;
+        border-color: #334155;
+    }
+    body.dark .counter {
+        background: #0f172a !important;
+        color: #38bdf8 !important;
+        border: 1px solid #334155 !important;
+    }
+    body.dark .grid-shell {
+        background: #0f172a;
+        border-color: #334155;
+    }
+    body.dark .cell {
+        background: #1e293b;
+        color: #e2e8f0;
+        border-color: #334155;
+    }
+    body.dark .cell:hover {
+        background: #334155;
+        color: #38bdf8;
+    }
+    body.dark .cell.selected {
+        background: #0284c7 !important;
+        color: #ffffff !important;
+    }
+    body.dark .cell.found {
+        background: #059669 !important;
+        color: #ffffff !important;
+    }
+    body.dark .cell.solution {
+        background: #d97706 !important;
+        color: #ffffff !important;
+    }
+    body.dark .word-list li {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: #cbd5e1 !important;
+    }
+    body.dark .word-list li::before {
+        color: #38bdf8 !important;
+    }
+    body.dark .word-list li.found {
+        background: #14532d !important;
+        border-color: #166534 !important;
+        color: #86efac !important;
+    }
+    body.dark .word-list li.found::before {
+        color: #86efac !important;
+    }
+    body.dark .game-btn.soft {
+        background: #0f172a;
+        color: #cbd5e1;
+        border-color: #334155;
+    }
+    body.dark .game-btn.soft:hover {
+        background: #334155;
+        color: #38bdf8;
+    }
+    body.dark .game-btn.answer {
+        background: #451a03;
+        color: #fbbf24;
+        border-color: #92400e;
+    }
+    body.dark .celebration-box {
+        background: #1e293b;
+        border: 1px solid #334155;
+    }
+    body.dark .celebration-box h2 {
+        color: #e2e8f0;
+    }
+    body.dark .celebration-box p {
+        color: #cbd5e1;
+    }
+    body.dark .side-bottom {
+        border-top-color: #334155;
+    }
+    body.dark .status-msg {
+        color: #38bdf8;
+    }
+
+    @media (max-width: 860px) {
+        .game-layout {
+            grid-template-columns: 1fr;
+        }
+        .puzzle-select {
+            width: 100%;
+            max-width: none;
+        }
+    }
+    @media (max-width: 480px) {
+        .panel {
+            padding: 16px;
+        }
+        .grid-shell {
+            padding: 6px;
+        }
+        .grid {
+            gap: 2px;
+        }
+        .word-list {
+            grid-template-columns: 1fr;
+        }
+        .actions .game-btn {
+            width: 100% !important;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <main class="game-container">
+        <a href="../../sayfalar/preview.html#oyunlar" class="back-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Oyunlar Menüsüne Dön
+        </a>
+
+        <div class="game-top-card">
+            <div class="game-header-flex">
+                <div class="game-title-group">
+                    <h1>Kelime Avı Zeka Oyunu</h1>
+                    <p>Gizli kelimeleri yatay, dikey veya çapraz yönde sürükleyerek bulun.</p>
+                </div>
+                <div class="game-selector-wrap">
+                    <label for="puzzle-select">Bulmaca Seç:</label>
+                    <select id="puzzle-select" class="puzzle-select" aria-label="Bulmaca seçimi"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-layout">
+            <!-- Sol: Oyun Izgarası -->
+            <section class="panel game-panel">
+                <div class="topline">
+                    <div class="badges">
+                        <span id="theme-badge" class="badge theme">Tema</span>
+                        <span id="type-badge" class="badge type">Boyut</span>
+                    </div>
+                    <span id="timer" class="timer">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span id="timer-text">Süre: 00:00</span>
+                    </span>
+                </div>
+
+                <div class="grid-shell">
+                    <div id="letter-grid" class="grid" aria-label="Kelime avı harf ızgarası"></div>
+                </div>
+
+                <div class="actions">
+                    <button id="prev-btn" class="game-btn soft">◄ Önceki</button>
+                    <button id="clear-btn" class="game-btn soft">Seçimi Temizle</button>
+                    <button id="answer-btn" class="game-btn answer">Cevabı Göster</button>
+                    <button id="next-btn" class="game-btn soft">Sonraki <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+                </div>
+            </section>
+
+            <!-- Sağ: Aranan Kelimeler Listesi -->
+            <aside class="panel side">
+                <div>
+                    <h2>
+                        <span>Aranan Kelimeler</span>
+                        <span id="progress-counter" class="counter">0 / 0</span>
+                    </h2>
+                    <ul id="word-list" class="word-list"></ul>
+                </div>
+
+                <div class="side-bottom">
+                    <button id="check-btn" class="game-btn primary" style="display:flex; width:fit-content !important; margin: 0 auto !important;">Kontrol Et</button>
+                    <div id="status-message" class="status-msg" role="status" aria-live="polite"></div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Bilgilendirme Kartı -->
+        <div class="game-top-card" style="margin-top: 24px;">
+            <h2 style="font-size: 18px; margin: 0 0 12px; color: #0f172a;">Kelime Avı Nasıl Oynanır?</h2>
+            <ul style="color: #475569; font-size: 14px; line-height: 1.7;">
+                <li>Izgaradaki ilk harfe tıklayıp parmağınızı veya farenizi kelimenin bittiği yöne doğru (yatay, dikey veya çapraz) sürükleyin.</li>
+                <li>Doğru kelimeyi bulduğunuzda harfler yeşil renge bürünür ve sağdaki listede kelime tamamlandı olarak işaretlenir.</li>
+                <li>Takıldığınız noktalarda <strong>"Cevabı Göster"</strong> butonuyla çözümleri inceleyebilirsiniz.</li>
+                <li>Toplam 44 farklı tema ve seviyede (11×11 ve 15×15 ızgara) kelime dağarcığınızı ve görsel algınızı geliştirin.</li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Kutlama Modalı -->
+    <div id="celebration-overlay" class="celebration-overlay">
+        <div class="celebration-box">
+            <h2>Tebrikler!</h2>
+            <p id="celebration-text">Tüm kelimeleri başarıyla buldunuz.</p>
+            <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                <button id="modal-close-btn" class="game-btn soft">Tekrar İncele</button>
+                <button id="modal-next-btn" class="game-btn primary">Sonraki Bulmacaya Geç <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/menu.js"></script>
+    <script src="../../js/views.js"></script>
+    <script src="../../js/protection.js"></script>
+    <script>
+    const PUZZLES = [{"id":1,"type":"small","theme":"Çiçekler","size":11,"words":["PAPATYA","LALE","GÜL","SÜMBÜL","NERGİS","ORKİDE"],"grid":[["T","Ç","O","S","T","Z","O","C","Ö","S","K"],["B","A","R","C","F","G","L","N","İ","P","L"],["P","A","K","O","F","Ü","Ş","G","A","Ü","R"],["Ş","O","İ","K","G","G","R","P","B","L","Ö"],["Ğ","Ü","D","Y","A","E","A","M","U","Ü","E"],["Ş","K","E","I","N","T","Ü","Ğ","D","F","U"],["I","Ç","C","J","Y","S","Ç","L","İ","Y","İ"],["P","Ğ","Ü","A","B","T","A","L","O","Ç","J"],["C","O","H","V","R","L","P","Z","Y","İ","Ö"],["F","Ş","C","B","E","S","G","U","H","C","Y"],["G","Y","Ç","J","Ğ","L","R","V","İ","E","İ"]],"paths":{"PAPATYA":[[1,9],[2,8],[3,7],[4,6],[5,5],[6,4],[7,3]],"ORKİDE":[[0,2],[1,2],[2,2],[3,2],[4,2],[5,2]],"NERGİS":[[5,4],[4,5],[3,6],[2,7],[1,8],[0,9]],"SÜMBÜL":[[6,5],[5,6],[4,7],[3,8],[2,9],[1,10]],"LALE":[[6,7],[7,6],[8,5],[9,4]],"GÜL":[[3,4],[2,5],[1,6]]}},{"id":2,"type":"small","theme":"Evcil Hayvanlar","size":11,"words":["KEDİ","KÖPEK","TAVŞAN","KAPLUMBAĞA","BALIK","HAMSTER"],"grid":[["R","E","O","T","G","E","L","J","Ğ","R","Ş"],["O","G","B","A","L","I","K","S","I","V","U"],["U","B","G","V","B","Ü","I","J","Ğ","C","F"],["Ö","A","Ğ","A","B","M","U","L","P","A","K"],["Z","Ş","I","H","A","M","S","T","E","R","F"],["R","N","M","J","Z","R","K","Ö","P","E","K"],["L","D","A","Ğ","D","G","T","O","O","Ğ","T"],["Ö","K","Z","Ş","Ö","J","İ","G","D","N","M"],["C","U","B","Y","V","Ç","D","R","E","Ü","S"],["K","P","C","J","J","A","K","E","D","İ","P"],["L","N","Ğ","O","Y","A","T","S","T","Ç","S"]],"paths":{"KAPLUMBAĞA":[[3,10],[3,9],[3,8],[3,7],[3,6],[3,5],[3,4],[3,3],[3,2],[3,1]],"HAMSTER":[[4,3],[4,4],[4,5],[4,6],[4,7],[4,8],[4,9]],"TAVŞAN":[[10,6],[9,5],[8,4],[7,3],[6,2],[5,1]],"KÖPEK":[[5,6],[5,7],[5,8],[5,9],[5,10]],"BALIK":[[1,2],[1,3],[1,4],[1,5],[1,6]],"KEDİ":[[9,6],[9,7],[9,8],[9,9]]}},{"id":3,"type":"small","theme":"Vahşi Hayvanlar","size":11,"words":["ASLAN","KAPLAN","FİL","ZÜRAFA","KURT","AYI"],"grid":[["K","E","L","A","T","Z","T","Ğ","N","U","E"],["N","Ç","Y","R","A","Y","I","H","V","R","N"],["P","F","A","D","İ","U","E","O","U","N","A"],["P","I","F","M","A","Ç","İ","Z","L","İ","F"],["V","Ü","A","H","G","B","K","G","Z","Ö","C"],["K","C","R","T","M","U","V","C","N","U","O"],["A","U","Ü","D","R","D","S","A","M","O","E"],["P","Ğ","Z","T","N","Y","L","P","K","F","O"],["L","U","T","Ş","F","S","Ş","H","J","S","R"],["A","İ","L","Z","A","N","L","Ç","G","G","C"],["N","I","A","Ö","O","G","Ö","G","A","C","Ş"]],"paths":{"ZÜRAFA":[[7,2],[6,2],[5,2],[4,2],[3,2],[2,2]],"KAPLAN":[[5,0],[6,0],[7,0],[8,0],[9,0],[10,0]],"ASLAN":[[9,4],[8,5],[7,6],[6,7],[5,8]],"KURT":[[4,6],[5,5],[6,4],[7,3]],"AYI":[[1,4],[1,5],[1,6]],"FİL":[[3,10],[3,9],[3,8]]}},{"id":4,"type":"small","theme":"Deniz Canlıları","size":11,"words":["BALİNA","YUNUS","AHTAPOT","KÖPEKBALIĞI","YENGEÇ","DENİZATI"],"grid":[["C","N","G","Ğ","S","I","M","B","D","F","O"],["Y","D","T","Z","Ö","Ğ","Ö","A","E","M","G"],["E","Ü","M","Ü","K","I","F","L","N","Ç","Ç"],["N","S","A","K","İ","L","K","İ","İ","K","L"],["G","Y","H","T","B","A","S","N","Z","R","R"],["E","Y","T","Ç","B","B","J","A","A","T","I"],["Ç","U","A","Ü","Y","K","Ç","G","T","F","F"],["O","N","P","L","D","E","K","E","I","Ğ","L"],["G","U","O","Y","C","P","L","Ü","Y","Y","O"],["Ç","S","T","B","R","Ö","O","V","A","C","U"],["Y","G","E","K","M","K","M","F","Y","J","Z"]],"paths":{"KÖPEKBALIĞI":[[10,5],[9,5],[8,5],[7,5],[6,5],[5,5],[4,5],[3,5],[2,5],[1,5],[0,5]],"DENİZATI":[[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[6,8],[7,8]],"AHTAPOT":[[3,2],[4,2],[5,2],[6,2],[7,2],[8,2],[9,2]],"YENGEÇ":[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0]],"BALİNA":[[0,7],[1,7],[2,7],[3,7],[4,7],[5,7]],"YUNUS":[[5,1],[6,1],[7,1],[8,1],[9,1]]}},{"id":5,"type":"small","theme":"Orman","size":11,"words":["AĞAÇ","YAPRAK","DAL","KOZALAK","MANTAR","ÇAM"],"grid":[["A","Ü","Ü","L","H","K","Ş","T","Ü","O","K"],["Ğ","S","Ş","M","D","F","H","F","B","Ö","O"],["A","T","O","B","T","I","B","M","B","Ö","Z"],["Ç","M","N","K","Y","N","Ç","A","E","L","A"],["B","N","C","A","Y","E","A","N","C","A","L"],["P","C","S","R","Y","G","M","T","J","D","A"],["Ç","Z","Ö","P","G","Ö","P","A","B","P","K"],["C","K","S","A","Ö","Ö","N","R","I","Ğ","F"],["S","Ş","I","Y","G","Ğ","J","D","S","R","H"],["L","I","U","C","A","L","P","Ö","Ç","C","O"],["F","N","Ğ","D","İ","Z","C","Z","G","İ","H"]],"paths":{"KOZALAK":[[0,10],[1,10],[2,10],[3,10],[4,10],[5,10],[6,10]],"MANTAR":[[2,7],[3,7],[4,7],[5,7],[6,7],[7,7]],"YAPRAK":[[8,3],[7,3],[6,3],[5,3],[4,3],[3,3]],"AĞAÇ":[[0,0],[1,0],[2,0],[3,0]],"DAL":[[5,9],[4,9],[3,9]],"ÇAM":[[3,6],[4,6],[5,6]]}},{"id":6,"type":"small","theme":"Şehirlerimiz","size":11,"words":["ANKARA","İSTANBUL","İZMİR","BURSA","ANTALYA","KONYA"],"grid":[["Ü","R","N","A","A","S","V","O","H","S","Ç"],["Z","D","Ğ","S","Ç","İ","Z","Ç","T","O","D"],["Ğ","R","H","R","P","S","F","Ş","I","F","S"],["A","İ","R","U","Y","T","Ğ","N","M","Ğ","Z"],["Y","M","Y","B","B","A","C","A","R","K","V"],["L","Z","Ğ","B","A","N","I","R","U","D","R"],["A","İ","Ğ","E","A","B","T","A","L","O","Ş"],["T","K","O","A","Y","U","Ç","K","C","Z","Ş"],["N","Z","D","O","N","L","B","N","V","İ","Ö"],["A","O","D","K","O","D","B","A","H","İ","Z"],["Ü","Y","B","Z","K","İ","F","S","G","S","Ç"]],"paths":{"İSTANBUL":[[1,5],[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[8,5]],"ANTALYA":[[9,0],[8,0],[7,0],[6,0],[5,0],[4,0],[3,0]],"ANKARA":[[9,7],[8,7],[7,7],[6,7],[5,7],[4,7]],"KONYA":[[10,4],[9,4],[8,4],[7,4],[6,4]],"BURSA":[[4,3],[3,3],[2,3],[1,3],[0,3]],"İZMİR":[[6,1],[5,1],[4,1],[3,1],[2,1]]}},{"id":7,"type":"small","theme":"Meyveler","size":11,"words":["ELMA","ARMUT","MUZ","ÇİLEK","KİRAZ","ÜZÜM"],"grid":[["Y","E","Ü","Ü","E","Z","K","Z","A","E","T"],["I","Ü","K","Ü","S","Y","U","T","Ü","G","E"],["Ğ","E","Ü","Ş","Ç","M","J","Y","B","Y","L"],["M","G","F","V","L","İ","H","V","Ü","Y","M"],["G","G","A","S","K","F","J","Ü","I","Ğ","A"],["Y","C","U","İ","Ğ","T","Z","İ","R","N","J"],["S","V","R","O","U","Ü","I","A","K","Ç","Z"],["Ğ","A","E","M","M","Ö","Ğ","B","E","Ç","P"],["Z","K","R","İ","T","Ü","I","K","L","P","N"],["Ç","A","J","Z","Ö","F","Ğ","B","İ","Ş","K"],["A","N","Ü","O","S","T","T","T","Ç","S","F"]],"paths":{"KİRAZ":[[4,4],[5,3],[6,2],[7,1],[8,0]],"ÇİLEK":[[10,8],[9,8],[8,8],[7,8],[6,8]],"ARMUT":[[9,1],[8,2],[7,3],[6,4],[5,5]],"ÜZÜM":[[4,7],[5,6],[6,5],[7,4]],"ELMA":[[1,10],[2,10],[3,10],[4,10]],"MUZ":[[2,5],[1,6],[0,7]]}},{"id":8,"type":"small","theme":"Sebzeler","size":11,"words":["PATATES","DOMATES","BİBER","SALATALIK","HAVUÇ","SOĞAN"],"grid":[["I","S","S","Y","S","E","T","A","T","A","P"],["Ç","Ç","E","T","Z","H","N","H","S","K","I"],["U","J","T","Ş","H","O","D","F","K","S","J"],["V","S","A","T","Z","E","P","Ö","H","J","O"],["A","V","M","A","H","H","F","K","Ü","Ö","P"],["H","R","O","I","L","L","L","S","F","N","M"],["Ü","Z","D","Ü","T","E","S","C","H","N","S"],["S","A","L","A","T","A","L","I","K","R","P"],["I","C","V","U","G","N","A","Ğ","O","S","S"],["H","G","Ü","F","D","A","B","G","M","P","Y"],["R","E","B","İ","B","U","C","L","K","Z","R"]],"paths":{"SALATALIK":[[7,0],[7,1],[7,2],[7,3],[7,4],[7,5],[7,6],[7,7],[7,8]],"DOMATES":[[6,2],[5,2],[4,2],[3,2],[2,2],[1,2],[0,2]],"PATATES":[[0,10],[0,9],[0,8],[0,7],[0,6],[0,5],[0,4]],"SOĞAN":[[8,9],[8,8],[8,7],[8,6],[8,5]],"HAVUÇ":[[5,0],[4,0],[3,0],[2,0],[1,0]],"BİBER":[[10,4],[10,3],[10,2],[10,1],[10,0]]}},{"id":9,"type":"small","theme":"Renkler","size":11,"words":["KIRMIZI","MAVİ","YEŞİL","SARI","TURUNCU","MOR"],"grid":[["D","R","Ş","A","Z","U","Y","U","Z","Ç","U"],["K","G","E","Ü","Ş","N","L","B","O","G","Y"],["Ç","L","D","Ü","L","S","N","R","O","M","O"],["P","I","T","U","R","U","N","C","U","U","Z"],["L","P","V","T","Z","M","A","V","İ","N","K"],["V","O","L","Z","E","T","Y","M","L","Ğ","U"],["G","V","R","Ğ","U","U","N","M","R","G","Ğ"],["L","C","L","İ","Ş","E","Y","Ş","H","G","Ğ"],["I","I","Z","O","C","D","D","G","J","Ş","D"],["Ş","F","C","S","A","R","I","K","K","I","O"],["L","K","I","R","M","I","Z","I","K","B","F"]],"paths":{"KIRMIZI":[[10,1],[10,2],[10,3],[10,4],[10,5],[10,6],[10,7]],"TURUNCU":[[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,8]],"YEŞİL":[[7,6],[7,5],[7,4],[7,3],[7,2]],"SARI":[[9,3],[9,4],[9,5],[9,6]],"MAVİ":[[4,5],[4,6],[4,7],[4,8]],"MOR":[[2,9],[2,8],[2,7]]}},{"id":10,"type":"small","theme":"Okul Eşyaları","size":11,"words":["KALEM","SİLGİ","DEFTER","ÇANTA","CETVEL","MAKAS"],"grid":[["J","A","T","N","A","Ç","M","A","İ","H","U"],["J","Y","Z","V","K","O","T","T","O","Ü","P"],["Z","G","M","G","Ğ","K","M","A","J","I","S"],["S","Ü","J","T","E","V","L","D","P","O","A"],["J","R","E","T","F","E","D","Ö","Ö","S","A"],["C","R","L","E","V","T","E","C","K","D","Y"],["L","E","M","B","İ","Ğ","J","I","F","L","I"],["I","U","E","Z","J","G","Ğ","U","V","K","Ğ"],["V","C","L","M","A","T","L","O","B","İ","G"],["R","C","A","U","R","B","U","İ","A","G","F"],["V","A","K","P","M","A","K","A","S","D","G"]],"paths":{"CETVEL":[[5,7],[5,6],[5,5],[5,4],[5,3],[5,2]],"DEFTER":[[4,6],[4,5],[4,4],[4,3],[4,2],[4,1]],"ÇANTA":[[0,5],[0,4],[0,3],[0,2],[0,1]],"KALEM":[[10,2],[9,2],[8,2],[7,2],[6,2]],"SİLGİ":[[10,8],[9,7],[8,6],[7,5],[6,4]],"MAKAS":[[10,4],[10,5],[10,6],[10,7],[10,8]]}},{"id":11,"type":"small","theme":"Meslekler","size":11,"words":["DOKTOR","ÖĞRETMEN","MİMAR","AVUKAT","PİLOT","AŞÇI"],"grid":[["Ş","Ğ","U","T","İ","E","P","P","T","T","Ş"],["Ç","Ö","U","V","A","E","H","Ç","Ö","O","A"],["H","Ö","Ğ","S","D","K","J","J","Ş","L","F"],["C","Ö","Ş","R","V","O","U","R","G","İ","Ç"],["Ş","U","H","Y","E","I","K","V","S","P","P"],["Ü","Ç","Ü","Ö","Ç","T","Ü","T","A","B","İ"],["O","K","S","Ş","İ","C","M","N","O","R","I"],["A","Y","A","K","V","M","Ç","E","K","R","İ"],["R","Z","M","İ","M","A","R","V","N","L","Ş"],["D","K","E","T","N","R","Ğ","P","Ü","O","U"],["M","L","K","V","T","Ö","Ğ","I","Y","G","V"]],"paths":{"ÖĞRETMEN":[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]],"AVUKAT":[[5,8],[4,7],[3,6],[2,5],[1,4],[0,3]],"DOKTOR":[[2,4],[3,5],[4,6],[5,7],[6,8],[7,9]],"MİMAR":[[8,2],[8,3],[8,4],[8,5],[8,6]],"PİLOT":[[4,9],[3,9],[2,9],[1,9],[0,9]],"AŞÇI":[[7,2],[6,3],[5,4],[4,5]]}},{"id":12,"type":"small","theme":"Taşıtlar","size":11,"words":["ARABA","OTOBÜS","TREN","UÇAK","VAPUR","BİSİKLET"],"grid":[["Ö","P","S","J","I","A","M","Y","I","E","M"],["F","İ","Ü","O","T","O","B","Ü","S","Ğ","I"],["Ğ","Z","P","Ş","Z","Ğ","O","A","N","F","C"],["G","T","K","M","O","U","G","Ş","M","R","Ş"],["M","U","L","Ü","A","C","A","H","G","J","Ş"],["G","Ç","H","S","Ö","R","İ","M","O","N","İ"],["K","A","T","O","A","I","İ","Ş","L","Ğ","H"],["Ğ","K","G","B","Ç","T","F","I","Ç","T","O"],["U","Ş","A","E","F","R","U","P","A","V","F"],["N","E","R","T","T","M","Ğ","T","Ö","U","N"],["P","H","Ç","T","E","L","K","İ","S","İ","B"]],"paths":{"BİSİKLET":[[10,10],[10,9],[10,8],[10,7],[10,6],[10,5],[10,4],[10,3]],"OTOBÜS":[[1,3],[1,4],[1,5],[1,6],[1,7],[1,8]],"ARABA":[[4,6],[5,5],[6,4],[7,3],[8,2]],"VAPUR":[[8,9],[8,8],[8,7],[8,6],[8,5]],"UÇAK":[[4,1],[5,1],[6,1],[7,1]],"TREN":[[9,3],[9,2],[9,1],[9,0]]}},{"id":13,"type":"small","theme":"Spor Dalları","size":11,"words":["FUTBOL","BASKETBOL","VOLEYBOL","TENİS","YÜZME","GÜREŞ"],"grid":[["A","Ş","O","D","Ğ","B","B","O","H","Ş","D"],["E","S","İ","N","E","T","R","Y","U","M","Ç"],["M","B","A","S","K","E","T","B","O","L","Y"],["Z","A","Ö","H","M","M","L","I","E","B","Ğ"],["Ü","Y","M","Ç","V","F","U","T","B","O","L"],["Y","C","J","M","C","Ö","R","S","B","D","D"],["Ü","L","O","B","Y","E","L","O","V","Ö","H"],["C","G","Ç","O","U","K","Ş","E","R","Ü","G"],["P","P","Ü","P","G","U","N","J","L","L","H"],["Y","Ö","K","H","Ö","P","B","P","T","Ç","U"],["F","R","F","Ğ","S","C","E","G","E","O","C"]],"paths":{"BASKETBOL":[[2,1],[2,2],[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9]],"VOLEYBOL":[[6,8],[6,7],[6,6],[6,5],[6,4],[6,3],[6,2],[6,1]],"FUTBOL":[[4,5],[4,6],[4,7],[4,8],[4,9],[4,10]],"GÜREŞ":[[7,10],[7,9],[7,8],[7,7],[7,6]],"TENİS":[[1,5],[1,4],[1,3],[1,2],[1,1]],"YÜZME":[[5,0],[4,0],[3,0],[2,0],[1,0]]}},{"id":14,"type":"small","theme":"Müzik Aletleri","size":11,"words":["GİTAR","PİYANO","KEMAN","DAVUL","FLÜT","BAĞLAMA"],"grid":[["P","İ","Y","A","N","O","H","B","G","H","Ş"],["H","Ş","Y","L","C","S","G","T","Ğ","Ü","Ü"],["R","Ö","S","Ü","F","K","B","Ç","Ü","O","G"],["R","D","Ğ","V","D","C","A","B","E","L","Ü"],["H","P","T","V","Ö","H","Ğ","L","Ç","L","F"],["Ş","L","U","V","A","D","L","H","Ş","J","Ğ"],["N","O","M","L","C","P","A","B","R","Z","K"],["T","I","P","Ğ","A","C","M","G","A","S","V"],["K","E","M","A","N","Y","A","Ö","T","Ö","A"],["U","S","V","Ğ","Ö","B","U","U","İ","E","M"],["N","R","L","Ğ","E","Ö","K","R","G","V","M"]],"paths":{"BAĞLAMA":[[2,6],[3,6],[4,6],[5,6],[6,6],[7,6],[8,6]],"PİYANO":[[0,0],[0,1],[0,2],[0,3],[0,4],[0,5]],"KEMAN":[[8,0],[8,1],[8,2],[8,3],[8,4]],"DAVUL":[[5,5],[5,4],[5,3],[5,2],[5,1]],"GİTAR":[[10,8],[9,8],[8,8],[7,8],[6,8]],"FLÜT":[[4,10],[3,9],[2,8],[1,7]]}},{"id":15,"type":"small","theme":"Teknoloji","size":11,"words":["BİLGİSAYAR","TELEFON","TABLET","YAZILIM","INTERNET","ROBOT"],"grid":[["S","Ç","Y","E","I","K","Ş","B","M","M","H"],["S","J","V","U","N","O","B","İ","L","I","T"],["C","I","Ğ","I","O","Ç","U","L","J","L","E"],["Y","T","N","V","F","A","S","G","Y","I","N"],["O","O","L","K","E","B","T","İ","F","Z","R"],["N","B","İ","P","L","U","A","S","M","A","E"],["R","O","L","U","E","B","B","A","F","Y","T"],["Ğ","R","O","D","T","H","L","Y","L","Z","N"],["Ş","M","Ç","A","R","P","E","A","Ü","G","I"],["Ş","E","H","O","A","O","T","R","K","C","G"],["V","Ç","L","Ç","R","V","D","M","Ş","H","N"]],"paths":{"BİLGİSAYAR":[[0,7],[1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[7,7],[8,7],[9,7]],"INTERNET":[[8,10],[7,10],[6,10],[5,10],[4,10],[3,10],[2,10],[1,10]],"TELEFON":[[7,4],[6,4],[5,4],[4,4],[3,4],[2,4],[1,4]],"YAZILIM":[[6,9],[5,9],[4,9],[3,9],[2,9],[1,9],[0,9]],"TABLET":[[4,6],[5,6],[6,6],[7,6],[8,6],[9,6]],"ROBOT":[[7,1],[6,1],[5,1],[4,1],[3,1]]}},{"id":16,"type":"small","theme":"Uzay ve Gökyüzü","size":11,"words":["GÜNEŞ","AY","YILDIZ","GEZEGEN","GALAKSİ","BULUT"],"grid":[["O","D","İ","T","J","F","P","N","T","Z","D"],["Y","C","S","U","Ğ","U","Ü","Y","K","I","Ü"],["N","Ğ","K","L","Z","V","A","H","T","H","V"],["Ö","Ö","A","U","S","I","M","Y","D","L","O"],["M","İ","L","B","I","G","D","O","U","O","A"],["J","L","A","I","Y","E","F","L","Ş","G","Y"],["Ö","J","G","G","Y","Z","U","K","I","B","I"],["T","M","G","Ü","N","E","Ş","Ş","Ü","Y","J"],["J","S","Ü","V","R","G","D","M","B","D","N"],["Ö","I","Y","Ç","Y","E","Y","L","Ç","N","L"],["A","T","D","K","Y","N","R","D","C","M","Ü"]],"paths":{"GEZEGEN":[[4,5],[5,5],[6,5],[7,5],[8,5],[9,5],[10,5]],"GALAKSİ":[[6,2],[5,2],[4,2],[3,2],[2,2],[1,2],[0,2]],"YILDIZ":[[7,9],[6,8],[5,7],[4,6],[3,5],[2,4]],"GÜNEŞ":[[7,2],[7,3],[7,4],[7,5],[7,6]],"BULUT":[[4,3],[3,3],[2,3],[1,3],[0,3]],"AY":[[4,10],[5,10]]}},{"id":17,"type":"small","theme":"Hava Durumu","size":11,"words":["YAĞMUR","KAR","RÜZGÂR","GÖKKUŞAĞI","ŞİMŞEK","FIRTINA"],"grid":[["Y","S","Y","O","J","K","I","R","Ş","Z","U"],["M","Y","O","B","R","E","P","C","G","R","S"],["R","H","G","T","Ü","Ş","C","K","Ç","U","G"],["U","R","Ş","Y","Z","M","Ç","L","E","Ö","Ş"],["M","F","H","Z","G","İ","A","B","K","I","Ü"],["Ğ","B","I","H","Â","Ş","İ","K","İ","K","D"],["A","K","G","R","R","N","U","K","Ö","S","Ü"],["Y","E","A","E","T","Ş","E","C","P","Y","J"],["P","S","G","R","A","I","M","Ö","D","G","L"],["R","Ğ","L","Ğ","Ğ","S","N","A","Z","Ü","L"],["Z","H","I","S","O","E","C","A","L","İ","Ö"]],"paths":{"GÖKKUŞAĞI":[[2,10],[3,9],[4,8],[5,7],[6,6],[7,5],[8,4],[9,3],[10,2]],"FIRTINA":[[4,1],[5,2],[6,3],[7,4],[8,5],[9,6],[10,7]],"ŞİMŞEK":[[5,5],[4,5],[3,5],[2,5],[1,5],[0,5]],"YAĞMUR":[[7,0],[6,0],[5,0],[4,0],[3,0],[2,0]],"RÜZGÂR":[[1,4],[2,4],[3,4],[4,4],[5,4],[6,4]],"KAR":[[6,1],[7,2],[8,3]]}},{"id":18,"type":"small","theme":"Yemekler","size":11,"words":["MANTI","KÖFTE","PPIDE","KEBAP","BÖREK","ÇORBA"],"grid":[["Y","H","F","J","Y","M","Ç","G","J","Ö","İ"],["Ö","H","Ş","H","A","V","S","J","Ğ","A","Ö"],["Y","S","U","T","B","P","T","M","V","Z","Z"],["P","A","B","E","K","E","I","T","N","A","M"],["H","U","Ü","K","T","G","A","P","Ü","İ","G"],["R","F","P","F","E","Ğ","S","B","U","T","U"],["P","S","Ö","S","V","R","D","R","R","Ç","Z"],["P","K","R","R","B","H","Ö","Ü","L","O","B"],["I","Ö","İ","T","D","C","H","B","I","T","Ç"],["D","K","E","F","D","Ü","O","Z","İ","N","N"],["E","Ğ","V","E","Ğ","V","M","Ü","H","T","Y"]],"paths":{"MANTI":[[3,10],[3,9],[3,8],[3,7],[3,6]],"ÇORBA":[[8,10],[7,9],[6,8],[5,7],[4,6]],"KÖFTE":[[7,1],[6,2],[5,3],[4,4],[3,5]],"BÖREK":[[8,7],[7,6],[6,5],[5,4],[4,3]],"KEBAP":[[3,4],[3,3],[3,2],[3,1],[3,0]],"PPIDE":[[6,0],[7,0],[8,0],[9,0],[10,0]]}},{"id":19,"type":"small","theme":"Tatlılar","size":11,"words":["BAKLAVA","KÜNEFE","SÜTLAÇ","KADAYIF","LOKMA","HELVA"],"grid":[["Y","S","T","S","J","Y","Ü","O","İ","C","Ü"],["J","A","F","I","Y","A","D","A","K","S","A"],["Ğ","V","O","Ç","L","İ","L","S","T","Ü","E"],["S","L","Ğ","Ö","J","V","O","R","İ","T","F"],["Ç","E","S","G","M","A","K","P","Z","L","E"],["O","H","I","P","G","R","M","C","R","A","N"],["V","L","B","A","K","L","A","V","A","Ç","Ü"],["Ş","H","R","K","Ç","D","B","B","H","M","K"],["Ç","Ç","G","Z","O","D","J","L","İ","S","T"],["Ş","O","K","Ö","T","T","D","Z","K","R","Ç"],["V","M","P","K","Ğ","B","Ş","İ","F","L","L"]],"paths":{"BAKLAVA":[[6,2],[6,3],[6,4],[6,5],[6,6],[6,7],[6,8]],"KADAYIF":[[1,8],[1,7],[1,6],[1,5],[1,4],[1,3],[1,2]],"KÜNEFE":[[7,10],[6,10],[5,10],[4,10],[3,10],[2,10]],"SÜTLAÇ":[[1,9],[2,9],[3,9],[4,9],[5,9],[6,9]],"LOKMA":[[2,6],[3,6],[4,6],[5,6],[6,6]],"HELVA":[[5,1],[4,1],[3,1],[2,1],[1,1]]}},{"id":20,"type":"small","theme":"Giyim","size":11,"words":["GÖMLEK","PANTOLON","CEKET","KAZAK","MONT","ETEK"],"grid":[["Z","R","İ","B","J","Ğ","F","Ç","Y","V","L"],["C","S","F","R","R","P","A","B","Ü","T","I"],["G","D","P","A","N","T","O","L","O","N","Ü"],["Ö","K","F","C","K","V","U","O","F","O","Ö"],["F","E","V","Y","K","A","G","I","U","M","D"],["Ü","L","T","Z","P","E","Z","A","Ğ","Y","D"],["D","M","O","E","Ğ","Ü","T","A","E","Ç","S"],["Y","Ö","A","D","K","A","İ","E","K","Ü","Ü"],["G","G","Ö","I","A","E","E","Ğ","B","D","T"],["K","N","Ç","T","C","M","C","L","U","İ","N"],["Ö","Ç","L","N","G","P","B","T","Ü","Y","S"]],"paths":{"PANTOLON":[[2,2],[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9]],"GÖMLEK":[[8,1],[7,1],[6,1],[5,1],[4,1],[3,1]],"KAZAK":[[3,4],[4,5],[5,6],[6,7],[7,8]],"CEKET":[[9,6],[8,5],[7,4],[6,3],[5,2]],"MONT":[[4,9],[3,9],[2,9],[1,9]],"ETEK":[[7,7],[6,6],[5,5],[4,4]]}},{"id":21,"type":"small","theme":"Ev Eşyaları","size":11,"words":["KOLTUK","MASA","SANDALYE","DOLAP","YATAK","HALI"],"grid":[["M","Y","I","L","A","H","J","E","K","S","Ç"],["M","Ş","L","C","Z","C","Y","I","P","M","D"],["C","D","Ğ","P","R","L","Ö","O","Ş","A","I"],["J","P","N","H","A","L","P","N","P","S","K"],["Ç","Ü","Ş","D","Ç","A","Y","K","R","A","R"],["Z","U","N","O","L","T","O","Y","F","K","K"],["L","A","Z","O","G","L","K","I","V","L","A"],["S","J","D","K","T","T","Ç","I","K","I","T"],["S","Ğ","İ","U","D","S","M","C","C","V","A"],["C","C","K","K","Ç","T","T","İ","Ü","D","Y"],["O","B","Ö","O","O","I","S","Ç","K","İ","Y"]],"paths":{"SANDALYE":[[7,0],[6,1],[5,2],[4,3],[3,4],[2,5],[1,6],[0,7]],"KOLTUK":[[4,7],[5,6],[6,5],[7,4],[8,3],[9,2]],"YATAK":[[9,10],[8,10],[7,10],[6,10],[5,10]],"DOLAP":[[7,2],[6,3],[5,4],[4,5],[3,6]],"HALI":[[0,5],[0,4],[0,3],[0,2]],"MASA":[[1,9],[2,9],[3,9],[4,9]]}},{"id":22,"type":"small","theme":"Doğa Harikaları","size":11,"words":["ŞELALE","ORMAN","VADİ","KANYON","MAĞARA","GÖL"],"grid":[["H","İ","Ç","Ö","N","N","A","M","R","O","F"],["D","S","M","G","Y","Ç","İ","A","Y","O","İ"],["Ç","U","Ğ","Ö","G","Ü","R","K","Y","O","U"],["V","P","P","S","R","A","O","A","P","S","V"],["Ş","Ğ","A","E","Ğ","Ğ","Ş","V","U","H","I"],["İ","A","E","A","Y","D","A","Ö","S","J","C"],["D","T","M","R","A","D","C","T","N","F","J"],["K","L","I","E","İ","İ","H","T","I","G","U"],["Ö","P","C","Z","B","D","E","U","P","Ö","B"],["K","A","N","Y","O","N","S","C","Ğ","L","L"],["S","K","M","P","E","L","A","L","E","Ş","L"]],"paths":{"KANYON":[[9,0],[9,1],[9,2],[9,3],[9,4],[9,5]],"MAĞARA":[[6,2],[5,3],[4,4],[3,5],[2,6],[1,7]],"ŞELALE":[[10,9],[10,8],[10,7],[10,6],[10,5],[10,4]],"ORMAN":[[0,9],[0,8],[0,7],[0,6],[0,5]],"VADİ":[[4,7],[5,6],[6,5],[7,4]],"GÖL":[[7,9],[8,9],[9,9]]}},{"id":23,"type":"small","theme":"Tarihi Yerler","size":11,"words":["KALE","SARAY","KÖPRÜ","KULE","MÜZE","CAMİ"],"grid":[["İ","K","Ç","H","S","E","S","Ö","M","N","S"],["H","B","G","J","L","P","B","A","F","H","F"],["U","D","U","U","Ğ","E","Z","Ü","M","H","I"],["Ç","A","K","M","T","K","E","D","J","O","Ş"],["G","N","O","V","S","Y","A","R","A","S","Ü"],["K","İ","C","J","Y","T","B","K","A","L","C"],["Ö","Y","I","Ö","K","Ö","J","Ş","R","K","H"],["P","Ç","J","A","I","E","İ","M","A","C","Ü"],["R","P","L","V","Ş","İ","C","K","Y","Ç","G"],["Ü","K","Ö","J","N","C","J","Y","H","T","I"],["G","I","U","E","K","A","L","E","C","N","R"]],"paths":{"SARAY":[[4,9],[4,8],[4,7],[4,6],[4,5]],"KÖPRÜ":[[5,0],[6,0],[7,0],[8,0],[9,0]],"KULE":[[3,2],[2,3],[1,4],[0,5]],"KALE":[[10,4],[10,5],[10,6],[10,7]],"CAMİ":[[7,9],[7,8],[7,7],[7,6]],"MÜZE":[[2,8],[2,7],[2,6],[2,5]]}},{"id":24,"type":"small","theme":"Duygular","size":11,"words":["MUTLULUK","SEVGİ","UMUT","NEŞE","SAYGI","HUZUR"],"grid":[["T","V","R","V","D","G","Ç","D","Ğ","F","E"],["M","P","D","U","U","R","S","C","E","U","R"],["M","U","L","U","Ö","U","Ö","E","L","S","Z"],["Ö","R","T","R","P","I","Y","R","V","I","D"],["L","C","M","L","L","R","H","Ü","Ğ","G","Ö"],["B","İ","N","C","U","H","L","L","B","B","İ"],["İ","N","E","Ş","E","L","V","U","H","C","R"],["Y","Y","C","P","P","N","U","J","M","L","Ö"],["O","H","U","Z","U","R","Ü","K","T","U","Z"],["B","L","Ü","Ö","R","F","I","P","M","N","T"],["D","B","L","Ç","Ü","S","A","Y","G","I","Z"]],"paths":{"MUTLULUK":[[1,0],[2,1],[3,2],[4,3],[5,4],[6,5],[7,6],[8,7]],"HUZUR":[[8,1],[8,2],[8,3],[8,4],[8,5]],"SAYGI":[[10,5],[10,6],[10,7],[10,8],[10,9]],"SEVGİ":[[1,6],[2,7],[3,8],[4,9],[5,10]],"NEŞE":[[6,1],[6,2],[6,3],[6,4]],"UMUT":[[6,7],[7,8],[8,9],[9,10]]}},{"id":25,"type":"large","theme":"Çiçek Bahçesi","size":15,"words":["PAPATYA","LALE","GÜL","SÜMBÜL","NERGİS","ORKİDE","KRON","ZAMBAK","KARANFİL","GÜLLAÇ","YASEMİN","BENEK"],"grid":[["İ","İ","H","J","K","U","I","S","P","B","Ü","R","R","I","C"],["I","O","R","K","İ","D","E","Ç","O","S","J","H","Ğ","T","Y"],["Y","A","S","E","M","İ","N","S","P","Y","D","I","C","Ö","S"],["D","İ","H","R","L","Ü","G","Ş","S","J","D","P","Ş","C","H"],["O","J","R","Ü","I","V","D","S","Ş","V","T","S","N","C","R"],["S","K","N","İ","A","İ","H","E","E","L","A","L","F","I","U"],["M","F","G","P","A","P","A","T","Y","A","D","D","C","H","Y"],["Ü","Ç","N","U","K","A","R","A","N","F","İ","L","O","V","T"],["K","E","N","E","B","Z","N","B","N","S","I","Z","U","P","K"],["S","D","P","J","D","E","E","V","E","G","Ü","L","L","A","Ç"],["Ş","Ü","N","O","R","K","U","P","R","Ü","Z","E","B","T","L"],["B","K","M","İ","S","T","G","L","G","P","H","M","U","T","Ü"],["L","G","O","B","G","H","Ü","Ü","İ","M","A","Z","V","F","İ"],["S","Ö","L","L","Ü","U","H","U","S","Z","J","N","N","K","E"],["V","F","Ü","P","D","L","Y","Ğ","B","R","M","Y","İ","O","Ç"]],"paths":{"KARANFİL":[[7,4],[7,5],[7,6],[7,7],[7,8],[7,9],[7,10],[7,11]],"YASEMİN":[[2,0],[2,1],[2,2],[2,3],[2,4],[2,5],[2,6]],"PAPATYA":[[6,3],[6,4],[6,5],[6,6],[6,7],[6,8],[6,9]],"ORKİDE":[[1,1],[1,2],[1,3],[1,4],[1,5],[1,6]],"NERGİS":[[8,8],[9,8],[10,8],[11,8],[12,8],[13,8]],"ZAMBAK":[[13,9],[12,10],[11,11],[10,12],[9,13],[8,14]],"SÜMBÜL":[[9,0],[10,1],[11,2],[12,3],[13,4],[14,5]],"GÜLLAÇ":[[9,9],[9,10],[9,11],[9,12],[9,13],[9,14]],"BENEK":[[8,4],[8,3],[8,2],[8,1],[8,0]],"LALE":[[5,11],[5,10],[5,9],[5,8]],"KRON":[[10,5],[10,4],[10,3],[10,2]],"GÜL":[[3,6],[3,5],[3,4]]}},{"id":26,"type":"large","theme":"Anadolu Şehirleri","size":15,"words":["ANKARA","İSTANBUL","İZMİR","BURSA","ANTALYA","KONYA","TRABZON","SAMSUN","ADANA","MERSİN","İZMİT","KAYSERİ"],"grid":[["N","C","G","V","L","Z","İ","A","K","B","J","N","İ","G","J"],["U","C","İ","G","A","R","A","K","N","A","A","I","Ç","V","Ş"],["S","R","I","Ü","D","D","B","H","V","M","Ş","V","D","U","Ş"],["M","A","T","R","A","B","Z","O","N","M","L","P","A","Z","C"],["A","A","Y","A","S","R","U","B","Ğ","F","V","D","O","T","P"],["S","N","K","L","Ç","U","H","G","K","A","Y","S","E","R","İ"],["H","Ç","B","A","A","G","K","R","Ü","P","L","C","Ç","V","Z"],["M","P","O","D","A","T","R","N","Ö","G","Ş","D","L","H","K"],["A","P","İ","A","G","Ö","N","K","E","S","S","R","U","T","C"],["N","İ","C","N","N","O","N","A","Ü","N","İ","O","B","İ","A"],["J","Y","K","A","İ","M","B","R","J","M","İ","Ğ","N","M","T"],["A","İ","O","Ü","C","S","İ","G","Z","T","S","R","A","Z","Ç"],["U","Ö","N","T","U","I","R","İ","D","B","İ","O","T","İ","I"],["V","R","Y","E","V","U","S","E","L","Ş","M","R","S","E","Ü"],["D","C","A","Ş","U","L","B","H","M","F","B","Ü","İ","F","Z"]],"paths":{"İSTANBUL":[[14,12],[13,12],[12,12],[11,12],[10,12],[9,12],[8,12],[7,12]],"ANTALYA":[[9,7],[8,6],[7,5],[6,4],[5,3],[4,2],[3,1]],"TRABZON":[[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,8]],"KAYSERİ":[[5,8],[5,9],[5,10],[5,11],[5,12],[5,13],[5,14]],"ANKARA":[[1,9],[1,8],[1,7],[1,6],[1,5],[1,4]],"MERSİN":[[14,8],[13,7],[12,6],[11,5],[10,4],[9,3]],"SAMSUN":[[5,0],[4,0],[3,0],[2,0],[1,0],[0,0]],"ADANA":[[6,3],[7,3],[8,3],[9,3],[10,3]],"KONYA":[[10,2],[11,2],[12,2],[13,2],[14,2]],"İZMİT":[[12,13],[11,13],[10,13],[9,13],[8,13]],"BURSA":[[4,7],[4,6],[4,5],[4,4],[4,3]],"İZMİR":[[12,7],[11,8],[10,9],[9,10],[8,11]]}},{"id":27,"type":"large","theme":"Bilim ve Teknoloji","size":15,"words":["BİLGİSAYAR","YAZILIM","ROBOT","ALGORİTMA","VERİ","SUNUCU","KODLAMA","DONANIM","DEVRE","AĞ","BULUT","GÜVENLİK"],"grid":[["R","A","Y","A","S","İ","G","L","İ","B","B","Y","R","I","Ğ"],["Ç","Ü","İ","A","K","Z","R","J","T","L","Z","J","I","E","M"],["Ş","M","İ","M","Ü","N","O","Ğ","Ü","C","T","K","C","U","K"],["P","V","E","T","O","H","B","I","Ç","C","K","I","S","C","H"],["H","L","P","İ","Ş","K","O","E","Ş","İ","L","İ","M","U","L"],["B","T","Y","R","İ","P","T","K","L","Ğ","R","I","A","N","Ü"],["B","C","S","O","R","J","İ","N","N","E","N","M","İ","U","B"],["Ü","T","S","G","E","A","E","D","R","A","A","Y","R","S","U"],["P","S","Ü","L","L","V","M","V","N","L","B","D","E","C","L"],["G","U","R","A","Ü","I","E","O","D","İ","İ","J","V","Ö","U"],["B","P","D","G","L","D","D","O","S","L","İ","İ","L","U","T"],["C","Ö","D","I","N","İ","K","J","I","R","Ğ","G","Ç","A","T"],["E","M","Z","N","J","O","Ç","Ğ","U","Ğ","Ş","L","F","P","H"],["Ş","A","M","F","Ç","D","Y","C","L","E","Z","Ş","L","Ğ","A"],["Y","C","Ü","S","Y","I","S","İ","Ş","C","O","O","H","Z","H"]],"paths":{"BİLGİSAYAR":[[0,9],[0,8],[0,7],[0,6],[0,5],[0,4],[0,3],[0,2],[0,1],[0,0]],"ALGORİTMA":[[9,3],[8,3],[7,3],[6,3],[5,3],[4,3],[3,3],[2,3],[1,3]],"GÜVENLİK":[[10,3],[9,4],[8,5],[7,6],[6,7],[5,8],[4,9],[3,10]],"DONANIM":[[10,6],[9,7],[8,8],[7,9],[6,10],[5,11],[4,12]],"KODLAMA":[[11,6],[10,7],[9,8],[8,9],[7,10],[6,11],[5,12]],"YAZILIM":[[14,0],[13,1],[12,2],[11,3],[10,4],[9,5],[8,6]],"SUNUCU":[[7,13],[6,13],[5,13],[4,13],[3,13],[2,13]],"ROBOT":[[1,6],[2,6],[3,6],[4,6],[5,6]],"BULUT":[[6,14],[7,14],[8,14],[9,14],[10,14]],"DEVRE":[[10,5],[9,6],[8,7],[7,8],[6,9]],"VERİ":[[9,12],[8,12],[7,12],[6,12]],"AĞ":[[13,14],[13,13]]}},{"id":28,"type":"large","theme":"Evren ve Uzay","size":15,"words":["GALAKSİ","YILDIZ","GEZEGEN","METEOR","KUYRUKLU","GÜNEŞ","NEBULA","YÖRÜNGE","UZAYLI","ROKET","TELESKOP","ATMOSFER"],"grid":[["D","G","Ü","M","A","İ","O","Ö","İ","L","Ü","O","D","P","Z"],["Y","C","C","H","J","Ş","T","M","N","K","U","K","M","V","Ö"],["C","I","D","I","G","R","I","G","E","Z","E","G","E","N","C"],["L","L","L","S","N","Ü","K","L","İ","D","Z","V","T","U","O"],["İ","R","Ö","D","E","U","N","U","Y","D","K","N","E","Y","B"],["V","S","Ç","N","I","D","H","E","Y","A","E","E","O","I","Ş"],["G","İ","K","N","Z","Z","H","E","Ş","R","Z","Y","R","C","Ğ"],["F","R","O","A","Ğ","D","R","H","G","P","U","U","O","C","N"],["R","E","Ö","Ö","L","D","E","S","P","N","T","K","Z","P","I"],["V","T","Ö","B","V","A","Y","A","C","B","Ü","R","L","U","Ö"],["Ğ","E","R","F","U","Ö","G","K","P","R","A","R","M","U","Z"],["R","K","O","R","E","F","S","O","M","T","A","H","Ö","R","H"],["M","O","G","Ü","Ü","S","J","H","L","C","Ş","B","E","Y","L"],["K","R","M","L","F","A","L","U","B","E","N","I","P","D","I"],["P","O","K","S","E","L","E","T","Y","Ş","I","T","Y","İ","J"]],"paths":{"KUYRUKLU":[[3,6],[4,7],[5,8],[6,9],[7,10],[8,11],[9,12],[10,13]],"ATMOSFER":[[11,10],[11,9],[11,8],[11,7],[11,6],[11,5],[11,4],[11,3]],"TELESKOP":[[14,7],[14,6],[14,5],[14,4],[14,3],[14,2],[14,1],[14,0]],"GALAKSİ":[[10,6],[9,5],[8,4],[7,3],[6,2],[5,1],[4,0]],"GEZEGEN":[[2,7],[2,8],[2,9],[2,10],[2,11],[2,12],[2,13]],"YÖRÜNGE":[[12,13],[11,12],[10,11],[9,10],[8,9],[7,8],[6,7]],"UZAYLI":[[7,11],[6,10],[5,9],[4,8],[3,7],[2,6]],"NEBULA":[[13,10],[13,9],[13,8],[13,7],[13,6],[13,5]],"METEOR":[[1,12],[2,12],[3,12],[4,12],[5,12],[6,12]],"YILDIZ":[[1,0],[2,1],[3,2],[4,3],[5,4],[6,5]],"GÜNEŞ":[[2,4],[3,5],[4,6],[5,7],[6,8]],"ROKET":[[13,1],[12,1],[11,1],[10,1],[9,1]]}},{"id":29,"type":"large","theme":"Dünya Hayvanları","size":15,"words":["ASLAN","KAPLAN","FİL","ZÜRAFA","LEOPAR","ÇİTA","KUTUPAYISI","PENGUEN","BALİNA","YUNUS","KARTAL","ŞAHİN"],"grid":[["D","Ç","B","H","J","Y","P","K","G","Y","Z","E","V","I","Ö"],["T","N","I","S","I","Y","A","P","U","T","U","K","I","F","U"],["E","M","A","N","L","M","K","Z","H","N","M","A","C","J","N"],["L","G","F","L","Ö","İ","B","A","E","B","Ş","H","M","P","S"],["Z","V","R","S","P","M","H","U","R","A","O","A","Y","U","Ç"],["K","D","Z","Ğ","T","A","G","İ","H","T","U","J","N","İ","B"],["J","B","Ö","L","O","N","K","İ","F","İ","A","U","A","O","H"],["C","J","İ","N","E","L","N","Z","U","O","Y","L","N","Ğ","V"],["P","F","S","P","P","Ç","Ü","D","Ç","J","İ","Ü","İ","I","O"],["İ","U","D","F","P","R","A","N","J","Ç","N","B","L","R","B"],["B","D","Ş","I","A","Ü","S","M","N","İ","L","D","A","P","Z"],["N","D","I","F","P","I","L","E","J","T","P","P","B","T","V"],["H","Ö","A","I","N","V","A","N","O","A","O","M","Ş","Ö","H"],["M","V","A","İ","I","S","N","Ç","K","E","Ö","H","Ü","Z","T"],["Y","Ş","R","A","P","M","Ğ","R","L","Ü","U","Ö","Ö","G","T"]],"paths":{"KUTUPAYISI":[[1,11],[1,10],[1,9],[1,8],[1,7],[1,6],[1,5],[1,4],[1,3],[1,2]],"PENGUEN":[[8,3],[7,4],[6,5],[5,6],[4,7],[3,8],[2,9]],"BALİNA":[[11,12],[10,12],[9,12],[8,12],[7,12],[6,12]],"LEOPAR":[[14,8],[13,9],[12,10],[11,11],[10,12],[9,13]],"KARTAL":[[2,6],[3,7],[4,8],[5,9],[6,10],[7,11]],"ZÜRAFA":[[7,7],[8,6],[9,5],[10,4],[11,3],[12,2]],"KAPLAN":[[6,6],[5,5],[4,4],[3,3],[2,2],[1,1]],"ASLAN":[[9,6],[10,6],[11,6],[12,6],[13,6]],"ŞAHİN":[[3,10],[4,9],[5,8],[6,7],[7,6]],"YUNUS":[[7,10],[6,11],[5,12],[4,13],[3,14]],"ÇİTA":[[9,9],[10,9],[11,9],[12,9]],"FİL":[[8,1],[7,2],[6,3]]}},{"id":30,"type":"large","theme":"Sağlıklı Yaşam","size":15,"words":["SPOR","YÜRÜYÜŞ","KOŞU","BESLENME","SU","DENGELİ","SEBZE","MEYVE","UYKU","HUZUR","ENERJİ","VİTAMİN"],"grid":[["V","S","G","B","Ö","Ş","Ç","F","A","L","I","K","D","K","Ş"],["F","B","K","N","U","P","M","Y","Y","Ş","U","T","T","B","Ş"],["S","D","E","N","F","O","I","S","M","Ü","Ş","N","J","I","E"],["L","U","O","S","I","O","İ","S","U","Y","O","Y","T","S","R"],["Ü","Ş","Ğ","P","L","M","F","G","Ğ","Ü","K","O","H","G","H"],["U","H","Ş","F","V","E","Ş","Ş","M","R","I","M","İ","O","Ü"],["T","Ğ","H","Ç","İ","Ö","N","S","O","Ü","J","Z","J","V","İ"],["E","U","Ü","D","T","H","B","M","H","Y","İ","Ş","C","İ","İ"],["V","L","R","R","A","Ğ","T","M","E","F","L","F","V","O","J"],["Y","Ğ","O","O","M","Ş","Ğ","D","Ç","P","E","T","Ö","G","R"],["E","G","B","P","İ","S","Z","N","G","R","G","G","B","Ç","E"],["M","K","I","S","N","Ş","M","Ç","S","U","N","D","A","O","N"],["E","K","R","Z","Z","E","Z","B","E","S","E","M","M","R","E"],["F","U","H","I","H","R","B","U","C","R","D","Ö","G","O","T"],["U","K","Y","U","T","Y","B","E","K","R","U","Z","U","H","Z"]],"paths":{"BESLENME":[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]],"DENGELİ":[[13,10],[12,10],[11,10],[10,10],[9,10],[8,10],[7,10]],"YÜRÜYÜŞ":[[7,9],[6,9],[5,9],[4,9],[3,9],[2,9],[1,9]],"VİTAMİN":[[5,4],[6,4],[7,4],[8,4],[9,4],[10,4],[11,4]],"ENERJİ":[[12,14],[11,14],[10,14],[9,14],[8,14],[7,14]],"MEYVE":[[11,0],[10,0],[9,0],[8,0],[7,0]],"HUZUR":[[14,13],[14,12],[14,11],[14,10],[14,9]],"SEBZE":[[12,9],[12,8],[12,7],[12,6],[12,5]],"SPOR":[[11,3],[10,3],[9,3],[8,3]],"UYKU":[[14,3],[14,2],[14,1],[14,0]],"KOŞU":[[4,10],[3,10],[2,10],[1,10]],"SU":[[2,0],[3,1]]}},{"id":31,"type":"large","theme":"Sanat ve Edebiyat","size":15,"words":["ROMAN","ŞİİR","TİYATRO","RESİM","HEYKEL","KİTAP","YAZAR","ŞAİR","SERGİ","MELODİ","KÜLTÜR","ESTETİK"],"grid":[["P","Ç","R","I","H","Y","L","R","O","N","M","M","Z","D","Y"],["N","L","E","Ğ","F","A","Ü","Ç","I","E","E","T","L","R","Ğ"],["Ş","E","S","A","T","Z","I","Ü","H","Ö","L","S","U","F","E"],["P","Y","İ","R","Z","A","J","E","V","K","O","N","I","C","J"],["S","Ç","M","E","D","R","M","I","S","G","D","A","Ğ","J","G"],["K","İ","T","A","P","L","U","Ğ","I","T","İ","H","Ö","T","Ö"],["A","Ş","Ğ","R","İ","Ş","G","B","S","Ç","E","L","H","E","J"],["S","A","N","Z","Z","Ş","U","H","Ş","Ç","R","T","H","İ","P"],["G","İ","G","D","M","R","D","L","T","P","İ","K","İ","Ş","Ş"],["H","R","O","M","U","O","O","Ü","S","V","F","U","G","K","İ"],["E","S","U","P","Y","Ü","C","M","N","L","N","Ş","İ","C","İ"],["Y","Ö","Ç","B","V","O","Z","N","A","K","Ü","L","T","Ü","R"],["K","F","Ö","O","D","E","I","Y","N","N","L","Ç","S","F","Ş"],["E","Ö","M","C","Z","N","L","Ü","B","L","D","N","K","L","Ö"],["L","S","E","R","G","İ","O","R","T","A","Y","İ","T","B","O"]],"paths":{"TİYATRO":[[14,12],[14,11],[14,10],[14,9],[14,8],[14,7],[14,6]],"ESTETİK":[[3,7],[4,8],[5,9],[6,10],[7,11],[8,12],[9,13]],"MELODİ":[[0,10],[1,10],[2,10],[3,10],[4,10],[5,10]],"HEYKEL":[[9,0],[10,0],[11,0],[12,0],[13,0],[14,0]],"KÜLTÜR":[[11,9],[11,10],[11,11],[11,12],[11,13],[11,14]],"KİTAP":[[5,0],[5,1],[5,2],[5,3],[5,4]],"ROMAN":[[8,5],[9,6],[10,7],[11,8],[12,9]],"SERGİ":[[14,1],[14,2],[14,3],[14,4],[14,5]],"YAZAR":[[0,5],[1,5],[2,5],[3,5],[4,5]],"RESİM":[[0,2],[1,2],[2,2],[3,2],[4,2]],"ŞAİR":[[6,1],[7,1],[8,1],[9,1]],"ŞİİR":[[8,14],[9,14],[10,14],[11,14]]}},{"id":32,"type":"large","theme":"Doğa ve Coğrafya","size":15,"words":["DAĞ","TEPE","VADİ","NEHİR","GÖL","DENİZ","OKYANUS","ORMAN","ÇÖL","ADA","YARIMADA","PLATEAU"],"grid":[["İ","V","A","D","İ","Ş","O","R","M","A","N","C","O","B","Z"],["C","M","B","H","K","A","D","A","E","U","D","U","L","Ö","Ç"],["R","T","R","K","İ","Z","J","L","Y","J","J","C","S","A","S"],["Y","O","R","D","R","Y","İ","Ç","E","O","J","N","D","D","T"],["G","V","İ","A","U","A","H","U","L","S","T","A","O","K","O"],["J","V","H","G","G","Z","L","A","İ","D","M","Ğ","F","Z","T"],["U","Ç","E","T","B","İ","Ü","E","S","I","K","P","U","Z","Z"],["A","G","N","E","F","N","C","T","R","O","Ç","P","B","L","P"],["S","Ğ","Ş","P","Y","E","B","A","G","K","T","B","J","L","G"],["O","A","F","E","U","D","Y","L","Y","Y","U","B","D","N","H"],["G","D","V","T","Ö","I","Ö","P","P","A","U","S","V","I","G"],["H","Z","D","S","N","G","K","H","Ğ","N","B","O","L","Ö","G"],["Ö","Z","T","E","R","S","K","O","M","U","B","İ","R","S","J"],["Ü","N","I","Ş","K","K","D","H","J","S","E","U","O","M","G"],["Y","G","H","Y","Ş","D","Ü","L","B","O","K","K","O","N","D"]],"paths":{"YARIMADA":[[9,6],[8,7],[7,8],[6,9],[5,10],[4,11],[3,12],[2,13]],"OKYANUS":[[7,9],[8,9],[9,9],[10,9],[11,9],[12,9],[13,9]],"PLATEAU":[[10,7],[9,7],[8,7],[7,7],[6,7],[5,7],[4,7]],"ORMAN":[[0,6],[0,7],[0,8],[0,9],[0,10]],"DENİZ":[[9,5],[8,5],[7,5],[6,5],[5,5]],"NEHİR":[[7,2],[6,2],[5,2],[4,2],[3,2]],"VADİ":[[0,1],[0,2],[0,3],[0,4]],"TEPE":[[6,3],[7,3],[8,3],[9,3]],"GÖL":[[11,14],[11,13],[11,12]],"ÇÖL":[[1,14],[1,13],[1,12]],"ADA":[[1,7],[1,6],[1,5]],"DAĞ":[[10,1],[9,1],[8,1]]}},{"id":33,"type":"large","theme":"Tarihsel Miras","size":15,"words":["ANTİK","MEDENİYET","İMPARATORLUK","KRALLIK","ABİDE","ANIT","MÜZE","KAZI","TABLET","PARSER","DESTAN","EFSANE"],"grid":[["V","F","B","Ğ","J","S","P","P","B","Y","K","C","F","Ü","U"],["Ö","T","S","O","T","I","N","A","F","M","U","F","D","Y","I"],["H","A","F","F","T","Ç","T","U","M","G","L","Ş","E","P","Ş"],["T","E","L","B","A","T","F","J","G","O","R","I","S","U","H"],["J","L","O","R","İ","H","Ğ","İ","N","E","O","Z","T","M","K"],["L","Ç","Ü","T","M","U","M","V","I","D","T","F","A","İ","R"],["I","K","B","Ö","Y","G","E","T","D","İ","A","A","N","Ğ","A"],["O","Ö","Ö","T","K","H","D","E","D","B","R","F","I","G","L"],["J","A","Ö","V","G","M","E","F","O","A","A","R","S","I","L"],["Ğ","N","U","V","M","T","N","S","R","T","P","M","L","E","I"],["T","T","Ü","İ","E","D","İ","A","T","K","M","O","M","E","K"],["Z","İ","O","R","B","N","Y","N","B","A","İ","V","Y","C","V"],["S","K","B","U","A","K","E","E","D","Z","V","R","G","C","Ş"],["D","A","F","N","L","İ","T","B","P","I","R","S","P","M","S"],["M","E","Z","Ü","M","A","R","E","S","R","A","P","A","O","O"]],"paths":{"İMPARATORLUK":[[11,10],[10,10],[9,10],[8,10],[7,10],[6,10],[5,10],[4,10],[3,10],[2,10],[1,10],[0,10]],"MEDENİYET":[[5,6],[6,6],[7,6],[8,6],[9,6],[10,6],[11,6],[12,6],[13,6]],"KRALLIK":[[4,14],[5,14],[6,14],[7,14],[8,14],[9,14],[10,14]],"TABLET":[[3,5],[3,4],[3,3],[3,2],[3,1],[3,0]],"EFSANE":[[7,7],[8,7],[9,7],[10,7],[11,7],[12,7]],"PARSER":[[14,11],[14,10],[14,9],[14,8],[14,7],[14,6]],"DESTAN":[[1,12],[2,12],[3,12],[4,12],[5,12],[6,12]],"ABİDE":[[8,9],[7,9],[6,9],[5,9],[4,9]],"ANTİK":[[8,1],[9,1],[10,1],[11,1],[12,1]],"ANIT":[[1,7],[1,6],[1,5],[1,4]],"KAZI":[[10,9],[11,9],[12,9],[13,9]],"MÜZE":[[14,4],[14,3],[14,2],[14,1]]}},{"id":34,"type":"large","theme":"Matematik Dünyası","size":15,"words":["SAYI","GEOMETRİ","CEBİR","DENKLEM","ÜÇGEN","KARE","DAİRE","AÇI","ORAN","MATRİKS","TEOREM","FORMÜL"],"grid":[["Ç","N","D","G","M","A","T","R","İ","K","S","F","P","N","Ğ"],["D","C","V","İ","Ğ","Ü","J","C","E","İ","J","L","Ö","G","Ş"],["E","G","E","H","S","V","Y","R","C","R","Y","R","A","U","B"],["N","C","J","B","J","J","A","O","M","B","R","A","Ş","Ç","E"],["K","C","M","Y","İ","K","K","R","Ü","I","Ö","Y","Ç","Z","I"],["L","N","B","G","F","R","Z","Y","Ş","Z","Ö","M","Ğ","B","C"],["E","D","S","Ğ","Z","O","Ö","S","B","E","Y","I","A","F","Ö"],["M","F","A","D","U","V","Ş","V","J","M","C","H","E","Ö","G"],["Ö","O","V","İ","G","E","O","M","E","T","R","İ","Y","J","S"],["N","R","Z","O","R","I","J","R","U","T","D","Ü","Ş","T","C"],["E","M","N","T","İ","E","O","B","Ç","S","A","Y","I","K","G"],["G","Ü","V","C","I","E","P","U","O","P","P","J","U","I","A"],["Ç","L","R","Ğ","T","Ü","L","M","R","G","İ","O","J","K","E"],["Ü","S","Ö","S","J","C","U","P","A","H","Ü","G","Ş","C","C"],["Ğ","D","J","Ş","Ü","R","D","T","N","J","I","İ","Ç","C","A"]],"paths":{"GEOMETRİ":[[8,4],[8,5],[8,6],[8,7],[8,8],[8,9],[8,10],[8,11]],"MATRİKS":[[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10]],"DENKLEM":[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],"TEOREM":[[12,4],[11,5],[10,6],[9,7],[8,8],[7,9]],"FORMÜL":[[7,1],[8,1],[9,1],[10,1],[11,1],[12,1]],"ÜÇGEN":[[13,0],[12,0],[11,0],[10,0],[9,0]],"DAİRE":[[6,1],[7,2],[8,3],[9,4],[10,5]],"CEBİR":[[1,1],[2,2],[3,3],[4,4],[5,5]],"ORAN":[[11,8],[12,8],[13,8],[14,8]],"SAYI":[[10,9],[10,10],[10,11],[10,12]],"KARE":[[4,5],[3,6],[2,7],[1,8]],"AÇI":[[2,12],[3,13],[4,14]]}},{"id":35,"type":"large","theme":"Mutfak Sanatları","size":15,"words":["YEMEK","BAHARAT","TENCERE","TAVA","FIRIN","BIÇAK","ÇATMA","KEPÇE","TARİF","SOS","IZGARA","SUNUM"],"grid":[["N","K","Ç","A","C","İ","O","C","P","P","Ü","I","Y","E","J"],["A","H","K","F","I","R","I","N","K","K","J","U","C","Ç","T"],["Z","O","E","Z","G","Ö","S","T","N","A","E","S","J","P","E"],["D","Ğ","M","H","Ğ","U","M","D","A","C","Ç","E","K","E","Ğ"],["K","H","E","M","N","Ü","C","İ","Ğ","R","G","I","T","K","R"],["M","P","Y","U","P","F","L","Ç","D","H","A","A","B","J","I"],["V","T","M","P","J","Ü","Y","I","L","I","K","H","V","V","Y"],["R","P","E","D","H","I","P","Ş","F","M","I","E","A","J","I"],["H","T","Ş","N","I","Z","G","A","R","A","R","M","Ö","B","Ü"],["G","I","J","Ğ","C","V","A","M","T","A","Ç","Ü","J","İ","Ç"],["Ö","F","Ö","T","O","E","E","S","U","O","T","A","T","L","Ş"],["F","L","Ü","A","H","V","R","Ş","C","A","V","Y","Ü","Ü","K"],["S","M","D","V","R","H","G","E","R","Ğ","S","D","Ş","K","Ü"],["J","C","L","A","P","M","Ö","İ","J","O","N","Y","Ş","K","O"],["B","Ü","İ","Ş","Z","Ü","F","O","P","R","C","S","O","S","Ç"]],"paths":{"TENCERE":[[6,1],[7,2],[8,3],[9,4],[10,5],[11,6],[12,7]],"BAHARAT":[[8,13],[7,12],[6,11],[5,10],[4,9],[3,8],[2,7]],"IZGARA":[[8,4],[8,5],[8,6],[8,7],[8,8],[8,9]],"BIÇAK":[[5,12],[4,11],[3,10],[2,9],[1,8]],"SUNUM":[[2,6],[3,5],[4,4],[5,3],[6,2]],"KEPÇE":[[4,13],[3,13],[2,13],[1,13],[0,13]],"FIRIN":[[1,3],[1,4],[1,5],[1,6],[1,7]],"YEMEK":[[5,2],[4,2],[3,2],[2,2],[1,2]],"ÇATMA":[[9,10],[9,9],[9,8],[9,7],[9,6]],"TARİF":[[10,10],[11,9],[12,8],[13,7],[14,6]],"TAVA":[[10,3],[11,3],[12,3],[13,3]],"SOS":[[14,11],[14,12],[14,13]]}},{"id":36,"type":"large","theme":"Eğitim ve Okul","size":15,"words":["DERS","ÖĞRETMEN","ÖĞRENCİ","SINIF","KİTAP","DEFTER","KALEM","SINAV","BAŞARI","BİLGİ","AKADEMİ","KAMPÜS"],"grid":[["I","Ü","K","Ç","A","Ç","Ğ","D","E","F","T","E","R","G","N"],["T","N","O","Ö","Ş","Ö","G","L","İ","J","L","U","S","A","Ö"],["Ş","N","D","İ","A","M","Ç","H","K","C","Ç","V","K","İ","T"],["D","İ","H","I","L","Ü","F","N","M","İ","M","A","G","Ç","L"],["T","Ş","L","I","C","H","M","B","Ü","Ş","D","L","Ç","A","Y"],["I","R","Ç","S","Ü","E","Ö","E","T","E","İ","G","N","E","O"],["E","I","O","K","L","L","Ğ","G","M","B","Ü","J","R","E","E"],["K","R","S","A","K","J","R","İ","A","T","P","Z","F","L","Ö"],["İ","K","K","Ö","J","A","E","Ş","F","F","Ğ","U","B","Ş","K"],["T","Ü","V","Ü","Ğ","C","T","Ö","Ç","Ü","Y","A","O","E","A"],["A","F","A","İ","I","R","M","F","L","Ç","Ş","Ğ","S","Y","M"],["P","I","N","M","S","R","E","D","N","A","R","I","P","J","P"],["P","N","I","J","Ö","Ç","N","N","R","İ","İ","Y","L","P","Ü"],["E","I","S","V","S","Ş","Ü","I","C","H","P","Ö","C","S","S"],["D","S","I","Ç","G","H","Ç","E","İ","İ","Ş","D","N","J","K"]],"paths":{"ÖĞRETMEN":[[5,6],[6,6],[7,6],[8,6],[9,6],[10,6],[11,6],[12,6]],"ÖĞRENCİ":[[8,3],[9,4],[10,5],[11,6],[12,7],[13,8],[14,9]],"AKADEMİ":[[1,13],[2,12],[3,11],[4,10],[5,9],[6,8],[7,7]],"KAMPÜS":[[8,14],[9,14],[10,14],[11,14],[12,14],[13,14]],"BAŞARI":[[8,12],[9,11],[10,10],[11,9],[12,8],[13,7]],"DEFTER":[[0,7],[0,8],[0,9],[0,10],[0,11],[0,12]],"KİTAP":[[7,0],[8,0],[9,0],[10,0],[11,0]],"KALEM":[[8,2],[7,3],[6,4],[5,5],[4,6]],"SINAV":[[13,2],[12,2],[11,2],[10,2],[9,2]],"SINIF":[[14,1],[13,1],[12,1],[11,1],[10,1]],"BİLGİ":[[6,9],[5,10],[4,11],[3,12],[2,13]],"DERS":[[11,7],[11,6],[11,5],[11,4]]}},{"id":37,"type":"large","theme":"Meslekler Dünyası","size":15,"words":["MİMAR","MÜHENDİS","DOKTOR","AVUKAT","HAKİM","PİLOT","KAPTAN","RESSAM","YAZAR","POLİS","AŞÇI","TERZİ"],"grid":[["E","M","H","D","E","I","V","L","P","B","Y","İ","A","M","D"],["F","V","J","O","N","R","M","K","S","M","K","Ş","V","L","M"],["E","C","Ö","A","Ü","P","U","T","A","K","U","V","A","G","H"],["B","Ğ","G","O","H","E","İ","U","L","Ö","T","U","U","M","O"],["N","Ç","Ö","Ç","Ğ","P","U","L","M","O","V","İ","O","V","U"],["B","U","T","L","I","S","O","O","O","İ","F","K","Ç","T","V"],["Y","R","U","Ç","G","İ","H","L","Y","T","K","B","L","Ğ","İ"],["A","Y","Ş","V","C","D","L","Y","İ","Ç","U","A","Ü","G","F"],["Z","A","Ü","T","Ö","N","Ş","İ","Y","S","Ş","P","H","R","K"],["A","E","R","P","D","E","Ü","F","V","F","T","E","R","Z","İ"],["R","Ü","E","B","Ö","H","R","O","T","K","O","D","İ","O","Ğ"],["P","O","S","E","I","Ü","Ş","H","H","Ö","Ğ","Y","N","Z","S"],["V","Ç","S","D","U","M","Ü","K","B","Ğ","Y","R","D","Ş","Y"],["D","G","A","D","Ş","I","V","G","U","N","A","T","P","A","K"],["V","S","M","J","M","D","Ö","R","Ğ","R","A","M","İ","M","R"]],"paths":{"MÜHENDİS":[[12,5],[11,5],[10,5],[9,5],[8,5],[7,5],[6,5],[5,5]],"AVUKAT":[[2,12],[2,11],[2,10],[2,9],[2,8],[2,7]],"KAPTAN":[[13,14],[13,13],[13,12],[13,11],[13,10],[13,9]],"RESSAM":[[9,2],[10,2],[11,2],[12,2],[13,2],[14,2]],"DOKTOR":[[10,11],[10,10],[10,9],[10,8],[10,7],[10,6]],"POLİS":[[4,5],[5,6],[6,7],[7,8],[8,9]],"YAZAR":[[6,0],[7,0],[8,0],[9,0],[10,0]],"HAKİM":[[8,12],[7,11],[6,10],[5,9],[4,8]],"TERZİ":[[9,10],[9,11],[9,12],[9,13],[9,14]],"MİMAR":[[14,13],[14,12],[14,11],[14,10],[14,9]],"PİLOT":[[2,5],[3,6],[4,7],[5,8],[6,9]],"AŞÇI":[[8,1],[7,2],[6,3],[5,4]]}},{"id":38,"type":"large","theme":"Ulaşım Ağları","size":15,"words":["TREN","UÇAK","GEMİ","OTOBÜS","METRO","TRAMVAY","FERİBOT","HELİKOPTER","BİSİKLET","MOTOSİKLET","TELEFERİK","VAPUR"],"grid":[["Ö","A","Y","U","Y","T","C","T","L","R","S","Ş","İ","Y","C"],["Ü","O","Y","B","J","F","K","V","F","M","Ğ","I","F","V","T"],["H","I","A","O","İ","Ö","D","Ö","Y","M","Ü","E","I","E","Z"],["S","U","V","B","B","S","Ç","R","Ü","V","R","İ","L","L","A"],["Ç","Y","M","E","L","L","İ","A","K","İ","F","K","M","Ş","D"],["Z","R","A","K","H","H","E","K","B","Y","İ","K","Z","E","Ğ"],["C","R","R","İ","İ","Ğ","E","O","L","S","C","A","İ","S","G"],["Z","R","T","V","E","R","T","L","O","E","B","Ç","J","R","H"],["T","Ş","U","A","G","K","E","T","İ","R","T","U","C","Ş","Ç"],["A","S","F","P","M","C","O","F","D","K","M","Ö","G","N","S"],["L","Ü","A","U","A","M","Ş","I","E","V","O","E","Ç","Y","K"],["Ş","B","D","R","N","E","R","T","M","L","C","P","T","G","J"],["C","O","T","Ü","Ç","Ç","I","İ","Z","H","E","D","T","R","J"],["U","T","V","U","Y","D","R","S","D","C","N","T","Ö","E","O"],["A","O","P","R","E","L","İ","T","F","R","T","D","K","P","R"]],"paths":{"HELİKOPTER":[[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],[11,11],[12,12],[13,13],[14,14]],"MOTOSİKLET":[[10,5],[9,6],[8,7],[7,8],[6,9],[5,10],[4,11],[3,12],[2,13],[1,14]],"TELEFERİK":[[13,11],[12,10],[11,9],[10,8],[9,7],[8,6],[7,5],[6,4],[5,3]],"BİSİKLET":[[1,3],[2,4],[3,5],[4,6],[5,7],[6,8],[7,9],[8,10]],"FERİBOT":[[1,12],[2,11],[3,10],[4,9],[5,8],[6,7],[7,6]],"TRAMVAY":[[7,2],[6,2],[5,2],[4,2],[3,2],[2,2],[1,2]],"OTOBÜS":[[14,1],[13,1],[12,1],[11,1],[10,1],[9,1]],"VAPUR":[[7,3],[8,3],[9,3],[10,3],[11,3]],"METRO":[[9,10],[10,11],[11,12],[12,13],[13,14]],"UÇAK":[[8,11],[7,11],[6,11],[5,11]],"TREN":[[11,7],[11,6],[11,5],[11,4]],"GEMİ":[[6,14],[5,13],[4,12],[3,11]]}},{"id":39,"type":"large","theme":"Müzik Dünyası","size":15,"words":["MELODİ","RİTMLİ","NOTA","AKOR","SENFONİ","ORKESTRA","SOLİST","KORO","KONSER","ENSTRÜMAN","ALBÜM","RSP"],"grid":[["I","Ü","D","G","Ğ","R","C","G","O","P","P","T","P","H","U"],["Ş","A","Y","İ","N","O","F","N","E","S","Y","S","Z","H","F"],["N","P","N","S","O","L","İ","S","T","F","T","J","H","R","B"],["Ü","Z","Ü","N","G","M","J","Ç","G","R","E","S","N","O","K"],["M","R","P","A","C","N","Z","A","İ","I","D","J","Y","V","Ö"],["K","İ","O","M","E","L","O","D","İ","S","E","U","M","U","C"],["A","Ö","C","Ü","A","O","R","K","E","S","T","R","A","Ğ","F"],["B","B","Ü","R","M","J","N","H","R","Ş","N","U","K","K","Ş"],["J","C","R","T","O","Ü","O","P","D","Ğ","N","A","C","H","C"],["O","N","F","S","Ü","D","B","O","I","J","O","K","Ö","R","U"],["R","V","R","N","S","R","C","L","H","Ş","T","O","K","T","Y"],["O","G","B","E","G","C","K","Ç","A","L","A","R","P","R","P"],["K","B","H","S","T","S","T","E","Ç","A","Ş","D","Ş","S","A"],["E","M","İ","N","N","Ü","V","T","Ğ","E","İ","D","T","P","U"],["Y","Ğ","T","R","İ","T","M","L","İ","Z","Ç","U","Z","A","I"]],"paths":{"ENSTRÜMAN":[[11,3],[10,3],[9,3],[8,3],[7,3],[6,3],[5,3],[4,3],[3,3]],"ORKESTRA":[[6,5],[6,6],[6,7],[6,8],[6,9],[6,10],[6,11],[6,12]],"SENFONİ":[[1,9],[1,8],[1,7],[1,6],[1,5],[1,4],[1,3]],"RİTMLİ":[[14,3],[14,4],[14,5],[14,6],[14,7],[14,8]],"SOLİST":[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8]],"KONSER":[[3,14],[3,13],[3,12],[3,11],[3,10],[3,9]],"MELODİ":[[5,3],[5,4],[5,5],[5,6],[5,7],[5,8]],"ALBÜM":[[11,8],[10,7],[9,6],[8,5],[7,4]],"KORO":[[12,0],[11,0],[10,0],[9,0]],"NOTA":[[8,10],[9,10],[10,10],[11,10]],"AKOR":[[8,11],[9,11],[10,11],[11,11]],"RSP":[[11,13],[12,13],[13,13]]}},{"id":40,"type":"large","theme":"Spor ve Olimpiyat","size":15,"words":["FUTBOL","BASKETBOL","VOLEYBOL","TENİS","ATLETİZM","YÜZME","GÜREŞ","JUDO","KAMP","FİTNESS","KUPA","MADALYA"],"grid":[["İ","S","B","M","Y","Ö","E","İ","E","M","Ğ","U","Ç","Z","Ö"],["S","S","T","Ç","G","Y","T","N","A","A","B","Y","Y","A","G"],["B","E","M","İ","J","Ü","D","E","Y","D","B","O","Ü","L","Ş"],["T","N","R","K","G","Z","I","G","K","A","T","I","Ğ","O","V"],["C","T","Ö","İ","Ç","M","N","S","Z","L","B","E","G","B","Ü"],["N","İ","B","J","C","E","Z","L","Y","Y","H","P","U","T","Y"],["H","F","I","C","O","L","A","İ","F","A","V","M","H","E","Ö"],["Ü","H","T","P","G","L","A","İ","Ö","M","O","A","U","K","U"],["F","T","Z","O","U","Ü","T","G","D","A","L","K","K","S","A"],["G","Ü","R","E","Ş","G","L","O","İ","R","E","V","Ş","A","L"],["Z","A","I","A","U","S","E","J","Y","T","Y","T","H","B","O"],["J","T","E","N","İ","S","T","Ç","F","N","B","G","K","M","B"],["B","U","K","U","P","A","İ","D","Ş","Ğ","O","C","B","G","T"],["Z","Y","D","N","K","Ş","Z","Z","İ","L","L","T","C","Ö","U"],["Ç","N","D","O","R","V","M","J","C","Ö","Ö","B","K","S","F"]],"paths":{"BASKETBOL":[[10,13],[9,13],[8,13],[7,13],[6,13],[5,13],[4,13],[3,13],[2,13]],"VOLEYBOL":[[6,10],[7,10],[8,10],[9,10],[10,10],[11,10],[12,10],[13,10]],"ATLETİZM":[[7,6],[8,6],[9,6],[10,6],[11,6],[12,6],[13,6],[14,6]],"MADALYA":[[0,9],[1,9],[2,9],[3,9],[4,9],[5,9],[6,9]],"FİTNESS":[[6,1],[5,1],[4,1],[3,1],[2,1],[1,1],[0,1]],"FUTBOL":[[14,14],[13,14],[12,14],[11,14],[10,14],[9,14]],"GÜREŞ":[[9,0],[9,1],[9,2],[9,3],[9,4]],"TENİS":[[11,1],[11,2],[11,3],[11,4],[11,5]],"YÜZME":[[1,5],[2,5],[3,5],[4,5],[5,5]],"JUDO":[[11,0],[12,1],[13,2],[14,3]],"KAMP":[[8,11],[7,11],[6,11],[5,11]],"KUPA":[[12,2],[12,3],[12,4],[12,5]]}},{"id":41,"type":"large","theme":"Hava Olayları","size":15,"words":["YAĞMUR","KAR","DOLU","RÜZGÂR","FIRTINA","HORTUM","SİS","KIRAĞI","ŞİMŞEK","GÖK","BULUT","İKLİM"],"grid":[["Ğ","G","C","F","D","U","U","Ö","Ç","D","Ç","K","E","L","L"],["I","K","Ç","O","İ","U","F","L","H","L","Ğ","E","Y","Ç","C"],["E","Ü","R","S","H","V","Ş","Ş","F","P","B","Ş","F","V","Y"],["I","D","C","Â","Ş","G","İ","J","I","N","B","M","S","H","Ğ"],["V","E","A","J","G","M","Y","L","R","O","T","İ","O","G","Ç"],["L","Ç","Ü","Ü","İ","Z","D","Ç","T","A","B","Ş","V","U","Y"],["G","D","F","L","V","J","Ü","İ","I","S","R","R","C","A","Ö"],["Ö","Ğ","K","K","V","H","C","R","N","S","İ","S","Ğ","A","C"],["F","İ","Z","R","A","L","O","Ü","A","D","C","M","Z","Y","V"],["T","Ü","I","Ç","B","R","L","R","B","E","U","Ö","K","V","T"],["J","U","M","A","J","S","K","E","T","R","İ","F","E","Ğ","Ğ"],["L","Z","L","U","L","O","D","D","B","U","P","P","P","G","R"],["H","M","K","U","G","Ö","K","Z","O","M","M","B","C","Ğ","J"],["D","K","F","R","B","Z","Ü","N","I","Ğ","A","R","I","K","G"],["R","Ü","O","Ü","A","J","Ü","Ş","İ","M","O","Ü","M","İ","Ö"]],"paths":{"FIRTINA":[[2,8],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8]],"YAĞMUR":[[5,14],[6,13],[7,12],[8,11],[9,10],[10,9]],"RÜZGÂR":[[7,7],[6,6],[5,5],[4,4],[3,3],[2,2]],"ŞİMŞEK":[[5,11],[4,11],[3,11],[2,11],[1,11],[0,11]],"KIRAĞI":[[13,13],[13,12],[13,11],[13,10],[13,9],[13,8]],"HORTUM":[[7,5],[8,6],[9,7],[10,8],[11,9],[12,10]],"BULUT":[[13,4],[12,3],[11,2],[10,1],[9,0]],"İKLİM":[[8,1],[7,2],[6,3],[5,4],[4,5]],"DOLU":[[11,6],[11,5],[11,4],[11,3]],"SİS":[[7,11],[7,10],[7,9]],"KAR":[[7,3],[8,4],[9,5]],"GÖK":[[12,4],[12,5],[12,6]]}},{"id":42,"type":"large","theme":"Duygu ve Değerler","size":15,"words":["SEVGİ","SAYGI","ADALET","MERHAMET","VEFA","SABIR","CESARET","DÜRÜSTLÜK","HOŞGÖRÜ","CÖMERT","DOSTLUK","BARIŞ"],"grid":[["Ü","M","N","İ","U","Ö","G","C","E","Ç","I","G","Y","A","S"],["G","S","G","Ğ","O","V","Ü","T","Ö","B","U","V","E","F","A"],["G","Ö","Y","Ü","J","İ","V","Y","E","M","E","G","Ö","I","Ş"],["Ü","K","U","L","T","S","O","D","T","Ş","E","İ","Ö","I","A"],["Ş","Ş","İ","Ö","Ö","D","Ö","F","V","Ü","Z","R","R","H","M"],["O","H","E","M","T","E","R","A","S","E","C","A","T","O","B"],["C","B","G","P","G","A","N","M","A","I","B","P","F","Ş","Ü"],["D","I","Ş","T","E","M","A","H","R","E","M","E","Ü","G","Y"],["Y","I","B","A","D","Ö","Ş","D","U","Ç","Y","N","Y","Ö","İ"],["C","İ","Ş","S","İ","G","V","E","S","J","Ö","Ç","I","R","H"],["A","D","A","L","E","T","I","D","E","T","K","Ü","R","Ü","M"],["R","I","E","Ş","O","Ş","Z","P","Ü","İ","G","S","Ö","V","E"],["J","K","Ü","L","T","S","Ü","R","Ü","D","H","T","Ş","H","D"],["E","T","A","Ş","Ö","J","Y","U","Ö","B","E","P","I","Ü","P"],["G","R","Ö","Ç","R","I","B","A","S","M","D","I","T","C","G"]],"paths":{"DÜRÜSTLÜK":[[12,9],[12,8],[12,7],[12,6],[12,5],[12,4],[12,3],[12,2],[12,1]],"MERHAMET":[[7,10],[7,9],[7,8],[7,7],[7,6],[7,5],[7,4],[7,3]],"CESARET":[[5,10],[5,9],[5,8],[5,7],[5,6],[5,5],[5,4]],"HOŞGÖRÜ":[[4,13],[5,13],[6,13],[7,13],[8,13],[9,13],[10,13]],"DOSTLUK":[[3,7],[3,6],[3,5],[3,4],[3,3],[3,2],[3,1]],"CÖMERT":[[0,7],[1,8],[2,9],[3,10],[4,11],[5,12]],"ADALET":[[10,0],[10,1],[10,2],[10,3],[10,4],[10,5]],"SABIR":[[14,8],[14,7],[14,6],[14,5],[14,4]],"BARIŞ":[[6,10],[5,11],[4,12],[3,13],[2,14]],"SAYGI":[[0,14],[0,13],[0,12],[0,11],[0,10]],"SEVGİ":[[9,8],[9,7],[9,6],[9,5],[9,4]],"VEFA":[[1,11],[1,12],[1,13],[1,14]]}},{"id":43,"type":"large","theme":"Geleneksel Yaşam","size":15,"words":["KÖY","TARLA","BAHÇE","ÇİFTLİK","DEĞİRMEN","ÇOBAN","KAVAL","HALI","KİLİM","ÇİNİ","ELBİSE","ZANAAT"],"grid":[["A","Ğ","F","G","Ş","C","İ","Ğ","Ü","Ç","T","A","N","B","J"],["L","T","K","E","Z","K","M","Z","J","İ","O","E","J","Ç","V"],["M","N","A","B","O","Ç","Ü","Y","Ö","R","M","U","S","G","E"],["L","C","Ü","Y","B","H","A","I","Ğ","R","Ç","C","I","E","Z"],["J","E","T","C","O","Z","C","T","İ","Ç","I","P","E","P","Z"],["M","Ş","A","K","R","E","A","Ğ","İ","P","Z","K","L","E","B"],["Ç","I","F","F","K","A","E","N","Ş","O","T","T","B","O","Ğ"],["S","H","H","G","N","D","İ","Ç","B","M","J","Ö","İ","O","V"],["M","D","B","A","İ","A","Ç","K","C","İ","H","V","S","S","R"],["P","A","Z","M","F","Ç","İ","A","F","L","E","R","E","Y","H"],["C","L","M","Y","L","Ç","F","H","Ü","İ","J","M","M","Ö","Z"],["H","R","S","Ğ","A","C","T","R","O","K","J","E","İ","K","Z"],["J","A","İ","E","V","L","L","E","Ç","H","A","B","B","Ğ","L"],["L","T","L","Ğ","A","G","İ","V","Ğ","Ö","B","D","U","Ş","S"],["Ç","C","S","I","K","İ","K","Ü","O","K","U","Ö","G","O","B"]],"paths":{"DEĞİRMEN":[[7,5],[6,6],[5,7],[4,8],[3,9],[2,10],[1,11],[0,12]],"ÇİFTLİK":[[8,6],[9,6],[10,6],[11,6],[12,6],[13,6],[14,6]],"ELBİSE":[[4,12],[5,12],[6,12],[7,12],[8,12],[9,12]],"ZANAAT":[[9,2],[8,3],[7,4],[6,5],[5,6],[4,7]],"ÇOBAN":[[2,5],[2,4],[2,3],[2,2],[2,1]],"BAHÇE":[[12,11],[12,10],[12,9],[12,8],[12,7]],"KİLİM":[[11,9],[10,9],[9,9],[8,9],[7,9]],"TARLA":[[13,1],[12,1],[11,1],[10,1],[9,1]],"KAVAL":[[14,4],[13,4],[12,4],[11,4],[10,4]],"HALI":[[11,0],[12,1],[13,2],[14,3]],"ÇİNİ":[[4,9],[5,8],[6,7],[7,6]],"KÖY":[[11,13],[10,13],[9,13]]}},{"id":44,"type":"large","theme":"Bilgisayar Bilimi","size":15,"words":["ALGORİTMA","VERİ","TABANI","YAZILIM","DONANIM","AĞ","GÜVENLİK","ŞİFRE","BULUT","SUNUCU","KOD","DOSYA"],"grid":[["B","N","Ö","Z","N","Ü","Ö","S","A","P","D","Ç","U","L","E"],["E","T","V","F","Ü","F","D","B","Y","K","C","S","K","A","F"],["V","U","E","R","D","V","P","Ğ","S","I","T","Ü","C","M","C"],["J","L","R","O","J","O","I","Y","O","Ğ","N","L","Y","T","A"],["Ü","U","İ","Ş","P","Ö","N","Ü","D","K","Ç","K","D","İ","D"],["Ö","B","Ö","Ö","U","Ç","Ç","Ö","U","Ç","Ü","H","Y","R","O"],["Z","İ","Z","K","Ğ","S","J","Ş","İ","F","R","E","R","O","M"],["Ö","P","M","B","U","E","Ğ","J","D","P","P","S","Ş","G","J"],["B","J","Z","N","Z","I","I","N","A","B","A","T","D","L","Ş"],["G","B","U","T","K","M","Ğ","Z","İ","A","I","V","O","A","Ü"],["H","C","H","O","Ğ","V","M","Y","Ş","S","Ç","Y","N","G","D"],["U","H","D","T","L","U","V","I","Ğ","Ğ","T","K","A","P","R"],["K","İ","L","N","E","V","Ü","G","C","A","F","L","N","F","V"],["K","T","M","U","N","M","I","L","I","Z","A","Y","I","Y","İ"],["V","B","N","Ü","E","C","H","Ş","N","J","D","U","M","Y","N"]],"paths":{"ALGORİTMA":[[9,13],[8,13],[7,13],[6,13],[5,13],[4,13],[3,13],[2,13],[1,13]],"GÜVENLİK":[[12,7],[12,6],[12,5],[12,4],[12,3],[12,2],[12,1],[12,0]],"DONANIM":[[8,12],[9,12],[10,12],[11,12],[12,12],[13,12],[14,12]],"YAZILIM":[[13,11],[13,10],[13,9],[13,8],[13,7],[13,6],[13,5]],"TABANI":[[8,11],[8,10],[8,9],[8,8],[8,7],[8,6]],"SUNUCU":[[6,5],[7,4],[8,3],[9,2],[10,1],[11,0]],"DOSYA":[[4,8],[3,8],[2,8],[1,8],[0,8]],"ŞİFRE":[[6,7],[6,8],[6,9],[6,10],[6,11]],"BULUT":[[5,1],[4,1],[3,1],[2,1],[1,1]],"VERİ":[[1,2],[2,2],[3,2],[4,2]],"KOD":[[9,4],[10,3],[11,2]],"AĞ":[[12,9],[11,9]]}}];
+
+    let currentPuzzleIndex = 0;
+    let puzzle = null;
+    let selected = [];
+    let found = new Set();
+    let dragging = false;
+    let timer = 0;
+    let interval = null;
+
+    const el = id => document.getElementById(id);
+    const grid = el('letter-grid');
+
+    // Web Audio API Ses Efektleri
+    const audioCtx = (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined')
+      ? new (window.AudioContext || window.webkitAudioContext)()
+      : null;
+
+    function isSoundEnabled() {
+      const soundSetting = localStorage.getItem('tt-sound');
+      return soundSetting !== 'disabled';
+    }
+
+    function playSound(type) {
+      if (!audioCtx || !isSoundEnabled()) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+
+      if (type === 'select') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(480, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } else if (type === 'found') {
+        [523.25, 659.25, 783.99].forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + i * 0.08);
+          gain.gain.setValueAtTime(0.12, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.2);
+        });
+      } else if (type === 'victory') {
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.1);
+          gain.gain.setValueAtTime(0.15, now + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + i * 0.1);
+          osc.stop(now + i * 0.1 + 0.35);
+        });
+      }
+    }
+
+    function init() {
+      const select = el('puzzle-select');
+      select.innerHTML = '';
+      PUZZLES.forEach((p, i) => {
+        const o = document.createElement('option');
+        o.value = i;
+        const typeLabel = p.type === 'small' ? '11×11' : '15×15';
+        o.textContent = `Bölüm ${p.id} • ${p.theme} (${typeLabel})`;
+        select.appendChild(o);
+      });
+
+      select.addEventListener('change', () => {
+        load(Number(select.value));
+      });
+
+      el('clear-btn').addEventListener('click', clear);
+      el('answer-btn').addEventListener('click', solution);
+      el('check-btn').addEventListener('click', check);
+
+      el('prev-btn').addEventListener('click', () => {
+        if (currentPuzzleIndex > 0) {
+          load(currentPuzzleIndex - 1);
+        }
+      });
+      el('next-btn').addEventListener('click', () => {
+        if (currentPuzzleIndex < PUZZLES.length - 1) {
+          load(currentPuzzleIndex + 1);
+        }
+      });
+
+      el('modal-close-btn').addEventListener('click', () => {
+        el('celebration-overlay').classList.remove('active');
+      });
+      el('modal-next-btn').addEventListener('click', () => {
+        el('celebration-overlay').classList.remove('active');
+        if (currentPuzzleIndex < PUZZLES.length - 1) {
+          load(currentPuzzleIndex + 1);
+        } else {
+          load(0);
+        }
+      });
+
+      document.addEventListener('pointerup', finish);
+      load(0);
+    }
+
+    function load(i) {
+      currentPuzzleIndex = i;
+      el('puzzle-select').value = i;
+      puzzle = PUZZLES[i];
+      selected = [];
+      found = new Set();
+      dragging = false;
+
+      el('theme-badge').textContent = puzzle.theme;
+      el('type-badge').textContent = puzzle.type === 'small' ? '11 × 11 Izgara' : '15 × 15 İleri Düzey';
+      el('status-message').textContent = '';
+      el('celebration-overlay').classList.remove('active');
+
+      el('prev-btn').disabled = (i === 0);
+      el('next-btn').disabled = (i === PUZZLES.length - 1);
+
+      build();
+      words();
+      resetTimer();
+    }
+
+    function build() {
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = `repeat(${puzzle.size}, minmax(0, 1fr))`;
+      puzzle.grid.forEach((row, r) => {
+        row.forEach((letter, c) => {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.textContent = letter;
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+
+          cell.addEventListener('pointerdown', e => {
+            e.preventDefault();
+            dragging = true;
+            start(r, c);
+          });
+          cell.addEventListener('pointerenter', () => {
+            if (dragging) move(r, c);
+          });
+          grid.appendChild(cell);
+        });
+      });
+    }
+
+    function at(r, c) {
+      return grid.querySelector(`[data-r="${r}"][data-c="${c}"]`);
+    }
+
+    function start(r, c) {
+      selected = [{ r, c }];
+      playSound('select');
+      paint();
+    }
+
+    function move(r, c) {
+      if (!selected.length) return;
+      const a = selected[0];
+      const dr = r - a.r;
+      const dc = c - a.c;
+      if (dr !== 0 && dc !== 0 && Math.abs(dr) !== Math.abs(dc)) return;
+      const sr = dr === 0 ? 0 : dr / Math.abs(dr);
+      const sc = dc === 0 ? 0 : dc / Math.abs(dc);
+      const n = Math.max(Math.abs(dr), Math.abs(dc));
+      selected = Array.from({ length: n + 1 }, (_, idx) => ({
+        r: a.r + idx * sr,
+        c: a.c + idx * sc
+      }));
+      paint();
+    }
+
+    function paint() {
+      grid.querySelectorAll('.cell').forEach(x => {
+        if (x.classList.contains('found') || x.classList.contains('solution')) return;
+        x.classList.toggle('selected', selected.some(a => a.r == x.dataset.r && a.c == x.dataset.c));
+      });
+    }
+
+    function finish() {
+      if (!dragging) return;
+      dragging = false;
+      if (!selected.length) return;
+
+      const text = selected.map(a => puzzle.grid[a.r][a.c]).join('');
+      const rev = [...text].reverse().join('');
+      const word = puzzle.words.includes(text) ? text : (puzzle.words.includes(rev) ? rev : null);
+
+      if (word && !found.has(word)) {
+        found.add(word);
+        playSound('found');
+        selected.forEach(a => {
+          const x = at(a.r, a.c);
+          if (x) {
+            x.classList.remove('selected');
+            x.classList.add('found');
+          }
+        });
+        words();
+        if (found.size === puzzle.words.length) {
+          clearInterval(interval);
+          playSound('victory');
+          const elapsed = el('timer-text').textContent.replace('Süre: ', '');
+          el('celebration-text').textContent = `${puzzle.theme} temalı bulmacadaki tüm (${puzzle.words.length}) kelimeleri ${elapsed} sürede buldunuz!`;
+          setTimeout(() => {
+            el('celebration-overlay').classList.add('active');
+          }, 300);
+        }
+      } else {
+        clear();
+      }
+      selected = [];
+    }
+
+    function clear() {
+      selected = [];
+      grid.querySelectorAll('.selected').forEach(x => x.classList.remove('selected'));
+    }
+
+    function words() {
+      const list = el('word-list');
+      list.innerHTML = '';
+      puzzle.words.forEach(word => {
+        const li = document.createElement('li');
+        const ok = found.has(word);
+        if (ok) li.className = 'found';
+        const a = document.createElement('span');
+        a.textContent = word;
+        const b = document.createElement('span');
+        b.className = 'badge-state';
+        b.textContent = ok ? '✓' : '';
+        li.append(a, b);
+        list.appendChild(li);
+      });
+      el('progress-counter').textContent = `${found.size} / ${puzzle.words.length}`;
+    }
+
+    function solution() {
+      clear();
+      found = new Set(puzzle.words);
+      grid.querySelectorAll('.cell').forEach(x => x.classList.remove('found', 'solution'));
+      puzzle.words.forEach(word => {
+        (puzzle.paths[word] || []).forEach(([r, c]) => {
+          const x = at(r, c);
+          if (x) x.classList.add('solution');
+        });
+      });
+      words();
+      say('Cevap anahtarı gösterildi.', 'answer');
+      clearInterval(interval);
+    }
+
+    function check() {
+      say(
+        found.size === puzzle.words.length
+          ? 'Harika! Bulmaca tamamen çözüldü.'
+          : `${found.size} / ${puzzle.words.length} kelime buldunuz. Devam edin.`,
+        found.size === puzzle.words.length ? 'success' : 'info'
+      );
+    }
+
+    function say(text, type) {
+      const s = el('status-message');
+      s.textContent = text;
+      s.style.color = type === 'success' ? '#0369a1' : (type === 'answer' ? '#c2410c' : '#0284c7');
+    }
+
+    function resetTimer() {
+      clearInterval(interval);
+      timer = 0;
+      el('timer-text').textContent = 'Süre: 00:00';
+      interval = setInterval(() => {
+        timer++;
+        const mins = String(Math.floor(timer / 60)).padStart(2, '0');
+        const secs = String(timer % 60).padStart(2, '0');
+        el('timer-text').textContent = `Süre: ${mins}:${secs}`;
+      }, 1000);
+    }
+
+    init();
+    </script>
+
+
+
+
+  
+  
+  
+
+      
+
+      
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

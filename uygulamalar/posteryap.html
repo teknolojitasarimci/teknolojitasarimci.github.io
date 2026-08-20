@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Yap v1.0</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/lib/jspdf.umd.min.js"></script>
+
+
+<style>
+        body {
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, .logo, .post-detail-title, .comments-header-title {
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+        }
+
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --primary-light: rgba(2, 132, 199, 0.1);
+            --border: rgba(2, 132, 199, 0.15);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-sub: #64748b;
+            --success: #10b981;
+            --danger: #e53e3e;
+        }
+
+        #main-container, #main-container *, .modal-overlay, .modal-overlay * { box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif !important; -webkit-font-smoothing: antialiased; }
+        #main-container ul { list-style: none !important; margin: 0; padding: 0; }
+        #main-container ul li { padding-left: 0 !important; }
+        #main-container ul li::before { content: none !important; }
+
+        #main-container {
+            max-width: 1240px;
+            margin: 30px auto;
+            padding: 0 !important;
+            background: var(--bg-card);
+            border: 1.5px solid var(--primary);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .main-header { padding: 12px 28px; background: transparent; border: none; border-bottom: 1.5px solid var(--primary); display: flex; flex-direction: row; align-items: center; justify-content: flex-start; text-align: left; gap: 12px; position: relative; }
+        .main-header h1 { font-size: 1.3rem; color: var(--primary); font-weight: 800; letter-spacing: 0.02em; margin: 0; }
+        .main-header-actions { display: flex; align-items: center; gap: 10px; margin: 0; width: auto; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 50; }
+        #btn-info-open { font-size: 17px; font-weight: 800; line-height: 1; display: inline-flex; align-items: center; justify-content: center; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; }
+        .action-btn { width: 38px; height: 38px; border-radius: 50%; background: white; color: var(--primary); border: none; cursor: pointer; transition: all 0.25s ease; text-decoration: none; flex-shrink: 0; position: relative; z-index: 10; pointer-events: auto; }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+        .app-body { background: transparent; border: none; padding: 20px; }
+        .app-grid { display: grid; grid-template-columns: 2fr 1.7fr 1.4fr; gap: 18px; align-items: start; }
+        @media (max-width: 1100px) {
+            .app-grid { grid-template-columns: 1fr 1fr; }
+            .col3 { grid-column: 1 / -1; }
+        }
+        @media (max-width: 760px) {
+            #main-container { margin: 15px auto; border-radius: 16px; box-shadow: none; }
+            /* app-body border-radius removed */
+            .app-grid { grid-template-columns: 1fr; }
+            .col3 { grid-column: auto; }
+        }
+
+        .panel { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.08); }
+        .panel-header { background: white; color: var(--primary); border-bottom: 2px solid var(--primary); font-weight: 700; font-size: 0.9rem; padding: 10px 14px; letter-spacing: 0.01em; }
+        .panel-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+        .panel + .panel { margin-top: 18px; }
+
+        .p-label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
+        .p-note { font-size: 0.8rem; color: var(--text-sub); background: #f0f4f8; padding: 10px; border-radius: 8px; border-left: 4px solid var(--primary); line-height: 1.5; }
+        .p-note strong { color: var(--primary); }
+
+        .p-btn { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; }
+        .p-btn:hover:not(:disabled) { background: var(--primary-hover); }
+        .p-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .p-btn-danger { background: var(--danger); }
+        .p-btn-danger:hover:not(:disabled) { background: #c53030; }
+        .p-btn-success { background: var(--success); }
+        .p-btn-success:hover:not(:disabled) { background: #2f855a; }
+        .p-btn-block { width: 100%; }
+
+        .p-input, .p-select { padding: 9px 12px; border: 1px solid #b0b7c2; border-radius: 8px; font-size: 0.9rem; background: white; color: var(--text-main); width: 100%; }
+        .p-input:focus, .p-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+
+        .p-row { display: flex; gap: 8px; align-items: center; }
+
+        .drop-zone { border: 2px dashed var(--primary); border-radius: 10px; padding: 26px 14px; text-align: center; color: var(--text-sub); font-size: 0.85rem; background: #f8fafc; transition: all 0.2s ease; cursor: pointer; }
+        .drop-zone.dragover { background: #f0fff4; border-color: var(--success); }
+        .drop-zone svg { width: 34px; height: 34px; color: var(--primary); margin-bottom: 6px; }
+
+        #main-preview { width: 100%; max-height: 300px; object-fit: contain; background: #f8fafc; border: 1px dashed #b0b7c2; border-radius: 10px; min-height: 160px; display: flex; align-items: center; justify-content: center; }
+        #main-preview img { max-width: 100%; max-height: 290px; display: block; border-radius: 6px; }
+
+        .tile-scroll { max-height: 320px; overflow: auto; border: 2px dashed var(--primary); border-radius: 10px; background: white; padding: 6px; }
+        .tile-grid { display: grid; gap: 2px; width: max-content; }
+        .tile-cell { border: 1px solid #eee; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--text-sub); overflow: hidden; }
+        .tile-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .transform-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+        .spin-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .spin-btn { width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--border); background: white; color: var(--primary); font-size: 1.2rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease; }
+        .spin-btn:hover:not(:disabled) { background: var(--primary-light); }
+        .spin-btn:disabled { color: #a0aec0; cursor: not-allowed; }
+        #spin-columns { width: 70px; height: 40px; text-align: center; font-size: 1rem; font-weight: 700; border: 1px solid #b0b7c2; border-radius: 8px; appearance: textfield; -moz-appearance: textfield; }
+        #spin-columns::-webkit-inner-spin-button, #spin-columns::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .adj-row { display: flex; flex-direction: column; gap: 4px; }
+        .adj-top { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
+        .adj-val { background: #f0f4f8; color: var(--primary); font-weight: 700; padding: 2px 8px; border-radius: 4px; min-width: 42px; text-align: center; }
+        .adj-row input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #e2e8f0; outline: none; }
+        .adj-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); cursor: pointer; border: 2px solid white; box-shadow: 0 0 0 1px var(--primary); }
+        .adj-row input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--primary); cursor: pointer; border: 2px solid white; }
+
+        .status-msg { display: none; padding: 10px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-align: center; }
+        .status-msg.success { display: block; background: #e6fcec; color: var(--success); border: 1px solid var(--success); }
+        .status-msg.error { display: block; background: #fed7d7; color: var(--danger); border: 1px solid var(--danger); }
+
+        .size-info { font-size: 0.85rem; color: var(--text-muted); background: #f0f4f8; padding: 10px; border-radius: 8px; line-height: 1.6; }
+        .size-info strong { color: var(--primary); }
+
+        .hidden { display: none !important; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal-content { background: white; border-radius: 14px; max-width: 480px; width: 100%; box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25); overflow: hidden; }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; background: var(--primary); color: white; padding: 12px 18px; }
+        .modal-header h3 { margin: 0; font-size: 1rem; font-weight: 700; }
+        .btn-close-modal { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.2); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+        .btn-close-modal:hover { background: rgba(255, 255, 255, 0.35); }
+        .modal-body { padding: 18px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+        .modal-body ol { margin: 0 0 0 18px; padding: 0; }
+        .modal-body li { margin-bottom: 8px; }
+        .modal-body strong { color: var(--primary); }
+    
+        
+        .p-btn { border-radius: 25px !important; }
+        .spin-btn { border-radius: 50% !important; }
+
+        body.dark { --text-main: #e2e8f0; --text-muted: #94a3b8; --text-sub: #94a3b8; }
+        body.dark .app-body { background: #0f172a !important; }
+        body.dark .panel { background: #1e293b !important; border-color: #334155 !important; }
+        body.dark .panel-header { background: #0f172a !important; color: #38bdf8 !important; border-bottom-color: #334155 !important; }
+        body.dark .panel .p-label, body.dark .adj-top { color: #cbd5e1 !important; }
+        body.dark .p-note { background: #0f172a !important; color: #cbd5e1 !important; border: 1px solid #334155 !important; border-left: 4px solid var(--primary) !important; }
+        body.dark .p-note strong { color: #38bdf8 !important; }
+        body.dark .p-input, body.dark .p-select { background: #0f172a !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+        body.dark .drop-zone { background: #0f172a !important; border-color: #0284c7 !important; color: #cbd5e1 !important; }
+        body.dark .drop-zone.dragover { background: #122b33 !important; }
+        body.dark #main-preview { background: #0f172a !important; border-color: #334155 !important; }
+        body.dark #main-preview span { color: #94a3b8 !important; }
+        body.dark .tile-scroll { background: #0f172a !important; border-color: #0284c7 !important; }
+        body.dark .tile-cell { border-color: #334155 !important; background: #0f172a !important; color: #cbd5e1 !important; }
+        body.dark #tile-placeholder { color: #94a3b8 !important; background: #0f172a !important; }
+        body.dark .spin-btn { background: #0f172a !important; border-color: #334155 !important; color: #38bdf8 !important; }
+        body.dark .spin-btn:hover:not(:disabled) { background: #1e293b !important; border-color: #0284c7 !important; }
+        body.dark #spin-columns { background: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+        body.dark .adj-val { background: #0f172a !important; border: 1px solid #334155 !important; color: #38bdf8 !important; }
+        body.dark .adj-row input[type="range"] { background: #334155 !important; }
+        body.dark .size-info { background: #0f172a !important; border: 1px solid #334155 !important; color: #cbd5e1 !important; }
+        body.dark .size-info strong { color: #38bdf8 !important; }
+        body.dark .p-btn { background: #0284c7 !important; color: #ffffff !important; }
+        body.dark .p-btn:hover:not(:disabled) { background: #068299 !important; color: #ffffff !important; }
+        body.dark .p-btn-danger { background: #dc2626 !important; color: #ffffff !important; }
+        body.dark .p-btn-danger:hover:not(:disabled) { background: #b91c1c !important; color: #ffffff !important; }
+        body.dark .p-btn-success { background: #10b981 !important; color: #ffffff !important; }
+        body.dark .p-btn-success:hover:not(:disabled) { background: #059669 !important; color: #ffffff !important; }
+        body.dark .modal-content { background: #0f172a !important; border: 1px solid #334155 !important; color: #cbd5e1 !important; }
+        body.dark .modal-body { color: #cbd5e1 !important; }
+
+    </style>
+    <script src="../js/theme.js"></script>
+</head>
+<body>
+    <!-- Site Üst Menüsü (teknolojitasarimci) -->
+
+    <div class="app-privacy-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><strong>Gizlilik Güvencesi:</strong> Bu uygulama internet üzerinden değil, bir script (kod) olarak doğrudan kendi cihazınızda çalışır. Girdiğiniz veriler ve dosyalar hiçbir sunucuya gönderilemez, kopyalanamaz, saklanamaz ve paylaşılamaz. Uygulamada veri toplama veya takip yoktur; tüm veriler yalnızca size aittir.</span>
+    </div>
+
+    <!-- Standart Uygulama Başlık Şeridi -->
+    <div class="app-main-header">
+        <div class="app-main-header-left">
+            <div class="app-logo-badge">
+                <img src="posteryap-icon.jpg" alt="Poster Yap Logo" class="app-logo-img">
+            </div>
+            <div class="app-title-group">
+                <h1 class="app-title">Poster Yap v1.0</h1>
+            </div>
+        </div>
+        <div class="app-main-header-right">
+            <button type="button" class="how-to-use-btn" id="btn-info-open">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Nasıl Kullanılır?</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="app-grid">
+
+                <!-- Sütun 1: Yükleme + Önizleme -->
+                <div class="app-col">
+                    <div class="panel">
+                        <div class="panel-header">1. Görsel Yükleme</div>
+                        <div class="panel-body">
+                            <div class="p-label">a) Cihazınızdan Yükleyin:</div>
+                            <button id="btn-load-device" class="p-btn p-btn-block">Görsel Yükle</button>
+                            <input type="file" id="file-input" accept="image/*" class="hidden">
+
+                            <div class="p-label">b) URL'den Yükleyin:</div>
+                            <div class="p-row">
+                                <input type="text" id="txt-url" class="p-input" placeholder="https://example.com/gorsel.jpg">
+                                <button id="btn-load-url" class="p-btn" style="flex-shrink: 0;">Yükle</button>
+                            </div>
+
+                            <div class="p-label">c) Önizleme alanına sürükleyip bırakın:</div>
+                            <div id="drop-zone" class="drop-zone">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                <div>Görseli buraya sürükleyin<br>veya yüklemek için tıklayın</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">2. PDF Önizleme Alanı</div>
+                        <div class="panel-body">
+                            <div class="tile-scroll" id="tile-scroll">
+                                <div class="tile-grid" id="tile-grid">
+                                    <div class="tile-cell" id="tile-placeholder" style="min-width: 220px; min-height: 120px; border: none; font-style: italic; font-size: 0.8rem;">Görsel yükleyin, kağıt ve sütun ayarlarını yapın — posterin kaç parçaya bölüneceği burada görünecek.</div>
+                                </div>
+                            </div>
+                            <div id="status-msg" class="status-msg"></div>
+                            <button id="btn-reset-all" class="p-btn p-btn-danger p-btn-block">Tüm Ayarları Sıfırla</button>
+                            <div id="size-info" class="size-info"><strong>Poster Boyutları:</strong><br>Henüz görsel yüklenmedi.</div>
+                            <div class="p-note"><strong>Not:</strong> Seçtiğiniz kağıdın yönüne ve sütun sayısına göre posterinizin kaç kağıttan oluşacağını önizlemeden görebilirsiniz. Kenar boşlukları (varsayılan 10 mm) PDF'e otomatik eklenir.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sütun 2: Döndürme + Kağıt + Sütun -->
+                <div class="app-col">
+                    <div class="panel">
+                        <div class="panel-header">3. Kırpma ve Döndürme Alanı</div>
+                        <div class="panel-body">
+                            <div id="main-preview">
+                                <span style="color: var(--text-sub); font-size: 0.85rem;">Görsel yükleyin.</span>
+                            </div>
+                            <div class="transform-grid">
+                                <button id="btn-rotate-left" class="p-btn">Sol</button>
+                                <button id="btn-rotate-right" class="p-btn">Sağ</button>
+                                <button id="btn-flip-v" class="p-btn">Dikey</button>
+                                <button id="btn-flip-h" class="p-btn">Yatay</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">4. Kağıt Seçimi</div>
+                        <div class="panel-body">
+                            <div class="p-label">Kağıt Boyutu:</div>
+                            <select id="select-paper" class="p-select">
+                                <option value="a4">A4 (210 x 297 mm)</option>
+                                <option value="a3">A3 (297 x 420 mm)</option>
+                            </select>
+                            <div class="p-label">Kağıt Yönü:</div>
+                            <select id="select-orientation" class="p-select">
+                                <option value="p">Dikey (Portrait)</option>
+                                <option value="l">Yatay (Landscape)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">5. Sütun Sayısı</div>
+                        <div class="panel-body">
+                            <div class="p-label">Posteriniz yatayda kaç sayfa (sütun) olsun?</div>
+                            <div class="spin-row">
+                                <button id="btn-col-minus" class="spin-btn" aria-label="Sütun sayısını azalt">-</button>
+                                <input type="number" id="spin-columns" min="1" max="50" value="3" aria-label="Sütun sayısı">
+                                <button id="btn-col-plus" class="spin-btn" aria-label="Sütun sayısını artır">+</button>
+                            </div>
+                            <div class="p-note"><strong>Not:</strong> Posterinizin yatayda kaç kağıda bölüneceğini ayarlayın (en fazla 50). Dikeydeki kağıt sayısı otomatik hesaplanır.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sütun 3: Ayarlar + Yükseltme + Oluşturma -->
+                <div class="app-col col3">
+                    <div class="panel">
+                        <div class="panel-header">6. Görsel İnce Ayarları</div>
+                        <div class="panel-body">
+                            <div class="adj-row">
+                                <div class="adj-top"><span>Parlaklık</span><span class="adj-val" id="val-brightness">0</span></div>
+                                <input type="range" id="rng-brightness" min="0" max="200" value="100">
+                            </div>
+                            <div class="adj-row">
+                                <div class="adj-top"><span>Kontrast</span><span class="adj-val" id="val-contrast">0</span></div>
+                                <input type="range" id="rng-contrast" min="0" max="200" value="100">
+                            </div>
+                            <div class="adj-row">
+                                <div class="adj-top"><span>Detay</span><span class="adj-val" id="val-sharpness">0</span></div>
+                                <input type="range" id="rng-sharpness" min="0" max="20" value="10">
+                            </div>
+                            <div class="adj-row">
+                                <div class="adj-top"><span>Doygunluk</span><span class="adj-val" id="val-saturation">0</span></div>
+                                <input type="range" id="rng-saturation" min="0" max="200" value="100">
+                            </div>
+                            <div class="adj-row">
+                                <div class="adj-top"><span>Bulanıklık</span><span class="adj-val" id="val-blur">0.0</span></div>
+                                <input type="range" id="rng-blur" min="0" max="100" value="0">
+                            </div>
+                            <button id="btn-reset-adj" class="p-btn p-btn-danger p-btn-block">İnce Ayarları Sıfırla</button>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">7. Çözünürlüğü Yükselt (İsteğe Bağlı)</div>
+                        <div class="panel-body">
+                            <div class="p-label">Görselin çözünürlüğünü artır:</div>
+                            <div class="p-row">
+                                <select id="select-upscale" class="p-select" style="flex: 1;">
+                                    <option value="2">2X</option>
+                                    <option value="3">3X</option>
+                                    <option value="4">4X</option>
+                                </select>
+                                <button id="btn-upscale" class="p-btn" style="flex: 2;">Çözünürlüğü Yükselt</button>
+                            </div>
+                            <div class="p-note"><strong>Not:</strong> Bu işlem düşük çözünürlüklü görsellerde kaliteyi artırabilir. Yüksek çözünürlüklü görsellerde etkisi az olabilir ve işlem süresini artırabilir.</div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">8. Poster Oluştur</div>
+                        <div class="panel-body" style="align-items: center; text-align: center;">
+                            <button id="btn-generate-pdf" class="p-btn p-btn-success p-btn-block" style="min-height: 45px; font-size: 1rem;">Poster PDF'si Oluştur</button>
+                            <div class="p-note" style="width: 100%;"><strong>Not:</strong> Tüm ayarları yaptıktan sonra bu butona tıklayarak posterinizi yazdırılabilir PDF formatında indirebilirsiniz.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bilgi Kılavuzu -->
+    <div id="info-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="info-title">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="info-title">Poster Yap Kullanım Kılavuzu</h3>
+                <button class="btn-close-modal" id="btn-info-close" aria-label="Kapat">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li><strong>Görsel yükleyin:</strong> Cihazdan seçin, URL yapıştırın ya da önizleme alanına sürükleyip bırakın.</li>
+                    <li><strong>Döndürün:</strong> Gerekirse görseli döndürün veya aynalayın.</li>
+                    <li><strong>Kağıt ve sütun ayarlayın:</strong> A4/A3, dikey/yatay ve yataydaki sütun (kağıt) sayısı.</li>
+                    <li><strong>İnce ayar yapın:</strong> Parlaklık, kontrast, detay, doygunluk ve bulanıklık slaytlarını kullanın.</li>
+                    <li><strong>İsteğe bağlı:</strong> Düşük çözünürlüklü görseller için 2X-4X çözünürlük yükseltme.</li>
+                    <li><strong>PDF oluşturun:</strong> Poster PDF'si Oluştur butonuna tıklayın; parçalı yazdırma için hazır PDF'iniz indirilir.</li>
+                </ol>
+                <div class="p-note"><strong>İpucu:</strong> Kenar boşlukları (10 mm) her sayfaya otomatik eklenir. Parçaları keserek posterinizi birleştirebilirsiniz.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Alt Bilgisi (teknolojitasarimci) -->
+        
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Poster%20Yap%20Uygulamas%C4%B1%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#PosterYap</span>
+        <span class="tag-badge">#AfişTasarımı</span>
+        <span class="tag-badge">#ÖğrenciAfişleri</span>
+        <span class="tag-badge">#ProjePosteri</span>
+        <span class="tag-badge">#TasarımAraçları</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+      <!-- Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu uygulamayı nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya düşüncelerinizi yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+
+<footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+        'use strict';
+
+        const PDF_MARGIN_MM = 10;
+        const state = {
+            original: null,
+            current: null,
+            sourceName: '',
+            upscaledOnce: false,
+            processing: false,
+            baseDir: ''
+        };
+        const adjustments = { brightness: 1, contrast: 1, sharpness: 1, saturation: 1, blur: 0 };
+        let statusTimer = null;
+        let tileDebounce = null;
+
+        const $ = (id) => document.getElementById(id);
+
+        const elFileInput = $('file-input');
+        const elLoadDevice = $('btn-load-device');
+        const elLoadUrl = $('btn-load-url');
+        const elTxtUrl = $('txt-url');
+        const elDropZone = $('drop-zone');
+        const elMainPreview = $('main-preview');
+        const elTileGrid = $('tile-grid');
+        const elTileScroll = $('tile-scroll');
+        const elStatus = $('status-msg');
+        const elSizeInfo = $('size-info');
+        const elSpin = $('spin-columns');
+        const elSelectPaper = $('select-paper');
+        const elSelectOrient = $('select-orientation');
+        const elSelectUpscale = $('select-upscale');
+
+        const UI_DISABLED = [
+            'btn-rotate-left', 'btn-rotate-right', 'btn-flip-v', 'btn-flip-h',
+            'select-paper', 'select-orientation', 'select-upscale',
+            'rng-brightness', 'rng-contrast', 'rng-sharpness', 'rng-saturation', 'rng-blur',
+            'btn-reset-adj', 'btn-upscale', 'btn-generate-pdf', 'btn-reset-all',
+            'btn-col-minus', 'btn-col-plus', 'spin-columns'
+        ];
+
+        function setControlsEnabled(enabled) {
+            if (state.processing && enabled) return;
+            UI_DISABLED.forEach((id) => { const el = $(id); if (el) el.disabled = !enabled; });
+            if (enabled && state.upscaledOnce) {
+                $('btn-upscale').disabled = true;
+                $('select-upscale').disabled = true;
+            }
+        }
+
+        function showMessage(text, level, duration) {
+            elStatus.textContent = text;
+            elStatus.className = 'status-msg ' + (level || 'success');
+            if (statusTimer) clearTimeout(statusTimer);
+            if (duration && duration > 0) {
+                statusTimer = setTimeout(() => { elStatus.className = 'status-msg'; }, duration);
+            }
+        }
+
+        function hideMessage() {
+            if (statusTimer) clearTimeout(statusTimer);
+            elStatus.className = 'status-msg';
+        }
+
+        function updateSizeInfo(img) {
+            if (img) {
+                elSizeInfo.innerHTML = '<strong>Yüklenen Görsel Boyutları:</strong><br>En (Width): ' + img.naturalWidth + ' piksel<br>Boy (Height): ' + img.naturalHeight + ' piksel';
+            } else {
+                elSizeInfo.innerHTML = '<strong>Poster Boyutları:</strong><br>Henüz görsel yüklenmedi.';
+            }
+        }
+
+        function canvasToImage(canvas) {
+            return new Promise((resolve, reject) => {
+                canvas.toBlob((blob) => {
+                    if (!blob) { reject(new Error('Görsel işlenemedi.')); return; }
+                    const url = URL.createObjectURL(blob);
+                    const img = new Image();
+                    img.onload = () => { resolve(img); };
+                    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Görsel okunamadı.')); };
+                    img.src = url;
+                }, 'image/png');
+            });
+        }
+
+        function convolveSharpness(imgData, strength) {
+            if (!strength || Math.abs(strength) < 0.001) return;
+            const data = imgData.data;
+            const w = imgData.width;
+            const h = imgData.height;
+            const src = new Uint8ClampedArray(data);
+            const k = 1 + 8 * strength;
+            for (let y = 0; y < h; y++) {
+                const y0 = Math.max(0, y - 1);
+                const y1 = Math.min(h - 1, y + 1);
+                for (let x = 0; x < w; x++) {
+                    const x0 = Math.max(0, x - 1);
+                    const x1 = Math.min(w - 1, x + 1);
+                    const idx = (y * w + x) * 4;
+                    let r = 0, g = 0, b = 0;
+                    for (let yy = y0; yy <= y1; yy++) {
+                        const rowOff = yy * w;
+                        for (let xx = x0; xx <= x1; xx++) {
+                            const o = (rowOff + xx) * 4;
+                            r += src[o]; g += src[o + 1]; b += src[o + 2];
+                        }
+                    }
+                    const n = 9;
+                    data[idx] = Math.min(255, Math.max(0, k * src[idx] - strength * r / n));
+                    data[idx + 1] = Math.min(255, Math.max(0, k * src[idx + 1] - strength * g / n));
+                    data[idx + 2] = Math.min(255, Math.max(0, k * src[idx + 2] - strength * b / n));
+                }
+            }
+        }
+
+        function applyAdjustmentsToImage(srcImg) {
+            const canvas = document.createElement('canvas');
+            canvas.width = srcImg.naturalWidth;
+            canvas.height = srcImg.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(srcImg, 0, 0);
+
+            const b = adjustments.brightness;
+            const c = adjustments.contrast;
+            const s = adjustments.saturation;
+            if (b !== 1 || c !== 1 || s !== 1) {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const d = imgData.data;
+                for (let i = 0; i < d.length; i += 4) {
+                    let r = d[i], g = d[i + 1], bl = d[i + 2];
+                    if (b !== 1) { r *= b; g *= b; bl *= b; }
+                    if (c !== 1) { r = (r - 128) * c + 128; g = (g - 128) * c + 128; bl = (bl - 128) * c + 128; }
+                    if (s !== 1) {
+                        const luma = 0.299 * r + 0.587 * g + 0.114 * bl;
+                        r = luma + (r - luma) * s;
+                        g = luma + (g - luma) * s;
+                        bl = luma + (bl - luma) * s;
+                    }
+                    d[i] = Math.min(255, Math.max(0, r));
+                    d[i + 1] = Math.min(255, Math.max(0, g));
+                    d[i + 2] = Math.min(255, Math.max(0, bl));
+                }
+                ctx.putImageData(imgData, 0, 0);
+            }
+
+            if (adjustments.sharpness !== 1) {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                convolveSharpness(imgData, adjustments.sharpness - 1);
+                ctx.putImageData(imgData, 0, 0);
+            }
+
+            let out = canvas;
+            if (adjustments.blur > 0) {
+                const c2 = document.createElement('canvas');
+                c2.width = canvas.width;
+                c2.height = canvas.height;
+                const ctx2 = c2.getContext('2d');
+                ctx2.filter = 'blur(' + adjustments.blur + 'px)';
+                ctx2.drawImage(canvas, 0, 0);
+                out = c2;
+            }
+            return canvasToImage(out);
+        }
+
+        async function refreshCurrentFromOriginal() {
+            if (!state.original) return;
+            state.current = await applyAdjustmentsToImage(state.original);
+        }
+
+        function renderMainPreview() {
+            if (!state.current) {
+                elMainPreview.innerHTML = '<span style="color: var(--text-sub); font-size: 0.85rem;">Görsel yükleyin.</span>';
+                return;
+            }
+            elMainPreview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = state.current.src;
+            img.alt = 'Önizleme';
+            elMainPreview.appendChild(img);
+        }
+
+        function getPageSizes() {
+            const paper = elSelectPaper.value;
+            const orient = elSelectOrient.value;
+            let w, h;
+            if (paper === 'a4') { w = 210; h = 297; } else { w = 297; h = 420; }
+            if (orient === 'l') { const t = w; w = h; h = t; }
+            return { width: w, height: h };
+        }
+
+        function computeTiles() {
+            const columns = Math.max(1, parseInt(elSpin.value, 10) || 1);
+            const page = getPageSizes();
+            const printableW = page.width - 2 * PDF_MARGIN_MM;
+            const printableH = page.height - 2 * PDF_MARGIN_MM;
+            const paperAspect = printableW / printableH;
+            const imgW = state.current.naturalWidth;
+            const imgH = state.current.naturalHeight;
+            const tileW = imgW / columns;
+            const idealTileH = tileW / paperAspect;
+            const rows = Math.max(1, Math.ceil(imgH / idealTileH));
+            return { columns, rows, tileW, idealTileH, paperAspect, imgW, imgH, page, printableW, printableH };
+        }
+
+        function renderTiledPreview() {
+            if (tileDebounce) clearTimeout(tileDebounce);
+            tileDebounce = setTimeout(doRenderTiledPreview, 120);
+        }
+
+        function doRenderTiledPreview() {
+            elTileGrid.innerHTML = '';
+            if (!state.current) {
+                elTileGrid.innerHTML = '<div class="tile-cell" style="min-width: 220px; min-height: 120px; border: none; font-style: italic; font-size: 0.8rem;">Görsel yükleyin, kağıt ve sütun ayarlarını yapın — posterin kaç parçaya bölüneceği burada görünecek.</div>';
+                return;
+            }
+
+            const t = computeTiles();
+            const total = t.rows * t.columns;
+            const showThumbs = total <= 200;
+
+            const availW = Math.max(80, elTileScroll.clientWidth - 24);
+            const thumbW = Math.max(24, Math.floor(availW / t.columns));
+            const thumbH = Math.max(24, Math.floor(thumbW / t.paperAspect));
+
+            elTileGrid.style.gridTemplateColumns = 'repeat(' + t.columns + ', ' + thumbW + 'px)';
+            elTileGrid.style.gridTemplateRows = 'repeat(' + t.rows + ', ' + thumbH + 'px)';
+
+            for (let r = 0; r < t.rows; r++) {
+                for (let c = 0; c < t.columns; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'tile-cell';
+                    cell.title = 'Sayfa ' + (r + 1) + '-' + (c + 1);
+                    if (showThumbs) {
+                        const sx = Math.floor(c * t.tileW);
+                        const sy = Math.floor(r * t.idealTileH);
+                        const sw = Math.max(1, Math.ceil(t.tileW));
+                        const sh = Math.max(1, Math.ceil(Math.min(t.idealTileH, t.imgH - sy)));
+                        const tc = document.createElement('canvas');
+                        tc.width = sw;
+                        tc.height = sh;
+                        const tctx = tc.getContext('2d');
+                        tctx.drawImage(state.current, sx, sy, sw, sh, 0, 0, sw, sh);
+                        const img = document.createElement('img');
+                        img.alt = (r + 1) + '-' + (c + 1);
+                        img.src = tc.toDataURL('image/jpeg', 0.7);
+                        cell.appendChild(img);
+                    } else {
+                        cell.textContent = (r + 1) + '-' + (c + 1);
+                        cell.style.fontSize = '0.65rem';
+                    }
+                    elTileGrid.appendChild(cell);
+                }
+            }
+        }
+
+        function transformImage(kind) {
+            if (!state.current || state.processing) return;
+            const img = state.current;
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+            let cw = w, ch = h;
+            if (kind === 'left' || kind === 'right') { cw = h; ch = w; }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = cw;
+            canvas.height = ch;
+            const ctx = canvas.getContext('2d');
+
+            state.processing = true;
+            setControlsEnabled(false);
+            showMessage('Görsel dönüştürülüyor...', 'success', 0);
+
+            if (kind === 'left') {
+                ctx.translate(0, w);
+                ctx.rotate(-Math.PI / 2);
+            } else if (kind === 'right') {
+                ctx.translate(h, 0);
+                ctx.rotate(Math.PI / 2);
+            } else if (kind === 'flip-v') {
+                ctx.translate(0, h);
+                ctx.scale(1, -1);
+            } else if (kind === 'flip-h') {
+                ctx.translate(w, 0);
+                ctx.scale(-1, 1);
+            }
+            ctx.drawImage(img, 0, 0);
+
+            canvasToImage(canvas).then((newImg) => {
+                state.current = newImg;
+                state.upscaledOnce = false;
+                renderMainPreview();
+                updateSizeInfo(newImg);
+                renderTiledPreview();
+                showMessage('Dönüşüm başarıyla uygulandı.', 'success', 3000);
+            }).catch((e) => {
+                showMessage('Dönüşüm hatası: ' + e.message, 'error', 6000);
+            }).finally(() => {
+                state.processing = false;
+                setControlsEnabled(true);
+                hideMessage();
+            });
+        }
+
+        function onAdjustmentChanged() {
+            if (state.processing) return;
+            const vals = {
+                brightness: parseInt($('rng-brightness').value, 10) / 100,
+                contrast: parseInt($('rng-contrast').value, 10) / 100,
+                sharpness: parseInt($('rng-sharpness').value, 10) / 10,
+                saturation: parseInt($('rng-saturation').value, 10) / 100,
+                blur: parseInt($('rng-blur').value, 10) / 10
+            };
+            $('val-brightness').textContent = String(parseInt($('rng-brightness').value, 10) - 100);
+            $('val-contrast').textContent = String(parseInt($('rng-contrast').value, 10) - 100);
+            $('val-sharpness').textContent = String(parseInt($('rng-sharpness').value, 10) - 10);
+            $('val-saturation').textContent = String(parseInt($('rng-saturation').value, 10) - 100);
+            $('val-blur').textContent = vals.blur.toFixed(1);
+
+            Object.assign(adjustments, vals);
+
+            if (state.original) {
+                state.processing = true;
+                setControlsEnabled(false);
+                refreshCurrentFromOriginal().then(() => {
+                    renderMainPreview();
+                    renderTiledPreview();
+                }).catch((e) => {
+                    showMessage('İnce ayarlar uygulanamadı: ' + e.message, 'error', 6000);
+                }).finally(() => {
+                    state.processing = false;
+                    setControlsEnabled(true);
+                });
+            }
+        }
+
+        function resetAdjustments(updateUi) {
+            Object.assign(adjustments, { brightness: 1, contrast: 1, sharpness: 1, saturation: 1, blur: 0 });
+            if (updateUi) {
+                $('rng-brightness').value = 100;
+                $('rng-contrast').value = 100;
+                $('rng-sharpness').value = 10;
+                $('rng-saturation').value = 100;
+                $('rng-blur').value = 0;
+                $('val-brightness').textContent = '0';
+                $('val-contrast').textContent = '0';
+                $('val-sharpness').textContent = '0';
+                $('val-saturation').textContent = '0';
+                $('val-blur').textContent = '0.0';
+                if (state.original) {
+                    refreshCurrentFromOriginal().then(() => {
+                        renderMainPreview();
+                        renderTiledPreview();
+                        showMessage('İnce ayarlar sıfırlandı.', 'success', 2000);
+                    });
+                }
+            }
+        }
+
+        function upscale() {
+            if (!state.current || state.processing || state.upscaledOnce) {
+                if (state.upscaledOnce) {
+                    showMessage('Çözünürlük zaten bir kere yükseltildi. Tekrar için görseli sıfırlayın veya yeniden yükleyin.', 'error', 6000);
+                }
+                return;
+            }
+            const scale = parseInt(elSelectUpscale.value, 10);
+            const img = state.current;
+            const nw = img.naturalWidth * scale;
+            const nh = img.naturalHeight * scale;
+            const MAX_DIM = 30000;
+            if (nw > MAX_DIM || nh > MAX_DIM) {
+                showMessage('Maksimum boyut limiti (' + MAX_DIM + 'px) aşıldı.', 'error', 6000);
+                return;
+            }
+
+            state.processing = true;
+            setControlsEnabled(false);
+            showMessage(scale + 'X çözünürlük yükseltiliyor...', 'success', 0);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = nw;
+            canvas.height = nh;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, nw, nh);
+
+            canvasToImage(canvas).then((newImg) => {
+                state.current = newImg;
+                state.upscaledOnce = true;
+                renderMainPreview();
+                updateSizeInfo(newImg);
+                renderTiledPreview();
+                showMessage(scale + 'X çözünürlük başarıyla yükseltildi. Yeni boyut: ' + nw + 'x' + nh, 'success', 6000);
+            }).catch((e) => {
+                showMessage('Çözünürlük yükseltme hatası: ' + e.message, 'error', 6000);
+            }).finally(() => {
+                state.processing = false;
+                setControlsEnabled(true);
+                hideMessage();
+            });
+        }
+
+        function generatePdf() {
+            if (!state.current || state.processing) return;
+            if (typeof window.jspdf === 'undefined') {
+                showMessage('PDF kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.', 'error', 8000);
+                return;
+            }
+
+            const t = computeTiles();
+            const total = t.rows * t.columns;
+            state.processing = true;
+            setControlsEnabled(false);
+            showMessage('PDF oluşturuluyor, lütfen bekleyin...', 'success', 0);
+
+            setTimeout(function () {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({
+                        orientation: elSelectOrient.value === 'l' ? 'landscape' : 'portrait',
+                        unit: 'mm',
+                        format: [t.page.width, t.page.height]
+                    });
+
+                    const imgW = state.current.naturalWidth;
+                    const imgH = state.current.naturalHeight;
+
+                    for (let r = 0; r < t.rows; r++) {
+                        for (let c = 0; c < t.columns; c++) {
+                            const pageNum = r * t.columns + c + 1;
+                            showMessage('PDF Sayfası ' + pageNum + '/' + total + ' işleniyor...', 'success', 0);
+
+                            const sx = Math.floor(c * t.tileW);
+                            const sy = Math.floor(r * t.idealTileH);
+                            const sw = Math.max(1, Math.ceil(t.tileW));
+                            const sh = Math.max(1, Math.ceil(Math.min(t.idealTileH, imgH - sy)));
+
+                            const tc = document.createElement('canvas');
+                            tc.width = sw;
+                            tc.height = sh;
+                            const tctx = tc.getContext('2d');
+                            tctx.drawImage(state.current, sx, sy, sw, sh, 0, 0, sw, sh);
+
+                            const dataUrl = tc.toDataURL('image/jpeg', 0.9);
+                            const tileAspect = sw / sh;
+                            let scaledW, scaledH;
+                            if (tileAspect >= t.paperAspect) {
+                                scaledW = t.printableW;
+                                scaledH = scaledW / tileAspect;
+                            } else {
+                                scaledH = t.printableH;
+                                scaledW = scaledH * tileAspect;
+                            }
+                            const xPos = PDF_MARGIN_MM + (t.printableW - scaledW) / 2;
+                            const yPos = PDF_MARGIN_MM + (t.printableH - scaledH);
+
+                            doc.addImage(dataUrl, 'JPEG', xPos, yPos, scaledW, scaledH, undefined, 'FAST');
+
+                            if (pageNum < total) doc.addPage();
+                        }
+                    }
+
+                    const name = 'Poster-' + t.columns + 'x_' + elSelectPaper.value.toUpperCase() + '-PosterYap.pdf';
+                    doc.save(name);
+                    showMessage('PDF başarıyla oluşturuldu.', 'success', 6000);
+                } catch (e) {
+                    showMessage('PDF oluşturma hatası: ' + e.message, 'error', 8000);
+                } finally {
+                    state.processing = false;
+                    setControlsEnabled(true);
+                    hideMessage();
+                }
+            }, 50);
+        }
+
+        function resetAll() {
+            if (state.processing) return;
+            if (!state.original) {
+                showMessage('Sıfırlanacak bir görsel yüklenmemiş.', 'error', 3000);
+                return;
+            }
+            state.current = null;
+            state.upscaledOnce = false;
+            state.original = null;
+            resetAdjustments(false);
+            elSelectPaper.value = 'a4';
+            elSelectOrient.value = 'p';
+            elSelectUpscale.value = '2';
+            elSpin.value = '3';
+            elTxtUrl.value = '';
+            renderMainPreview();
+            renderTiledPreview();
+            updateSizeInfo(null);
+            setControlsEnabled(false);
+            showMessage('Tüm ayarlar sıfırlandı.', 'success', 3000);
+        }
+
+        function loadImageFromFile(file) {
+            if (!file || state.processing) return;
+            if (!file.type.startsWith('image/')) {
+                showMessage('Desteklenmeyen dosya türü.', 'error', 5000);
+                return;
+            }
+            state.processing = true;
+            setControlsEnabled(false);
+            showMessage('Görsel yükleniyor...', 'success', 0);
+
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                const img = new Image();
+                img.onload = function () {
+                    processLoadedImage(img, file.name);
+                };
+                img.onerror = function () {
+                    state.processing = false;
+                    setControlsEnabled(false);
+                    showMessage('Görsel okunamadı. Format desteklenmiyor olabilir.', 'error', 6000);
+                };
+                img.src = ev.target.result;
+            };
+            reader.onerror = function () {
+                state.processing = false;
+                setControlsEnabled(false);
+                showMessage('Dosya okunamadı.', 'error', 6000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadImageFromUrl() {
+            if (state.processing) return;
+            const url = elTxtUrl.value.trim();
+            if (!url) { showMessage('Lütfen geçerli bir URL girin.', 'error', 4000); return; }
+            if (!/^https?:\/\//i.test(url)) {
+                showMessage("URL 'http://' veya 'https://' ile başlamalıdır.", 'error', 5000);
+                return;
+            }
+            state.processing = true;
+            setControlsEnabled(false);
+            showMessage('URL' + 'den yükleniyor...', 'success', 0);
+
+            fetch(url)
+                .then((res) => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.blob();
+                })
+                .then((blob) => {
+                    const objUrl = URL.createObjectURL(blob);
+                    const img = new Image();
+                    img.onload = function () {
+                        processLoadedImage(img, 'URL: ' + url);
+                    };
+                    img.onerror = function () {
+                        URL.revokeObjectURL(objUrl);
+                        state.processing = false;
+                        setControlsEnabled(false);
+                        showMessage('URL' + 'deki dosya geçerli bir görsel değil.', 'error', 6000);
+                    };
+                    img.src = objUrl;
+                })
+                .catch((e) => {
+                    state.processing = false;
+                    setControlsEnabled(false);
+                    showMessage('URL' + ' hatası: ' + e.message, 'error', 6000);
+                });
+        }
+
+        function processLoadedImage(img, sourceName) {
+            state.original = img;
+            state.current = img;
+            state.sourceName = sourceName;
+            state.upscaledOnce = false;
+            resetAdjustments(false);
+            renderMainPreview();
+            renderTiledPreview();
+            updateSizeInfo(img);
+            state.processing = false;
+            setControlsEnabled(true);
+            showMessage('"' + sourceName + '" başarıyla yüklendi.', 'success', 4000);
+        }
+
+        // Olaylar
+        elLoadDevice.addEventListener('click', function () { elFileInput.click(); });
+        elFileInput.addEventListener('change', function () {
+            if (elFileInput.files && elFileInput.files[0]) loadImageFromFile(elFileInput.files[0]);
+            elFileInput.value = '';
+        });
+        elLoadUrl.addEventListener('click', loadImageFromUrl);
+        elTxtUrl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); loadImageFromUrl(); } });
+
+        ['dragenter', 'dragover'].forEach(function (evt) {
+            elDropZone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                elDropZone.classList.add('dragover');
+            });
+        });
+        ['dragleave', 'drop'].forEach(function (evt) {
+            elDropZone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                elDropZone.classList.remove('dragover');
+            });
+        });
+        elDropZone.addEventListener('drop', function (e) {
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) loadImageFromFile(e.dataTransfer.files[0]);
+        });
+        elDropZone.addEventListener('click', function () { elFileInput.click(); });
+
+        $('btn-rotate-left').addEventListener('click', function () { transformImage('left'); });
+        $('btn-rotate-right').addEventListener('click', function () { transformImage('right'); });
+        $('btn-flip-v').addEventListener('click', function () { transformImage('flip-v'); });
+        $('btn-flip-h').addEventListener('click', function () { transformImage('flip-h'); });
+
+        elSelectPaper.addEventListener('change', renderTiledPreview);
+        elSelectOrient.addEventListener('change', renderTiledPreview);
+
+        $('btn-col-minus').addEventListener('click', function () {
+            elSpin.value = Math.max(1, (parseInt(elSpin.value, 10) || 1) - 1);
+            renderTiledPreview();
+        });
+        $('btn-col-plus').addEventListener('click', function () {
+            elSpin.value = Math.min(50, (parseInt(elSpin.value, 10) || 1) + 1);
+            renderTiledPreview();
+        });
+        elSpin.addEventListener('change', function () {
+            let v = parseInt(elSpin.value, 10) || 1;
+            v = Math.min(50, Math.max(1, v));
+            elSpin.value = v;
+            renderTiledPreview();
+        });
+
+        ['rng-brightness', 'rng-contrast', 'rng-sharpness', 'rng-saturation', 'rng-blur'].forEach(function (id) {
+            $(id).addEventListener('input', onAdjustmentChanged);
+        });
+        $('btn-reset-adj').addEventListener('click', function () { resetAdjustments(true); });
+        $('btn-upscale').addEventListener('click', upscale);
+        $('btn-generate-pdf').addEventListener('click', generatePdf);
+        $('btn-reset-all').addEventListener('click', resetAll);
+
+        // Bilgi modalı
+        $('btn-info-open').addEventListener('click', function () {
+            $('info-modal').classList.add('open');
+        });
+        function closeInfoModal() {
+            $('info-modal').classList.remove('open');
+        }
+        $('btn-info-close').addEventListener('click', closeInfoModal);
+        $('info-modal').addEventListener('click', function (e) {
+            if (e.target === this) closeInfoModal();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && $('info-modal').classList.contains('open')) closeInfoModal();
+        });
+
+        setControlsEnabled(false);
+    })();
+    </script>
+
+  <div id="toast-notification"></div>
+  <script src="../js/config.js"></script>
+  <script src="../js/reactions.js"></script>
+  <script src="../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+
+<script src="../js/menu.js" defer></script></body>
+</html>

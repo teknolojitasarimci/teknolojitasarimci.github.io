@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+  teknolojitasarimci.com — MASTER ŞABLON (SABLONUM.HTML)
+  Bu dosya sitenin TÜM yazı sayfalarının referansıdır. ASLA BOZMA!
+  Kurallar:
+   1. Emoji YASAK. Yalnızca vektörel SVG ikonlar.
+   2. Kapak görselleri 16:9 ve görselin içinde yazı YOK.
+   3. Yorum formunda E-POSTA alanı KESİNLİKLE yok.
+   4. Yorumlar ve sayaç elle yazılmaz (js/comments.js, js/views.js).
+   5. Google Fonts bloğu + premium <style> bloğu + JS include'ları SİLİNMEZ.
+   6. Google Fonts her zaman display=optional moduyla yüklenir (sayfa titremesin).
+   7. Hazırlayan bilgisi yalnızca üstteki meta bölümünde yer alır; gövde sonunda asla tekrar edilmez.
+  Yeni gönderi için +yeni-gonderi.html'i kullan ve +Scripts/validate.py ile doğrula.
+  Detaylı kurallar: SABLON-REHBER.md
+  ============================================================================ -->
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7. Sınıf Teknoloji ve Tasarım Dersi Etkinlikleri ve Sunuları - teknolojitasarimci</title>
+    
+    <!-- Google Fonts Entegrasyonu -->
+
+
+<link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Özel Master Template Premium Stil İyileştirmeleri -->
+    <style>
+        :root {
+            --font-heading: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --font-body: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --primary-gradient: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+        }
+
+        body {
+            font-family: var(--font-body);
+        }
+
+        h1, h2, h3, h4, h5, .logo, .post-detail-title, .comments-header-title {
+            font-family: var(--font-heading);
+        }
+
+        /* Hero / Header Rozetleri */
+        .post-badge-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .badge-primary {
+            background: var(--brand-light);
+            color: var(--brand-color);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        .badge-read-time {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            margin-left: auto;
+        }
+
+        .badge-verified {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .post-detail-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .post-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .meta-item strong {
+            color: #334155;
+        }
+
+        /* Hızlı Eylem & Paylaşım Araç Çubuğu */
+        .quick-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 20px;
+            margin: 20px 0 28px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--brand-light);
+            border-color: var(--brand-color);
+            color: var(--brand-color);
+            transform: translateY(-1px);
+        }
+
+        /* 16:9 Sinematik Görsel Çerçevesi */
+        .post-cover-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+            margin: 24px 0 35px 0;
+            background: #0f172a;
+        }
+
+        .post-cover-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .post-cover-wrapper:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Modernleştirilmiş Tablo Stili */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            margin: 28px 0;
+        }
+
+        table.modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 14.5px;
+            background: #ffffff;
+        }
+
+        table.modern-table th {
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 16px 18px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            font-family: var(--font-heading);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table.modern-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        table.modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table.modern-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .center-td {
+            background: #fafafa;
+            color: #0f172a;
+        }
+
+        /* İndirme Bağlantı Linkleri için Buton Görünümü */
+        .doc-link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .doc-item-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 13.5px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .doc-item-btn:hover {
+            background: var(--brand-color);
+            color: #ffffff;
+            border-color: var(--brand-color);
+            transform: translateX(4px);
+        }
+
+        /* Meta Duyuru Kutusu */
+        .meta-box-enhanced {
+            background: #e0f2fe;
+            border-left: 4px solid var(--brand-color);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 24px 0;
+            color: #0369a1;
+            font-size: 15px;
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+        }
+
+        /* Section Başlık Banner */
+        .section-header-banner {
+            text-align: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 32px 0 20px 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand-color);
+        }
+
+        /* Toast Bildirim */
+        #toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: opacity;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        /* İlgili İçerikler (Related Posts) 3 Küçük Kart Grid */
+        .related-posts-section {
+            margin-top: 45px;
+            padding-top: 30px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .related-posts-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .related-posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .related-post-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .related-post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-color);
+            box-shadow: 0 8px 20px -4px rgba(2, 132, 199, 0.15);
+        }
+
+        .related-post-img {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+            background: #f8fafc;
+        }
+
+        .related-post-body {
+            padding: 12px 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .related-post-cat {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--brand-color);
+            margin-bottom: 4px;
+        }
+
+        .related-post-card-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s ease;
+        }
+
+        .related-post-card:hover .related-post-card-title {
+            color: var(--brand-color);
+        }
+    
+        body.dark .post-detail,
+        body.dark .post-detail-card { background: #1e293b; border-color: #334155; }
+        body.dark .post-detail-title { color: #f1f5f9; }
+        body.dark .post-detail-meta { color: #94a3b8; }
+        body.dark .meta-item strong { color: #7dd3e8; }
+        body.dark .quick-action-bar { background: #0f172a; border-color: #334155; box-shadow: none; }
+        body.dark .action-btn { background: rgba(255,255,255,0.06); }
+        body.dark .post-cover-wrapper { background: #0f172a; border-color: #334155; }
+        body.dark .table-responsive table { background: #1e293b; }
+        body.dark .table-responsive thead th { background: #0f172a; color: #cbd5e1; }
+        body.dark .table-responsive tbody tr:nth-child(even) { background: #0f172a; }
+        body.dark .table-responsive tbody tr:hover { background: rgba(2,132,199,0.15); }
+        body.dark .table-responsive td { color: #cbd5e1; }
+        body.dark .badge-read-time { background: rgba(2,132,199,0.15); color: #7dd3e8; }
+        body.dark .badge-verified { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+    </style>
+    <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+    <!-- Toast Bildirim Pop-up -->
+    <div id="toast-notification">Bağlantı kopyalandı!</div>
+
+    <!-- Header / Üst Menü --><!-- Ana İçerik Konteynırı -->
+    <main class="container article-layout">
+        <article class="post-detail">
+            
+            <!-- 1. Üst Ana Sayfaya Dön Butonu -->
+            <a href="../../sayfalar/preview.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Ana Sayfaya Dön
+            </a>
+
+            <!-- 2. Yazı Üst Başlık & Rozet Alanı -->
+            <div class="post-detail-header">
+                <div class="post-badge-bar">
+                    <span class="badge-pill badge-primary">7. Sınıf Etkinlikleri</span>
+                    <span class="badge-pill badge-primary">Dosyalar</span>
+                    <span class="badge-pill badge-read-time">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        3 Dk Okuma
+                    </span>
+                </div>
+
+                <h1 class="post-detail-title">7. Sınıf Teknoloji ve Tasarım Dersi Etkinlikleri ve Sunuları</h1>
+
+                <div class="post-detail-meta">
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>Yayınlanma Tarihi: <strong>02 Haziran 2025</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Hazırlayan: <strong>Mürsel EREN</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Görüntülenme: <span id="view-counter" data-path="/etkinlikler/7-sinif-etkinlikleri.html">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.5 Hızlı Paylaşım & Araç Barı -->
+            <div class="quick-action-bar">
+                <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    İçeriği Paylaş:
+                </span>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="copyPageUrl()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Linki Kopyala
+                    </button>
+                    <a href="https://api.whatsapp.com/send?text=7.%20S%C4%B1n%C4%B1f%20Teknoloji%20ve%20Tasar%C4%B1m%20Etkinlikleri" target="_blank" class="action-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <button class="action-btn" onclick="window.print()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        Yazdır
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. 16:9 Sinematik Kapak Görseli -->
+            <div class="post-cover-wrapper">
+                <img src="Veri/7_sinif_etkinlikleri_cover.jpg" alt="7. Sınıf Etkinlikleri ve Sunuları Kapak">
+            </div>
+
+            <!-- 4. Yazı Gövde Metni -->
+            <div class="post-body-content">
+                <p>Değerli zümrelerim, ben Teknoloji ve Tasarım öğretmeni <strong>Mürsel Eren</strong>. Aşağıda kendi hazırladığım 7. sınıf etkinliklerini ve sunularını bulabilirsiniz. Bu etkinlikleri ve Web sitemdeki diğer içerikleri, ticari olmayan amaçlarla ve kaynağını belirterek özgürce paylaşabilirsiniz. Herhangi bir hata ya da eksiklik fark ederseniz veya önerileriniz olursa, <a href="mailto:teknolojitasarimci@hotmail.com" target="_blank"><b>teknolojitasarimci@hotmail.com</b></a> adresinden bana ulaşabilirsiniz.</p>
+
+
+
+                <div class="section-header-banner" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    7. Sınıf Ünitelere Göre Etkinlik & Sunu Matrisi
+                </div>
+
+                <!-- Modernize Edilmiş Ders Materyali Tablosu -->
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 28%;">Öğrenme Alanı</th>
+                                <th style="width: 27%;">Ünite</th>
+                                <th style="width: 45%;">Etkinlikler, Sunular ve Dokümanlar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2" class="center-td"><strong>A. Teknoloji ve Tasarımın Temelleri</strong></td>
+                                <td class="center-td"><strong>1. Teknoloji ve Tasarım Öğreniyorum</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                            Teknoloji ve Tasarım Öğreniyorum Sunusu
+                                        </div>
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                            Teknoloji ve Tasarım Dersi = Çözüm Dersi Sunusu
+                                        </div>
+                                        <a href="../../sayfalar/post-00024-Beyin-Gelisimi/post-00024-preview.html" class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
+                                            Beynimizin Yapısı ve "Teknoloji ve Tasarım" Sunusu
+                                        </a>
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M15.09 14A6 6 0 0 0 18 9 6 6 0 0 0 6 9a6 6 0 0 0 2.91 5z"/></svg>
+                                            İnsanlığı Etkileyen Buluşlar Sunusu
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="center-td"><strong>2. Temel Tasarım</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.5-.75 1.5-1.5 0-.4-.15-.76-.41-1.04-.26-.29-.41-.66-.41-1.06 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-4.97-4.48-9-10-9z"/></svg>
+                                            Temel Tasarım Sunusu
+                                        </div>
+                                    </div>
+                                    <b style="display:inline-block; margin-top:10px;">Etkinlik Önerileri:</b>
+                                    <div class="doc-link-list">
+                                        <a href="../../sayfalar/post-00096-Giyilebilir-Urun-Sablonlari/post-00096-preview.html" class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L3 13.5V21h7.5z"/><line x1="16" y1="8" x2="2" y2="22"/></svg>
+                                            Ayakkabı, Tişört, Gömlek ve Kazak Tasarımları Etkinliği
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" class="center-td"><strong>B. Tasarım Süreci ve Tanıtım</strong></td>
+                                <td class="center-td"><strong>1. Tasarım Odaklı Süreç</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                                            Tasarım Odaklı Süreç Sunusu
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="center-td"><strong>2. Bilgisayar Destekli Tasarım</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                            Bilgisayar Destekli Tasarım Sunusu
+                                        </div>
+                                    </div>
+                                    <b style="display:inline-block; margin-top:10px;">Yazılar:</b>
+                                    <div class="doc-link-list">
+                                        <a href="../../sayfalar/post-00043-Ucretsiz-Tasarim-Yazilimlari/post-00043-preview.html" class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                            Ders İçin Kullanılabilecek 6 Ücretsiz Yazılım
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" class="center-td"><strong>C. Yapılı Çevre ve Tasarım</strong></td>
+                                <td class="center-td"><strong>1. Mimari Tasarım</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 21V11M10 21V11M14 21V11M18 21V11M12 3L2 7h20L12 3z"/></svg>
+                                            Mimari Tasarım Sunusu
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="center-td"><strong>2. Çevre Tasarımı</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                                            Çevre Tasarımı Sunusu
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" class="center-td"><strong>D. Ürün Tasarımı ve Ambalaj</strong></td>
+                                <td class="center-td"><strong>1. Ürün Geliştirme</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                                            Ürün Geliştirme Sunusu
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="center-td"><strong>2. Ambalaj Tasarımı</strong></td>
+                                <td>
+                                    <b>Sunular:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/></svg>
+                                            Ambalaj Tasarımı Sunusu
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="center-td"><strong>E. Özgün Ürün Tasarımı</strong></td>
+                                <td class="center-td"><strong>1. Özgün Ürünümü Tasarlıyorum</strong></td>
+                                <td>
+                                    <b>Etkinlik Dokümanları:</b>
+                                    <div class="doc-link-list">
+                                        <div class="doc-item-btn">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                            7. Sınıf Özgün Ürün Formu (PDF)
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. Standart Etiketler (Hashtag Box) -->
+            <div class="hashtag-box">
+                <span class="tag-badge">#7SınıfEtkinlikleri</span>
+                <span class="tag-badge">#7SınıfTeknolojiTasarım</span>
+                <span class="tag-badge">#TeknolojiVeTasarım</span>
+                <span class="tag-badge">#TemelTasarım</span>
+                <span class="tag-badge">#MimariTasarım</span>
+                <span class="tag-badge">#TasarımOdaklıSüreç</span>
+                <span class="tag-badge">#MEBMüfredatı</span>
+            </div>
+
+            <!-- 5.5. İlgili İçerikler ve Benzer Etkinlikler (Etiketlerin Hemen Altında) -->
+            <section class="related-posts-section">
+                <h3 class="related-posts-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    İlgili İçerikler ve Benzer Etkinlikler
+                </h3>
+                <div class="related-posts-grid">
+                    <a href="../../sayfalar/post-00097-8-Sinif-Etkinlikleri/post-00097-preview.html" class="related-post-card">
+                        <img src="../../sayfalar/post-00097-8-Sinif-Etkinlikleri/Veri/post-00097-Kapak.jpg" alt="8. Sınıf Etkinlikleri" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">8. Sınıf Etkinlikleri</span>
+                            <div class="related-post-card-title">8. Sınıf Teknoloji ve Tasarım Dersi Ünitelere Göre Etkinlikler</div>
+                        </div>
+                    </a>
+                    <a href="../../sayfalar/post-00020-Atolye-Is-Guvenligi/post-00020-preview.html" class="related-post-card">
+                        <img src="../../sayfalar/post-00020-Atolye-Is-Guvenligi/Veri/post-00020-Kapak.jpg" alt="Atölye Güvenlik Kuralları" class="related-post-img">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Dosyalar</span>
+                            <div class="related-post-card-title">Teknoloji ve Tasarım Atölye Güvenlik ve Uyarı Levhaları</div>
+                        </div>
+                    </a>
+                    <a href="../../sayfalar/post-00065-Labirent-Oyunlari/post-00065-preview.html" class="related-post-card">
+                        <img src="../../sayfalar/post-00065-Labirent-Oyunlari/Veri/post-00065-Kapak.jpg" alt="post-00065-Labirent-Oyunlari" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Zeka Oyunları</span>
+                            <div class="related-post-card-title">Labirent Oyunları: Zihinsel Becerileri Geliştiren 12 Sayfalık Etkinlik Seti</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. Tepki & Beğeni İkonları -->
+            <div class="reactions-box">
+                <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+                <div class="reactions-list">
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        Faydalı <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Harika <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Teşekkürler <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+                        Geliştirilmeli <span class="reaction-count">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. Yorum Bölümü -->
+            <section class="comments-section">
+                <h3 class="comments-header-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Yorumlar ve Değerlendirmeler
+                </h3>
+
+                <form class="comment-form" onsubmit="addComment(event)">
+                    <div class="form-group">
+                        <label for="comment-name">Adınız Soyadınız *</label>
+                        <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-body">Yorumunuz *</label>
+                        <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        Yorumu Gönder
+                    </button>
+                </form>
+
+                <div class="comments-list" id="comments-list">
+                    
+                </div>
+            </section>
+
+                        <script>
+                function copyPageUrl() {
+                    navigator.clipboard.writeText(window.location.href);
+                    const toast = document.getElementById('toast-notification');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2500);
+                }
+
+                                function toggleReaction(btn) {
+                    if (window.reactionsApi) {
+                        window.reactionsApi.toggleReaction(btn);
+                    }
+                }
+            </script>
+
+
+            <!-- 8. Alt Ana Sayfaya Dön Butonu -->
+            <div class="bottom-back-wrapper">
+                <a href="../../sayfalar/preview.html" class="bottom-back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+
+        </article>
+
+        <!-- Sağ Yan Menü (Sidebar Widget) -->
+    </main>
+
+    <!-- 9. Standart Footer Telif Metni -->
+        <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase Entegrasyonu: yorum, gerçek sayaç ve kopyalama koruması -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/comments.js"></script>
+    <script src="../../js/views.js"></script>
+    <script src="../../js/reactions.js"></script>
+    <script src="../../js/protection.js"></script>
+<script src="../../js/menu.js" defer></script></body>
+</html>

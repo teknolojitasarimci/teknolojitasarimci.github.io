@@ -1,0 +1,2 @@
+window.__MD_EMBED=window.__MD_EMBED||{};
+window.__MD_EMBED['face_detection_short.binarypb']='H4sIAAAAAAAC/+PyFxJyzwlOTsxJLXJOzEkuzUksyS+SEgvzdHH1t8rMKygtiU8rSsxNLY5PLyhVEoeK5yamp8aXFCXmFaflF+WmplhxbHp55RcLkwYDl4+QlFticqpLaklqcklmfl5wRn5RSVBiXnqqe0GplLinr6O7K6YBSqIuriGuziGe/n7BVikwvcVBAuhOiEgpkhaSdCwoyMlMTgSpCckoSk1Mca1ITS4FuhwAm0f5zNAAAAA=';

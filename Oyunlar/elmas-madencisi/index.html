@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Elmas Madencisi - teknolojitasarimci</title>
+  <meta name="description" content="Elmas Madencisi, öğrenciler için yön bulma, dikkat ve strateji becerilerini destekleyen; kazmayla duvarları kırarak ilerlenen etkileşimli bir labirent oyunudur.">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/theme.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --primary: #0284c7;
+      --highlight: #38bdf8;
+      --danger: #e11d48;
+      --warning: #ca8a04;
+      --success: #16a34a;
+    }
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: var(--bg);
+      color: #e2e8f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: block;
+      text-align: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    #game-shell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin: 20px auto 36px;
+      width: 100%;
+      max-width: 760px;
+    }
+    .game-title {
+      margin: 0 0 12px;
+      color: var(--highlight);
+      font-size: clamp(20px, 3vw, 30px);
+      letter-spacing: 0.04em;
+    }
+    #top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 8px 16px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      box-shadow: none;
+    }
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: #8899bb;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .stat-val {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--highlight);
+      text-shadow: none;
+      font-family: monospace;
+    }
+    #canvas-wrap {
+      position: relative;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      box-shadow: none;
+      overflow: hidden;
+      background: #1e293b;
+      width: 100%;
+      touch-action: none; /* Mobil kaymayı (scroll) engeller */
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 760 / 600; /* Responsive oran */
+    }
+    #bottom-info {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #99aacc;
+    }
+    .key-badge {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #fff;
+      font-family: monospace;
+      font-weight: bold;
+    }
+    #restart-game {
+      position: absolute;
+      left: 50%;
+      bottom: 56px;
+      transform: translateX(-50%);
+      display: none;
+      width: fit-content;
+      min-width: 170px;
+      padding: 12px 28px;
+      border: 0;
+      border-radius: 25px;
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      z-index: 20;
+      box-shadow: none;
+    }
+    #restart-game:hover { background: #0369a1; }
+    #restart-game.visible { display: block; }
+    #share-btn {
+      position: absolute;
+      left: 50%;
+      bottom: 112px;
+      transform: translateX(-50%);
+      display: none;
+      width: fit-content;
+      min-width: 170px;
+      padding: 12px 28px;
+      border: 0;
+      border-radius: 25px;
+      background: #0369a1;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      z-index: 20;
+      box-shadow: none;
+    }
+    #share-btn:hover { background: #075985; }
+    #share-btn.visible { display: block; }
+    @media (max-width: 768px) {
+      #bottom-info { display: none; }
+      #game-shell { padding: 0 10px; }
+    }
+    html:not(.dark-theme) body:not(.dark) {
+      background: #f8fafc;
+      color: #0f172a;
+      --bg: #f8fafc;
+      --highlight: #0284c7;
+    }
+    html:not(.dark-theme) body:not(.dark) #top-bar {
+      background: #ffffff;
+      border-color: #bae6fd;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);
+    }
+    html:not(.dark-theme) body:not(.dark) .stat-val { text-shadow: none; }
+    html:not(.dark-theme) body:not(.dark) .game-title { color: #0284c7; }
+    html:not(.dark-theme) body:not(.dark) .stat-label,
+    html:not(.dark-theme) body:not(.dark) #bottom-info { color: #475569; }
+    html:not(.dark-theme) body:not(.dark) #canvas-wrap {
+      background: #e0f2fe;
+      box-shadow: none;
+      border-color: #bae6fd;
+    }
+    html:not(.dark-theme) body:not(.dark) .key-badge { color: #0f172a; background: #ffffff; border-color: #bae6fd; }
+
+    /* Kurallar Modali */
+    .rules-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 7, 18, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+    }
+    .rules-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .rules-card {
+      background: #0f172a;
+      border: 2px solid #0284c7;
+      border-radius: 25px;
+      padding: 24px;
+      max-width: 460px;
+      width: 90%;
+      text-align: left;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .rules-card h2 {
+      color: #38bdf8;
+      margin-bottom: 16px;
+      font-size: 22px;
+      text-align: center;
+    }
+    .rules-card ul {
+      margin-bottom: 24px;
+      padding-left: 20px;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .rules-card li {
+      margin-bottom: 10px;
+    }
+    .rules-close-btn {
+      display: block !important;
+      width: fit-content !important;
+      min-width: 160px !important;
+      margin: 12px auto 0 !important;
+      padding: 10px 24px !important;
+      border-radius: 25px !important;
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      border: 0 !important;
+      cursor: pointer;
+      text-align: center;
+    }
+    .rules-close-btn:hover {
+      background: #0369a1 !important;
+    }
+
+    .rules-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-width: 160px !important;
+      max-width: 240px !important;
+      width: auto !important;
+      margin: 12px auto !important;
+      padding: 10px 24px !important;
+      border-radius: 25px !important;
+      font-size: 14.5px !important;
+      font-weight: 800 !important;
+      text-align: center !important;
+      box-sizing: border-box !important;
+      background: #0284c7;
+      color: #fff;
+      border: 0;
+      cursor: pointer;
+      box-shadow: none;
+    }
+    .rules-btn:hover {
+      background: #0369a1;
+    }
+
+    /* Light theme uyumu */
+    html:not(.dark-theme) body:not(.dark) .rules-card {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.15);
+    }
+    html:not(.dark-theme) body:not(.dark) .rules-card h2 {
+      color: #0284c7;
+    }
+    html:not(.dark-theme) body:not(.dark) .rules-card ul {
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-shell">
+  <h1 class="game-title">Elmas Madencisi</h1>
+  <div id="top-bar">
+    <div class="stat-box">
+      <span class="stat-label">BÖLÜM</span>
+      <span id="ui-level" class="stat-val">1 / 10</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">SKOR</span>
+      <span id="ui-score" class="stat-val">00000</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">EN YÜKSEK</span>
+      <span id="ui-high-score" class="stat-val">00000</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">CAN</span>
+       <span id="ui-lives" class="stat-val" style="color: var(--danger);">5</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">KALAN YEM</span>
+      <span id="ui-pellets" class="stat-val">0</span>
+    </div>
+  </div>
+
+  <div id="canvas-wrap">
+    <canvas id="gameCanvas" width="760" height="600"></canvas>
+    <button id="restart-game" type="button">Yeniden Başla</button>
+    <button id="share-btn" type="button">Skoru Paylaş</button>
+  </div>
+
+  <div style="margin-top: 4px; display: flex; justify-content: center; width: 100%;">
+    <button id="btn-show-rules" class="rules-btn" type="button">Nasıl Oynanır?</button>
+  </div>
+
+  <div id="bottom-info">
+    <div><b>Hareket:</b> <span class="key-badge">WASD</span> / <span class="key-badge">Yön Tuşları</span></div>
+    <div><b>Toprak Kazma:</b> <span class="key-badge">Toprağa doğru yön tuşuna basılı tut</span></div>
+    <div><b>Ses:</b> <span class="key-badge">M</span></div>
+  </div>
+</div>
+
+<div class="rules-modal" id="rulesModal">
+  <div class="rules-card">
+    <h2>Nasıl Oynanır?</h2>
+    <ul>
+      <li><strong>Amaç:</strong> Tüneller açarak madendeki tüm mavi ve altın elmasları toplayın.</li>
+      <li><strong>Yön Kontrolü:</strong> Yön tuşları veya WASD tuşları ile hareket edin.</li>
+      <li><strong>Toprak Kazma:</strong> Kazılabilir kahverengi topraklara doğru ilerleme yönündeki tuşu basılı tutarak duvarları kırın.</li>
+      <li><strong>Güçlendiriciler:</strong> Kırılan topraklardan hız, kazma gücü (+1 güç ile daha hızlı kazarsınız), fazladan can, altın (+100 puan), kalkan (geçici koruma) veya dondurma (tüm bekçileri afallatır) çıkabilir.</li>
+      <li><strong>Bekçiler (Hayaletler):</strong> Bölüm ilerledikçe sayıları ve hızları artan bekçilerden kaçın! Onlara çarparsanız can kaybedersiniz.</li>
+      <li><strong>Av Zamanı:</strong> Büyük turuncu elmasları yiyerek bekçileri geçici olarak şaşkına çevirebilir ve onları yakalayarak ek puan toplayabilirsiniz!</li>
+      <li><strong>Aşama Aşamalı Maden:</strong> Toplam 10 seviyeyi de temizleyerek oyunu tamamlayın; her bölümde maden genişler, topraklar artar ve yeni sürprizler sizi bekler!</li>
+    </ul>
+    <button class="rules-close-btn" id="rulesClose">Anladım</button>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   1. SES VE PROSEDÜREL MÜZİK MOTORU (Web Audio API)
+   ========================================================================== */
+class AudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+    this.bgmTimer = null;
+    this.noteIndex = 0;
+    this.bassline = [110, 110, 130.81, 146.83, 110, 110, 164.81, 146.83];
+  }
+  init() {
+    if (!this.ctx) {
+      try {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.startBGM();
+      } catch (e) {
+        console.warn("AudioContext başlatılamadı.");
+      }
+    }
+  }
+  startBGM() {
+    if (this.bgmTimer) return;
+    this.bgmTimer = setInterval(() => {
+      if (this.muted || !this.ctx) return;
+      const freq = this.bassline[this.noteIndex % this.bassline.length];
+      this.playSynthNote(freq, 0.08, 'sawtooth', 0.03);
+      this.noteIndex++;
+    }, 220);
+  }
+  stop() {
+    if (this.bgmTimer) {
+      clearInterval(this.bgmTimer);
+      this.bgmTimer = null;
+    }
+  }
+  playSynthNote(freq, dur, type = 'square', vol = 0.05) {
+    if (this.muted || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + dur);
+    } catch(e){}
+  }
+  playNoiseExplosion(radius) {
+    if (this.muted || !this.ctx) return;
+    try {
+      const bufferSize = this.ctx.sampleRate * (0.3 + radius * 0.1);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+      }
+      const whiteNoise = this.ctx.createBufferSource();
+      whiteNoise.buffer = buffer;
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.3);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+
+      whiteNoise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+      whiteNoise.start();
+    } catch(e){}
+  }
+  eat() { this.playSynthNote(480, 0.05, 'triangle', 0.04); }
+  powerPellet() {
+    this.playSynthNote(523, 0.1, 'sine', 0.08);
+    setTimeout(() => this.playSynthNote(659, 0.1, 'sine', 0.08), 60);
+    setTimeout(() => this.playSynthNote(783, 0.15, 'sine', 0.08), 120);
+  }
+  ghostDie() {
+    this.playSynthNote(800, 0.1, 'sawtooth', 0.1);
+    setTimeout(() => this.playSynthNote(300, 0.2, 'sawtooth', 0.1), 80);
+  }
+}
+const audio = new AudioEngine();
+
+/* ==========================================================================
+   2. HARİTA, SABİTLER VE OYUN DURUMU
+   ========================================================================== */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+const TILE = 40;
+const LEVEL_COUNT = 10;
+let COLS = 19;
+let ROWS = 15;
+
+/* Harita boyutları: bölüm arttıkça oyun alanı genişler */
+const LEVEL_SIZES = [
+  { cols: 19, rows: 15 },  // Bölüm 1-2
+  { cols: 23, rows: 17 },  // Bölüm 3-4
+  { cols: 27, rows: 19 },  // Bölüm 5-6
+  { cols: 31, rows: 21 },  // Bölüm 7-8
+  { cols: 35, rows: 23 }   // Bölüm 9-10
+];
+
+const LEVEL_NAMES = [
+  'Giriş Madeni',
+  'Taşlık Koridorlar',
+  'Derin Galeriler',
+  'Kaya Tüneli',
+  'Ateş Damarı',
+  'Kristal Mağarası',
+  'Karanlık Ocak',
+  'Demir Damarı',
+  'Elmas Kuyusu',
+  'Ana Damar'
+];
+
+/* Her bölümde artan hayalet sayısı (3'ten başlar, 7'ye çıkar) */
+function levelGhostCount(level) {
+  return Math.min(7, 2 + Math.ceil(level / 2));
+}
+
+/* Bölüm başına artan toprak (kazılabilir duvar) oranı */
+function levelDirtRatio(level) {
+  return 0.05 + level * 0.018;
+}
+
+/* Rastgele ve bağlantılı maden haritası üretir.
+   0: boş yol, 1: duvar, 2: kazılabilir toprak, 3: yem, 4: güç yemi, 5: cevher */
+function generateLevelMap(level) {
+  const tier = Math.min(4, Math.floor((level - 1) / 2));
+  const cols = LEVEL_SIZES[tier].cols;
+  const rows = LEVEL_SIZES[tier].rows;
+  const ghostCount = levelGhostCount(level);
+
+  const g = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+  // Dış duvarlar
+  for (let c = 0; c < cols; c++) { g[0][c] = 1; g[rows - 1][c] = 1; }
+  for (let r = 0; r < rows; r++) { g[r][0] = 1; g[r][cols - 1] = 1; }
+
+  // Tünel satırı (tüm boylarda 4. satır) tamamen açık kalır
+  for (let c = 0; c < cols; c++) g[4][c] = 0;
+
+  // İç duvarlar: bölüm arttıkça biraz daha yoğun
+  const wallDensity = 0.09 + level * 0.012;
+  for (let r = 2; r < rows - 1; r++) {
+    if (r === 4) continue;
+    for (let c = 2; c < cols - 1; c++) {
+      if (Math.random() < wallDensity) g[r][c] = 1;
+    }
+  }
+
+  // Oyuncu başlangıç bölgesi açık kalır
+  g[1][1] = 0; g[1][2] = 0; g[2][1] = 0; g[2][2] = 0;
+
+  // Hayalet doğum bölgesi açık kalır
+  for (let r = 5; r <= 6; r++) {
+    for (let c = 5; c < 5 + ghostCount + 1 && c < cols - 1; c++) {
+      g[r][c] = 0;
+    }
+  }
+
+  // Kazılabilir topraklar (bölüm arttıkça artar)
+  const dirtTarget = Math.round(cols * rows * levelDirtRatio(level));
+  let dirtPlaced = 0, guard = 0;
+  while (dirtPlaced < dirtTarget && guard < 12000) {
+    guard++;
+    const r = 2 + Math.floor(Math.random() * (rows - 3));
+    const c = 2 + Math.floor(Math.random() * (cols - 3));
+    if (r === 4 || g[r][c] !== 0) continue;
+    if ((r <= 2 && c <= 2) || (r >= 5 && r <= 6 && c >= 5 && c <= 12)) continue;
+    g[r][c] = 2;
+    dirtPlaced++;
+  }
+
+  // Yemler, güç yemleri ve cevherler (başlangıç ve hayalet bölgesi hariç)
+  const stoneProb = 0.02 + level * 0.009;
+  const powerProb = 0.05;
+  for (let r = 1; r < rows - 1; r++) {
+    for (let c = 1; c < cols - 1; c++) {
+      if (r === 4 || g[r][c] !== 0) continue;
+      const isStart = r <= 2 && c <= 2;
+      const isGhost = r >= 5 && r <= 6 && c >= 5 && c <= 12;
+      if (isStart || isGhost) continue;
+      const rnd = Math.random();
+      if (rnd < stoneProb) g[r][c] = 5;
+      else if (rnd < stoneProb + powerProb) g[r][c] = 4;
+      else g[r][c] = 3;
+    }
+  }
+
+  return { grid: g, cols, rows, ghostCount };
+}
+
+/* Üretilen haritanın tüm yem/cevherlere ulaşılabildiğini doğrular */
+function isMapReachable(grid, cols, rows) {
+  const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
+  const stack = [[1, 1]];
+  visited[1][1] = true;
+  while (stack.length) {
+    const [cx, cy] = stack.pop();
+    for (const [dx, dy] of [[0,-1],[0,1],[-1,0],[1,0]]) {
+      let nx = cx + dx, ny = cy + dy;
+      if (ny === 4 && nx < 0) nx = cols - 1;
+      if (ny === 4 && nx >= cols) nx = 0;
+      if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+      if (visited[ny][nx] || grid[ny][nx] === 1) continue;
+      visited[ny][nx] = true;
+      stack.push([nx, ny]);
+    }
+  }
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if ([3, 4, 5].includes(grid[r][c]) && !visited[r][c]) return false;
+    }
+  }
+  return true;
+}
+
+let grid = [];
+let currentLevel = 0;
+let gameState = 'PLAYING';
+let score = 0;
+let highScore = Number(localStorage.getItem('elmas-madencisi-high-score') || 0);
+let lives = 5;
+let totalPellets = 0;
+let frightenedTimer = 0;
+let powerRespawnTimer = 0;
+let powerPelletCells = [];
+let screenShake = 0;
+
+/* Göz kırpma durumu (madenci) ve son bakış yönü */
+const minerBlink = { t: 150, closed: 0 };
+let lastFaceX = 1;
+let lastFaceY = 0;
+
+// Göz kırpma sayacı: kapalı > 0 ise gözler kapalıdır; aksi halde rastgele aralıklarla kırpılır
+function tickBlink(b) {
+  if (b.closed > 0) {
+    b.closed--;
+    return true;
+  }
+  b.t--;
+  if (b.t <= 0) {
+    b.closed = 6;
+    b.t = 120 + Math.random() * 240;
+  }
+  return b.closed > 0;
+}
+
+/* Duvar kırma sistemi (eğitim sitesi uyumu: bomba yerine duvara dayanarak kırma) */
+let pushDir = { x: 0, y: 0 };
+let pushProgress = 0;
+let pushTarget = null;
+let pushPower = 1;
+const PUSH_TIME = 40;
+
+/* ==========================================================================
+   3. OYUNCU (TOPAÇ) VE HAYALET SİSTEMİ
+   ========================================================================== */
+const player = {
+  x: 7, y: 7,
+  px: 7 * TILE, py: 7 * TILE,
+  vx: 0, vy: 0,
+  reqVx: 0, reqVy: 0,
+  speed: 5.2,
+  mouth: 0.2, mouthSpeed: 0.04,
+  invulnFrames: 120,
+  shield: 0,
+  superDig: 0
+};
+
+const GHOST_TEMPLATES = [
+  { id: 'blinky', baseColor: '#ff2b2b', speed: 2.5 },
+  { id: 'inky',   baseColor: '#00e5ff', speed: 2.0 },
+  { id: 'clyde',  baseColor: '#ffaa00', speed: 1.8 },
+  { id: 'pinky',  baseColor: '#ff8ec9', speed: 2.0 },
+  { id: 'sue',    baseColor: '#a855f7', speed: 2.0 },
+  { id: 'funky',  baseColor: '#22c55e', speed: 2.0 },
+  { id: 'bashful', baseColor: '#eab308', speed: 2.0 }
+];
+
+let ghosts = [];
+
+function buildGhosts(level) {
+  const count = levelGhostCount(level);
+  const speedMul = 1 + (level - 1) * 0.012;
+  ghosts = [];
+  for (let i = 0; i < count; i++) {
+    const t = GHOST_TEMPLATES[i % GHOST_TEMPLATES.length];
+    ghosts.push({
+      id: t.id, baseColor: t.baseColor,
+      x: 0, y: 0, px: 0, py: 0, vx: 0, vy: 0,
+      speed: Math.min(4.6, t.speed * speedMul),
+      state: 'normal', stun: 0,
+      lastDecisionX: -1, lastDecisionY: -1,
+      blink: { t: 80 + Math.random() * 160, closed: 0 }
+    });
+  }
+}
+
+let items = [];
+let particles = [];
+let floatingTexts = [];
+let swipeHold = 0;
+
+/* ==========================================================================
+   4. BAŞLATMA VE YARDIMCI FONKSİYONLAR
+   ========================================================================== */
+function resetLevel() {
+  let levelData;
+  let tries = 0;
+  do {
+    levelData = generateLevelMap(currentLevel + 1);
+    tries++;
+  } while (!isMapReachable(levelData.grid, levelData.cols, levelData.rows) && tries < 20);
+  grid = levelData.grid;
+  COLS = levelData.cols;
+  ROWS = levelData.rows;
+
+  // Harita genişledikçe canvas'ı da büyüt
+  canvas.width = COLS * TILE;
+  canvas.height = ROWS * TILE;
+  canvas.style.aspectRatio = (COLS * TILE) + ' / ' + (ROWS * TILE);
+
+  totalPellets = 0;
+  powerPelletCells = [];
+  powerRespawnTimer = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if ([3, 4, 5].includes(grid[r][c])) totalPellets++;
+      if (grid[r][c] === 4) powerPelletCells.push({ x: c, y: r });
+    }
+  }
+  items = [];
+  particles = [];
+  floatingTexts = [];
+  pushDir = { x: 0, y: 0 };
+  pushProgress = 0;
+  pushTarget = null;
+  pushPower = 1;
+  buildGhosts(currentLevel + 1);
+  resetPositions();
+  updateUI();
+}
+
+function updatePowerPellets() {
+  if (powerRespawnTimer <= 0) return;
+  powerRespawnTimer--;
+  if (powerRespawnTimer > 0) return;
+  powerPelletCells.forEach(cell => {
+    const occupied = player.x === cell.x && player.y === cell.y;
+    if (grid[cell.y][cell.x] === 0 && !occupied) {
+      grid[cell.y][cell.x] = 4;
+      totalPellets++;
+    }
+  });
+  updateUI();
+}
+
+function resetPositions() {
+  player.x = 1; player.y = 1;
+  player.px = 1 * TILE; player.py = 1 * TILE;
+  player.vx = 0; player.vy = 0;
+  player.reqVx = 0; player.reqVy = 0;
+  player.invulnFrames = 120;
+
+  ghosts.forEach((g, i) => {
+    g.x = 5 + (i % 7);
+    g.y = 5 + (i >= 7 ? 1 : 0);
+    g.px = g.x * TILE;
+    g.py = g.y * TILE;
+    g.vx = (i % 2 === 0) ? 1 : -1;
+    g.vy = 0;
+    g.state = 'normal';
+    g.stun = 0;
+    g.lastDecisionX = -1; // Titreme engelleyici
+    g.lastDecisionY = -1;
+  });
+}
+
+function addFloatingText(x, y, text, color = '#fff') {
+  floatingTexts.push({ x, y, text, color, life: 40, vy: -1.2 });
+}
+
+function triggerShake(amt) {
+  screenShake = Math.max(screenShake, amt);
+}
+
+function canMoveTo(c, r) {
+  if (r === 4 && (c < 0 || c >= COLS)) return true;
+  if (c < 0 || c >= COLS || r < 0 || r >= ROWS) return false;
+
+  const cell = grid[r][c];
+  if (cell === 1 || cell === 2) return false;
+
+  return true;
+}
+
+/* ==========================================================================
+   5. OYUNCU HAREKETİ VE YEM YEME
+   ========================================================================== */
+function updatePlayer() {
+  if (player.invulnFrames > 0) player.invulnFrames--;
+  if (player.shield > 0) player.shield--;
+
+  // Yön değiştirme desteği: dururken her zaman, karşı yöne dönerken veya merkeze yakınken uygulanır.
+  if (player.reqVx !== 0 || player.reqVy !== 0) {
+    const wantTurn = player.reqVx !== player.vx || player.reqVy !== player.vy;
+    if (!wantTurn) {
+      player.reqVx = 0;
+      player.reqVy = 0;
+    } else {
+      const centerTileX = Math.round(player.px / TILE);
+      const centerTileY = Math.round(player.py / TILE);
+      const diffX = player.px - centerTileX * TILE;
+      const diffY = player.py - centerTileY * TILE;
+      const standing = player.vx === 0 && player.vy === 0;
+      const opposite = player.reqVx === -player.vx && player.reqVy === -player.vy;
+      if (standing || opposite || (Math.abs(diffX) < 14 && Math.abs(diffY) < 14)) {
+        if (canMoveTo(centerTileX + player.reqVx, centerTileY + player.reqVy)) {
+          player.px = centerTileX * TILE;
+          player.py = centerTileY * TILE;
+          player.vx = player.reqVx;
+          player.vy = player.reqVy;
+          player.reqVx = 0;
+          player.reqVy = 0;
+        } else {
+          player.vx = 0;
+          player.vy = 0;
+          player.px = centerTileX * TILE;
+          player.py = centerTileY * TILE;
+          player.reqVx = 0;
+          player.reqVy = 0;
+        }
+      }
+    }
+  }
+
+  // İlerlediği yön tıkalı mı?
+  if (player.vx !== 0 || player.vy !== 0) {
+    const forwardX = player.vx > 0 ? Math.floor((player.px + TILE - 1) / TILE) + 1 : Math.floor(player.px / TILE) - 1;
+    const forwardY = player.vy > 0 ? Math.floor((player.py + TILE - 1) / TILE) + 1 : Math.floor(player.py / TILE) - 1;
+    
+    const curTileX = Math.round(player.px / TILE);
+    const curTileY = Math.round(player.py / TILE);
+
+    if (!canMoveTo(curTileX + player.vx, curTileY + player.vy)) {
+      if (player.vx > 0 && player.px >= curTileX * TILE) { player.px = curTileX * TILE; player.vx = 0; }
+      if (player.vx < 0 && player.px <= curTileX * TILE) { player.px = curTileX * TILE; player.vx = 0; }
+      if (player.vy > 0 && player.py >= curTileY * TILE) { player.py = curTileY * TILE; player.vy = 0; }
+      if (player.vy < 0 && player.py <= curTileY * TILE) { player.py = curTileY * TILE; player.vy = 0; }
+    }
+  }
+
+  player.px += player.vx * player.speed;
+  player.py += player.vy * player.speed;
+
+  // HATA ÇÖZÜMÜ: Madenci her zaman koridorun tam ortasından ilerler.
+  // Hareket ederken dikey eksen hücre merkezine sabitlenir (kayma/duvara yapışma olmaz).
+  if (player.vx !== 0) player.py = Math.round(player.py / TILE) * TILE;
+  if (player.vy !== 0) player.px = Math.round(player.px / TILE) * TILE;
+
+  // Dokunmatik kaydırma kısa süreli hareket sağlar; süre dolunca madenci durur
+  if (swipeHold > 0) {
+    swipeHold--;
+    if (swipeHold === 0) {
+      player.vx = 0;
+      player.vy = 0;
+      player.reqVx = 0;
+      player.reqVy = 0;
+    }
+  }
+
+  // Tünel
+  if (Math.round(player.py / TILE) === 4) {
+    if (player.px < -TILE/2) { player.px = (COLS - 1) * TILE; }
+    else if (player.px > (COLS - 1) * TILE + TILE/2) { player.px = 0; }
+  }
+
+  player.x = Math.round(player.px / TILE);
+  player.y = Math.round(player.py / TILE);
+
+  if (player.y >= 0 && player.y < ROWS && player.x >= 0 && player.x < COLS) {
+    const tileVal = grid[player.y][player.x];
+    if (tileVal === 3) {
+      grid[player.y][player.x] = 0;
+      score += 10;
+      totalPellets--;
+      audio.eat();
+      updateUI();
+    } else if (tileVal === 4) {
+      grid[player.y][player.x] = 0;
+      score += 100;
+      totalPellets--;
+      frightenedTimer = 420;
+      powerRespawnTimer = 900;
+      ghosts.forEach(g => { if (g.state !== 'dead') { g.state = 'frightened'; g.stun = 0; g.lastDecisionX = -1; g.lastDecisionY = -1; } });
+      audio.powerPellet();
+      addFloatingText(player.px, player.py, 'GHOST HUNT!', '#00ffff');
+      triggerShake(4);
+      updateUI();
+    } else if (tileVal === 5) {
+      grid[player.y][player.x] = 0;
+      score += 50;
+      totalPellets--;
+      audio.eat();
+      addFloatingText(player.px, player.py, '+50', '#ffe600');
+      updateUI();
+    }
+  }
+
+  if (totalPellets <= 0 && gameState === 'PLAYING') {
+    if (currentLevel < LEVEL_COUNT - 1) {
+      showLevelComplete(currentLevel + 1, score);
+      currentLevel++;
+      addFloatingText(player.px + 20, player.py + 20, 'BÖLÜM GEÇİLDİ!', '#00ffcc');
+      triggerShake(10);
+      audio.powerPellet();
+      resetLevel();
+    } else {
+      gameState = 'VICTORY';
+      document.getElementById('restart-game').classList.add('visible');
+      document.getElementById('share-btn').classList.add('visible');
+      triggerShake(15);
+    }
+  }
+}
+
+function showLevelComplete(completedLevel, sc) {
+  const old = document.getElementById('level-complete-card');
+  if (old) old.remove();
+  const card = document.createElement('div');
+  card.id = 'level-complete-card';
+  card.style.cssText = 'position:absolute; top:12px; left:50%; transform:translateX(-50%); background:#0284c7; color:#fff; font-family:monospace; font-weight:bold; font-size:15px; padding:10px 22px; border-radius:25px; z-index:25; box-shadow:0 4px 14px rgba(2,132,199,0.35); text-align:center; pointer-events:none; white-space:nowrap;';
+  card.textContent = 'Bölüm ' + completedLevel + '/10 Tamamlandı  -  Skor: ' + sc;
+  document.getElementById('canvas-wrap').appendChild(card);
+  setTimeout(function () { if (card.parentNode) card.parentNode.removeChild(card); }, 2400);
+}
+
+/* ==========================================================================
+   6. DUVAR KIRMA SİSTEMİ (Eğitim sitesi uyumu: bomba yerine dayanarak kırma)
+   ========================================================================== */
+function updateWallPush() {
+  const tx = player.x + pushDir.x;
+  const ty = player.y + pushDir.y;
+  const pushing = (pushDir.x !== 0 || pushDir.y !== 0) &&
+    tx >= 0 && ty >= 0 && tx < COLS && ty < ROWS &&
+    grid[ty][tx] === 2;
+
+  if (!pushing) {
+    pushTarget = null;
+    pushProgress = 0;
+    return;
+  }
+
+  if (!pushTarget || pushTarget.x !== tx || pushTarget.y !== ty) {
+    pushTarget = { x: tx, y: ty };
+    pushProgress = 0;
+  }
+
+  pushProgress += 1 / (PUSH_TIME / pushPower);
+
+  // Tatlı kazı sesi ve hafif ekran titremesi
+  if (Math.floor(pushProgress * 15) % 4 === 0) {
+    audio.playSynthNote(160 + Math.random() * 60, 0.02, 'sawtooth', 0.02);
+    triggerShake(0.6);
+  }
+
+  if (Math.random() < 0.25) {
+    createDebris(tx * TILE + 20, ty * TILE + 20);
+  }
+
+  if (pushProgress >= 1) {
+    grid[ty][tx] = 0;
+    score += 10;
+    totalPellets++;
+    items.push({ x: tx, y: ty, type: 'stone' });
+    createDebris(tx * TILE + 20, ty * TILE + 20);
+    audio.playNoiseExplosion(1);
+    triggerShake(4);
+    addFloatingText(tx * TILE + 20, ty * TILE + 20, 'TOPRAK KAZILDI', '#d9b98a');
+    stunGhostsAround(tx * TILE + 20, ty * TILE + 20);
+
+    if (Math.random() < 0.65) {
+      const rand = Math.random();
+      let itemType = 'strength';
+      if (rand > 0.88) itemType = 'life';
+      else if (rand > 0.72) itemType = 'speed';
+      else if (rand > 0.56) itemType = 'gold';
+      else if (rand > 0.40) itemType = 'shield';
+      else if (rand > 0.24) itemType = 'freeze';
+      items.push({ x: tx, y: ty, type: itemType });
+    }
+
+    pushTarget = null;
+    pushProgress = 0;
+    updateUI();
+  }
+}
+
+function stunGhostsAround(cx, cy) {
+  ghosts.forEach(g => {
+    if (g.state === 'dead' || g.stun > 0) return;
+    if (Math.hypot(g.px + 20 - cx, g.py + 20 - cy) < 56) {
+      g.stun = 120;
+      g.vx = 0;
+      g.vy = 0;
+      addFloatingText(g.px, g.py, 'ŞAŞKIN!', '#e2e8f0');
+    }
+  });
+}
+
+/* ==========================================================================
+   7. HAYALET AI VE ÇARPIŞMA (TİTREME HATASI DÜZELTİLDİ)
+   ========================================================================== */
+// Yenen bekçi, oyuncudan en uzaktaki yürünebilir hücrede doğar (anında geri gelmez)
+function findRespawnCell() {
+  let best = { x: 7, y: 5 };
+  let bestDist = -1;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const v = grid[r][c];
+      if (v === 1 || v === 2) continue;
+      const d = Math.abs(c - player.x) + Math.abs(r - player.y);
+      if (d > bestDist) { bestDist = d; best = { x: c, y: r }; }
+    }
+  }
+  return best;
+}
+
+// Akıllı bekçi (blinky): BFS ile oyuncuya en kısa yolu bulur
+function bfsDir(gx, gy) {
+  const queue = [{ x: gx, y: gy, d: null }];
+  const visited = new Set([gx + ',' + gy]);
+  while (queue.length) {
+    const cur = queue.shift();
+    if (cur.x === player.x && cur.y === player.y) return cur.d || { x: 0, y: 0 };
+    const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+    for (let i = 0; i < dirs.length; i++) {
+      let nx = cur.x + dirs[i][0];
+      let ny = cur.y + dirs[i][1];
+      if (ny === 4) {
+        if (nx < 0) nx = COLS - 1;
+        else if (nx >= COLS) nx = 0;
+      }
+      const key = nx + ',' + ny;
+      if (visited.has(key)) continue;
+      if (!canMoveTo(nx, ny)) continue;
+      visited.add(key);
+      queue.push({ x: nx, y: ny, d: cur.d || { x: dirs[i][0], y: dirs[i][1] } });
+    }
+  }
+  return null;
+}
+
+function bfsDist(gx, gy, tx, ty) {
+  const queue = [{ x: gx, y: gy, d: 0 }];
+  const visited = new Set([gx + ',' + gy]);
+  while (queue.length) {
+    const cur = queue.shift();
+    if (cur.x === tx && cur.y === ty) return cur.d;
+    const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+    for (let i = 0; i < dirs.length; i++) {
+      let nx = cur.x + dirs[i][0];
+      let ny = cur.y + dirs[i][1];
+      if (ny === 4) {
+        if (nx < 0) nx = COLS - 1;
+        else if (nx >= COLS) nx = 0;
+      }
+      const key = nx + ',' + ny;
+      if (visited.has(key)) continue;
+      if (!canMoveTo(nx, ny)) continue;
+      visited.add(key);
+      queue.push({ x: nx, y: ny, d: cur.d + 1 });
+    }
+  }
+  return 9999;
+}
+
+function updateGhosts() {
+  if (frightenedTimer > 0) {
+    frightenedTimer--;
+    if (frightenedTimer === 0) {
+      ghosts.forEach(g => { if (g.state === 'frightened') g.state = 'normal'; });
+    }
+  }
+
+  ghosts.forEach(g => {
+    if (g.stun > 0) {
+      g.stun--;
+      return;
+    }
+    if (g.state === 'dead') {
+      g.deadTimer--;
+      if (g.deadTimer <= 0) {
+        const spot = findRespawnCell();
+        g.x = spot.x; g.y = spot.y;
+        g.px = g.x * TILE; g.py = g.y * TILE;
+        g.state = frightenedTimer > 0 ? 'frightened' : 'normal';
+        g.lastDecisionX = -1;
+        g.lastDecisionY = -1;
+      }
+      return;
+    }
+    const gx = Math.round(g.px / TILE);
+    const gy = Math.round(g.py / TILE);
+    const isAligned = Math.abs(g.px - gx * TILE) < 2.0 && Math.abs(g.py - gy * TILE) < 2.0;
+
+    // HATA ÇÖZÜMÜ: Hayaletlerin aynı karede sürekli karar alıp kilitlenmesini engeller
+    if (isAligned && (g.lastDecisionX !== gx || g.lastDecisionY !== gy)) {
+      g.px = gx * TILE;
+      g.py = gy * TILE;
+      g.x = gx;
+      g.y = gy;
+      g.lastDecisionX = gx;
+      g.lastDecisionY = gy;
+
+      if (g.y === 4) {
+        if (g.x <= 0 && g.vx === -1) { g.x = COLS - 1; g.px = g.x * TILE; g.lastDecisionX = g.x; }
+        else if (g.x >= COLS - 1 && g.vx === 1) { g.x = 0; g.px = 0; g.lastDecisionX = 0; }
+      }
+
+      const possibleDirs = [
+        { x: 0, y: -1 }, { x: 0, y: 1 },
+        { x: -1, y: 0 }, { x: 1, y: 0 }
+      ].filter(d => {
+        if (g.state !== 'frightened' && d.x === -g.vx && d.y === -g.vy) return false;
+        return canMoveTo(g.x + d.x, g.y + d.y);
+      });
+
+      if (possibleDirs.length > 0) {
+        let bestDir = possibleDirs[0];
+        let targetX = player.x;
+        let targetY = player.y;
+
+        if (g.id === 'pinky') {
+          targetX += player.vx * 3;
+          targetY += player.vy * 3;
+        } else if (g.id === 'clyde') {
+          const dist = Math.hypot(g.x - player.x, g.y - player.y);
+          if (dist < 4) { targetX = 0; targetY = ROWS - 1; }
+        }
+
+        if (g.state === 'frightened') {
+          let cx = COLS - 2, cy = 1;
+          if (g.id === 'pinky') { cx = 1; cy = 1; }
+          else if (g.id === 'inky') { cx = COLS - 2; cy = ROWS - 2; }
+          else if (g.id === 'clyde') { cx = 1; cy = ROWS - 2; }
+          else if (g.id === 'sue') { cx = Math.floor(COLS / 2); cy = 1; }
+          else if (g.id === 'funky') { cx = Math.floor(COLS / 2); cy = ROWS - 2; }
+          else if (g.id === 'bashful') { cx = 1; cy = Math.floor(ROWS / 2); }
+
+          bestDir = possibleDirs.reduce((prev, curr) => {
+            const playerDist1 = bfsDist(g.x + curr.x, g.y + curr.y, player.x, player.y);
+            const cornerDist1 = Math.hypot((g.x + curr.x) - cx, (g.y + curr.y) - cy);
+            const score1 = playerDist1 * 10 - cornerDist1;
+
+            const playerDist2 = bfsDist(g.x + prev.x, g.y + prev.y, player.x, player.y);
+            const cornerDist2 = Math.hypot((g.x + prev.x) - cx, (g.y + prev.y) - cy);
+            const score2 = playerDist2 * 10 - cornerDist2;
+
+            return score1 > score2 ? curr : prev;
+          });
+        } else if (g.id === 'blinky') {
+          // Akıllı bekçi: oyuncuya en kısa yolu BFS ile hesaplar
+          const smart = bfsDir(g.x, g.y);
+          if (smart && possibleDirs.some(d => d.x === smart.x && d.y === smart.y)) {
+            bestDir = smart;
+          } else {
+            bestDir = possibleDirs.reduce((prev, curr) => {
+              const d1 = Math.hypot((g.x + curr.x) - targetX, (g.y + curr.y) - targetY);
+              const d2 = Math.hypot((g.x + prev.x) - targetX, (g.y + prev.y) - targetY);
+              return d1 < d2 ? curr : prev;
+            });
+          }
+        } else {
+          bestDir = possibleDirs.reduce((prev, curr) => {
+            const d1 = Math.hypot((g.x + curr.x) - targetX, (g.y + curr.y) - targetY);
+            const d2 = Math.hypot((g.x + prev.x) - targetX, (g.y + prev.y) - targetY);
+            return d1 < d2 ? curr : prev;
+          });
+        }
+        g.vx = bestDir.x;
+        g.vy = bestDir.y;
+      } else {
+        g.vx = -g.vx;
+        g.vy = -g.vy;
+      }
+    }
+
+    const currentSpeed = g.state === 'frightened' ? g.speed * 1.35 : g.speed;
+    g.px += g.vx * currentSpeed;
+    g.py += g.vy * currentSpeed;
+
+    if (Math.hypot(g.px - player.px, g.py - player.py) < 22) {
+      if (g.state === 'frightened' || g.stun > 0) {
+        audio.ghostDie();
+        score += 200;
+        addFloatingText(g.px, g.py, '+200', '#00f0ff');
+        createExplosionParticles(g.px + 20, g.py + 20, '#00f0ff', 16);
+        // Yenen bekçi 5 saniye (300 kare) sonra oyuncudan en uzak noktada doğar
+        g.state = 'dead';
+        g.deadTimer = 300;
+        g.stun = 0;
+        g.vx = 0;
+        g.vy = 0;
+        g.lastDecisionX = -1;
+        g.lastDecisionY = -1;
+        updateUI();
+      } else if (player.shield > 0) {
+        // Kalkan aktifken bekçiye çarpınca bekçi afallar, can kaybı olmaz
+        g.stun = 160;
+        g.vx = 0;
+        g.vy = 0;
+        player.shield = Math.max(0, player.shield - 200);
+        audio.ghostDie();
+        addFloatingText(g.px, g.py, 'KALKAN!', '#38bdf8');
+        triggerShake(4);
+      } else if (player.invulnFrames <= 0) {
+        killPlayer();
+      }
+    }
+  });
+}
+
+function killPlayer() {
+  lives--;
+  player.shield = 0;
+  audio.playNoiseExplosion(2);
+  triggerShake(12);
+  createExplosionParticles(player.px + 20, player.py + 20, '#ffe600', 30);
+  if (lives <= 0) {
+    gameState = 'GAMEOVER';
+    document.getElementById('restart-game').classList.add('visible');
+    document.getElementById('share-btn').classList.add('visible');
+    audio.stop();
+  } else {
+    resetPositions();
+  }
+  updateUI();
+}
+
+/* ==========================================================================
+   8. EŞYALAR VE PARÇACIK FİZİĞİ
+   ========================================================================== */
+function updateItems() {
+  for (let i = items.length - 1; i >= 0; i--) {
+    const it = items[i];
+    if (Math.hypot(player.px - it.x * TILE, player.py - it.y * TILE) < 22) {
+      audio.playSynthNote(700, 0.15, 'sine', 0.1);
+      if (it.type === 'strength') { pushPower = Math.min(3, pushPower + 1); addFloatingText(player.px, player.py, 'GÜÇ ARTTI', '#8b5cf6'); }
+      if (it.type === 'speed') { player.speed = Math.min(10.0, player.speed + 0.3); addFloatingText(player.px, player.py, 'HIZ ARTTI', '#00a86b'); }
+      if (it.type === 'life') { lives = Math.min(5, lives + 1); addFloatingText(player.px, player.py, 'CAN +1', '#e11d48'); }
+      if (it.type === 'stone') { score += 25; totalPellets--; addFloatingText(player.px, player.py, 'TAŞ +25', '#64748b'); }
+      if (it.type === 'gold') { score += 100; addFloatingText(player.px, player.py, 'ALTIN +100', '#ffd700'); createExplosionParticles(player.px + 20, player.py + 20, '#ffd700', 12); }
+      if (it.type === 'shield') { player.shield = 480; addFloatingText(player.px, player.py, 'KALKAN', '#38bdf8'); }
+      if (it.type === 'freeze') { ghosts.forEach(g => { if (g.state !== 'dead') g.stun = Math.max(g.stun, 300); }); addFloatingText(player.px, player.py, 'DONMA!', '#7dd3fc'); }
+      items.splice(i, 1);
+      updateUI();
+    }
+  }
+}
+
+function createDebris(x, y) {
+  for (let i = 0; i < 10; i++) {
+    particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 6,
+      vy: (Math.random() - 0.7) * 6,
+      size: Math.random() * 5 + 3,
+      color: '#b05a28',
+      alpha: 1,
+      gravity: 0.2
+    });
+  }
+}
+
+function createExplosionParticles(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const spd = Math.random() * 5 + 2;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * spd,
+      vy: Math.sin(angle) * spd,
+      size: Math.random() * 4 + 2,
+      color,
+      alpha: 1,
+      gravity: 0
+    });
+  }
+}
+
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.gravity) p.vy += p.gravity;
+    p.alpha -= 0.025;
+    if (p.alpha <= 0) particles.splice(i, 1);
+  }
+  for (let i = floatingTexts.length - 1; i >= 0; i--) {
+    const ft = floatingTexts[i];
+    ft.y += ft.vy;
+    ft.life--;
+    if (ft.life <= 0) floatingTexts.splice(i, 1);
+  }
+}
+
+
+const minerPalette = {
+  'M': '#fbbf24', // Baret (Sarı)
+  'L': '#ffffff', // Lamba (Beyaz)
+  'D': '#f97316', // Baret bandı (Turuncu)
+  'Y': '#fcd9b8', // Yüz (Ten Rengi)
+  'E': '#92400e', // Göz bebeği (Koyu Kahve)
+  'W': '#ffffff', // Göz akı (Beyaz)
+  'N': '#d97706', // Burun (Açık Kahve)
+  'H': '#7c2d12', // Saç (Koyu Kahve)
+  'F': '#6b3410', // Sakal (Koyu Kahve)
+  'B': '#3f2d1e', // Kemer (Koyu Deri)
+  'T': '#0284c7', // Tulum (Mavi)
+  'A': '#94a3b8', // Gömlek (Gri)
+  'S': '#1e293b', // Botlar (Koyu Gri)
+  'K': '#92400e', // Kazma Sapı (Kahverengi)
+  'I': '#cbd5e1', // Kazma Ucu (Gümüş)
+  ' ': null
+};
+
+const minerSprites = {
+  stand: [
+    "   MMMMMMM   ",
+    "  MLMMMMMMM  ",
+    "  MDDDDDDDM  ",
+    "   HHHHHHH   ",
+    "   YYYYYYY   ",
+    "  WYEYYEYW   ",
+    "   YYYYYYY   ",
+    "   YYNYYNY   ",
+    "   YYYYYYY   ",
+    "  FFFFFFFFF  ",
+    "  FFFFFFFFF  ",
+    "   TTTTTTT   ",
+    "  AATTTTTAA  ",
+    "  AATTTTTAA  ",
+    "   TTTTTTT   ",
+    "   TT   TT   ",
+    "   TT   TT   ",
+    "  SSS   SSS  "
+  ],
+  walk1: [
+    "   MMMMMMM   ",
+    "  MLMMMMMMM  ",
+    "  MDDDDDDDM  ",
+    "   HHHHHHH   ",
+    "   YYYYYYY   ",
+    "  WYEYYEYW   ",
+    "   YYYYYYY   ",
+    "   YYNYYNY   ",
+    "   YYYYYYY   ",
+    "  FFFFFFFFF  ",
+    "  FFFFFFFFF  ",
+    "   TTTTTTT   ",
+    "  AATTTTTAA  ",
+    "  AATTTTTAA  ",
+    "   TTTTTTT   ",
+    "    TT   TT  ",
+    "    TT   TT  ",
+    "   SSS  SSS  "
+  ],
+  walk2: [
+    "   MMMMMMM   ",
+    "  MLMMMMMMM  ",
+    "  MDDDDDDDM  ",
+    "   HHHHHHH   ",
+    "   YYYYYYY   ",
+    "  WYEYYEYW   ",
+    "   YYYYYYY   ",
+    "   YYNYYNY   ",
+    "   YYYYYYY   ",
+    "  FFFFFFFFF  ",
+    "  FFFFFFFFF  ",
+    "   TTTTTTT   ",
+    "  AATTTTTAA  ",
+    "  AATTTTTAA  ",
+    "   TTTTTTT   ",
+    "  TT    TT   ",
+    "  TT    TT   ",
+    "  SSS   SSS  "
+  ]
+};
+
+const pickaxeSprite = [
+  "   III ",
+  "  I K I",
+  " I  K  ",
+  "I   K  ",
+  "    K  ",
+  "    K  ",
+  "    K  "
+];
+
+function drawColoredSprite(ctx, sprite, palette, x, y, scale) {
+  for (let r = 0; r < sprite.length; r++) {
+    for (let c = 0; c < sprite[r].length; c++) {
+      const char = sprite[r][c];
+      const color = palette[char];
+      if (color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(Math.floor(x + c * scale), Math.floor(y + r * scale), scale, scale);
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   9. GÖRSEL ÇİZİM
+   ========================================================================== */
+function draw() {
+  ctx.save();
+  // Topaç'ın ağzı hareket etmese de sürekli açılıp kapanır.
+  player.mouth += player.mouthSpeed;
+  if (player.mouth > 0.45 || player.mouth < 0.05) player.mouthSpeed *= -1;
+  const darkTheme = document.body.classList.contains('dark') || document.documentElement.classList.contains('dark-theme');
+  const canvasBg = darkTheme ? '#2b2314' : '#fdf3d7';
+  const wallFill = darkTheme ? '#3d3220' : '#efe3c3';
+  const wallStroke = darkTheme ? '#d9a441' : '#d9a441';
+  const brickBase = darkTheme ? '#9a6a34' : '#b45309';
+  
+  if (screenShake > 0) {
+    ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
+    screenShake *= 0.88;
+    if (screenShake < 0.2) screenShake = 0;
+  }
+
+  ctx.fillStyle = canvasBg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const x = c * TILE;
+      const y = r * TILE;
+      const val = grid[r][c];
+
+      if (val === 1) {
+        ctx.fillStyle = wallFill;
+        ctx.fillRect(x, y, TILE, TILE);
+        // İç kaya dokusu: köşelerde koyu benekler
+        ctx.fillStyle = darkTheme ? 'rgba(0,0,0,0.28)' : 'rgba(155,130,60,0.18)';
+        ctx.fillRect(x + 6, y + 6, 6, 6);
+        ctx.fillRect(x + TILE - 13, y + TILE - 13, 6, 6);
+        ctx.fillRect(x + TILE - 14, y + 9, 5, 5);
+        ctx.fillRect(x + 9, y + TILE - 14, 5, 5);
+        ctx.strokeStyle = wallStroke;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x + 2, y + 2, TILE - 4, TILE - 4);
+      } else if (val === 2) {
+        // Toprak: kazılabilir toprak zemin
+        ctx.fillStyle = brickBase;
+        ctx.fillRect(x + 1, y + 1, TILE - 2, TILE - 2);
+        // Koyu toprak benekleri
+        ctx.fillStyle = darkTheme ? '#6b4a20' : '#7c3a12';
+        ctx.fillRect(x + 6, y + 5, 6, 5);
+        ctx.fillRect(x + 20, y + 22, 5, 4);
+        ctx.fillRect(x + 24, y + 8, 4, 4);
+        // Açık toprak benekleri
+        ctx.fillStyle = darkTheme ? '#c08a50' : '#d97706';
+        ctx.fillRect(x + 15, y + 14, 5, 4);
+        ctx.fillRect(x + 8, y + 24, 5, 3);
+        ctx.fillRect(x + 26, y + 26, 4, 3);
+        // Küçük taşlar
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(x + 12, y + 9, 3, 3);
+        ctx.fillRect(x + 22, y + 16, 3, 3);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(x + 16, y + 26, 3, 2);
+        ctx.fillRect(x + 8, y + 14, 2, 2);
+        // İnce çerçeve
+        ctx.strokeStyle = darkTheme ? '#c08a50' : '#7c3a12';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 2, y + 2, TILE - 4, TILE - 4);
+
+        // Dayanılan duvarda aşamalı çatlak görünümü
+        if (pushTarget && pushTarget.x === c && pushTarget.y === r && pushProgress > 0) {
+          const p = pushProgress;
+          ctx.strokeStyle = '#fbbf24';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x + 8, y + 5 + 12 * p);
+          ctx.lineTo(x + 15, y + 12 + 10 * p);
+          ctx.lineTo(x + 10, y + 20 + 8 * p);
+          ctx.stroke();
+          if (p > 0.45) {
+            ctx.beginPath();
+            ctx.moveTo(x + 27, y + 7 + 10 * p);
+            ctx.lineTo(x + 21, y + 16 + 8 * p);
+            ctx.lineTo(x + 26, y + 25 + 6 * p);
+            ctx.stroke();
+          }
+          if (p > 0.7) {
+            ctx.beginPath();
+            ctx.moveTo(x + 17, y + 10 + 10 * p);
+            ctx.lineTo(x + 20, y + 20 + 8 * p);
+            ctx.lineTo(x + 14, y + 30 + 5 * p);
+            ctx.stroke();
+          }
+        }
+      } else if (val === 3) {
+        // Elmas yem: çok yüzlü parlak pırlanta (küçük)
+        const cx = x + 20, cy = y + 20;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.fillStyle = '#0284c7';
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.lineTo(5, 0);
+        ctx.lineTo(0, 6);
+        ctx.lineTo(-5, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#7dd3fc';
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.lineTo(5, 0);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(-5, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#bae6fd';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, -6); ctx.lineTo(0, 6);
+        ctx.moveTo(-5, 0); ctx.lineTo(5, 0);
+        ctx.stroke();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-1.5, -2, 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      } else if (val === 4) {
+        const pulse = Math.sin(Date.now() / 100) * 2;
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath();
+        ctx.arc(x + 20, y + 20, 8 + pulse, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (val === 5) {
+        // Altın elmas (+50): parlak çok yüzlü altın pırlanta (küçük)
+        const cx = x + 20, cy = y + 20;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.fillStyle = '#d97706';
+        ctx.beginPath();
+        ctx.moveTo(0, -7);
+        ctx.lineTo(6, 0);
+        ctx.lineTo(0, 7);
+        ctx.lineTo(-6, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.moveTo(0, -7);
+        ctx.lineTo(6, 0);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(-6, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#fef3c7';
+        ctx.beginPath();
+        ctx.moveTo(0, -7);
+        ctx.lineTo(3, 0);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(-3, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#fef3c7';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, -7); ctx.lineTo(0, 7);
+        ctx.stroke();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-2, -2.5, 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  }
+
+  items.forEach(it => {
+    const ix = it.x * TILE + 20;
+    const iy = it.y * TILE + 20;
+    ctx.font = '20px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (it.type === 'stone') {
+      // Cevher taşı: parlak yüzeyli maden taşı
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.lineTo(9, -4);
+      ctx.lineTo(6, 7);
+      ctx.lineTo(-6, 7);
+      ctx.lineTo(-9, -4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.lineTo(9, -4);
+      ctx.lineTo(3, -3);
+      ctx.lineTo(-3, -6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#cbd5e1';
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.lineTo(-3, -6);
+      ctx.lineTo(-9, -4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(-2, -8, 3, 2);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(3, -3); ctx.lineTo(-3, 4);
+      ctx.moveTo(3, -3); ctx.lineTo(6, 3);
+      ctx.moveTo(3, -3); ctx.lineTo(0, 7);
+      ctx.stroke();
+      ctx.restore();
+      return;
+    }
+    if (it.type === 'life') {
+      // Kalp: parlak nokta ve yumuşak ışıma
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.fillStyle = '#e11d48';
+      ctx.beginPath();
+      ctx.moveTo(0, 9);
+      ctx.bezierCurveTo(-16, -2, -9, -13, 0, -5);
+      ctx.bezierCurveTo(9, -13, 16, -2, 0, 9);
+      ctx.fill();
+      ctx.fillStyle = '#fda4af';
+      ctx.beginPath();
+      ctx.arc(-5, -6, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+    if (it.type === 'speed') {
+      // Şimşek: konturlu yıldırım
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath();
+      ctx.moveTo(4, -13);
+      ctx.lineTo(-9, 1);
+      ctx.lineTo(-1, 1);
+      ctx.lineTo(-5, 13);
+      ctx.lineTo(9, -3);
+      ctx.lineTo(1, -3);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#bbf7d0';
+      ctx.beginPath();
+      ctx.moveTo(3, -10);
+      ctx.lineTo(-6, 1);
+      ctx.lineTo(0, 1);
+      ctx.lineTo(-3, 10);
+      ctx.lineTo(6, -2);
+      ctx.lineTo(1, -2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+    if (it.type === 'strength') {
+      // Güç (dambıl): plakalı, parlak
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.fillStyle = '#8b5cf6';
+      ctx.fillRect(-9, -2.5, 18, 5);
+      ctx.fillRect(-11, -4.5, 5, 9);
+      ctx.fillRect(6, -4.5, 5, 9);
+      ctx.fill();
+      ctx.fillStyle = '#c4b5fd';
+      ctx.fillRect(-9, -2.5, 18, 1.8);
+      ctx.beginPath();
+      ctx.arc(-8.5, 0, 1.6, 0, Math.PI * 2);
+      ctx.arc(8.5, 0, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+    if (it.type === 'gold') {
+      // Altın külçesi: parlak, değerli
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.moveTo(-10, 6);
+      ctx.lineTo(-10, -2);
+      ctx.lineTo(-5, -9);
+      ctx.lineTo(5, -9);
+      ctx.lineTo(10, -2);
+      ctx.lineTo(10, 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fde68a';
+      ctx.fillRect(-10, -2, 20, 3);
+      ctx.fillStyle = '#fffbeb';
+      ctx.fillRect(-7, -7, 3, 2);
+      ctx.fillRect(2, -7, 3, 2);
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(-5, 1); ctx.lineTo(5, 1);
+      ctx.moveTo(-4, 3); ctx.lineTo(4, 3);
+      ctx.stroke();
+      ctx.restore();
+      return;
+    }
+    if (it.type === 'shield') {
+      // Kalkan: koruma simgesi
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.fillStyle = '#0284c7';
+      ctx.beginPath();
+      ctx.moveTo(0, -13);
+      ctx.lineTo(10, -8);
+      ctx.lineTo(10, 2);
+      ctx.quadraticCurveTo(10, 9, 0, 13);
+      ctx.quadraticCurveTo(-10, 9, -10, 2);
+      ctx.lineTo(-10, -8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#7dd3fc';
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.lineTo(7, -6.5);
+      ctx.lineTo(7, 2);
+      ctx.quadraticCurveTo(7, 7.5, 0, 10.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#e0f2fe';
+      ctx.fillRect(-1.5, -6, 3, 10);
+      ctx.fillRect(-4, -3, 8, 3);
+      ctx.restore();
+      return;
+    }
+    if (it.type === 'freeze') {
+      // Kar tanesi: dondurma simgesi
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round';
+      for (let a = 0; a < 3; a++) {
+        const ang = a * Math.PI / 3;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(ang) * 12, Math.sin(ang) * 12);
+        ctx.lineTo(-Math.cos(ang) * 12, -Math.sin(ang) * 12);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = '#bae6fd';
+      ctx.lineWidth = 1.6;
+      for (let a = 0; a < 6; a++) {
+        const ang = a * Math.PI / 3;
+        const cx = Math.cos(ang) * 6, cy = Math.sin(ang) * 6;
+        ctx.beginPath();
+        ctx.moveTo(cx * 1.4, cy * 1.4);
+        ctx.lineTo(cx * 2.1, cy * 2.1);
+        ctx.stroke();
+      }
+      ctx.restore();
+      return;
+    }
+  });
+
+  ghosts.forEach(g => {
+    if (g.state === 'dead') return;
+    const gx = g.px + 20;
+    const gy = g.py + 20;
+    const isFright = g.state === 'frightened';
+    const isBlinking = isFright && frightenedTimer < 100 && (Math.floor(Date.now() / 100) % 2 === 0);
+
+    const guardColor = isFright ? (isBlinking ? '#ffffff' : '#2563eb') : g.baseColor;
+    ctx.fillStyle = guardColor;
+    ctx.strokeStyle = isFright ? '#bfdbfe' : '#f8fafc';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(gx, gy, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(gx - 5, gy - 2, 4, 0, Math.PI * 2);
+    ctx.arc(gx + 5, gy - 2, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = isFright ? '#1d4ed8' : '#0f172a';
+    if (g.stun > 0) {
+      // Şaşkın bekçi: X gözler
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(gx - 8, gy - 5); ctx.lineTo(gx - 2, gy + 1);
+      ctx.moveTo(gx - 2, gy - 5); ctx.lineTo(gx - 8, gy + 1);
+      ctx.moveTo(gx + 2, gy - 5); ctx.lineTo(gx + 8, gy + 1);
+      ctx.moveTo(gx + 8, gy - 5); ctx.lineTo(gx + 2, gy + 1);
+      ctx.stroke();
+    } else {
+      g.blink = g.blink || { t: 80 + Math.random() * 160, closed: 0 };
+      tickBlink(g.blink);
+      if (g.blink.closed > 0) {
+        ctx.strokeStyle = isFright ? '#1d4ed8' : '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(gx - 8, gy - 2); ctx.lineTo(gx - 3, gy - 2);
+        ctx.moveTo(gx + 3, gy - 2); ctx.lineTo(gx + 8, gy - 2);
+        ctx.stroke();
+        ctx.lineCap = 'butt';
+      } else {
+        ctx.beginPath();
+        ctx.arc(gx - 5 + g.vx * 2, gy - 2 + g.vy * 2, 2, 0, Math.PI * 2);
+        ctx.arc(gx + 5 + g.vx * 2, gy - 2 + g.vy * 2, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    // Somurtuk bekçi: çatık kaşlar ve memnuniyetsiz ağız
+    ctx.strokeStyle = isFright ? '#bfdbfe' : '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(gx - 9, gy - 7); ctx.lineTo(gx - 3, gy - 4);
+    ctx.moveTo(gx + 3, gy - 4); ctx.lineTo(gx + 9, gy - 7);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(gx, gy + 10, 5, Math.PI, 0);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+  });
+
+  if (player.invulnFrames % 4 < 2) {
+    // Kalkan aktifken madenci çevresinde koruma halkası
+    if (player.shield > 0) {
+      ctx.save();
+      ctx.translate(player.px + 20, player.py + 20);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, 21, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, 21, -Math.PI / 2, -Math.PI / 2 + (player.shield / 480) * Math.PI * 2);
+      ctx.strokeStyle = '#7dd3fc';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.translate(player.px + 20, player.py + 20);
+    // Madenci daima baktığı yöne döner: duvar kırarken pushDir, yürürken hız yönü.
+    let faceX = pushDir.x !== 0 ? pushDir.x : (player.vx !== 0 ? player.vx : lastFaceX);
+    let faceY = pushDir.y !== 0 ? pushDir.y : (player.vy !== 0 ? player.vy : lastFaceY);
+    if (pushDir.x !== 0 || pushDir.y !== 0 || player.vx !== 0 || player.vy !== 0) {
+      lastFaceX = faceX;
+      lastFaceY = faceY;
+    }
+    if (faceX < 0) ctx.scale(-1, 1);
+    // Yukarı/aşağı bakarken yüz öğeleri de o yöne kayar
+    const faceShiftY = faceY < 0 ? -3 : (faceY > 0 ? 3 : 0);
+
+    const walking = player.vx !== 0 || player.vy !== 0;
+    const stepTime = Math.floor(Date.now() / 120) % 4;
+    
+    let sprite = minerSprites.stand;
+    if (walking) {
+      if (stepTime === 0 || stepTime === 2) sprite = minerSprites.stand;
+      else if (stepTime === 1) sprite = minerSprites.walk1;
+      else sprite = minerSprites.walk2;
+    }
+    
+    // Yüz yönüne göre piksel kaydırma (aşağı/yukarı)
+    const scale = 2.6;
+    const w = sprite[0].length * scale;
+    const h = sprite.length * scale;
+    const shiftY = faceY < 0 ? -3 : (faceY > 0 ? 3 : 0);
+
+    // Madenciyi çiz (önce gövde)
+    drawColoredSprite(ctx, sprite, minerPalette, -w/2, -h/2 + shiftY + 2, scale);
+
+    // Kazmayı çiz (yalnızca kazarken; gövdenin önünde, elde, sallanır)
+    if (pushProgress > 0) {
+      let pickRot = -0.6;
+      if (faceY < 0) pickRot = -1.6;
+      else if (faceY > 0) pickRot = 1.2;
+      const swing = pushProgress > 0 ? Math.sin(pushProgress * Math.PI * 6) * 1.1 : 0;
+
+      ctx.save();
+      ctx.translate(11, -5);
+      ctx.rotate(pickRot + swing);
+      drawColoredSprite(ctx, pickaxeSprite, minerPalette, -5, -16, scale * 1.15);
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }
+
+  particles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+    ctx.restore();
+  });
+
+  floatingTexts.forEach(ft => {
+    ctx.fillStyle = ft.color;
+    ctx.font = 'bold 13px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(ft.text, ft.x, ft.y);
+  });
+
+  if (gameState === 'GAMEOVER') {
+    renderOverlay('#e11d48', 'OYUN BİTTİ', 'Yeniden başlamak için aşağıdaki butona basın');
+  } else if (gameState === 'VICTORY') {
+    renderOverlay('#0284c7', 'OYUN TAMAMLANDI!', `Skor: ${score} - Yeniden başlamak için butona basın`);
+  }
+
+  ctx.restore();
+}
+
+function renderOverlay(color, title, sub) {
+  ctx.fillStyle = 'rgba(5, 7, 18, 0.85)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = color;
+  ctx.font = '900 32px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(title, canvas.width / 2, canvas.height / 2 - 10);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '13px monospace';
+  ctx.fillText(sub, canvas.width / 2, canvas.height / 2 + 25);
+}
+
+function updateUI() {
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem('elmas-madencisi-high-score', String(highScore));
+  }
+  document.getElementById('ui-score').innerText = String(score).padStart(5, '0');
+  document.getElementById('ui-high-score').innerText = String(highScore).padStart(5, '0');
+  const heart = '<svg class="life-heart" width="18" height="18" viewBox="0 0 24 24" aria-label="Can"><path fill="#e11d48" d="M12 21S3 15.3 3 8.8A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 9 2.8C21 15.3 12 21 12 21Z"/></svg>';
+  document.getElementById('ui-lives').innerHTML = lives > 0 ? heart.repeat(lives) : '0';
+  document.getElementById('ui-pellets').innerText = totalPellets;
+  document.getElementById('ui-level').innerText = (currentLevel + 1) + " / " + LEVEL_COUNT;
+}
+
+/* ==========================================================================
+   10. GİRDİ VE DÖNGÜ YÖNETİMİ
+   ========================================================================== */
+function setDirection(vx, vy) {
+  player.reqVx = vx;
+  player.reqVy = vy;
+  // Duvar kırma: son basılan yön izlenir; madenci duvara dayandığında kırmaya başlar
+  pushDir = { x: vx, y: vy };
+  // HATA ÇÖZÜMÜ: Eğer duruyorsak ve basılan yön açıksa direkt harekete geç
+  if (player.vx === 0 && player.vy === 0) {
+    if (canMoveTo(player.x + vx, player.y + vy)) {
+      player.vx = vx;
+      player.vy = vy;
+      player.reqVx = 0;
+      player.reqVy = 0;
+    }
+  }
+}
+
+// HATA ÇÖZÜMÜ: Sadece document dinleyici kullanılarak event şişmesi engellendi
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('rulesModal').classList.contains('active')) return;
+  const key = e.key || e.code;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code) || ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(key)) {
+    e.preventDefault(); // Sayfanın kaymasını engeller
+  }
+  audio.init();
+  if (gameState === 'GAMEOVER' || gameState === 'VICTORY') {
+    if (e.code === 'Space' || e.code === 'Enter') {
+      document.getElementById('restart-game').classList.remove('visible');
+      resetLevel(); gameState = 'PLAYING';
+      audio.init();
+      audio.startBGM();
+    }
+    return;
+  }
+  if (e.code === 'ArrowUp' || e.code === 'KeyW') setDirection(0, -1);
+  else if (e.code === 'ArrowDown' || e.code === 'KeyS') setDirection(0, 1);
+  else if (e.code === 'ArrowLeft' || e.code === 'KeyA') setDirection(-1, 0);
+  else if (e.code === 'ArrowRight' || e.code === 'KeyD') setDirection(1, 0);
+  else if (e.code === 'KeyM') audio.muted = !audio.muted;
+});
+
+// HATA ÇÖZÜMÜ: Madenci yalnızca yön tuşu basılıyken hareket eder; tuş bırakılınca durur
+document.addEventListener('keyup', (e) => {
+  const dirMap = {
+    ArrowUp: [0, -1], KeyW: [0, -1],
+    ArrowDown: [0, 1], KeyS: [0, 1],
+    ArrowLeft: [-1, 0], KeyA: [-1, 0],
+    ArrowRight: [1, 0], KeyD: [1, 0]
+  };
+  if (dirMap[e.code]) {
+    const [rx, ry] = dirMap[e.code];
+    if (player.vx === rx && player.vy === ry) {
+      // Önce en yakın hücre merkezine sabitle; böylece yön değiştirme her zaman çalışır
+      player.px = Math.round(player.px / TILE) * TILE;
+      player.py = Math.round(player.py / TILE) * TILE;
+      player.vx = 0;
+      player.vy = 0;
+    }
+    if (player.reqVx === rx && player.reqVy === ry) {
+      player.reqVx = 0;
+      player.reqVy = 0;
+    }
+    if (pushDir.x === rx && pushDir.y === ry) {
+      pushDir = { x: 0, y: 0 };
+      pushTarget = null;
+      pushProgress = 0;
+    }
+  }
+});
+
+// Yeniden Başla butonu: oyun bitti ekranında tüm skoru/canları sıfırlayıp oyunu yeniden başlatır
+document.getElementById('restart-game').addEventListener('click', () => {
+  score = 0;
+  lives = 5;
+  currentLevel = 0;
+  player.speed = 5.2;
+  player.invulnFrames = 120;
+  pushPower = 1;
+  pushDir = { x: 0, y: 0 };
+  pushTarget = null;
+  pushProgress = 0;
+  frightenedTimer = 0;
+  document.getElementById('restart-game').classList.remove('visible');
+  document.getElementById('share-btn').classList.remove('visible');
+  resetLevel();
+  gameState = 'PLAYING';
+  audio.init();
+  audio.startBGM();
+});
+
+// Skoru Paylaş butonu: oyun sonunda skoru paylaşır veya panoya kopyalar
+document.getElementById('share-btn').addEventListener('click', () => {
+  const msg = 'Elmas Madencisi oyununda ' + score + ' puan topladım! En yüksek skorum: ' + highScore + '. Sen de dene: teknolojitasarimci.com';
+  const btn = document.getElementById('share-btn');
+  if (navigator.share) {
+    navigator.share({ title: 'Elmas Madencisi', text: msg }).catch(function () { });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = msg;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      btn.textContent = 'Kopyalandı!';
+      setTimeout(() => { btn.textContent = 'Skoru Paylaş'; }, 1800);
+    } catch (err) { }
+    document.body.removeChild(ta);
+  }
+});
+
+// Kurallar modalı event listener'ları
+document.getElementById('btn-show-rules').addEventListener('click', () => {
+  document.getElementById('rulesModal').classList.add('active');
+  audio.init();
+});
+document.getElementById('rulesClose').addEventListener('click', () => {
+  document.getElementById('rulesModal').classList.remove('active');
+});
+
+function setMobileDir(vx, vy) {
+  audio.init();
+  setDirection(vx, vy);
+  swipeHold = 10;
+}
+
+let swipeStartX = 0;
+let swipeStartY = 0;
+const canvasWrap = document.getElementById('canvas-wrap');
+canvasWrap.tabIndex = 0;
+canvasWrap.addEventListener('pointerdown', () => canvasWrap.focus());
+canvasWrap.addEventListener('touchstart', e => {
+  const touch = e.changedTouches[0];
+  swipeStartX = touch.clientX;
+  swipeStartY = touch.clientY;
+}, { passive: true });
+canvasWrap.addEventListener('touchend', e => {
+  const touch = e.changedTouches[0];
+  const dx = touch.clientX - swipeStartX;
+  const dy = touch.clientY - swipeStartY;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+  if (Math.abs(dx) > Math.abs(dy)) setMobileDir(dx > 0 ? 1 : -1, 0);
+  else setMobileDir(0, dy > 0 ? 1 : -1);
+  e.preventDefault();
+}, { passive: false });
+
+// HATA ÇÖZÜMÜ: Yüksek yenileme hızına sahip monitörlerde oyunun aşırı hızlanmasını engelleyen Fixed Timestep
+let lastTime = 0;
+const FPS = 60;
+const frameDelay = 1000 / FPS;
+
+function mainLoop(timestamp) {
+  if (!lastTime) lastTime = timestamp;
+  const deltaTime = timestamp - lastTime;
+
+  if (deltaTime >= frameDelay) {
+    lastTime = timestamp - (deltaTime % frameDelay);
+
+    if (gameState === 'PLAYING') {
+      updatePowerPellets();
+      updatePlayer();
+      updateWallPush();
+      updateGhosts();
+      updateItems();
+    }
+    updateParticles();
+    draw();
+  }
+  requestAnimationFrame(mainLoop);
+}
+
+// Oyunu Başlat
+resetLevel();
+requestAnimationFrame(mainLoop);
+</script>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+
+  
+
+      <footer class="footer">
+  <div class="container">
+    <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+    <div class="footer-copyright-text">Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek kullanabilirsiniz. İçeriklerimi kullandığınız için teşekkür ederim.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleReaction(btn) {
+    if (window.reactionsApi) window.reactionsApi.toggleReaction(btn);
+  }
+</script>
+
+
+<script src="../../js/views.js"></script>
+
+<script src="../../js/protection.js"></script>
+<script src="../../js/menu.js"></script>
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

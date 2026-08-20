@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kare Kapmaca - teknolojitasarimci</title>
+<link rel="stylesheet" href="../../css/style.css">
+<style>
+:root {
+  --brand: #0284c7;
+  --brand-dark: #0369a1;
+  --brand-light: #e0f2fe;
+  --brand-grad: #0284c7;
+  --text: #1e293b;
+  --muted: #64748b;
+  --line-base: #cbd5e1;
+  --shadow: 0 16px 40px rgba(2, 132, 199, 0.18);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f8fafc;
+  color: var(--text);
+}
+.game-wrapper {
+    width: 100%;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 24px 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+.card {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+  width: 100%;
+  text-align: center;
+}
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+h1 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: var(--brand-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 2px 0 12px;
+  text-align: left;
+}
+.btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+.btn-outline {
+  background: #fff;
+  color: var(--brand-dark);
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+}
+.btn-outline:hover {
+  background: var(--brand-light);
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+.btn-primary {
+  background: var(--brand-grad);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+}
+.btn-light {
+  background: #ffffff;
+  color: var(--brand-dark);
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+}
+.btn-light:hover {
+  background: var(--brand-light);
+  border-color: var(--brand);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0 12px;
+}
+.turn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--brand-light);
+  color: var(--brand-dark);
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 0.9em;
+  font-weight: 700;
+  box-shadow: inset 0 1px 3px rgba(2, 132, 199, 0.08);
+}
+.turn-badge .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+  transition: 0.2s;
+}
+.turn-badge .dot.p2 { background: var(--brand-dark); box-shadow: 0 0 0 3px rgba(0, 116, 173, 0.25); }
+
+.score-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 14px;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+.score-val { color: var(--brand); font-size: 1.15em; }
+.score-val.p2 { color: var(--brand-dark); }
+
+.mode-selector {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.grid-select {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.grid-label { font-size: 0.85em; font-weight: 700; color: var(--muted); }
+.grid-btn {
+  border: 1.5px solid rgba(2, 132, 199, 0.3);
+  background: #fff;
+  color: var(--brand-dark);
+  border-radius: 16px;
+  padding: 5px 14px;
+  font-size: 0.82em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.grid-btn:hover { background: var(--brand-light); border-color: var(--brand); }
+.grid-btn.active {
+  background: var(--brand-grad);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+}
+
+.winner-banner {
+  margin: 10px 0 14px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  background: var(--brand-light);
+  color: var(--brand-dark);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.winner-banner.hidden { display: none !important; }
+
+@keyframes popIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.board-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+  user-select: none;
+}
+#board {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  touch-action: manipulation;
+  background: transparent !important;
+}
+.line-view {
+  pointer-events: none;
+  stroke: #cbd5e1;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke 0.15s ease, stroke-width 0.15s ease;
+}
+.line:hover:not([data-drawn]) .line-view {
+  stroke: rgba(2, 132, 199, 0.5);
+}
+.line[data-drawn="1"][data-player="1"] .line-view {
+  stroke: #0284c7 !important;
+  stroke-width: 6 !important;
+}
+.line[data-drawn="1"][data-player="2"] .line-view {
+  stroke: #dc2626 !important;
+  stroke-width: 6 !important;
+}
+.square-view.p1 {
+  fill: rgba(2, 132, 199, 0.22);
+}
+.square-view.p2 {
+  fill: rgba(220, 38, 38, 0.22);
+}
+.dot-node {
+  fill: #ffffff;
+  stroke: #0284c7;
+  stroke-width: 3;
+}
+.score-val.p2 { color: #dc2626 !important; }
+.turn-badge .dot.p2 { background: #dc2626 !important; box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25) !important; }
+
+.hint {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+.modal-overlay.hidden { display: none !important; }
+.modal-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px 28px 24px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+.modal-card h2 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  background: var(--brand-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+}
+.modal-card ol {
+  padding-left: 20px;
+  color: #334155;
+  line-height: 1.7;
+  font-size: 0.93rem;
+  text-align: left;
+  margin-bottom: 18px;
+}
+.modal-card li { margin-bottom: 8px; }
+.modal-card .btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 12px;
+}
+
+        body.dark { --card-bg: #1e293b; --text-main: #e2e8f0; }
+        body.dark .card, body.dark .game-container { background: #1e293b !important; border-color: #334155 !important; box-shadow: 0 8px 24px rgba(0,0,0,0.45) !important; }
+        .game-wrapper, .board-wrap, body.dark .board-wrap { background: transparent !important; border: none !important; box-shadow: none !important; }
+        body.dark .subtitle, body.dark .header-row { color: #cbd5e1 !important; }
+        
+        body.dark .btn-light, body.dark .btn-outline { background: #0f172a !important; border-color: #334155 !important; color: #cbd5e1 !important; }
+        body.dark .btn-light:hover, body.dark .btn-outline:hover { background: rgba(2,132,199,0.2) !important; }
+        body.dark .modal-overlay { background: rgba(2,6,23,0.8) !important; }
+        body.dark .modal, body.dark .modal-card { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+        body.dark .statusbar, body.dark .status-box, body.dark .turn-badge { background: #0f172a !important; border-color: #334155 !important; color: #cbd5e1 !important; }
+        body.dark .score-card, body.dark .score-val, body.dark .msg-banner, body.dark .result-banner { background: #0f172a !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+        body.dark .score-val.p2 { color: #ef4444 !important; }
+        body.dark .turn-badge .dot.p1 { background: #38bdf8 !important; }
+        body.dark .turn-badge .dot.p2 { background: #ef4444 !important; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important; }
+        body.dark .grid-btn { background: #0f172a !important; border-color: #334155 !important; color: #cbd5e1 !important; }
+        body.dark .grid-btn.active { background: #0284c7 !important; color: #ffffff !important; border-color: transparent !important; }
+        body.dark .grid-label { color: #cbd5e1 !important; }
+
+        /* Koyu Tema: Tahta Çizgileri ve Düğümleri */
+        body.dark #board { background: transparent !important; }
+        body.dark .line-view { stroke: #334155 !important; }
+        body.dark .line:hover:not([data-drawn]) .line-view { stroke: rgba(56, 189, 248, 0.45) !important; }
+        body.dark .line[data-drawn="1"][data-player="1"] .line-view { stroke: #38bdf8 !important; stroke-width: 6 !important; }
+        body.dark .line[data-drawn="1"][data-player="2"] .line-view { stroke: #ef4444 !important; stroke-width: 6 !important; }
+        body.dark .square-view.p1 { fill: rgba(56, 189, 248, 0.28) !important; }
+        body.dark .square-view.p2 { fill: rgba(239, 68, 68, 0.28) !important; }
+        body.dark .dot-node { fill: #0f172a !important; stroke: #38bdf8 !important; }
+    
+    /* --- Site Teması Uyumlu Arka Plan ve Kart Standartları --- */
+    body {
+        background: #f8fafc !important;
+        color: #1e293b;
+    }
+    .card, .game-container, .game-box, .main-card, #app-container {
+        background: #ffffff;
+        border: 1px solid rgba(2, 132, 199, 0.15);
+        box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+    }
+
+    body.dark {
+        background: #0f172a !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark .card, 
+    body.dark .game-container, 
+    body.dark .game-box, 
+    body.dark .main-card, 
+    body.dark #app-container,
+    body.dark .rules-modal,
+    body.dark .modal,
+    body.dark .modal-content,
+    body.dark .modal-card {
+        background: #1e293b !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark h1, body.dark h2, body.dark h3, body.dark .game-title, body.dark .header h1 {
+        color: #38bdf8 !important;
+    }
+    body.dark .turn-indicator, 
+    body.dark .statusbar, 
+    body.dark .status-box, 
+    body.dark .score-card, 
+    body.dark .score-val,
+    body.dark .msg-banner {
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+        color: #cbd5e1 !important;
+    }
+    body.dark .board, 
+    body.dark .board-outer, 
+    body.dark .piles-board, 
+    body.dark .mangala-board,
+    body.dark #board {
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+    }
+    body.dark .cell, 
+    body.dark .sq, 
+    body.dark .pit {
+        background: rgba(255, 255, 255, 0.04) !important;
+        border-color: #334155 !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark .cell.empty, body.dark .sq.empty {
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+    body.dark .btn-light, 
+    body.dark .btn-outline, 
+    body.dark .btn-mode, 
+    body.dark .size-btn, 
+    body.dark .level-btn, 
+    body.dark .amt-btn {
+        background: #0f172a !important;
+        border: 1px solid #334155 !important;
+        color: #38bdf8 !important;
+    }
+    body.dark .btn-light:hover, 
+    body.dark .btn-outline:hover, 
+    body.dark .btn-mode:hover, 
+    body.dark .size-btn:hover {
+        background: #1e293b !important;
+        border-color: #0284c7 !important;
+    }
+    body.dark .btn-primary, 
+    body.dark .btn1, 
+    body.dark .rules-btn,
+    body.dark .action-btn-main {
+        background: #0284c7 !important;
+        color: #ffffff !important;
+    }
+
+
+/* ==========================================================================
+   OYUNLAR STANDART KONTRAST VE BUTON DÜZENİ (Tüm Oyunlar İçin Evrensel)
+   ========================================================================== */
+
+/* 1. Başlama / Sıfırlama Butonları (Asla boydan boya değil, ortalanmış 25px hap buton) */
+button#reset-button,
+button#btn-reset,
+button#btn-restart,
+button#start-btn,
+button#restart-btn,
+.btn-reset,
+.btn-restart,
+.btn-start,
+.game-btn-primary,
+.main-game-btn {
+    width: auto !important;
+    min-width: 170px !important;
+    max-width: 240px !important;
+    margin: 14px auto !important;
+    display: block !important;
+    padding: 10px 24px !important;
+    border-radius: 25px !important;
+    border: none !important;
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 15px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25) !important;
+    transition: all 0.2s ease !important;
+}
+
+button#reset-button:hover,
+button#btn-reset:hover,
+button#btn-restart:hover,
+button#start-btn:hover,
+.btn-reset:hover,
+.btn-restart:hover,
+.btn-start:hover {
+    background: #0369a1 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
+}
+
+body.dark button#reset-button,
+body.dark button#btn-reset,
+body.dark button#btn-restart,
+body.dark button#start-btn,
+body.dark button#restart-btn,
+body.dark .btn-reset,
+body.dark .btn-restart,
+body.dark .btn-start,
+body.dark .game-btn-primary,
+body.dark .main-game-btn {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+}
+
+body.dark button#reset-button:hover,
+body.dark button#btn-reset:hover,
+body.dark button#btn-restart:hover,
+body.dark .btn-reset:hover,
+body.dark .btn-start:hover {
+    background: #7dd3e8 !important;
+}
+
+/* 2. Mod & Boyut Seçici Butonları (Yüksek Kontrast & Düz Renk) */
+.btn-mode,
+.size-btn,
+.level-btn,
+.amt-btn,
+.controls span,
+.option-btn {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #334155 !important;
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-mode.active,
+.size-btn.active,
+.level-btn.active,
+.amt-btn.active,
+.controls input[type="radio"]:checked + span,
+.option-btn.active {
+    background: #0284c7 !important;
+    border-color: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+body.dark .btn-mode,
+body.dark .size-btn,
+body.dark .level-btn,
+body.dark .amt-btn,
+body.dark .controls span,
+body.dark .option-btn {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark .btn-mode.active,
+body.dark .size-btn.active,
+body.dark .level-btn.active,
+body.dark .amt-btn.active,
+body.dark .controls input[type="radio"]:checked + span,
+body.dark .option-btn.active {
+    background: #38bdf8 !important;
+    border-color: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+/* 3. Durum Çubuğu / Sıra Göstergesi */
+.status-badge,
+.status-box,
+.statusbar,
+.turn-badge,
+#status-text,
+#turn-indicator {
+    background: #e0f2fe !important;
+    border: 1px solid rgba(2, 132, 199, 0.2) !important;
+    color: #0369a1 !important;
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+}
+
+body.dark .status-badge,
+body.dark .status-box,
+body.dark .statusbar,
+body.dark .turn-badge,
+body.dark #status-text,
+body.dark #turn-indicator {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #38bdf8 !important;
+    font-weight: 700 !important;
+}
+
+/* 4. Skor Panelleri */
+.score-card,
+.score-box,
+.scoreboard {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+    border-radius: 14px !important;
+}
+
+body.dark .score-card,
+body.dark .score-box,
+body.dark .scoreboard {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+/* 5. Kurallar / Yardım Butonları */
+.action-btn,
+.rules-btn,
+.btn-rules {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0369a1 !important;
+    border-radius: 20px !important;
+}
+
+body.dark .action-btn,
+body.dark .rules-btn,
+body.dark .btn-rules {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #38bdf8 !important;
+}
+
+
+/* ==========================================================================
+   STANDART KURALLAR VE AKSİYON BUTONLARI (Tüm Oyunlar İçin Şık 25px Hap Buton)
+   ========================================================================== */
+.action-btn,
+.btn-rules,
+.rules-btn,
+#btn-rules,
+#rules-btn,
+button#rules-btn,
+button.rules-btn,
+.rules-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 7px 18px !important;
+    min-width: 95px !important;
+    height: 36px !important;
+    border-radius: 25px !important;
+    border: 1.5px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #0ea5e9 !important;
+    font-weight: 800 !important;
+    font-size: 13.5px !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+.action-btn:hover,
+.btn-rules:hover,
+.rules-btn:hover,
+#btn-rules:hover,
+#rules-btn:hover,
+.rules-trigger:hover {
+    background: #e0f2fe !important;
+    border-color: #0ea5e9 !important;
+    color: #0284c7 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2) !important;
+}
+
+body.dark .action-btn,
+body.dark .btn-rules,
+body.dark .rules-btn,
+body.dark #btn-rules,
+body.dark #rules-btn,
+body.dark button#rules-btn,
+body.dark button.rules-btn,
+body.dark .rules-trigger {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark .action-btn:hover,
+body.dark .btn-rules:hover,
+body.dark .rules-btn:hover,
+body.dark #btn-rules:hover,
+body.dark #rules-btn:hover,
+body.dark .rules-trigger:hover {
+    background: #1e293b !important;
+    border-color: #38bdf8 !important;
+    color: #7dd3e8 !important;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+
+/* ==========================================================================
+   STANDART ORTALANMIŞ BUTONLAR VE MODAL ONAY BUTONLARI (Boydan boya yasak)
+   ========================================================================== */
+.modal-footer,
+.modal-actions,
+.dialog-footer,
+.rules-modal-footer,
+.rules-footer {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 18px !important;
+    padding-top: 10px !important;
+    text-align: center !important;
+}
+
+.modal-footer button,
+.modal-actions button,
+.modal-close-btn,
+.btn-understand,
+#btn-understand,
+#rules-close-btn,
+#btn-rules-close,
+.rules-modal-close,
+.rules-close,
+button.btn-understand,
+button.modal-close-btn,
+#restartBtn,
+#resetBtn,
+#startBtn,
+.btn-start,
+.btn-reset,
+.btn-restart {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 160px !important;
+    max-width: 240px !important;
+    width: auto !important;
+    margin: 12px auto !important;
+    padding: 10px 24px !important;
+    border-radius: 25px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+
+/* ==========================================================================
+   ANLADIM / OYUNA BAŞLA BUTONU (Kesinlikle Boydan Boya Değil, Ortalanmış 25px Hap Buton)
+   ========================================================================== */
+.modal-close,
+#rulesClose,
+#closeRulesBtn,
+#rules-close,
+.btn-understand,
+#btn-understand,
+.modal-close-btn,
+button.modal-close,
+button#rulesClose,
+button#closeRulesBtn,
+button#rules-close {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 170px !important;
+    max-width: 240px !important;
+    width: auto !important;
+    margin: 22px auto 6px auto !important;
+    padding: 11px 26px !important;
+    border-radius: 25px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    background: #0ea5e9 !important;
+    color: #ffffff !important;
+    border: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3) !important;
+    transition: all 0.25s ease !important;
+    box-sizing: border-box !important;
+}
+
+.modal-close:hover,
+#rulesClose:hover,
+#closeRulesBtn:hover,
+#rules-close:hover,
+.btn-understand:hover,
+#btn-understand:hover {
+    background: #0284c7 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.4) !important;
+}
+
+body.dark .modal-close,
+body.dark #rulesClose,
+body.dark #closeRulesBtn,
+body.dark #rules-close,
+body.dark .btn-understand,
+body.dark #btn-understand {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+}
+
+body.dark .modal-close:hover,
+body.dark #rulesClose:hover,
+body.dark #closeRulesBtn:hover,
+body.dark #rules-close:hover {
+    background: #7dd3e8 !important;
+}
+
+
+body.dark .modal ol,
+body.dark .modal ol li,
+body.dark .modal ul,
+body.dark .modal ul li,
+body.dark .modal p,
+body.dark .rules-content,
+body.dark .rules-modal ol,
+body.dark .rules-modal ol li {
+    color: #e2e8f0 !important;
+}
+body.dark .subtitle, body.dark p.subtitle {
+    color: #cbd5e1 !important;
+}
+body.dark #counts, body.dark #turn, body.dark .statusbar {
+    color: #e2e8f0 !important;
+}
+
+
+
+
+
+.status, .game-info, .statusbar-wrap, .info-row, .header-row,
+.mode-selector, .mode-row, .controls, .controls-wrapper, .size-bar, .level-bar, .grid-select, .tabs, .btn-row,
+body.dark .status, body.dark .game-info, body.dark .statusbar-wrap, body.dark .info-row, body.dark .header-row,
+body.dark .mode-selector, body.dark .mode-row, body.dark .controls, body.dark .controls-wrapper, body.dark .size-bar, body.dark .level-bar, body.dark .grid-select, body.dark .tabs, body.dark .btn-row {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+</style>
+    <script src="../../js/game-sounds.js"></script>
+    <script src="../../js/theme.js"></script>
+</head>
+<body>
+    <!-- Site Üst Menüsü --><div class="game-wrapper">
+  <main class="card">
+    <div class="header-row">
+      <div>
+        <h1>Kare Kapmaca</h1>
+        <p class="subtitle">Noktaları birleştir, kareleri kapat ve puanları topla</p>
+      </div>
+      <button id="rulesBtn" class="btn btn-outline" type="button">Kurallar</button>
+    </div>
+
+    <div class="status">
+      <div id="turnIndicator" class="turn-badge"><span class="dot" id="dot"></span><span id="turnText">Sıra: Sende</span></div>
+      <button id="newGameBtn" class="btn btn-primary" type="button">Yeni Oyun</button>
+    </div>
+
+    <div class="mode-selector">
+      <button id="modeAI" class="btn btn-light" type="button">Yapay Zekaya Karşı</button>
+      <button id="modePvP" class="btn btn-light" type="button">İki Kişilik</button>
+    </div>
+
+    <div class="score-card" style="justify-content:center; margin-bottom:14px;">
+      <div><span id="p1Name">Oyuncu 1:</span> <span class="score-val" id="score1">0</span></div>
+      <span style="color:#cbd5e1; margin:0 12px;">|</span>
+      <div><span id="p2Name">Yapay Zeka:</span> <span class="score-val p2" id="score2">0</span></div>
+    </div>
+
+    <div class="grid-select">
+      <span class="grid-label">Tahta Boyutu:</span>
+      <button class="grid-btn" data-n="3" type="button">3x3</button>
+      <button class="grid-btn" data-n="4" type="button">4x4</button>
+      <button class="grid-btn" data-n="5" type="button">5x5</button>
+    </div>
+
+    <div id="winnerBanner" class="winner-banner hidden"></div>
+
+    <div class="board-wrap">
+      <svg id="board" viewBox="0 0 360 360" aria-label="Kare Kapmaca oyun tahtası"></svg>
+    </div>
+
+    <p class="hint">Sırayla iki komşu nokta arasına bir çizgi çizin. Bir karenin 4. kenarını tamamlayan oyuncu kareyi kapar ve tekrar oynar.</p>
+  </main>
+</div>
+
+<div id="rulesModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <h2>Kare Kapmaca Kuralları</h2>
+    <ol>
+      <li>Kare Kapmaca iki kişi (veya Yapay Zekaya karşı) oynanır.</li>
+      <li>Oyuncular sırayla komşu iki nokta arasına bir çizgi çeker.</li>
+      <li>Dört kenarı tamamlanan karenin sahibi o çizgiyi çeken oyuncu olur; 1 puan kazanır.</li>
+      <li>Kare tamamlayan oyuncu <strong>ekstra bir hamle daha</strong> yapar.</li>
+      <li>Tüm kareler kapandığında en çok kare toplayan oyuncu kazanır.</li>
+      <li><svg class="inline-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0369a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg> İpucu: Bir kareye 3. kenarı çizmekten kaçının; rakibiniz onu kapatıp puan alabilir!</li>
+    </ol>
+    <button id="closeRulesBtn" class="btn btn-primary" type="button">Anladım, Oyuna Başla</button>
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Kare%20Kapmaca%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#KareKapmaca</span>
+        <span class="tag-badge">#NoktaBirleştirme</span>
+        <span class="tag-badge">#DotsAndBoxes</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#StratejiOyunları</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+</div>
+</div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+
+
+<script>
+(function(){
+  'use strict';
+
+  var PAD = 30;
+  var SPACING = 60;
+  var svgNS = 'http://www.w3.org/2000/svg';
+
+  var svg = document.getElementById('board');
+  var squaresLayer, linesLayer, dotsLayer;
+
+  var N = 4;
+  var hLines = [], vLines = [], squares = [];
+  var scores = {1:0, 2:0};
+  var current = 1;
+  var gameOver = false;
+  var vsAI = true;
+  var aiThinking = false;
+
+  var turnIndicator = document.getElementById('turnIndicator');
+  var dot = document.getElementById('dot');
+  var turnText = document.getElementById('turnText');
+  var score1El = document.getElementById('score1');
+  var score2El = document.getElementById('score2');
+  var p1NameEl = document.getElementById('p1Name');
+  var p2NameEl = document.getElementById('p2Name');
+  var winnerBanner = document.getElementById('winnerBanner');
+  var gridBtns = document.querySelectorAll('.grid-btn');
+  var rulesModal = document.getElementById('rulesModal');
+
+  function el(tag, attrs){
+    var node = document.createElementNS(svgNS, tag);
+    for (var k in attrs) node.setAttribute(k, attrs[k]);
+    return node;
+  }
+
+  function makeLine(hv, r, c, x1, y1, x2, y2){
+    var g = el('g', {'class':'line', 'data-hv':hv, 'data-r':r, 'data-c':c});
+    var view = el('line', {
+      'class':'line-view',
+      'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2
+    });
+    var hit = el('line', {
+      'class':'line-hit',
+      'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2,
+      'stroke':'transparent', 'stroke-width':24,
+      'style':'cursor:pointer;pointer-events:stroke;'
+    });
+    g.appendChild(view);
+    g.appendChild(hit);
+    return g;
+  }
+
+  function buildBoard(){
+    svg.innerHTML = '';
+    var total = 2 * PAD + N * SPACING;
+    svg.setAttribute('viewBox', '0 0 ' + total + ' ' + total);
+
+    squaresLayer = el('g', {'class':'squares-layer'});
+    linesLayer = el('g', {'class':'lines-layer'});
+    dotsLayer = el('g', {'class':'dots-layer'});
+    svg.appendChild(squaresLayer);
+    svg.appendChild(linesLayer);
+    svg.appendChild(dotsLayer);
+
+    var i, j;
+    for (i = 0; i <= N; i++){
+      for (j = 0; j < N; j++){
+        linesLayer.appendChild(makeLine('h', i, j,
+          PAD + j * SPACING, PAD + i * SPACING,
+          PAD + (j + 1) * SPACING, PAD + i * SPACING));
+      }
+    }
+    for (i = 0; i < N; i++){
+      for (j = 0; j <= N; j++){
+        linesLayer.appendChild(makeLine('v', i, j,
+          PAD + j * SPACING, PAD + i * SPACING,
+          PAD + j * SPACING, PAD + (i + 1) * SPACING));
+      }
+    }
+    for (i = 0; i <= N; i++){
+      for (j = 0; j <= N; j++){
+        dotsLayer.appendChild(el('circle', {
+          cx: PAD + j * SPACING, cy: PAD + i * SPACING, r: 6,
+          'class': 'dot-node'
+        }));
+      }
+    }
+  }
+
+  function findLine(hv, r, c){
+    return document.querySelector(
+      'g.line[data-hv="' + hv + '"][data-r="' + r + '"][data-c="' + c + '"]');
+  }
+
+  function isComplete(r, c){
+    return hLines[r][c] && hLines[r+1][c] && vLines[r][c] && vLines[r][c+1];
+  }
+
+  function fillSquare(r, c){
+    squares[r][c] = current;
+    scores[current]++;
+    try{ GameSounds.point(); }catch(e){}
+    var isDark = document.body.classList.contains('dark');
+    var fillColor = current === 1 
+      ? (isDark ? 'rgba(56,189,248,0.28)' : 'rgba(2,132,199,0.22)')
+      : (isDark ? 'rgba(239,68,68,0.28)' : 'rgba(220,38,38,0.22)');
+    var sq = el('rect', {
+      x: PAD + c * SPACING + 4, y: PAD + r * SPACING + 4,
+      width: SPACING - 8, height: SPACING - 8,
+      'class': 'square-view p' + current,
+      fill: fillColor,
+      rx: 8
+    });
+    squaresLayer.appendChild(sq);
+  }
+
+  function onUserClick(hv, r, c){
+    if (gameOver || aiThinking) return;
+    if (vsAI && current !== 1) return;
+    makeMove(hv, r, c);
+  }
+
+  function makeMove(hv, r, c){
+    var arr = hv === 'h' ? hLines[r] : vLines[r];
+    if (arr[c] || gameOver) return;
+    arr[c] = true;
+    try{ GameSounds.click(); }catch(e){}
+
+    var g = findLine(hv, r, c);
+    if (g) {
+      g.setAttribute('data-drawn', '1');
+      g.setAttribute('data-player', current);
+      var isDark = document.body.classList.contains('dark');
+      var strokeColor = current === 1 
+        ? (isDark ? '#38bdf8' : '#0284c7')
+        : (isDark ? '#ef4444' : '#dc2626');
+      var lv = g.querySelector('.line-view');
+      if (lv) {
+        lv.setAttribute('stroke', strokeColor);
+        lv.setAttribute('stroke-width', '6');
+      }
+      g.querySelector('.line-hit').setAttribute('style', 'cursor:default;pointer-events:none;');
+    }
+
+    var madeSquare = false;
+    if (hv === 'h'){
+      if (r > 0 && isComplete(r-1, c)){ fillSquare(r-1, c); madeSquare = true; }
+      if (r < N && isComplete(r, c)){ fillSquare(r, c); madeSquare = true; }
+    } else {
+      if (c > 0 && isComplete(r, c-1)){ fillSquare(r, c-1); madeSquare = true; }
+      if (c < N && isComplete(r, c)){ fillSquare(r, c); madeSquare = true; }
+    }
+
+    if (madeSquare){
+      updateScore();
+      if (scores[1] + scores[2] === N * N){ endGame(); return; }
+      // If AI completed a square, it moves again!
+      if (vsAI && !gameOver && current === 2){
+        aiThinking = true;
+        setTimeout(function(){
+          aiThinking = false;
+          aiMove();
+        }, 400);
+      }
+    } else {
+      current = current === 1 ? 2 : 1;
+      showTurn();
+      if (vsAI && !gameOver && current === 2){
+        aiThinking = true;
+        setTimeout(function(){
+          aiThinking = false;
+          aiMove();
+        }, 400);
+      }
+    }
+  }
+
+  function aiMove(){
+    if (gameOver || current !== 2) return;
+    var movesList = [];
+    var i, j;
+    function isDrawn(hv, r, c){
+      return hv === 'h' ? (hLines[r] && hLines[r][c]) : (vLines[r] && vLines[r][c]);
+    }
+    function countSides(r, c){
+      var count = 0;
+      if (hLines[r][c]) count++;
+      if (hLines[r+1][c]) count++;
+      if (vLines[r][c]) count++;
+      if (vLines[r][c+1]) count++;
+      return count;
+    }
+
+    for (i = 0; i <= N; i++){
+      for (j = 0; j < N; j++){
+        if (!isDrawn('h', i, j)) movesList.push(['h', i, j]);
+      }
+    }
+    for (i = 0; i < N; i++){
+      for (j = 0; j <= N; j++){
+        if (!isDrawn('v', i, j)) movesList.push(['v', i, j]);
+      }
+    }
+    if (movesList.length === 0) return;
+
+    var completing = [], safe = [], risky = [];
+    movesList.forEach(function(m){
+      var hv = m[0], r = m[1], c = m[2];
+      var boxes = [];
+      if (hv === 'h'){
+        if (r > 0) boxes.push([r-1, c]);
+        if (r < N) boxes.push([r, c]);
+      } else {
+        if (c > 0) boxes.push([r, c-1]);
+        if (c < N) boxes.push([r, c]);
+      }
+
+      var givesBox = false;
+      var makes3Sides = false;
+
+      boxes.forEach(function(b){
+        var sides = countSides(b[0], b[1]);
+        if (sides === 3) givesBox = true;
+        if (sides === 2) makes3Sides = true;
+      });
+
+      if (givesBox) completing.push(m);
+      else if (!makes3Sides) safe.push(m);
+      else risky.push(m);
+    });
+
+    var pick;
+    if (completing.length > 0) pick = completing[Math.floor(Math.random() * completing.length)];
+    else if (safe.length > 0) pick = safe[Math.floor(Math.random() * safe.length)];
+    else pick = risky[Math.floor(Math.random() * risky.length)];
+
+    if (pick) makeMove(pick[0], pick[1], pick[2]);
+  }
+
+  function updateScore(){
+    score1El.textContent = scores[1];
+    score2El.textContent = scores[2];
+  }
+
+  function showTurn(){
+    if (gameOver) return;
+    dot.className = 'dot p' + current;
+    if (vsAI){
+      turnText.textContent = current === 1 ? 'Sıra: Sende' : 'Sıra: Yapay Zeka (Düşünüyor...)';
+    } else {
+      turnText.textContent = current === 1 ? 'Sıra: Oyuncu 1' : 'Sıra: Oyuncu 2';
+    }
+  }
+
+  function endGame(){
+    gameOver = true;
+    try{
+      if (scores[1] !== scores[2]) GameSounds.win();
+      else GameSounds.draw();
+    }catch(e){}
+    var msg;
+    if (scores[1] === scores[2]){
+      msg = '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> Berabere! Skor: ' + scores[1] + ' - ' + scores[2];
+    } else {
+      var w = scores[1] > scores[2] ? 1 : 2;
+      if (vsAI){
+        msg = w === 1 ? 'Tebrikler, Kazandınız! (Skor: ' + scores[1] + ' - ' + scores[2] + ')'
+                      : 'Yapay Zeka Kazandı (Skor: ' + scores[1] + ' - ' + scores[2] + ')';
+      } else {
+        msg = 'Kazanan: Oyuncu ' + w + ' (Skor: ' + scores[1] + ' - ' + scores[2] + ')';
+      }
+    }
+    winnerBanner.innerHTML = msg;
+    winnerBanner.classList.remove('hidden');
+    turnText.textContent = 'Oyun Bitti';
+  }
+
+  function resetGame(n){
+    N = n;
+    scores = {1:0, 2:0};
+    current = 1;
+    gameOver = false;
+    aiThinking = false;
+    hLines = []; vLines = []; squares = [];
+    var i;
+    for (i = 0; i <= N; i++) hLines.push(new Array(N).fill(false));
+    for (i = 0; i < N; i++){
+      vLines.push(new Array(N + 1).fill(false));
+      squares.push(new Array(N).fill(0));
+    }
+    winnerBanner.classList.add('hidden');
+    gridBtns.forEach(function(b){
+      b.classList.toggle('active', +b.dataset.n === N);
+    });
+    buildBoard();
+    updateScore();
+    showTurn();
+  }
+
+  svg.addEventListener('click', function(e){
+    var g = e.target.closest('g.line');
+    if (!g || g.getAttribute('data-drawn')) return;
+    onUserClick(g.dataset.hv, +g.dataset.r, +g.dataset.c);
+  });
+
+  document.getElementById('rulesBtn').addEventListener('click', function(){
+    rulesModal.classList.remove('hidden');
+  });
+  document.getElementById('closeRulesBtn').addEventListener('click', function(){
+    rulesModal.classList.add('hidden');
+  });
+  rulesModal.addEventListener('click', function(e){
+    if (e.target === rulesModal) rulesModal.classList.add('hidden');
+  });
+
+  gridBtns.forEach(function(b){
+    b.addEventListener('click', function(){ resetGame(+b.dataset.n); });
+  });
+
+  document.getElementById('newGameBtn').addEventListener('click', function(){
+    resetGame(N);
+  });
+
+  var modeAI = document.getElementById('modeAI');
+  var modePvP = document.getElementById('modePvP');
+  function setMode(){
+    if (vsAI) {
+      modeAI.style.background = 'var(--brand-grad)';
+      modeAI.style.color = '#fff';
+      modeAI.style.borderColor = 'transparent';
+      modePvP.style.background = '#fff';
+      modePvP.style.color = 'var(--brand-dark)';
+      modePvP.style.borderColor = 'rgba(2, 132, 199, 0.3)';
+      p2NameEl.textContent = 'Yapay Zeka:';
+    } else {
+      modePvP.style.background = 'var(--brand-grad)';
+      modePvP.style.color = '#fff';
+      modePvP.style.borderColor = 'transparent';
+      modeAI.style.background = '#fff';
+      modeAI.style.color = 'var(--brand-dark)';
+      modeAI.style.borderColor = 'rgba(2, 132, 199, 0.3)';
+      p2NameEl.textContent = 'Oyuncu 2:';
+    }
+  }
+  modeAI.addEventListener('click', function(){ vsAI = true; setMode(); resetGame(N); });
+  modePvP.addEventListener('click', function(){ vsAI = false; setMode(); resetGame(N); });
+  setMode();
+
+  resetGame(4);
+})();
+</script>
+
+<script src="../../js/menu.js" defer></script>  
+  
+  
+  
+  
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

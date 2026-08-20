@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Çarpmaca zekâ oyunu: Sayıları her satır ve sütunda tam iki sayı olacak şekilde yerleştirin, çarpım ipuçlarını tamamlayın.">
+  <title>Çarpmaca Zekâ Oyunu - teknolojitasarimci</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    :root {
+      --brand: #0284c7;
+      --brand-dark: #0369a1;
+      --brand-light: #e0f2fe;
+      --text: #1e293b;
+      --muted: #64748b;
+      --line: #cbd5e1;
+      --clue-color: #c2410c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-width: 320px;
+      color: var(--text);
+      background: #f8fafc;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible, .cell:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, 0.4);
+      outline-offset: 2px;
+    }
+    .game-wrapper {
+      width: 100%;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+    }
+    .game-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .game-eyebrow {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .game-heading h1 {
+      font-size: clamp(1.8rem, 4vw, 2.3rem);
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 6px;
+      letter-spacing: -0.03em;
+    }
+    .game-heading .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .rules-btn {
+      padding: 8px 18px;
+      border-radius: 25px !important;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, 0.3);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .rules-btn:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+    }
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 12px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      background: #ffffff;
+    }
+    .badge i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .game-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 24px;
+      align-items: start;
+      margin-top: 14px;
+    }
+    .board-panel {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .puzzle-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--brand-dark);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .clue-explanation {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .clue-explanation strong {
+      color: var(--brand-dark);
+    }
+    .board-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 16px 8px;
+      background: #ffffff;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 16px;
+    }
+
+    /* UNIFIED GRID BOARD */
+    .carpmaca-board {
+      display: grid;
+      gap: 0;
+      width: min(100%, 460px);
+      user-select: none;
+    }
+    .board-corner {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .col-clue {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 10px;
+      font-size: clamp(16px, 3.8vw, 24px);
+      font-weight: 900;
+      color: var(--clue-color);
+      transition: color 0.2s ease;
+    }
+    .row-clue {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 14px;
+      font-size: clamp(16px, 3.8vw, 24px);
+      font-weight: 900;
+      color: var(--clue-color);
+      transition: color 0.2s ease;
+    }
+    .col-clue.matched, .row-clue.matched {
+      color: #16a34a;
+    }
+    .col-clue.error, .row-clue.error {
+      color: #dc2626;
+    }
+
+    /* GRID CELLS */
+    .cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(20px, 5.2vw, 36px);
+      font-weight: 900;
+      color: var(--brand-dark);
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      padding: 0;
+    }
+    .cell:hover {
+      background: #f0f9ff;
+    }
+    .cell.selected {
+      background: #e0f2fe;
+      outline: 3px solid #0284c7;
+      outline-offset: -3px;
+      z-index: 2;
+    }
+    .cell.filled {
+      background: #f8fafc;
+      color: #0284c7;
+    }
+    .cell.filled.selected {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    /* Outer borders for the cell block */
+    .cell-top-edge { border-top: 2.5px solid #334155; }
+    .cell-bottom-edge { border-bottom: 2.5px solid #334155; }
+    .cell-left-edge { border-left: 2.5px solid #334155; }
+    .cell-right-edge { border-right: 2.5px solid #334155; }
+
+    /* NUMBER PAD */
+    .number-pad-wrap {
+      width: 100%;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .number-pad {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 30px;
+    }
+    .num-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50% !important;
+      border: 2px solid #0284c7;
+      background: #ffffff;
+      color: #0284c7;
+      font-size: 18px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+    }
+    .num-btn:hover {
+      background: #e0f2fe;
+      transform: translateY(-2px);
+    }
+    .num-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      transform: scale(1.08);
+    }
+    .num-btn.used:not(.active) {
+      opacity: 0.35;
+      border-style: dashed;
+      background: #f1f5f9;
+    }
+    .clear-btn-pad {
+      padding: 0 16px;
+      height: 42px;
+      border-radius: 25px !important;
+      border: 1.5px solid #ef4444;
+      background: #ffffff;
+      color: #ef4444;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.18s ease;
+    }
+    .clear-btn-pad:hover {
+      background: #fee2e2;
+    }
+    .clear-btn-pad.active {
+      background: #ef4444;
+      color: #ffffff;
+    }
+    .tip {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* CONTROLS ASIDE */
+    .game-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+    .control-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .control-label {
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .control-block label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .control-block select {
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: 25px !important;
+      border: 1.5px solid rgba(2, 132, 199, 0.3);
+      background: #ffffff;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .how-to-play {
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .how-to-play p {
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+    .game-controls .btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .btn {
+      padding: 9px 18px;
+      border-radius: 25px !important;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      border: 1.5px solid transparent;
+      width: 100% !important;
+    }
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+    .btn-primary {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+    .btn-primary:hover {
+      background: #0369a1;
+      border-color: #0369a1;
+    }
+    .btn-outline {
+      background: #ffffff;
+      color: var(--brand-dark);
+      border-color: rgba(2, 132, 199, 0.3);
+    }
+    .btn-outline:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+    }
+    .status {
+      margin: 18px auto 0;
+      width: fit-content !important;
+      min-width: 200px;
+      max-width: 520px;
+      text-align: center;
+      padding: 10px 24px;
+      border-radius: 25px !important;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .status.good {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+    .status.bad {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+    }
+    .meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.75);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      width: min(100%, 520px);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 26px;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.25);
+    }
+    .modal h2 {
+      margin: 0 0 16px;
+      color: #0f172a;
+      font-size: 1.35rem;
+    }
+    .modal ol {
+      margin: 0 0 20px;
+      padding-left: 22px;
+      color: #475569;
+      line-height: 1.65;
+    }
+    .modal li + li { margin-top: 8px; }
+    .modal-close {
+      display: block;
+      margin: 0 auto !important;
+      width: fit-content !important;
+      padding: 8px 24px;
+      border-radius: 25px !important;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .modal-close:hover { background: #0369a1; }
+
+    /* DARK THEME */
+    body.dark { background: #0f172a; color: #e2e8f0; }
+    body.dark .card { background: #1e293b; border-color: #334155; box-shadow: none; }
+    body.dark .game-heading { border-color: #334155; }
+    body.dark .game-heading h1 { color: #e2e8f0; }
+    body.dark .game-heading .subtitle { color: #cbd5e1; }
+    body.dark .game-eyebrow { color: #38bdf8; }
+    body.dark .rules-btn { background: #1e293b; color: #38bdf8; border-color: #334155; }
+    body.dark .rules-btn:hover { background: #0f172a; border-color: #38bdf8; }
+    body.dark .badge { background: #1e293b; color: #38bdf8; border-color: #334155; }
+    body.dark .puzzle-title { color: #7dd3e8; }
+    body.dark .clue-explanation { color: #cbd5e1; }
+    body.dark .clue-explanation strong { color: #38bdf8; }
+    body.dark .board-container { background: #0f172a; border-color: #334155; }
+    body.dark .col-clue, body.dark .row-clue { color: #fb923c; }
+    body.dark .col-clue.matched, body.dark .row-clue.matched { color: #4ade80; }
+    body.dark .col-clue.error, body.dark .row-clue.error { color: #f87171; }
+    body.dark .cell { background: #1e293b; color: #38bdf8; border-color: #334155; }
+    body.dark .cell:hover { background: #0f172a; }
+    body.dark .cell.selected { background: #0c4a6e; outline-color: #38bdf8; }
+    body.dark .cell.filled { background: #0f172a; color: #7dd3e8; }
+    body.dark .cell.filled.selected { background: #0c4a6e; color: #38bdf8; }
+    body.dark .cell-top-edge { border-top-color: #64748b; }
+    body.dark .cell-bottom-edge { border-bottom-color: #64748b; }
+    body.dark .cell-left-edge { border-left-color: #64748b; }
+    body.dark .cell-right-edge { border-right-color: #64748b; }
+    body.dark .number-pad { background: #0f172a; border-color: #334155; }
+    body.dark .num-btn { background: #1e293b; color: #38bdf8; border-color: #38bdf8; }
+    body.dark .num-btn:hover { background: #0f172a; }
+    body.dark .num-btn.active { background: #0284c7; color: #ffffff; border-color: #38bdf8; }
+    body.dark .num-btn.used:not(.active) { background: #1e293b; opacity: 0.35; border-color: #475569; }
+    body.dark .clear-btn-pad { background: #1e293b; border-color: #f87171; color: #f87171; }
+    body.dark .clear-btn-pad:hover { background: #7f1d1d; color: #ffffff; }
+    body.dark .clear-btn-pad.active { background: #dc2626; color: #ffffff; }
+    body.dark .tip { color: #cbd5e1; }
+    body.dark .game-controls { background: #0f172a; border-color: #334155; }
+    body.dark .control-label { color: #e2e8f0; }
+    body.dark .control-block label { color: #cbd5e1; }
+    body.dark .control-block select { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+    body.dark .how-to-play { border-color: #334155; }
+    body.dark .how-to-play p { color: #cbd5e1; }
+    body.dark .btn-outline { background: #1e293b; color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); }
+    body.dark .btn-outline:hover { background: #0f172a; border-color: #38bdf8; }
+    body.dark .status { background: #334155; color: #cbd5e1; }
+    body.dark .status.good { background: #14532d; color: #86efac; border-color: #166534; }
+    body.dark .status.bad { background: #7f1d1d; color: #fca5a5; border-color: #991b1b; }
+    body.dark .meta { color: #cbd5e1; }
+    body.dark .modal { background: #1e293b; border-color: #334155; }
+    body.dark .modal h2 { color: #e2e8f0; }
+    body.dark .modal ol { color: #cbd5e1; }
+
+    @media (max-width: 760px) {
+      .game-layout { grid-template-columns: 1fr; }
+      .game-controls { order: 2; }
+      .board-container { padding: 12px 4px; }
+      .col-clue { font-size: 15px; padding-bottom: 6px; }
+      .row-clue { font-size: 15px; padding-right: 8px; }
+    }
+    @media (max-width: 480px) {
+      .game-heading { flex-direction: column; }
+      .game-heading .rules-btn { align-self: flex-start; }
+      .num-btn { width: 36px; height: 36px; font-size: 15px; }
+      .clear-btn-pad { height: 36px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <script src="../../js/theme.js"></script>
+
+  <main class="game-wrapper">
+    <section class="card">
+      <div class="game-heading">
+        <div>
+          <span class="game-eyebrow">Sayı Bulmacası</span>
+          <h1>Çarpmaca</h1>
+          <p class="subtitle">Her satır ve sütunda iki sayı kullanın, dışarıdaki çarpım hedeflerine ulaşın.</p>
+        </div>
+        <button class="rules-btn" id="rulesBtn">Kurallar</button>
+      </div>
+
+      <div class="statusbar">
+        <span class="badge" id="puzzleLabel">Bulmaca 01</span>
+        <span class="badge"><i id="levelDot"></i><span id="clueLabel">3 × 3 Izgara</span></span>
+        <span class="badge" id="progressText">0 / 6 Sayı</span>
+      </div>
+
+      <div class="game-layout">
+        <section class="board-panel" aria-labelledby="puzzleTitle">
+          <div class="puzzle-title" id="puzzleTitle">Temel · 1–6</div>
+          <div class="clue-explanation" aria-label="Çarpım ipuçları açıklaması">
+            <span><strong>Üstteki sayılar:</strong> Sütun çarpımı</span>
+            <span><strong>Soldaki sayılar:</strong> Satır çarpımı</span>
+          </div>
+
+          <div class="board-container">
+            <div id="carpmacaBoard" class="carpmaca-board" role="grid" aria-label="Çarpmaca bulmaca ızgarası"></div>
+          </div>
+
+          <div class="number-pad-wrap">
+            <div id="numberPad" class="number-pad" aria-label="Sayı paneli"></div>
+            <p class="tip">Önce aşağıdaki sayılardan birini seçin, ardından yerleştirmek istediğiniz hücreye dokunun.</p>
+          </div>
+        </section>
+
+        <aside class="game-controls">
+          <div class="control-block">
+            <span class="control-label">Bulmaca Seçimi</span>
+            <label for="difficulty">Seviye</label>
+            <select id="difficulty">
+              <option value="Tümü">Tüm Seviyeler</option>
+              <option>Temel</option>
+              <option>Orta</option>
+              <option>İleri</option>
+              <option>Uzman</option>
+            </select>
+            <label for="puzzleSelect">Bulmaca Numarası</label>
+            <select id="puzzleSelect"></select>
+          </div>
+
+          <div class="control-block how-to-play">
+            <span class="control-label">Oyunun Amacı</span>
+            <p>Her satırda ve her sütunda tam <strong>iki sayı</strong> yer almalıdır. Diğer hücreler boş bırakılır. Seçtiğiniz iki sayının çarpımı kenardaki hedef sayıyı vermelidir.</p>
+          </div>
+
+          <div class="btn-stack">
+            <button class="btn btn-primary" id="newBtn">Yeni Bulmaca</button>
+            <button class="btn btn-outline" id="checkBtn">Kontrol Et</button>
+            <button class="btn btn-outline" id="hintBtn">Bir İpucu Al</button>
+            <button class="btn btn-outline" id="clearBtn">Tahtayı Temizle</button>
+            <button class="btn btn-outline" id="answerBtn">Cevabı Göster</button>
+          </div>
+        </aside>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite">Hazırsanız bir sayı seçip hücreye dokunun.</div>
+      <div class="meta">
+        <span id="scoreText">Çözülen: 0</span>
+        <span id="timerText">Süre: 00:00</span>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="rulesModal">
+    <div class="modal">
+      <h2>Çarpmaca Oyun Kuralları</h2>
+      <ol>
+        <li>Her bulmacada <strong>1'den en büyük sayıya kadar</strong> olan sayılar kullanılır; her sayı ızgarada <strong>yalnızca bir kez</strong> yer alır.</li>
+        <li>Her satırda ve her sütunda <strong>tam iki sayı</strong> bulunur; diğer hücreler boş kalır.</li>
+        <li>Izgaranın dışındaki sayılar, o satır veya sütunda yer alan iki sayının <strong>çarpımını</strong> gösterir.</li>
+        <li>İstediğiniz sayıyı seçip boş bir hücreye dokunarak yerleştirebilirsiniz. Dolu bir hücreye dokunduğunuzda sayı geri alınır.</li>
+        <li>Tüm satır ve sütun çarpımlarını doğru tamamladığınızda bulmaca başarıyla çözülmüş olur.</li>
+      </ol>
+      <button class="modal-close" id="rulesClose">Anladım</button>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin: 18px 0;">
+    <a href="../../sayfalar/post-00071-Carpmaca/Veri/Carpmaca-(www.teknolojitasarimci.com).pdf" target="_blank" rel="noopener" class="btn btn-outline download-btn">Çalışma Kâğıdı PDF&rsquo;sini İndir</a>
+  </div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+
+  
+
+      
+
+      <footer class="footer">
+    <div class="container">
+      <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+      <div class="footer-copyright-text">
+        Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+      </div>
+    </div>
+  </footer>
+
+  
+  
+  
+  <script>
+  const puzzles = [{"id":1,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[4,12,15],"colClues":[2,30,12],"solution":[[1,0,4],[2,6,0],[0,5,3]]},{"id":2,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[8,6,15],"colClues":[18,20,2],"solution":[[0,4,2],[6,0,1],[3,5,0]]},{"id":3,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[12,20,3],"colClues":[15,24,2],"solution":[[0,6,2],[5,4,0],[3,0,1]]},{"id":4,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[12,10,6],"colClues":[3,12,20],"solution":[[3,0,4],[0,2,5],[1,6,0]]},{"id":5,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[5,8,18],"colClues":[4,12,15],"solution":[[1,0,5],[4,2,0],[0,6,3]]},{"id":6,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[18,5,8],"colClues":[6,30,4],"solution":[[3,6,0],[0,5,1],[2,0,4]]},{"id":7,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[3,8,30],"colClues":[10,4,18],"solution":[[0,1,3],[2,4,0],[5,0,6]]},{"id":8,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[15,4,12],"colClues":[30,2,12],"solution":[[5,0,3],[0,1,4],[6,2,0]]},{"id":9,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[5,24,6],"colClues":[12,4,15],"solution":[[0,1,5],[6,4,0],[2,0,3]]},{"id":10,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[8,18,5],"colClues":[4,12,15],"solution":[[4,2,0],[0,6,3],[1,0,5]]},{"id":11,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[5,8,18],"colClues":[12,6,10],"solution":[[0,1,5],[4,0,2],[3,6,0]]},{"id":12,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[8,15,6],"colClues":[5,24,6],"solution":[[0,4,2],[5,0,3],[1,6,0]]},{"id":13,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[30,3,8],"colClues":[18,10,4],"solution":[[6,5,0],[3,0,1],[0,2,4]]},{"id":14,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[6,4,30],"colClues":[5,18,8],"solution":[[0,3,2],[1,0,4],[5,6,0]]},{"id":15,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[2,24,15],"colClues":[30,6,4],"solution":[[0,2,1],[6,0,4],[5,3,0]]},{"id":16,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[18,8,5],"colClues":[4,12,15],"solution":[[0,6,3],[4,2,0],[1,0,5]]},{"id":17,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[6,24,5],"colClues":[10,18,4],"solution":[[2,3,0],[0,6,4],[5,0,1]]},{"id":18,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[15,12,4],"colClues":[10,12,6],"solution":[[5,3,0],[2,0,6],[0,4,1]]},{"id":19,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[12,10,6],"colClues":[5,6,24],"solution":[[0,3,4],[5,2,0],[1,0,6]]},{"id":20,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[12,20,3],"colClues":[24,6,5],"solution":[[6,2,0],[4,0,5],[0,3,1]]},{"id":21,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[24,10,3],"colClues":[4,12,15],"solution":[[4,6,0],[0,2,5],[1,0,3]]},{"id":22,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[6,10,12],"colClues":[30,8,3],"solution":[[6,0,1],[5,2,0],[0,4,3]]},{"id":23,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[15,12,4],"colClues":[24,10,3],"solution":[[0,5,3],[6,2,0],[4,0,1]]},{"id":24,"difficulty":"Temel","maxNumber":6,"size":3,"numbers":[1,2,3,4,5,6],"rowClues":[18,2,20],"colClues":[24,10,3],"solution":[[6,0,3],[0,2,1],[4,5,0]]},{"id":25,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[16,6,15,28],"colClues":[18,56,4,10],"solution":[[0,8,0,2],[6,0,1,0],[3,0,0,5],[0,7,4,0]]},{"id":26,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[14,12,30,8],"colClues":[12,35,24,4],"solution":[[2,7,0,0],[0,0,3,4],[6,5,0,0],[0,0,8,1]]},{"id":27,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[14,24,30,4],"colClues":[6,56,5,24],"solution":[[2,7,0,0],[3,8,0,0],[0,0,5,6],[0,0,1,4]]},{"id":28,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[35,12,4,24],"colClues":[6,16,15,28],"solution":[[0,0,5,7],[6,2,0,0],[1,0,0,4],[0,8,3,0]]},{"id":29,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[12,15,28,8],"colClues":[3,14,48,20],"solution":[[0,2,6,0],[3,0,0,5],[0,7,0,4],[1,0,8,0]]},{"id":30,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[15,4,56,12],"colClues":[12,8,10,42],"solution":[[3,0,5,0],[4,1,0,0],[0,8,0,7],[0,0,2,6]]},{"id":31,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[4,21,40,12],"colClues":[56,6,10,12],"solution":[[0,1,0,4],[7,0,0,3],[8,0,5,0],[0,6,2,0]]},{"id":32,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[12,30,14,8],"colClues":[8,3,48,35],"solution":[[4,3,0,0],[0,0,6,5],[2,0,0,7],[0,1,8,0]]},{"id":33,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[6,4,35,48],"colClues":[16,42,5,12],"solution":[[2,0,0,3],[0,0,1,4],[0,7,5,0],[8,6,0,0]]},{"id":34,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[8,30,7,24],"colClues":[56,18,4,10],"solution":[[0,0,4,2],[0,6,0,5],[7,0,1,0],[8,3,0,0]]},{"id":35,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[10,24,6,28],"colClues":[14,48,12,5],"solution":[[2,0,0,5],[0,8,3,0],[0,6,0,1],[7,0,4,0]]},{"id":36,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[24,28,5,12],"colClues":[18,20,8,14],"solution":[[3,0,8,0],[0,4,0,7],[0,5,1,0],[6,0,0,2]]},{"id":37,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[20,16,18,7],"colClues":[5,6,42,32],"solution":[[5,0,0,4],[0,2,0,8],[0,3,6,0],[1,0,7,0]]},{"id":38,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[48,15,4,14],"colClues":[8,7,24,30],"solution":[[0,0,8,6],[0,0,3,5],[4,1,0,0],[2,7,0,0]]},{"id":39,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[8,48,35,3],"colClues":[7,12,32,15],"solution":[[0,2,4,0],[0,6,8,0],[7,0,0,5],[1,0,0,3]]},{"id":40,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[48,28,2,15],"colClues":[10,21,6,32],"solution":[[0,0,6,8],[0,7,0,4],[2,0,1,0],[5,3,0,0]]},{"id":41,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[15,56,2,24],"colClues":[30,16,28,3],"solution":[[5,0,0,3],[0,8,7,0],[0,2,0,1],[6,0,4,0]]},{"id":42,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[8,21,48,5],"colClues":[24,3,14,40],"solution":[[4,0,2,0],[0,3,7,0],[6,0,0,8],[0,1,0,5]]},{"id":43,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[12,40,21,4],"colClues":[6,5,24,56],"solution":[[2,0,6,0],[0,5,0,8],[3,0,0,7],[0,1,4,0]]},{"id":44,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[35,3,24,16],"colClues":[12,20,7,24],"solution":[[0,5,7,0],[0,0,1,3],[6,4,0,0],[2,0,0,8]]},{"id":45,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[10,28,18,8],"colClues":[2,20,24,42],"solution":[[2,5,0,0],[0,4,0,7],[0,0,3,6],[1,0,8,0]]},{"id":46,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[10,8,28,18],"colClues":[20,56,3,12],"solution":[[5,0,0,2],[0,8,1,0],[4,7,0,0],[0,0,3,6]]},{"id":47,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[10,8,12,42],"colClues":[30,2,32,21],"solution":[[5,2,0,0],[0,1,8,0],[0,0,4,3],[6,0,0,7]]},{"id":48,"difficulty":"Orta","maxNumber":8,"size":4,"numbers":[1,2,3,4,5,6,7,8],"rowClues":[32,15,12,7],"colClues":[48,21,5,8],"solution":[[8,0,0,4],[0,3,5,0],[6,0,0,2],[0,7,1,0]]},{"id":49,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[10,7,80,36,18],"colClues":[3,28,60,40,18],"solution":[[0,0,0,5,2],[1,7,0,0,0],[0,0,10,8,0],[0,4,0,0,9],[3,0,6,0,0]]},{"id":50,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[14,72,60,4,15],"colClues":[20,18,36,5,56],"solution":[[2,0,0,0,7],[0,0,9,0,8],[10,6,0,0,0],[0,0,4,1,0],[0,3,0,5,0]]},{"id":51,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[50,6,72,8,21],"colClues":[12,8,14,45,60],"solution":[[0,0,0,5,10],[0,1,0,0,6],[0,8,0,9,0],[4,0,2,0,0],[3,0,7,0,0]]},{"id":52,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[80,6,54,20,7],"colClues":[30,10,27,8,56],"solution":[[0,10,0,0,8],[0,0,3,2,0],[6,0,9,0,0],[5,0,0,4,0],[0,1,0,0,7]]},{"id":53,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[42,45,2,30,32],"colClues":[54,6,4,35,80],"solution":[[6,0,0,7,0],[9,0,0,5,0],[0,2,1,0,0],[0,3,0,0,10],[0,0,4,0,8]]},{"id":54,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[16,42,5,27,40],"colClues":[70,54,2,15,32],"solution":[[0,0,2,0,8],[7,6,0,0,0],[0,0,1,5,0],[0,9,0,3,0],[10,0,0,0,4]]},{"id":55,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[3,32,54,50,14],"colClues":[24,80,6,45,7],"solution":[[0,0,3,0,1],[4,8,0,0,0],[6,0,0,9,0],[0,10,0,5,0],[0,0,2,0,7]]},{"id":56,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[15,28,8,12,90],"colClues":[56,9,20,12,30],"solution":[[0,0,0,3,5],[7,0,0,4,0],[8,1,0,0,0],[0,0,2,0,6],[0,9,10,0,0]]},{"id":57,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[14,72,12,5,60],"colClues":[6,20,27,32,35],"solution":[[0,2,0,0,7],[0,0,9,8,0],[0,0,3,4,0],[1,0,0,0,5],[6,10,0,0,0]]},{"id":58,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[15,40,42,72,2],"colClues":[30,90,32,7,6],"solution":[[5,0,0,0,3],[0,10,4,0,0],[6,0,0,7,0],[0,9,8,0,0],[0,0,0,1,2]]},{"id":59,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[18,5,60,24,28],"colClues":[24,80,9,15,14],"solution":[[0,0,9,0,2],[0,0,1,5,0],[6,10,0,0,0],[0,8,0,3,0],[4,0,0,0,7]]},{"id":60,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[50,27,6,28,16],"colClues":[32,6,60,7,45],"solution":[[0,0,10,0,5],[0,3,0,0,9],[0,0,6,1,0],[4,0,0,7,0],[8,2,0,0,0]]},{"id":61,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[80,8,5,54,21],"colClues":[12,56,18,30,10],"solution":[[0,8,0,0,10],[4,0,2,0,0],[0,0,0,5,1],[0,0,9,6,0],[3,7,0,0,0]]},{"id":62,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[30,8,7,90,24],"colClues":[16,3,60,20,63],"solution":[[0,0,6,5,0],[2,0,0,4,0],[0,1,0,0,7],[0,0,10,0,9],[8,3,0,0,0]]},{"id":63,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[27,35,60,32,2],"colClues":[90,18,14,20,8],"solution":[[9,3,0,0,0],[0,0,7,5,0],[10,6,0,0,0],[0,0,0,4,8],[0,0,2,0,1]]},{"id":64,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[28,2,72,15,60],"colClues":[16,70,24,45,3],"solution":[[0,7,4,0,0],[2,0,0,0,1],[8,0,0,9,0],[0,0,0,5,3],[0,10,6,0,0]]},{"id":65,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[50,48,27,14,4],"colClues":[30,8,72,10,21],"solution":[[5,0,0,10,0],[6,0,8,0,0],[0,0,9,0,3],[0,2,0,0,7],[0,4,0,1,0]]},{"id":66,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[45,8,21,12,40],"colClues":[80,7,6,30,36],"solution":[[0,0,0,5,9],[8,1,0,0,0],[0,7,3,0,0],[0,0,2,6,0],[10,0,0,0,4]]},{"id":67,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[24,21,80,9,10],"colClues":[20,4,15,54,56],"solution":[[0,4,0,6,0],[0,0,3,0,7],[10,0,0,0,8],[0,1,0,9,0],[2,0,5,0,0]]},{"id":68,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[2,40,30,36,42],"colClues":[8,10,30,27,56],"solution":[[2,1,0,0,0],[0,0,5,0,8],[0,10,0,3,0],[4,0,0,9,0],[0,0,6,0,7]]},{"id":69,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[48,9,35,20,12],"colClues":[24,3,50,63,16],"solution":[[6,0,0,0,8],[0,1,0,9,0],[0,0,5,7,0],[0,0,10,0,2],[4,3,0,0,0]]},{"id":70,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[54,80,21,8,5],"colClues":[40,63,48,3,10],"solution":[[0,9,6,0,0],[10,0,8,0,0],[0,7,0,3,0],[4,0,0,0,2],[0,0,0,1,5]]},{"id":71,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[6,40,27,70,8],"colClues":[18,80,9,28,10],"solution":[[6,0,1,0,0],[0,8,0,0,5],[3,0,9,0,0],[0,10,0,7,0],[0,0,0,4,2]]},{"id":72,"difficulty":"İleri","maxNumber":10,"size":5,"numbers":[1,2,3,4,5,6,7,8,9,10],"rowClues":[10,12,30,56,18],"colClues":[32,6,9,35,60],"solution":[[0,0,1,0,10],[4,3,0,0,0],[0,0,0,5,6],[8,0,0,7,0],[0,2,9,0,0]]},{"id":73,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[10,24,22,60,42,36],"colClues":[28,16,6,15,132,90],"solution":[[0,0,1,0,0,10],[0,8,0,3,0,0],[0,2,0,0,11,0],[0,0,0,5,12,0],[7,0,6,0,0,0],[4,0,0,0,0,9]]},{"id":74,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[33,24,40,70,18,12],"colClues":[36,22,48,45,10,28],"solution":[[3,11,0,0,0,0],[0,0,6,0,0,4],[0,0,8,5,0,0],[0,0,0,0,10,7],[0,2,0,9,0,0],[12,0,0,0,1,0]]},{"id":75,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[80,18,77,36,2,60],"colClues":[44,72,24,35,20,9],"solution":[[0,0,8,0,10,0],[0,6,3,0,0,0],[11,0,0,7,0,0],[4,0,0,0,0,9],[0,0,0,0,2,1],[0,12,0,5,0,0]]},{"id":76,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[77,32,20,60,27,6],"colClues":[96,6,44,50,42,9],"solution":[[0,0,11,0,7,0],[8,0,4,0,0,0],[0,2,0,10,0,0],[12,0,0,5,0,0],[0,3,0,0,0,9],[0,0,0,0,6,1]]},{"id":77,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[40,90,66,3,84,8],"colClues":[6,63,24,22,120,20],"solution":[[0,0,8,0,0,5],[0,9,0,0,10,0],[6,0,0,11,0,0],[1,0,3,0,0,0],[0,7,0,0,12,0],[0,0,0,2,0,4]]},{"id":78,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[110,4,10,24,108,42],"colClues":[45,32,60,24,77,3],"solution":[[0,0,10,0,11,0],[0,4,0,0,0,1],[5,0,0,2,0,0],[0,8,0,0,0,3],[9,0,0,12,0,0],[0,0,6,0,7,0]]},{"id":79,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[48,3,60,22,40,63],"colClues":[36,56,55,12,40,9],"solution":[[12,0,0,0,4,0],[3,0,0,0,0,1],[0,0,0,6,10,0],[0,0,11,2,0,0],[0,8,5,0,0,0],[0,7,0,0,0,9]]},{"id":80,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[56,55,3,24,20,108],"colClues":[40,66,5,24,84,18],"solution":[[0,0,0,8,7,0],[0,11,5,0,0,0],[0,0,1,3,0,0],[4,6,0,0,0,0],[10,0,0,0,0,2],[0,0,0,0,12,9]]},{"id":81,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[96,42,50,36,3,22],"colClues":[11,35,40,18,16,108],"solution":[[0,0,0,0,8,12],[0,7,0,6,0,0],[0,5,10,0,0,0],[0,0,4,0,0,9],[1,0,0,3,0,0],[11,0,0,0,2,0]]},{"id":82,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[80,3,54,60,44,14],"colClues":[56,110,9,24,18,20],"solution":[[8,10,0,0,0,0],[0,0,1,0,3,0],[0,0,9,0,6,0],[0,0,0,12,0,5],[0,11,0,0,0,4],[7,0,0,2,0,0]]},{"id":83,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[18,7,60,66,24,40],"colClues":[6,63,30,4,132,80],"solution":[[2,9,0,0,0,0],[0,7,0,1,0,0],[0,0,5,0,12,0],[0,0,6,0,11,0],[3,0,0,0,0,8],[0,0,0,4,0,10]]},{"id":84,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[40,15,88,12,9,84],"colClues":[45,3,56,20,44,72],"solution":[[0,0,0,10,4,0],[5,3,0,0,0,0],[0,0,8,0,11,0],[0,0,0,2,0,6],[9,1,0,0,0,0],[0,0,7,0,0,12]]},{"id":85,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[120,33,24,72,5,14],"colClues":[6,24,56,27,40,55],"solution":[[0,12,0,0,10,0],[0,0,0,3,0,11],[6,0,0,0,4,0],[0,0,8,9,0,0],[1,0,0,0,0,5],[0,2,7,0,0,0]]},{"id":86,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[9,20,6,42,96,110],"colClues":[90,60,21,22,24,8],"solution":[[9,0,0,0,0,1],[0,5,0,0,4,0],[0,0,3,2,0,0],[0,0,7,0,6,0],[0,12,0,0,0,8],[10,0,0,11,0,0]]},{"id":87,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[11,12,10,63,96,60],"colClues":[30,108,3,56,110,8],"solution":[[0,0,1,0,11,0],[0,0,3,0,0,4],[5,0,0,0,0,2],[0,9,0,7,0,0],[0,12,0,8,0,0],[6,0,0,0,10,0]]},{"id":88,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[18,7,99,40,60,16],"colClues":[30,6,9,44,70,96],"solution":[[6,3,0,0,0,0],[0,0,1,0,7,0],[0,0,9,11,0,0],[0,0,0,4,10,0],[5,0,0,0,0,12],[0,2,0,0,0,8]]},{"id":89,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[7,66,50,12,72,24],"colClues":[8,30,96,99,35,6],"solution":[[0,0,0,0,7,1],[0,0,0,11,0,6],[0,10,0,0,5,0],[4,3,0,0,0,0],[0,0,8,9,0,0],[2,0,12,0,0,0]]},{"id":90,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[11,18,70,36,16,60],"colClues":[48,27,14,40,110,6],"solution":[[0,0,0,0,11,1],[0,3,0,0,0,6],[0,0,7,0,10,0],[4,9,0,0,0,0],[0,0,2,8,0,0],[12,0,0,5,0,0]]},{"id":91,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[4,18,14,90,96,55],"colClues":[66,48,3,40,20,63],"solution":[[0,4,1,0,0,0],[6,0,3,0,0,0],[0,0,0,0,2,7],[0,0,0,0,10,9],[0,12,0,8,0,0],[11,0,0,5,0,0]]},{"id":92,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[35,10,72,27,8,88],"colClues":[12,22,63,15,40,48],"solution":[[0,0,7,5,0,0],[1,0,0,0,10,0],[12,0,0,0,0,6],[0,0,9,3,0,0],[0,2,0,0,4,0],[0,11,0,0,0,8]]},{"id":93,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[63,30,36,22,10,32],"colClues":[24,88,42,90,3,20],"solution":[[0,0,7,9,0,0],[0,0,6,0,0,5],[12,0,0,0,3,0],[2,11,0,0,0,0],[0,0,0,10,1,0],[0,8,0,0,0,4]]},{"id":94,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[70,72,22,45,3,32],"colClues":[72,11,20,6,84,60],"solution":[[0,0,0,0,7,10],[0,0,0,0,12,6],[0,11,0,2,0,0],[9,0,5,0,0,0],[0,1,0,3,0,0],[8,0,4,0,0,0]]},{"id":95,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[60,63,48,11,12,20],"colClues":[70,72,24,20,66,3],"solution":[[0,0,12,5,0,0],[7,9,0,0,0,0],[0,8,0,0,6,0],[0,0,0,0,11,1],[0,0,0,4,0,3],[10,0,2,0,0,0]]},{"id":96,"difficulty":"Uzman","maxNumber":12,"size":6,"numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"rowClues":[8,7,132,54,24,50],"colClues":[88,5,40,18,108,14],"solution":[[0,0,4,0,0,2],[0,1,0,0,0,7],[11,0,0,0,12,0],[0,0,0,6,9,0],[8,0,0,3,0,0],[0,5,10,0,0,0]]}];
+
+  let active = 0;
+  let board = [];
+  let solved = 0;
+  let startedAt = Date.now();
+  let selectedNumber = null;
+  let selectedCellIndex = null;
+
+  const $ = id => document.getElementById(id);
+  const levelColors = { Temel: '#38bdf8', Orta: '#0284c7', İleri: '#0369a1', Uzman: '#1e3a8a' };
+
+  const filtered = () => {
+    const level = $('difficulty').value;
+    return level === 'Tümü' ? puzzles.map((_, i) => i) : puzzles.map((p, i) => p.difficulty === level ? i : null).filter(i => i !== null);
+  };
+
+  function renderNumberPad(p) {
+    const pad = $('numberPad');
+    pad.innerHTML = '';
+
+    p.numbers.forEach(number => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      const isUsed = board.includes(number);
+      const isSelected = selectedNumber === number;
+
+      button.className = 'num-btn' + (isSelected ? ' active' : '') + (isUsed && !isSelected ? ' used' : '');
+      button.textContent = number;
+      button.setAttribute('aria-label', `${number} sayısını seç`);
+
+      button.addEventListener('click', () => {
+        if (selectedNumber === number) {
+          selectedNumber = null;
+        } else {
+          selectedNumber = number;
+          if (selectedCellIndex !== null) {
+            placeNumberAt(selectedCellIndex, number);
+            selectedCellIndex = null;
+          }
+        }
+        updateStatusOnSelect();
+        render();
+      });
+
+      pad.appendChild(button);
+    });
+
+    const clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.className = 'clear-btn-pad' + (selectedNumber === 0 ? ' active' : '');
+    clearBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Boşalt';
+
+    clearBtn.addEventListener('click', () => {
+      if (selectedCellIndex !== null) {
+        placeNumberAt(selectedCellIndex, 0);
+        selectedCellIndex = null;
+        selectedNumber = null;
+      } else {
+        selectedNumber = (selectedNumber === 0 ? null : 0);
+      }
+      updateStatusOnSelect();
+      render();
+    });
+
+    pad.appendChild(clearBtn);
+  }
+
+  function updateStatusOnSelect() {
+    const st = $('status');
+    st.className = 'status';
+    if (selectedNumber === null) {
+      st.textContent = 'Bir sayı seçin veya doldurmak istediğiniz hücreye dokunun.';
+    } else if (selectedNumber === 0) {
+      st.textContent = 'Boşaltma modu aktif. Temizlemek istediğiniz hücreye dokunun.';
+    } else {
+      st.textContent = `${selectedNumber} sayısı seçildi. Yerleştirmek için boş bir hücreye dokunun.`;
+    }
+  }
+
+  function render() {
+    const p = puzzles[active];
+    const n = p.size;
+    const boardEl = $('carpmacaBoard');
+    boardEl.innerHTML = '';
+
+    // CSS Grid Template setup (1 column for row clues + n columns for cells)
+    const clueWidth = n >= 5 ? '48px' : '56px';
+    const clueHeight = n >= 5 ? '40px' : '48px';
+    boardEl.style.gridTemplateColumns = `${clueWidth} repeat(${n}, 1fr)`;
+    boardEl.style.gridTemplateRows = `${clueHeight} repeat(${n}, 1fr)`;
+
+    // 1. Top-Left Corner (Empty)
+    const corner = document.createElement('div');
+    corner.className = 'board-corner';
+    corner.style.gridColumn = '1';
+    corner.style.gridRow = '1';
+    boardEl.appendChild(corner);
+
+    // 2. Column Clues (Top Row)
+    p.colClues.forEach((clue, c) => {
+      const colClueEl = document.createElement('div');
+      colClueEl.className = 'col-clue';
+      colClueEl.textContent = clue;
+      colClueEl.style.gridColumn = `${c + 2}`;
+      colClueEl.style.gridRow = '1';
+
+      // Check current column status
+      const colVals = [];
+      for (let r = 0; r < n; r++) {
+        if (board[r * n + c]) colVals.push(board[r * n + c]);
+      }
+      if (colVals.length === 2) {
+        if (colVals[0] * colVals[1] === clue) {
+          colClueEl.classList.add('matched');
+        } else {
+          colClueEl.classList.add('error');
+        }
+      }
+
+      boardEl.appendChild(colClueEl);
+    });
+
+    // 3. Rows (Row Clue + N Cells)
+    let filledCount = 0;
+
+    for (let r = 0; r < n; r++) {
+      // Row Clue
+      const rowClueEl = document.createElement('div');
+      rowClueEl.className = 'row-clue';
+      rowClueEl.textContent = p.rowClues[r];
+      rowClueEl.style.gridColumn = '1';
+      rowClueEl.style.gridRow = `${r + 2}`;
+
+      // Check current row status
+      const rowVals = board.slice(r * n, (r + 1) * n).filter(Boolean);
+      if (rowVals.length === 2) {
+        if (rowVals[0] * rowVals[1] === p.rowClues[r]) {
+          rowClueEl.classList.add('matched');
+        } else {
+          rowClueEl.classList.add('error');
+        }
+      }
+
+      boardEl.appendChild(rowClueEl);
+
+      // Cells
+      for (let c = 0; c < n; c++) {
+        const idx = r * n + c;
+        const value = board[idx] || '';
+        if (value) filledCount++;
+
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'cell';
+        cell.style.gridColumn = `${c + 2}`;
+        cell.style.gridRow = `${r + 2}`;
+
+        // Edge classes for crisp outer boundary
+        if (r === 0) cell.classList.add('cell-top-edge');
+        if (r === n - 1) cell.classList.add('cell-bottom-edge');
+        if (c === 0) cell.classList.add('cell-left-edge');
+        if (c === n - 1) cell.classList.add('cell-right-edge');
+
+        if (value) cell.classList.add('filled');
+        if (selectedCellIndex === idx) cell.classList.add('selected');
+
+        cell.textContent = value;
+        cell.setAttribute('role', 'gridcell');
+        cell.setAttribute('aria-label', `${r + 1}. satır, ${c + 1}. sütun. ${value ? value : 'boş'}`);
+
+        cell.addEventListener('click', () => onCellClick(idx));
+        boardEl.appendChild(cell);
+      }
+    }
+
+    renderNumberPad(p);
+
+    $('progressText').textContent = `${filledCount} / ${p.maxNumber} Sayı`;
+    $('puzzleLabel').textContent = `Bulmaca ${String(active + 1).padStart(2, '0')}`;
+    $('puzzleTitle').textContent = `${p.difficulty} · 1–${p.maxNumber}`;
+    $('clueLabel').textContent = `${n} × ${n} Izgara`;
+    $('levelDot').style.background = levelColors[p.difficulty] || '#0284c7';
+  }
+
+  function onCellClick(idx) {
+    const currentVal = board[idx];
+
+    // If number is already selected on pad
+    if (selectedNumber !== null) {
+      if (selectedNumber === 0) {
+        placeNumberAt(idx, 0);
+      } else {
+        placeNumberAt(idx, selectedNumber);
+      }
+      render();
+      checkAutoWin();
+      return;
+    }
+
+    // If clicking on an already filled cell without active pad selection -> clear it
+    if (currentVal) {
+      placeNumberAt(idx, 0);
+      selectedCellIndex = null;
+      $('status').className = 'status';
+      $('status').textContent = 'Hücre temizlendi.';
+      render();
+      return;
+    }
+
+    // Select the cell for keyboard or subsequent pad entry
+    if (selectedCellIndex === idx) {
+      selectedCellIndex = null;
+    } else {
+      selectedCellIndex = idx;
+    }
+    render();
+  }
+
+  function placeNumberAt(idx, num) {
+    if (num === 0) {
+      board[idx] = '';
+      return;
+    }
+    // Remove if number was placed elsewhere
+    const prevIdx = board.indexOf(num);
+    if (prevIdx !== -1 && prevIdx !== idx) {
+      board[prevIdx] = '';
+    }
+    board[idx] = num;
+  }
+
+  function checkAutoWin() {
+    const p = puzzles[active];
+    const filled = board.filter(Boolean);
+    if (filled.length === p.maxNumber) {
+      const res = validate();
+      if (res.ok) {
+        $('status').className = 'status good';
+        $('status').textContent = 'Tebrikler! Bulmacayı eksiksiz ve doğru çözdünüz!';
+        solved++;
+        $('scoreText').textContent = `Çözülen: ${solved}`;
+      }
+    }
+  }
+
+  function validate() {
+    const p = puzzles[active];
+    const n = p.size;
+    const values = board.map(v => v || 0);
+    const filled = values.filter(Boolean);
+
+    if (filled.length !== p.maxNumber) {
+      return { ok: false, msg: `Toplam ${p.maxNumber} sayı yerleştirilmelidir (Mevcut: ${filled.length}).` };
+    }
+
+    const uniqueSet = new Set(filled);
+    if (uniqueSet.size !== p.maxNumber || filled.some(v => v < 1 || v > p.maxNumber)) {
+      return { ok: false, msg: `1'den ${p.maxNumber}'e kadar tüm sayılar tam olarak birer kez kullanılmalıdır.` };
+    }
+
+    for (let r = 0; r < n; r++) {
+      const row = values.slice(r * n, (r + 1) * n).filter(Boolean);
+      if (row.length !== 2) {
+        return { ok: false, msg: `${r + 1}. satırda tam iki sayı olmalıdır.` };
+      }
+      if (row[0] * row[1] !== p.rowClues[r]) {
+        return { ok: false, msg: `${r + 1}. satırın çarpımı ${p.rowClues[r]} olmalıdır.` };
+      }
+    }
+
+    for (let c = 0; c < n; c++) {
+      const col = [];
+      for (let r = 0; r < n; r++) {
+        if (values[r * n + c]) col.push(values[r * n + c]);
+      }
+      if (col.length !== 2) {
+        return { ok: false, msg: `${c + 1}. sütunda tam iki sayı olmalıdır.` };
+      }
+      if (col[0] * col[1] !== p.colClues[c]) {
+        return { ok: false, msg: `${c + 1}. sütunun çarpımı ${p.colClues[c]} olmalıdır.` };
+      }
+    }
+
+    return { ok: true, msg: 'Tebrikler! Tüm satır ve sütun çarpımları mükemmel eşleşti!' };
+  }
+
+  function check() {
+    const result = validate();
+    $('status').className = 'status ' + (result.ok ? 'good' : 'bad');
+    $('status').textContent = result.msg;
+    if (result.ok) {
+      solved++;
+      $('scoreText').textContent = `Çözülen: ${solved}`;
+    }
+  }
+
+  function resetBoard() {
+    board = Array(puzzles[active].size ** 2).fill('');
+    selectedNumber = null;
+    selectedCellIndex = null;
+    $('status').className = 'status';
+    $('status').textContent = 'Tahta temizlendi. Yeni bir deneme yapabilirsiniz.';
+    render();
+  }
+
+  function revealAnswer() {
+    board = puzzles[active].solution.flat();
+    selectedNumber = null;
+    selectedCellIndex = null;
+    $('status').className = 'status good';
+    $('status').textContent = 'Çözüm gösterildi. Dilerseniz Temizle butonu ile baştan deneyebilirsiniz.';
+    render();
+  }
+
+  function hint() {
+    const p = puzzles[active];
+    const solution = p.solution.flat();
+    const blanks = [];
+
+    for (let i = 0; i < solution.length; i++) {
+      if (board[i] !== solution[i] && solution[i] !== 0) {
+        blanks.push(i);
+      }
+    }
+
+    if (!blanks.length) {
+      $('status').className = 'status';
+      $('status').textContent = 'Tüm doğru sayılar zaten yerleştirilmiş.';
+      return;
+    }
+
+    const idx = blanks[Math.floor(Math.random() * blanks.length)];
+    placeNumberAt(idx, solution[idx]);
+    $('status').className = 'status';
+    $('status').textContent = `${Math.floor(idx / p.size) + 1}. satır, ${(idx % p.size) + 1}. sütun için ipucu yerleştirildi.`;
+    render();
+    checkAutoWin();
+  }
+
+  function populateSelect() {
+    const sel = $('puzzleSelect');
+    const ids = filtered();
+    sel.innerHTML = '';
+    ids.forEach(i => {
+      const o = document.createElement('option');
+      o.value = i;
+      o.textContent = `${String(i + 1).padStart(2, '0')} · ${puzzles[i].difficulty} · 1–${puzzles[i].maxNumber}`;
+      sel.appendChild(o);
+    });
+    if (!ids.includes(active)) active = ids[0];
+    sel.value = active;
+  }
+
+  function choose(i) {
+    active = Number(i);
+    board = Array(puzzles[active].size ** 2).fill('');
+    selectedNumber = null;
+    selectedCellIndex = null;
+    $('status').className = 'status';
+    $('status').textContent = 'Bir sayı seçin, ardından uygun hücreye dokunun.';
+    render();
+  }
+
+  function newPuzzle() {
+    const ids = filtered();
+    const next = ids[Math.floor(Math.random() * ids.length)];
+    $('puzzleSelect').value = next;
+    choose(next);
+  }
+
+  function tick() {
+    const sec = Math.floor((Date.now() - startedAt) / 1000);
+    const m = String(Math.floor(sec / 60)).padStart(2, '0');
+    const s = String(sec % 60).padStart(2, '0');
+    $('timerText').textContent = `Süre: ${m}:${s}`;
+  }
+
+  // Keyboard navigation and direct input
+  document.addEventListener('keydown', e => {
+    if (selectedCellIndex === null) return;
+    const p = puzzles[active];
+    const n = p.size;
+
+    if (e.key >= '1' && e.key <= '9') {
+      const num = parseInt(e.key, 10);
+      if (num <= p.maxNumber) {
+        placeNumberAt(selectedCellIndex, num);
+        render();
+        checkAutoWin();
+      }
+    } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
+      placeNumberAt(selectedCellIndex, 0);
+      render();
+    } else if (e.key === 'ArrowUp' && selectedCellIndex >= n) {
+      selectedCellIndex -= n;
+      render();
+    } else if (e.key === 'ArrowDown' && selectedCellIndex + n < n * n) {
+      selectedCellIndex += n;
+      render();
+    } else if (e.key === 'ArrowLeft' && selectedCellIndex % n > 0) {
+      selectedCellIndex -= 1;
+      render();
+    } else if (e.key === 'ArrowRight' && selectedCellIndex % n < n - 1) {
+      selectedCellIndex += 1;
+      render();
+    }
+  });
+
+  $('difficulty').addEventListener('change', () => {
+    populateSelect();
+    choose($('puzzleSelect').value);
+  });
+  $('puzzleSelect').addEventListener('change', e => choose(e.target.value));
+  $('newBtn').addEventListener('click', newPuzzle);
+  $('checkBtn').addEventListener('click', check);
+  $('clearBtn').addEventListener('click', resetBoard);
+  $('hintBtn').addEventListener('click', hint);
+  $('answerBtn').addEventListener('click', revealAnswer);
+
+  populateSelect();
+  choose(0);
+  setInterval(tick, 1000);
+  tick();
+
+  const rulesModal = document.getElementById('rulesModal');
+  const closeRules = () => rulesModal.classList.remove('open');
+  document.getElementById('rulesBtn').addEventListener('click', () => rulesModal.classList.add('open'));
+  document.getElementById('rulesClose').addEventListener('click', closeRules);
+  rulesModal.addEventListener('click', event => { if (event.target === rulesModal) closeRules(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeRules(); });
+
+  (function () {
+    var orj = window.toggleTheme;
+    window.toggleTheme = function () {
+      if (orj) orj();
+      setTimeout(render, 0);
+    };
+  })();
+  </script>
+  <script src="../../js/menu.js" defer></script>
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

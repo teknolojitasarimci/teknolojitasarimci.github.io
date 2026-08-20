@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tırtıl Oyunu - Bahçedeki leziz kırmızı meyveleri toplayarak büyüyen sevimli ve modern tırtıl oyunu!">
+  <title>Tırtıl - teknolojitasarimci</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    :root {
+      --brand: #0284c7;
+      --brand-dark: #0369a1;
+      --brand-light: #e0f2fe;
+      --brand-grad: #0284c7;
+      --caterpillar-head: #059669;
+      --caterpillar-body: #10b981;
+      --food-color: #ef4444;
+      --leaf-color: #84cc16;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, .35);
+      outline-offset: 3px;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+      text-align: center;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-row h1 {
+      margin: 0 0 4px 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #64748b;
+      text-align: left;
+    }
+
+    .rules-btn {
+      padding: 8px 18px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-outline {
+      background: #fff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+    }
+    .btn-outline:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: translateY(-1px);
+    }
+
+    .controls-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 4px 0 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .selector-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(2, 132, 199, 0.05);
+      padding: 4px 10px;
+      border-radius: 25px;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+    }
+    .selector-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      margin-right: 2px;
+    }
+    .pill-btn {
+      padding: 6px 14px;
+      border-radius: 25px !important;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .pill-btn:hover { background: var(--brand-light); }
+    .pill-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .status-box {
+      background: var(--brand-light);
+      color: var(--brand-dark);
+      padding: 7px 16px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Bahçe Arenası (Canvas) */
+    .arena-frame {
+      position: relative;
+      width: min(100%, 640px);
+      aspect-ratio: 1;
+      margin: 0 auto;
+      background: #ecfdf5;
+      border: 3px solid #059669;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.15);
+      touch-action: none;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Arena İçi Durum Katmanı (Başla / Oyun Sonu) */
+    .arena-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 10;
+      transition: opacity 0.2s ease;
+    }
+    .arena-overlay.hidden {
+      display: none !important;
+    }
+    .overlay-card {
+      background: #ffffff;
+      padding: 28px 32px;
+      border-radius: 20px;
+      border: 1px solid rgba(2, 132, 199, 0.2);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .overlay-card h2 {
+      margin: 0 0 10px;
+      font-size: 1.55rem;
+      color: #0284c7;
+      font-weight: 800;
+    }
+    .overlay-card p {
+      margin: 0 0 20px;
+      font-size: 0.96rem;
+      color: #334155;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+    .overlay-card .btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 11px 32px !important;
+      min-width: 180px !important;
+      width: fit-content !important;
+      margin: 4px auto 0 !important;
+      border-radius: 25px !important;
+      font-weight: 800 !important;
+      font-size: 0.98rem !important;
+      white-space: nowrap !important;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+      cursor: pointer;
+      line-height: 1.2;
+      border: none;
+      background: #0284c7;
+      color: #ffffff;
+      transition: all 0.2s ease;
+    }
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+    .overlay-card .btn:hover {
+      background: #0369a1 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45) !important;
+    }
+
+    /* Alt Eylemler */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .action-row .btn {
+      padding: 10px 28px;
+      border-radius: 25px !important;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+    .btn-primary {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    .keys-hint {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    /* Modallar */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 540px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 30px 28px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    .modal h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 16px;
+    }
+    .modal ol {
+      padding-left: 20px;
+      color: #334155;
+      line-height: 1.7;
+      font-size: 0.93rem;
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .modal ol li { margin-bottom: 8px; }
+
+    /* Koyu Tema */
+    body.dark {
+      background: #0f172a !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .card {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+    }
+    body.dark .header-row h1 { color: #f8fafc !important; }
+    body.dark .subtitle, body.dark .keys-hint { color: #cbd5e1 !important; }
+    body.dark .selector-group {
+      background: rgba(15, 23, 42, 0.6) !important;
+      border-color: #334155 !important;
+    }
+    body.dark .selector-label { color: #94a3b8 !important; }
+    body.dark .btn-outline, body.dark .pill-btn {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    body.dark .btn-outline:hover, body.dark .pill-btn:hover {
+      background: rgba(2, 132, 199, 0.2) !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .pill-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .statusbar, body.dark .status-box {
+      background: #0f172a !important;
+      border: 1px solid #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    body.dark .arena-frame {
+      background: #064e3b !important;
+      border-color: #10b981 !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    }
+    body.dark .overlay-card {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6) !important;
+    }
+    body.dark .overlay-card h2 { color: #38bdf8 !important; }
+    body.dark .overlay-card p { color: #cbd5e1 !important; }
+    body.dark .modal {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .modal h2 { color: #38bdf8 !important; }
+    body.dark .modal ol { color: #cbd5e1 !important; }
+  </style>
+  <script src="../../js/game-sounds.js"></script>
+</head>
+<body>
+  <!-- Site Üst Menüsü --><div class="game-wrapper">
+    <div class="card">
+      <div class="header-row">
+        <div>
+          <h1>Tırtıl</h1>
+          <p class="subtitle">Bahçedeki leziz kırmızı meyveleri toplayarak büyüyen sevimli tırtıl oyunu</p>
+        </div>
+        <button class="rules-btn btn-outline" id="rulesBtn">Kurallar</button>
+      </div>
+
+      <div class="controls-row">
+        <div class="selector-group">
+          <span class="selector-label">Engel:</span>
+          <button class="pill-btn obstacle-btn active" data-obstacle="none">Engelsiz</button>
+          <button class="pill-btn obstacle-btn" data-obstacle="medium">Engelli</button>
+          <button class="pill-btn obstacle-btn" data-obstacle="hard">Labirent</button>
+        </div>
+        <div class="selector-group">
+          <span class="selector-label">Hız:</span>
+          <button class="pill-btn speed-btn" data-speed="slow">Yavaş</button>
+          <button class="pill-btn speed-btn active" data-speed="normal">Normal</button>
+          <button class="pill-btn speed-btn" data-speed="fast">Hızlı</button>
+        </div>
+      </div>
+
+      <div class="statusbar">
+        <span class="status-box" id="scoreBadge">Puan: 0</span>
+        <span class="status-box" id="lengthBadge">Uzunluk: 3</span>
+        <span class="status-box" id="highBadge">En Yüksek: 0</span>
+      </div>
+
+      <div class="arena-frame">
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+        
+        <!-- Oyun Durum Katmanı (Başla / Oyun Sonu) -->
+        <div id="arenaOverlay" class="arena-overlay">
+          <div class="overlay-card">
+            <h2 id="overlayTitle">Tırtıl</h2>
+            <p id="overlayMsg">Başlamak için butona tıkla veya yön tuşlarına bas!</p>
+            <button class="btn btn-primary" id="overlayBtn" onclick="startGame()">Oyuna Başla</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-primary" id="startBtn" onclick="resetGame()">Yeni Oyun / Sıfırla</button>
+      </div>
+
+      <p class="keys-hint">Klavye: <b>Ok Tuşları (↑, ↓, ←, →)</b> veya <b>W, A, S, D</b> tuşlarıyla; dokunmatik ekranda <b>parmağını kaydırarak</b> yönlendirebilirsin.</p>
+    </div>
+  </div>
+
+  <!-- Kurallar Modal -->
+  <div class="modal-overlay" id="rulesModal">
+    <div class="modal">
+      <h2>Tırtıl Kuralları</h2>
+      <ol>
+        <li>Tırtılı bahçe içinde yönlendirerek leziz kırmızı meyveleri topla.</li>
+        <li>Her yediğin meyve sana <strong>+10 Puan</strong> kazandırır ve tırtılın gövdesini 1 boğum uzatır.</li>
+        <li><strong>Kapalı Engeller</strong>: <em>Engelli</em> veya <em>Labirent</em> modunu seçtiğinde bahçede gri taş bloklar oluşur. Dış duvarlara, kendi gövdene veya bu kapalı engellere çarparsan oyun biter.</li>
+        <li>Yönlendirme için <strong>Ok Tuşlarını</strong>, <strong>W-A-S-D</strong> tuşlarını veya dokunmatik ekranda parmağını kaydırabilirsin.</li>
+      </ol>
+      <button class="modal-close" id="rulesClose">Anladım, Kapat</button>
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Elma%20Kurdu%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#ElmaKurdu</span>
+        <span class="tag-badge">#YılanOyunu</span>
+        <span class="tag-badge">#RetroOyunlar</span>
+        <span class="tag-badge">#NostaljiOyunları</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+</div>
+  </div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+    <div class="container">
+      <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+      <div class="footer-copyright-text">
+        Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../js/theme.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      const scoreBadge = document.getElementById('scoreBadge');
+      const lengthBadge = document.getElementById('lengthBadge');
+      const highBadge = document.getElementById('highBadge');
+
+      const GRID_COUNT = 25;
+      const CELL_SIZE = canvas.width / GRID_COUNT; // 20px per cell
+
+      const SPEEDS = {
+        slow: 240,
+        normal: 170,
+        fast: 120
+      };
+
+      let speedMode = 'normal';
+      let obstacleMode = 'none';
+      let highScore = parseInt(localStorage.getItem('tt_caterpillar_highscore') || '0', 10);
+      highBadge.textContent = `En Yüksek: ${highScore}`;
+
+      const OBSTACLE_PRESETS = {
+        none: [],
+        medium: [
+          // 4 adet bahçe kaya kümesi ve orta taş
+          { x: 5, y: 5 }, { x: 5, y: 6 }, { x: 6, y: 5 }, { x: 6, y: 6 },
+          { x: 18, y: 5 }, { x: 18, y: 6 }, { x: 19, y: 5 }, { x: 19, y: 6 },
+          { x: 5, y: 18 }, { x: 5, y: 19 }, { x: 6, y: 18 }, { x: 6, y: 19 },
+          { x: 18, y: 18 }, { x: 18, y: 19 }, { x: 19, y: 18 }, { x: 19, y: 19 },
+          { x: 12, y: 12 }
+        ],
+        hard: [
+          // Bahçe çitleri ve duvar labirenti
+          { x: 4, y: 7 }, { x: 5, y: 7 }, { x: 6, y: 7 }, { x: 7, y: 7 }, { x: 8, y: 7 },
+          { x: 16, y: 7 }, { x: 17, y: 7 }, { x: 18, y: 7 }, { x: 19, y: 7 }, { x: 20, y: 7 },
+          { x: 4, y: 17 }, { x: 5, y: 17 }, { x: 6, y: 17 }, { x: 7, y: 17 }, { x: 8, y: 17 },
+          { x: 16, y: 17 }, { x: 17, y: 17 }, { x: 18, y: 17 }, { x: 19, y: 17 }, { x: 20, y: 17 },
+          { x: 12, y: 3 }, { x: 12, y: 4 }, { x: 12, y: 5 },
+          { x: 12, y: 19 }, { x: 12, y: 20 }, { x: 12, y: 21 },
+          { x: 11, y: 12 }, { x: 12, y: 12 }, { x: 13, y: 12 }
+        ]
+      };
+
+      let obstacles = [];
+      let snake = [];
+      let prevSnake = [];
+      let direction = { x: 1, y: 0 };
+      let nextDirection = { x: 1, y: 0 };
+      let food = { x: 18, y: 12, type: 'apple' };
+      let score = 0;
+      let isRunning = false;
+      let isWaitingToStart = true;
+      let lastStepTime = 0;
+      let animFrameId = null;
+
+      // Parçacık Efektleri
+      let particles = [];
+
+      function setSpeed(s) {
+        speedMode = s;
+        document.querySelectorAll('.speed-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.speed === s);
+        });
+      }
+      window.setSpeed = setSpeed;
+
+      function setObstacle(obs) {
+        obstacleMode = obs;
+        document.querySelectorAll('.obstacle-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.obstacle === obs);
+        });
+        obstacles = OBSTACLE_PRESETS[obstacleMode] || [];
+        resetGame();
+      }
+      window.setObstacle = setObstacle;
+
+      document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.addEventListener('click', () => setSpeed(btn.dataset.speed));
+      });
+
+      document.querySelectorAll('.obstacle-btn').forEach(btn => {
+        btn.addEventListener('click', () => setObstacle(btn.dataset.obstacle));
+      });
+
+      function spawnFood() {
+        let valid = false;
+        let newX, newY;
+        let attempts = 0;
+        while (!valid && attempts < 500) {
+          attempts++;
+          newX = Math.floor(Math.random() * GRID_COUNT);
+          newY = Math.floor(Math.random() * GRID_COUNT);
+          const onSnake = snake.some(seg => seg.x === newX && seg.y === newY);
+          const onObstacle = obstacles.some(obs => obs.x === newX && obs.y === newY);
+          valid = !onSnake && !onObstacle;
+        }
+        food = {
+          x: newX,
+          y: newY,
+          type: 'apple'
+        };
+      }
+
+      function createEatParticles(x, y, color) {
+        for (let i = 0; i < 12; i++) {
+          particles.push({
+            x: (x + 0.5) * CELL_SIZE,
+            y: (y + 0.5) * CELL_SIZE,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            color: color || '#ef4444',
+            radius: Math.random() * 3.5 + 1.5,
+            life: 1
+          });
+        }
+      }
+
+      function gameStep() {
+        if (!isRunning) return;
+
+        direction = { ...nextDirection };
+        const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+        // Duvara Çarpma Kontrolü
+        if (head.x < 0 || head.x >= GRID_COUNT || head.y < 0 || head.y >= GRID_COUNT) {
+          gameOver();
+          return;
+        }
+
+        // Kendi Gövdesine Çarpma Kontrolü
+        if (snake.some(seg => seg.x === head.x && seg.y === head.y)) {
+          gameOver();
+          return;
+        }
+
+        // Kapalı Engellere Çarpma Kontrolü
+        if (obstacles.some(obs => obs.x === head.x && obs.y === head.y)) {
+          gameOver();
+          return;
+        }
+
+        prevSnake = snake.map(seg => ({ ...seg }));
+        snake.unshift(head);
+
+        // Yemek Yeme Kontrolü
+        if (head.x === food.x && head.y === food.y) {
+          score += 10;
+          createEatParticles(food.x, food.y, '#ef4444');
+          try { GameSounds.point(); } catch(e){}
+          spawnFood();
+          updateUI();
+        } else {
+          snake.pop();
+        }
+      }
+
+      function renderLoop(now) {
+        if (isRunning) {
+          const stepDuration = SPEEDS[speedMode];
+
+          if (!lastStepTime) lastStepTime = now;
+
+          // Kare başında tam senkron adım tetikleme
+          if (now - lastStepTime >= stepDuration) {
+            gameStep();
+            lastStepTime = now;
+          }
+
+          const currentElapsed = now - lastStepTime;
+          const progress = Math.min(1, Math.max(0, currentElapsed / stepDuration));
+
+          // Yumuşak Alt-Kare İnterpolasyonu (Smooth Sub-cell Motion)
+          const smoothSnake = snake.map((seg, i) => {
+            const prev = prevSnake[i] || seg;
+            return {
+              x: prev.x + (seg.x - prev.x) * progress,
+              y: prev.y + (seg.y - prev.y) * progress,
+              gridX: seg.x,
+              gridY: seg.y
+            };
+          });
+
+          draw(smoothSnake, now, progress);
+        } else {
+          draw(snake, now, 1);
+        }
+
+        animFrameId = requestAnimationFrame(renderLoop);
+      }
+
+      function draw(body, now, progress) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const isDark = document.body.classList.contains('dark');
+        ctx.fillStyle = isDark ? '#0f172a' : '#ecfdf5';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Izgara Hatları (Net ve Ferah)
+        ctx.strokeStyle = isDark ? 'rgba(51, 65, 85, 0.4)' : 'rgba(16, 185, 129, 0.14)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= GRID_COUNT; i++) {
+          ctx.beginPath();
+          ctx.moveTo(i * CELL_SIZE, 0);
+          ctx.lineTo(i * CELL_SIZE, canvas.height);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(0, i * CELL_SIZE);
+          ctx.lineTo(canvas.width, i * CELL_SIZE);
+          ctx.stroke();
+        }
+
+        // Kapalı Engelleri Çiz
+        drawObstacles(isDark);
+
+        // Yemi Çiz
+        drawFood(food, now);
+
+        // Tırtılı Çiz (Canlı Adımlama ve Kasılma Dalgasıyla)
+        drawCaterpillar(body, direction, isDark, now, progress);
+
+        // Parçacıkları Çiz
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= 0.04;
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+      }
+
+      function drawObstacles(isDark) {
+        for (const obs of obstacles) {
+          const x = obs.x * CELL_SIZE;
+          const y = obs.y * CELL_SIZE;
+          const pad = 1.5;
+
+          // Ana Blok
+          ctx.fillStyle = isDark ? '#334155' : '#64748b';
+          ctx.strokeStyle = isDark ? '#1e293b' : '#334155';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(x + pad, y + pad, CELL_SIZE - (pad * 2), CELL_SIZE - (pad * 2), 4);
+          } else {
+            ctx.rect(x + pad, y + pad, CELL_SIZE - (pad * 2), CELL_SIZE - (pad * 2));
+          }
+          ctx.fill();
+          ctx.stroke();
+
+          // İç Vurgu Dokusu
+          ctx.fillStyle = isDark ? '#475569' : '#94a3b8';
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(x + pad + 2, y + pad + 2, CELL_SIZE - (pad * 2) - 4, CELL_SIZE - (pad * 2) - 4, 2);
+          } else {
+            ctx.rect(x + pad + 2, y + pad + 2, CELL_SIZE - (pad * 2) - 4, CELL_SIZE - (pad * 2) - 4);
+          }
+          ctx.fill();
+        }
+      }
+
+      function drawFood(f, now) {
+        const cx = (f.x + 0.5) * CELL_SIZE;
+        const cy = (f.y + 0.5) * CELL_SIZE;
+        const bounce = Math.sin((now || 0) * 0.005) * 1.5;
+        const r = (CELL_SIZE * 0.42);
+        const yOffset = bounce * 0.8;
+
+        // 1. Ahşap Kıvrımlı Dal Sapı
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 2.4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - r * 0.4 + yOffset);
+        ctx.quadraticCurveTo(cx - 2, cy - r * 1.3 + yOffset, cx + 4, cy - r * 1.45 + yOffset);
+        ctx.stroke();
+
+        // 2. Taze Yeşil Elma Yaprağı
+        ctx.fillStyle = '#65a30d';
+        ctx.strokeStyle = '#3f6212';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.ellipse(cx + 6, cy - r * 1.1 + yOffset, 5.5, 3.2, 0.45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // 3. Karakteristik Çift Loblu Kırmızı Elma Silüeti
+        ctx.fillStyle = '#dc2626';
+        ctx.strokeStyle = '#991b1b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - r * 0.6 + yOffset);
+        ctx.bezierCurveTo(cx + r * 1.05, cy - r * 1.1 + yOffset, cx + r * 1.2, cy + r * 0.4 + yOffset, cx + r * 0.55, cy + r * 1.05 + yOffset);
+        ctx.bezierCurveTo(cx + r * 0.2, cy + r * 1.18 + yOffset, cx - r * 0.2, cy + r * 1.18 + yOffset, cx - r * 0.55, cy + r * 1.05 + yOffset);
+        ctx.bezierCurveTo(cx - r * 1.2, cy + r * 0.4 + yOffset, cx - r * 1.05, cy - r * 1.1 + yOffset, cx, cy - r * 0.6 + yOffset);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // 4. Elma Işık Parlaması
+        ctx.fillStyle = '#fca5a5';
+        ctx.beginPath();
+        ctx.ellipse(cx - r * 0.42, cy - r * 0.15 + yOffset, r * 0.26, r * 0.48, -0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cx - r * 0.42, cy - r * 0.35 + yOffset, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawCaterpillar(body, dir, isDark, now, progress) {
+        if (!body.length) return;
+        const time = now || 0;
+
+        // 1. Canlı ve Gerçekçi Bacak Adımlama Hareketi (Metachronal Crawling Wave)
+        for (let i = 1; i < body.length; i++) {
+          const seg = body[i];
+          const prev = body[i - 1];
+          const cx = (seg.x + 0.5) * CELL_SIZE;
+          const cy = (seg.y + 0.5) * CELL_SIZE;
+
+          let dx = prev.x - seg.x;
+          let dy = prev.y - seg.y;
+          const len = Math.hypot(dx, dy) || 1;
+          dx /= len;
+          dy /= len;
+
+          // Yan dik vektörler
+          const nx = -dy;
+          const ny = dx;
+
+          // Bacağın İleri-Geri Doğal ve Kibar Adımlama Döngüsü
+          const stepPhase = (time * 0.013) - (i * 0.9);
+          const stepSwing = Math.sin(stepPhase); // Hafif ileri geri salınım
+          const stepLift = Math.max(0, Math.cos(stepPhase)) * 1.4;
+
+          const baseDist = ((CELL_SIZE / 2) * 0.92) + stepLift;
+          const swingDist = stepSwing * 2.6; // Doğal ve belirgin adımlama mesafesi
+
+          // Sevimli ve Belirgin Bacaklar & Patiler
+          ctx.fillStyle = '#047857';
+          ctx.strokeStyle = '#065f46';
+          ctx.lineWidth = 1.6;
+
+          // Sol Bacak & Pati
+          const leg1X = cx + (nx * baseDist) + (dx * swingDist);
+          const leg1Y = cy + (ny * baseDist) + (dy * swingDist);
+          ctx.beginPath();
+          ctx.moveTo(cx + (nx * (CELL_SIZE * 0.2)), cy + (ny * (CELL_SIZE * 0.2)));
+          ctx.lineTo(leg1X, leg1Y);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(leg1X, leg1Y, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Sol Pati Ucu
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(leg1X + (dx * 0.7), leg1Y + (dy * 0.7), 1.4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Sağ Bacak & Pati
+          ctx.fillStyle = '#047857';
+          const leg2X = cx - (nx * baseDist) - (dx * swingDist);
+          const leg2Y = cy - (ny * baseDist) - (dy * swingDist);
+          ctx.beginPath();
+          ctx.moveTo(cx - (nx * (CELL_SIZE * 0.2)), cy - (ny * (CELL_SIZE * 0.2)));
+          ctx.lineTo(leg2X, leg2Y);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(leg2X, leg2Y, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Sağ Pati Ucu
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(leg2X - (dx * 0.7), leg2Y - (dy * 0.7), 1.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 2. Gövde Boğumları (Dalgalı Akordeon Kasılma Hareketi)
+        for (let i = body.length - 1; i >= 1; i--) {
+          const seg = body[i];
+          const cx = (seg.x + 0.5) * CELL_SIZE;
+          const cy = (seg.y + 0.5) * CELL_SIZE;
+
+          // Akordeon Dalgası: Boğumların yürürken ritmik olarak şişip daralması
+          const wave = Math.sin((time * 0.01) - (i * 0.85));
+          const squish = 1 + (wave * 0.08);
+          const baseR = (CELL_SIZE / 2) * (0.86 - (i * 0.005));
+          const r = Math.max(5, baseR * squish);
+
+          // Boğum Rengi
+          ctx.fillStyle = i % 2 === 0 ? '#10b981' : '#34d399';
+          ctx.strokeStyle = '#059669';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Sırt Benekleri
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(cx, cy - 2, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 3. Tırtıl Kafası
+        const head = body[0];
+        const cx = (head.x + 0.5) * CELL_SIZE;
+        const cy = (head.y + 0.5) * CELL_SIZE;
+        const headWave = Math.sin(time * 0.01) * 0.05;
+        const r = (CELL_SIZE / 2) * (0.95 + headWave);
+
+        ctx.fillStyle = '#059669';
+        ctx.strokeStyle = '#047857';
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Gözler & Canlı Sallanan Kırmızı Uçlu Çıkıntılı Kibar Antenler
+        let eye1X = cx, eye1Y = cy, eye2X = cx, eye2Y = cy;
+        let ant1BaseX = cx, ant1BaseY = cy, ant2BaseX = cx, ant2BaseY = cy;
+        let ant1X = cx, ant1Y = cy, ant2X = cx, ant2Y = cy;
+        const antWiggle = Math.sin(time * 0.009) * 1.8;
+
+        if (dir.x === 1) { // Sağa
+          eye1X = cx + 4; eye1Y = cy - 5;
+          eye2X = cx + 4; eye2Y = cy + 5;
+          ant1BaseX = cx + 3; ant1BaseY = cy - 6;
+          ant2BaseX = cx + 3; ant2BaseY = cy + 6;
+          ant1X = cx + 8; ant1Y = cy - 10 + antWiggle;
+          ant2X = cx + 8; ant2Y = cy + 10 - antWiggle;
+        } else if (dir.x === -1) { // Sola
+          eye1X = cx - 4; eye1Y = cy - 5;
+          eye2X = cx - 4; eye2Y = cy + 5;
+          ant1BaseX = cx - 3; ant1BaseY = cy - 6;
+          ant2BaseX = cx - 3; ant2BaseY = cy + 6;
+          ant1X = cx - 8; ant1Y = cy - 10 + antWiggle;
+          ant2X = cx - 8; ant2Y = cy + 10 - antWiggle;
+        } else if (dir.y === -1) { // Yukarı
+          eye1X = cx - 5; eye1Y = cy - 4;
+          eye2X = cx + 5; eye2Y = cy - 4;
+          ant1BaseX = cx - 6; ant1BaseY = cy - 3;
+          ant2BaseX = cx + 6; ant2BaseY = cy - 3;
+          ant1X = cx - 10 + antWiggle; ant1Y = cy - 8;
+          ant2X = cx + 10 - antWiggle; ant2Y = cy - 8;
+        } else { // Aşağı
+          eye1X = cx - 5; eye1Y = cy + 4;
+          eye2X = cx + 5; eye2Y = cy + 4;
+          ant1BaseX = cx - 6; ant1BaseY = cy + 3;
+          ant2BaseX = cx + 6; ant2BaseY = cy + 3;
+          ant1X = cx - 10 + antWiggle; ant1Y = cy + 8;
+          ant2X = cx + 10 - antWiggle; ant2Y = cy + 8;
+        }
+
+        // Anten Gövdeleri (Kibar Saplar)
+        ctx.strokeStyle = '#047857';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(ant1BaseX, ant1BaseY); ctx.lineTo(ant1X, ant1Y);
+        ctx.moveTo(ant2BaseX, ant2BaseY); ctx.lineTo(ant2X, ant2Y);
+        ctx.stroke();
+
+        // Kırmızı Yuvarlak Uç Çıkıntıları (Minik Küre Antenler)
+        ctx.fillStyle = '#ef4444';
+        ctx.strokeStyle = '#b91c1c';
+        ctx.lineWidth = 1.2;
+
+        // Sol Anten Ucu
+        ctx.beginPath();
+        ctx.arc(ant1X, ant1Y, 2.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        // Parlama noktası
+        ctx.fillStyle = '#fca5a5';
+        ctx.beginPath();
+        ctx.arc(ant1X - 0.7, ant1Y - 0.7, 0.9, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sağ Anten Ucu
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(ant2X, ant2Y, 2.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        // Parlama noktası
+        ctx.fillStyle = '#fca5a5';
+        ctx.beginPath();
+        ctx.arc(ant2X - 0.7, ant2Y - 0.7, 0.9, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Gözler
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(eye1X, eye1Y, 3.5, 0, Math.PI * 2);
+        ctx.arc(eye2X, eye2Y, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(eye1X + (dir.x * 1.5), eye1Y + (dir.y * 1.5), 1.8, 0, Math.PI * 2);
+        ctx.arc(eye2X + (dir.x * 1.5), eye2Y + (dir.y * 1.5), 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function updateUI() {
+        scoreBadge.textContent = `Puan: ${score}`;
+        lengthBadge.textContent = `Uzunluk: ${snake.length}`;
+      }
+
+      function resetGame() {
+        snake = [
+          { x: 5, y: 10 },
+          { x: 4, y: 10 },
+          { x: 3, y: 10 }
+        ];
+        prevSnake = snake.map(s => ({ ...s }));
+        direction = { x: 1, y: 0 };
+        nextDirection = { x: 1, y: 0 };
+        score = 0;
+        particles = [];
+        isRunning = false;
+        isWaitingToStart = true;
+        spawnFood();
+        updateUI();
+
+        const arenaOverlay = document.getElementById('arenaOverlay');
+        const overlayTitle = document.getElementById('overlayTitle');
+        const overlayMsg = document.getElementById('overlayMsg');
+        const overlayBtn = document.getElementById('overlayBtn');
+        overlayTitle.textContent = 'Tırtıl';
+        overlayMsg.textContent = 'Başlamak için butona tıkla veya yön tuşlarına bas!';
+        overlayBtn.textContent = 'Oyuna Başla';
+        arenaOverlay.classList.remove('hidden');
+
+        if (!animFrameId) {
+          animFrameId = requestAnimationFrame(renderLoop);
+        }
+      }
+      window.resetGame = resetGame;
+
+      function startGame() {
+        if (isRunning) return;
+        if (!isWaitingToStart) {
+          // Oyun bitmiş durumdaysa önce tahtayı sıfırla
+          snake = [
+            { x: 5, y: 10 },
+            { x: 4, y: 10 },
+            { x: 3, y: 10 }
+          ];
+          prevSnake = snake.map(s => ({ ...s }));
+          direction = { x: 1, y: 0 };
+          nextDirection = { x: 1, y: 0 };
+          score = 0;
+          particles = [];
+          spawnFood();
+          updateUI();
+        }
+        isRunning = true;
+        isWaitingToStart = false;
+        lastStepTime = performance.now();
+        try { GameSounds.place(); } catch(e){}
+        document.getElementById('arenaOverlay').classList.add('hidden');
+        if (!animFrameId) {
+          animFrameId = requestAnimationFrame(renderLoop);
+        }
+      }
+      window.startGame = startGame;
+
+      function gameOver() {
+        isRunning = false;
+        isWaitingToStart = false;
+        try { GameSounds.wrong(); } catch(e){}
+
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('tt_caterpillar_highscore', String(highScore));
+          highBadge.textContent = `En Yüksek: ${highScore}`;
+        }
+
+        const arenaOverlay = document.getElementById('arenaOverlay');
+        const overlayTitle = document.getElementById('overlayTitle');
+        const overlayMsg = document.getElementById('overlayMsg');
+        const overlayBtn = document.getElementById('overlayBtn');
+        overlayTitle.textContent = 'Oyun Bitti!';
+        overlayMsg.textContent = `Toplanan Puan: ${score} (Toplam ${Math.floor(score / 10)} Elma)`;
+        overlayBtn.textContent = 'Yeniden Oyna';
+        arenaOverlay.classList.remove('hidden');
+      }
+
+      function setDir(dx, dy) {
+        if (isWaitingToStart) {
+          nextDirection = { x: dx, y: dy };
+          direction = { x: dx, y: dy };
+          startGame();
+          return;
+        }
+        if (!isRunning) return;
+        // Geriye dönmeyi engelle
+        if (dx !== 0 && direction.x === -dx) return;
+        if (dy !== 0 && direction.y === -dy) return;
+        nextDirection = { x: dx, y: dy };
+      }
+
+      // Klavye Olayları
+      window.addEventListener('keydown', (e) => {
+        const k = e.key.toLowerCase();
+        if (k === 'arrowup' || k === 'w') { e.preventDefault(); setDir(0, -1); }
+        else if (k === 'arrowdown' || k === 's') { e.preventDefault(); setDir(0, 1); }
+        else if (k === 'arrowleft' || k === 'a') { e.preventDefault(); setDir(-1, 0); }
+        else if (k === 'arrowright' || k === 'd') { e.preventDefault(); setDir(1, 0); }
+      });
+
+      // Dokunmatik Kaydırma (Swipe Desteği)
+      let touchStartX = 0, touchStartY = 0;
+      canvas.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      canvas.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          if (dx > 20) setDir(1, 0);
+          else if (dx < -20) setDir(-1, 0);
+        } else {
+          if (dy > 20) setDir(0, 1);
+          else if (dy < -20) setDir(0, -1);
+        }
+      }, { passive: true });
+
+      // Modal Olayları
+      document.getElementById('rulesBtn').addEventListener('click', () => document.getElementById('rulesModal').classList.add('open'));
+      document.getElementById('rulesClose').addEventListener('click', () => document.getElementById('rulesModal').classList.remove('open'));
+
+      resetGame();
+    })();
+  </script>
+
+<script src="../../js/menu.js" defer></script>  
+  
+  
+  
+  
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>

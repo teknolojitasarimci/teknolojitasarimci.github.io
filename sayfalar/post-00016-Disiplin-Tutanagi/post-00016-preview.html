@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Okullarda Disiplin Tutanağı Nasıl Tutulur? (Örnek Şablonlar) - teknolojitasarimci</title>
+    <meta name="description" content="Eğitim kurumlarında düzen ve disiplini sağlamak amacıyla tutulacak disiplin tutanağı hazırlama adımları, dikkat edilmesi gerekenler ve hazır tutanak örnekleri.">
+
+    <!-- Google Fonts Entegrasyonu -->
+
+
+<link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Özel Master Template Premium Stil İyileştirmeleri -->
+    <style>
+        :root {
+            --font-heading: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --font-body: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            --primary-gradient: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+        }
+
+        body {
+            font-family: var(--font-body);
+        }
+
+        h1, h2, h3, h4, h5, .logo, .post-detail-title, .comments-header-title {
+            font-family: var(--font-heading);
+        }
+
+        /* Hero / Header Rozetleri */
+        .post-badge-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .badge-primary {
+            background: var(--brand-light);
+            color: var(--brand-color);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+        }
+
+        .badge-read-time {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            margin-left: auto;
+        }
+
+        .badge-verified {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .post-detail-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .post-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .meta-item strong {
+            color: #334155;
+        }
+
+        /* Hızlı Eylem & Paylaşım Araç Çubuğu */
+        .quick-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 20px;
+            margin: 20px 0 28px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--brand-light);
+            border-color: var(--brand-color);
+            color: var(--brand-color);
+            transform: translateY(-1px);
+        }
+
+        /* 16:9 Sinematik Görsel Çerçevesi */
+        .post-cover-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+            margin: 24px 0 35px 0;
+            background: #0f172a;
+        }
+
+        .post-cover-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .post-cover-wrapper:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Modernleştirilmiş Tablo Stili */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            margin: 28px 0;
+        }
+
+        table.modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 14.5px;
+            background: #ffffff;
+        }
+
+        table.modern-table th {
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 16px 18px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            font-family: var(--font-heading);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table.modern-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        table.modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table.modern-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .center-td {
+            background: #fafafa;
+            color: #0f172a;
+        }
+
+        /* İndirme Bağlantı Linkleri için Buton Görünümü */
+        .doc-link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .doc-item-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 13.5px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .doc-item-btn:hover {
+            background: var(--brand-color);
+            color: #ffffff;
+            border-color: var(--brand-color);
+            transform: translateX(4px);
+        }
+
+        /* Meta Duyuru Kutusu */
+        .meta-box-enhanced {
+            background: #e0f2fe;
+            border-left: 4px solid var(--brand-color);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 24px 0;
+            color: #0369a1;
+            font-size: 15px;
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+        }
+
+        /* Section Başlık Banner */
+        .section-header-banner {
+            text-align: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 32px 0 20px 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand-color);
+        }
+
+        /* Toast Bildirim */
+        #toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: opacity;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        /* İlgili İçerikler (Related Posts) 3 Küçük Kart Grid */
+        .related-posts-section {
+            margin-top: 45px;
+            padding-top: 30px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .related-posts-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .related-posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .related-post-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .related-post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-color);
+            box-shadow: 0 8px 20px -4px rgba(2, 132, 199, 0.15);
+        }
+
+        .related-post-img {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+            background: #f8fafc;
+        }
+
+        .related-post-body {
+            padding: 12px 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .related-post-cat {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--brand-color);
+            margin-bottom: 4px;
+        }
+
+        .related-post-card-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s ease;
+        }
+
+        .related-post-card:hover .related-post-card-title {
+            color: var(--brand-color);
+        }
+    
+        body.dark .quick-action-bar { background: #0f172a; border-color: #334155; }
+        body.dark table.modern-table, body.dark table.modern-table thead th { background: #0f172a; color: #cbd5e1; }
+        body.dark table.modern-table tbody tr:nth-child(even) { background: #1e293b; }
+        body.dark table.modern-table tbody tr:hover { background: rgba(2,132,199,0.15); }
+        body.dark .related-post-card { background: #1e293b; border-color: #334155; }
+        body.dark .related-post-body { background: #1e293b; }
+        body.dark .related-post-card-title { color: #f1f5f9; }
+        body.dark .related-post-cat { color: #7dd3e8; }
+    </style>
+    <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+    <!-- Toast Bildirim Pop-up -->
+    <div id="toast-notification">Bağlantı kopyalandı!</div>
+
+    <!-- Header / Üst Menü --><!-- Ana İçerik Konteynırı -->
+    <main class="container article-layout">
+        <article class="post-detail">
+            
+            <!-- 1. Üst Ana Sayfaya Dön Butonu -->
+            <a href="../preview.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Ana Sayfaya Dön
+            </a>
+
+            <!-- 2. Yazı Üst Başlık & Rozet Alanı -->
+            <div class="post-detail-header">
+                <div class="post-badge-bar">
+                    <span class="badge-pill badge-primary">Dosyalar</span>
+                    <span class="badge-pill badge-primary">Öğretmen Rehberi</span>
+                    <span class="badge-pill badge-read-time">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        5 Dk Okuma
+                    </span>
+                </div>
+
+                <h1 class="post-detail-title">Okullarda Disiplin Tutanağı Nasıl Tutulur? (Örnek Şablonlar)</h1>
+
+                <div class="post-detail-meta">
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>Yayınlanma Tarihi: <strong>13 Ağustos 2024</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Hazırlayan: <strong>Mürsel EREN</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Görüntülenme: <span id="view-counter" data-path="/post-00016-preview.html">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.5 Hızlı Paylaşım & Araç Barı -->
+            <div class="quick-action-bar">
+                <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    İçeriği Paylaş:
+                </span>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="copyPageUrl()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Linki Kopyala
+                    </button>
+                    <a href="https://api.whatsapp.com/send?text=Okullarda%20Disiplin%20Tutana%C4%9F%C4%B1%20Nas%C4%B1l%20Tutulur%3F%20(%C3%96rnek%20%C5%9Eablonlar)" target="_blank" class="action-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        WhatsApp
+                    </a>
+                    <button class="action-btn" onclick="window.print()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        Yazdır
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. 16:9 Sinematik Kapak Görseli -->
+            <div class="post-cover-wrapper">
+                <img src="Veri/post-00016-Kapak.jpg" alt="Disiplin Tutanağı Nasıl Tutulur">
+            </div>
+
+            <!-- 4. Yazı Gövde Metni -->
+            <div class="post-body-content">
+                <p>Eğitim kurumlarında düzen ve disiplinin sağlanması, öğrencilerin güvenli bir ortamda eğitim alabilmeleri için oldukça önemlidir. Ancak zaman zaman istenmeyen olaylar yaşanabilmektedir. Bu durumlarda, olayın kayıt altına alınması ve gerekli önlemlerin alınması amacıyla tutanak tutulur. Peki, tutanak nasıl tutulur?</p>
+
+                <h3>İşte adım adım nasıl tutanak tutulacağına dair bilgiler:</h3>
+                
+                <ol style="margin-bottom: 24px; padding-left: 20px; line-height: 1.8;">
+                    <li style="margin-bottom: 10px;"><b>Başlık:</b> Tutanak, çizgisiz bir A4 kağıdına yazılır ve kâğıdın ortasına büyük harflerle başlık atılır. Tutanak başlığı atarken birçok alternatif bulunmaktadır. En basiti ''TUTANAKTIR'', "TUTANAK" şeklinde olabilir.</li>
+                    <li style="margin-bottom: 10px;"><b>Tarih ve saat bilgilerini eksiksiz yazın:</b> Olayın ne zaman gerçekleştiği ve tutanağın ne zaman düzenlendiği önemlidir.</li>
+                    <li style="margin-bottom: 10px;"><b>Olayın Tanımı:</b> 5N 1K kuralına göre (Ne, Nerede, Ne zaman, Nasıl, Neden, Kim) olay detaylı ve anlaşılır bir şekilde yazılır. Olayın tüm ayrıntıları, tarafların kimlik bilgileri ve olayın gerçekleştiği yer belirtilir.</li>
+                    <li style="margin-bottom: 10px;"><b>İlgili kişilerin bilgilerini doğru bir şekilde yazın:</b> Öğrencilerin isimleri, numaraları ve hatta sınıfları mutlaka belirtilmelidir.</li>
+                    <li style="margin-bottom: 10px;"><b>Objektif olun:</b> Olayı kişisel yorumlar katmadan, tarafsız bir şekilde anlatın.</li>
+                    <li style="margin-bottom: 10px;"><b>Net ve anlaşılır bir dil kullanın:</b> Karmaşık ifadelerden kaçının, olayı herkesin anlayabileceği şekilde açıklayın.</li>
+                    <li style="margin-bottom: 10px;"><b>Önlemler ve Uyarılar:</b> Olaya müdahale eden kişilerin aldığı önlemler ve yapılan uyarılar da tutanakta yer almalıdır. Örneğin, kavga eden öğrencilerin ayrılması ve uyarılması gibi detaylar eklenebilir.</li>
+                    <li style="margin-bottom: 10px;"><b>İmzalar:</b> Tutanakta yer alan kişiler ve şahitler, tutanağı imzalamalıdır. İmzalar, tutanağın geçerliliği için gereklidir. Bir tutanağın resmi olabilmesi için en az 2 kişi tarafından imzalanması gerekmektedir. Tek taraflı olarak hazırlanan belgelere dilekçe denilmektedir, bu sebeple tek kişinin imzaladığı belge geçerliliği olmayacaktır. İmza atma sırasına mutlaka önem göstermeniz gerekmektedir. Kısaca olaya tanık olan öğretmenler, öğrenciler ve okul yöneticileri gibi ilgili kişilerin imzaları da bulunmalıdır.</li>
+                    <li style="margin-bottom: 10px;"><b>Ek Bilgiler:</b> Gerekirse, olayla ilgili ek belgeler veya kanıtlar tutanağa eklenir. Bu belgeler de imzalanmalıdır.</li>
+                    <li style="margin-bottom: 10px;">Tutanağın sonunda, belgenin ne zaman düzenlendiği ve imzalandığı bilgisi yer almalıdır.</li>
+                </ol>
+
+                <h3>Kısaca şunlar yer alır:</h3>
+                
+                <ol style="margin-bottom: 24px; padding-left: 20px; line-height: 1.8;">
+                    <li>Ortalanmış "TUTANAK" başlığı</li>
+                    <li>Okulun adı</li>
+                    <li>Öğrenci veya öğrencilerin sınıfı</li>
+                    <li>Öğrenci veya öğrencilerin numarası</li>
+                    <li>Öğrenci veya öğrencilerin adı</li>
+                    <li>Olay tarihi</li>
+                    <li>Hangi ders saatinde veya hangi teneffüste</li>
+                    <li>Saat kaç civarında</li>
+                    <li>Olay nedir?</li>
+                    <li>Olaya müdahale eden kişilerin aldığı önlemler ve yapılan uyarılar nelerdir?</li>
+                    <li>Son olarak "İşbu tutanak, dersin bitiminden hemen sonra.…../…..../………. tarihinde, saat........... düzenlenip imza altına alınmıştır." yazılır.</li>
+                    <li>Tutanakta yer alan kişiler ve şahitlerin imzası</li>
+                </ol>
+
+                <p>Yukarıdaki yazdığım sıraya göre hazırlanmış bir şablon tutanak örneği aşağıda görülmektedir. Daha sonrasında örnek olarak hazırladığım birden fazla tutanak göreceksiniz. Tutanaklar örnek amaçlıdır. Ve tutanaktaki olaylar ve isimler kurgudan ibarettir. Tutanakta gerekli değişiklikleri yaparak olay durumuna uygun şekilde düzenleyebilirsiniz.</p>
+
+                <!-- Şablon 1 -->
+                <div class="sample-box">
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 12px;">TUTANAK</p>
+                    <p>[OKULUN ADI] Ortaokulu, [SINIFI] sınıfı öğrencisi, [NUMARASI] numaralı, [ADI SOYADI] adlı öğrenci, [OLAY TARİHİ] tarihinde, [KAÇINCI DERS veya KAÇINCI TENEFFÜS] saati içerisinde, saat [OLAY SAATİ] sularında, [OLAYIN DETAYLI AÇIKLAMASI]. Bu olay üzerine [ALINAN ÖNLEMLER ve YAPILAN UYARILAR].</p>
+                    <p>İşbu tutanak, dersin bitiminden hemen sonra [OLAY TARİHİ] tarihinde, saat [TUTANAĞIN TUTULDUĞU SAAT] 'te düzenlenip imza altına alınmıştır.</p>
+                    <br>
+                    <p style="text-align: center; font-weight: bold;">İmzalar:</p>
+                    <p style="text-align: center;">(Ad Soyad / Görev) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Ad Soyad / Görev) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Ad Soyad / Görev)</p>
+                </div>
+
+                <!-- Örnek 1 -->
+                <div class="sample-box">
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 12px;">TUTANAK</p>
+                    <p>ABCDEFG Ortaokulu 7-D sınıfı öğrencilerinden 189 numaralı Can YILMAZ, 05.10.2040 tarihinde 5. ders saati olan Fen Bilgisi dersinde, saat 14:10 civarında, sınıf düzenini bozucu davranışlarda bulunmuştur. Adı geçen öğrenci, ders esnasında sürekli olarak yüksek sesle konuşmuş, arkadaşlarına küçük kağıt parçaları fırlatarak onları rahatsız etmiş ve sınıf içinde izinsiz bir şekilde dolaşmıştır. Öğrenciye defalarca sözlü uyarıda bulunulmuş, ancak davranışlarını düzeltmemiştir. Bunun üzerine öğrenci tahtaya kaldırılmış ve dersin konusuyla ilgili sorular sorularak derse katılımı sağlanmaya çalışılmıştır. Bu müdahale sonrasında öğrenci bir süre sakinleşmiş, ancak dersin son 15 dakikasında tekrar düzeni bozmaya devam etmiştir.</p>
+                    <p>İşbu tutanak, dersin bitiminden hemen sonra 05.10.2040 tarihinde saat 14:30'da düzenlenip imza altına alınmıştır.</p>
+                    <br>
+                    <p style="text-align: center; font-weight: bold;">İmzalar:</p>
+                    <p style="text-align: center;">(Zeynep KAYA / Fen Bilgisi Öğretmeni) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Can YILMAZ)</p>
+                </div>
+
+                <!-- Örnek 2 -->
+                <div class="sample-box">
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 12px;">TUTANAK</p>
+                    <p>ABCDEFG Ortaokulu, 7-B sınıfı öğrencilerinden, 128 numaralı Emre YILMAZ ve 135 numaralı Burak KAYA, 28.09.2040 tarihinde, 3. ders saati olan matematik dersinde, saat 10:20 civarında, birbirleriyle tartışmaya başlamıştır. Uyarılarıma rağmen tartışma kısa sürede fiziksel bir kavgaya dönüşmüştür. Öğrenciler birbirlerine yumruk atarak sınıfın düzenini bozmuş ve dersin işlenmesine engel olmuşlardır. Diğer öğrencilerin de yardımıyla kavgaya müdahale edilmiş ve kavga eden öğrenciler ayrılmıştır. Her iki öğrenci farklı sıralara oturtulmuş, tarafımdan sözlü olarak uyarılmış ve bu tür davranışların tekrarlanmaması konusunda ikaz edilmişlerdir.</p>
+                    <p>İşbu tutanak, dersin bitiminden hemen sonra 28.09.2040 tarihinde saat 10:30'da düzenlenip imza altına alınmıştır.</p>
+                    <br>
+                    <p style="text-align: center; font-weight: bold;">İmzalar:</p>
+                    <p style="text-align: center;">(Ayşe ÖZKAN / Matematik Öğretmeni) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Emre YILMAZ) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Burak KAYA)</p>
+                    <p style="text-align: center;">(Mehmet DEMİR / Müdür Yardımcısı)</p>
+                </div>
+
+                <!-- Örnek 3 -->
+                <div class="sample-box">
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 12px;">TUTANAK</p>
+                    <p>ABCDEFG Ortaokulu, 8-C sınıfı öğrencilerinden, 213 numaralı Ayşe DEMİR ve 220 numaralı Zeynep ÖZTÜRK, 01.10.2040 tarihinde, öğlen teneffüsü sırasında, saat 13:20 civarında, bahçe nöbetim esnasında, okuldan kaçarken yakalanmıştır. Adı geçen öğrenciler, okul bahçesinin arka duvarından atlayarak okul sınırları dışına çıkmaya çalışırken tarafımdan fark edilmiştir. Öğrencilere hemen müdahale edilmiş ve okul sınırları içine geri getirilmişlerdir. Kendilerine bu davranışlarının çok ciddi bir kural ihlali olduğu ve güvenliklerini tehlikeye attıkları anlatılmıştır. Öğrenciler sözlü olarak uyarılmış ve okul idaresine sevk edilmişlerdir.</p>
+                    <p>İşbu tutanak, nöbetimin bitiminden hemen sonra 01.10.2040 tarihinde saat 13:30'da düzenlenip imza altına alınmıştır.</p>
+                    <br>
+                    <p style="text-align: center; font-weight: bold;">İmzalar:</p>
+                    <p style="text-align: center;">(Ahmet YILMAZ / Nöbetçi Öğretmen) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Ayşe DEMİR) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Zeynep ÖZTÜRK)</p>
+                </div>
+
+                <!-- Örnek 4 -->
+                <div class="sample-box">
+                    <p style="text-align: center; font-weight: bold; margin-bottom: 12px;">TUTANAK</p>
+                    <p>ABCDEFG Ortaokulu, 6-A sınıfı öğrencilerinden, 156 numaralı Ali YILDIZ ve 162 numaralı Mehmet KAYA, 30.09.2040 tarihinde, 2. teneffüs sırasında, saat 10:05 civarında, bahçe nöbetim esnasında gözlemlenmiştir. Adı geçen öğrenciler, okul bahçesindeki çöp kutularını devirerek etrafa çöp yaymış ve diğer öğrencilerin güvenliğini tehlikeye atacak şekilde koşturmuşlardır. Uyarılarıma rağmen davranışlarına devam etmişlerdir. Öğrenciler tarafımdan durdurulmuş, yaptıkları temizlettirilmiş ve sözlü olarak uyarılmışlardır. Kendilerine bu tür davranışların okul kurallarına aykırı olduğu ve tekrarı halinde disiplin cezası alabilecekleri hatırlatılmıştır.</p>
+                    <p>İşbu tutanak, nöbetimin bitiminden hemen sonra 30.09.2040 tarihinde saat 10:40'ta düzenlenip imza altına alınmıştır.</p>
+                    <br>
+                    <p style="text-align: center; font-weight: bold;">İmzalar:</p>
+                    <p style="text-align: center;">(Fatma ŞENER / Nöbetçi Öğretmen) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Ali YILDIZ) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Mehmet KAYA)</p>
+                </div>
+
+                <h3>Sonuç</h3>
+                <p>Disiplin tutanağı, okullarda düzenin sağlanması ve öğrencilerin eğitim haklarının korunması için önemli bir araçtır. Doğru ve eksiksiz bir şekilde hazırlanan tutanaklar, okul yönetiminin gerekli önlemleri almasına ve adil kararlar vermesine yardımcı olur. Aynı zamanda, velilerin de çocuklarının okuldaki davranışları hakkında bilgi sahibi olmasını sağlar.</p>
+
+                <p>Unutmayın ki, disiplin tutanağı hazırlamak kadar, öğrencilere olumlu davranışlar kazandırmak ve onları yönlendirmek de önemlidir. Öğretmenler ve okul yöneticileri, öğrencilerin kişisel gelişimlerine katkıda bulunacak yenilikçi yöntemler geliştirerek, disiplin sorunlarının önüne geçebilirler.</p>
+
+                <div style="margin-top: 25px;">
+                    <p><b>Kaynaklar:</b></p>
+                    <ol style="padding-left: 20px;">
+                        <li>resmievrak.com - Tutanak Örneği (www.resmievrak.com/tutanak-ornegi)</li>
+                        <li>dilekcesepeti.com - 10 Adet Tutanak Örneği (www.dilekcesepeti.com/kolayca-uyarlayabileceginiz-hazir-10-adet-tutanak-ornegi-is-ogrenci-vs)</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 5. Standart Etiketler (Hashtag Box) -->
+            <div class="hashtag-box">
+                <span class="tag-badge">#OkulDisiplini</span>
+                <span class="tag-badge">#DisiplinTutanağı</span>
+                <span class="tag-badge">#EğitimdeDisiplin</span>
+                <span class="tag-badge">#ÖğrenciDavranışları</span>
+                <span class="tag-badge">#OkulYönetimi</span>
+                <span class="tag-badge">#ÖğretmenlikBecerileri</span>
+                <span class="tag-badge">#EğitimdeYenilikçiYaklaşımlar</span>
+                <span class="tag-badge">#ÖğrenciGelişimi</span>
+                <span class="tag-badge">#OkulGüvenliği</span>
+                <span class="tag-badge">#EtkiliİletişimBecerileri</span>
+                <span class="tag-badge">#ÇözümOdaklıEğitim</span>
+                <span class="tag-badge">#ÖğrenciHakları</span>
+                <span class="tag-badge">#Veliİletişimi</span>
+                <span class="tag-badge">#EğitimdeKalite</span>
+                <span class="tag-badge">#ÖğretmenEğitimi</span>
+            </div>
+
+            <!-- 5.5. İlgili İçerikler ve Benzer Etkinlikler (Etiketlerin Hemen Altında) -->
+            <section class="related-posts-section">
+                <h3 class="related-posts-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    İlgili İçerikler ve Benzer Etkinlikler
+                </h3>
+                <div class="related-posts-grid">
+                    <a href="../post-00002-Sinif-Defteri-Kazanim/post-00002-preview.html" class="related-post-card">
+                        <img src="../post-00002-Sinif-Defteri-Kazanim/Veri/post-00002-Kapak.jpg" alt="Sınıf Defterine Sadece Kazanım Numarası" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">MEB Yönetmeliği</span>
+                            <div class="related-post-card-title">Sınıf Defterine Sadece Kazanım Numarası Yazılabilir mi? (MEB Yönetmeliği ve İspatı)</div>
+                        </div>
+                    </a>
+                    <a href="../post-00015-Veli-Toplantisi-Dosyalari/post-00015-preview.html" class="related-post-card">
+                        <img src="../post-00015-Veli-Toplantisi-Dosyalari/Veri/post-00015-Kapak.jpg" alt="Veli Toplantısı Dosyaları: Tutanak, Dilekçe, Davetiye ve İmza Çizelgesi Seti" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Dosyalar</span>
+                            <div class="related-post-card-title">Veli Toplantısı Dosyaları: Tutanak, Dilekçe, Davetiye ve İmza Çizelgesi Seti</div>
+                        </div>
+                    </a>
+                    <a href="../post-00004-Sube-Rehber-Ogretmenligi/post-00004-preview.html" class="related-post-card">
+                        <img src="../post-00004-Sube-Rehber-Ogretmenligi/Veri/post-00004-Kapak.jpg" alt="Teknoloji ve Tasarım Öğretmenine Şube Rehber Öğretmenliği Verilebilir mi?" class="related-post-img" onerror="this.src='../../images/logo.svg'">
+                        <div class="related-post-body">
+                            <span class="related-post-cat">Mevzuat</span>
+                            <div class="related-post-card-title">Teknoloji ve Tasarım Öğretmenine Şube Rehber Öğretmenliği Verilebilir mi?</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. Tepki & Beğeni İkonları -->
+            <div class="reactions-box">
+                <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+                <div class="reactions-list">
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        Faydalı <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Harika <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Teşekkürler <span class="reaction-count">0</span>
+                    </button>
+                    <button class="reaction-btn" onclick="toggleReaction(this)">
+                        <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+                        Geliştirilmeli <span class="reaction-count">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. Yorum Bölümü -->
+            <section class="comments-section">
+                <h3 class="comments-header-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Yorumlar ve Değerlendirmeler
+                </h3>
+
+                <form class="comment-form" onsubmit="addComment(event)">
+                    <div class="form-group">
+                        <label for="comment-name">Adınız Soyadınız *</label>
+                        <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-body">Yorumunuz *</label>
+                        <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        Yorumu Gönder
+                    </button>
+                </form>
+
+                <div class="comments-list" id="comments-list">
+                    
+                </div>
+            </section>
+
+                        <script>
+                function copyPageUrl() {
+                    navigator.clipboard.writeText(window.location.href);
+                    const toast = document.getElementById('toast-notification');
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2500);
+                }
+
+                                function toggleReaction(btn) {
+                    if (window.reactionsApi) {
+                        window.reactionsApi.toggleReaction(btn);
+                    }
+                }
+            </script>
+
+
+            <!-- 8. Alt Ana Sayfaya Dön Butonu -->
+            <div class="bottom-back-wrapper">
+                <a href="../preview.html" class="bottom-back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+
+        </article>
+
+        <!-- Sağ Yan Menü (Sidebar Widget) -->
+    </main>
+
+    <!-- 9. Standart Footer Telif Metni -->
+        <footer class="footer">
+        <div class="container">
+            <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+            <div class="footer-copyright-text">
+                Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase Entegrasyonu: yorum, gerçek sayaç ve kopyalama koruması -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/comments.js"></script>
+    <script src="../../js/views.js"></script>
+    <script src="../../js/reactions.js"></script>
+    <script src="../../js/protection.js"></script>
+    <script src="../../js/sidebar-scroll.js"></script>
+<script src="../../js/menu.js" defer></script></body>
+</html>

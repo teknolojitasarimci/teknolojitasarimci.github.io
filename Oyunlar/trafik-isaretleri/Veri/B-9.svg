@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   height="84.654533"
+   width="333.91791"
+   sodipodi:docname="Turkey_road_sign_B-13b.svg"
+   id="svg86372"
+   version="1.1"
+   viewBox="0 0 333.9179 84.654534">
+  <metadata
+     id="metadata86376">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:current-layer="svg86372"
+     inkscape:window-maximized="1"
+     inkscape:window-y="-9"
+     inkscape:window-x="-9"
+     inkscape:cy="59.027601"
+     inkscape:cx="-55.069461"
+     inkscape:zoom="2"
+     showgrid="false"
+     id="namedview86374"
+     inkscape:window-height="1001"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     inkscape:document-rotation="0" />
+  <defs
+     id="defs86346">
+    <style
+       id="style86344">
+      .cls-1 {
+        fill: #00408c;
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <path
+     id="rect49585"
+     style="opacity:1;fill:#00408c;fill-opacity:1;stroke:none;stroke-width:0.817915;stroke-miterlimit:10;stroke-opacity:1;paint-order:stroke fill markers"
+     d="M 0.40895751,0.40895751 V 84.245578 H 333.50896 V 0.40895751 Z" />
+  <path
+     id="rect51209"
+     style="opacity:1;fill:#ffffff;stroke-width:5.36501;stroke-miterlimit:10;paint-order:stroke fill markers"
+     d="m 21.158021,5.6923375 c -8.56984,0 -15.4690304,6.8991705 -15.4690304,15.4690305 v 42.333485 c 0,8.569841 6.8991904,15.469031 15.4690304,15.469031 H 312.74991 c 8.56985,0 15.46903,-6.89919 15.46903,-15.469031 V 21.161368 c 0,-8.56986 -6.89918,-15.4690305 -15.46903,-15.4690305 z m -0.08154,5.0054605 H 312.85807 c 5.73781,0 10.35706,4.61926 10.35706,10.35707 v 42.546485 c 0,5.73781 -4.61925,10.357061 -10.35706,10.357061 H 21.076485 c -5.73781,0 -10.357061,-4.619251 -10.357061,-10.357061 V 21.054868 c 0,-5.73781 4.619251,-10.35707 10.357061,-10.35707 z" />
+  <path
+     id="path49827"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:122.83px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';text-align:center;letter-spacing:3.26px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.344387;stroke-opacity:1"
+     d="m 175.81002,26.311458 v 32.089547 h 5.76422 V 26.311458 Z"
+     sodipodi:nodetypes="ccccc" />
+  <g
+     style="fill:#ffffff"
+     transform="matrix(1.1359931,0,0,1.1359931,-153.02831,-524.41648)"
+     id="g51880">
+    <g
+       style="fill:#ffffff"
+       id="g51849">
+      <g
+         style="fill:#ffffff"
+         id="g51822">
+        <path
+           d="m 249.56715,513.03618 h -19.20076 v -28.2375 h 5.09175 v 23.16522 h 14.10901 z"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:122.83px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';text-align:center;letter-spacing:3.26px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.318831;stroke-opacity:1"
+           id="path82560"
+           sodipodi:nodetypes="ccccccc" />
+        <path
+           sodipodi:nodetypes="ccccccccccc"
+           id="path18021"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.311083;stroke-opacity:1"
+           d="m 405.49103,513.03387 -5.48974,-5.4e-4 -11.98996,-19.46237 -0.0107,19.46364 h -5.07192 v -28.23773 l 5.61942,0.0108 11.84105,19.15542 0.0108,-19.16514 h 5.09129 z" />
+        <path
+           d="m 180.42871,513.0346 -5.48974,-5.4e-4 -11.98996,-19.46237 -0.0107,19.46364 h -5.07192 V 484.7976 l 5.61942,0.0108 11.84105,19.15542 0.0108,-19.16514 h 5.09129 z"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.311083;stroke-opacity:1"
+           id="path51814"
+           sodipodi:nodetypes="ccccccccccc" />
+        <path
+           sodipodi:nodetypes="ccccccc"
+           id="path51816"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:122.83px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';text-align:center;letter-spacing:3.26px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.318831;stroke-opacity:1"
+           d="m 278.98995,513.03618 h -19.20076 v -28.2375 h 5.09175 v 23.16522 h 14.10901 z" />
+      </g>
+      <path
+         sodipodi:nodetypes="ccccccccccccc"
+         id="path137410-5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.204426;stroke-opacity:1"
+         d="m 219.50039,513.02826 -5.61745,0.0616 -2.37094,-5.60106 -12.63469,0.0222 -2.24519,5.5541 -5.42725,-0.0368 11.28673,-28.27901 h 5.71358 z m -9.81224,-10.71176 -4.32833,-10.84691 -4.43385,10.90889 z" />
+      <path
+         d="m 372.19341,513.02826 -5.61911,0.0616 -2.36963,-5.60106 -12.628,0.0222 -2.24964,5.5541 -5.42914,-0.0368 11.28821,-28.27901 h 5.7091 z m -9.80845,-10.71176 -4.32931,-10.84691 -4.4393,10.90889 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.20441;stroke-opacity:1"
+         id="path51840"
+         sodipodi:nodetypes="ccccccccccccc" />
+    </g>
+    <path
+       sodipodi:nodetypes="ccccccccccccc"
+       id="path67101"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;line-height:1.15;font-family:'Highway Gothic Wide';-inkscape-font-specification:'Highway Gothic Wide';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.204091;stroke-opacity:1"
+       d="m 333.01117,513.03527 -5.0531,0.006 V 501.74119 H 315.5491 v 11.29933 h -5.08304 l 7.3e-4,-28.24184 h 5.08287 v 11.28738 h 12.40913 v -11.28738 h 5.05904 z" />
+  </g>
+</svg>

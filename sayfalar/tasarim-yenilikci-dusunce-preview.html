@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../images/logo.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasarım &amp; Yenilikçi Düşünce Etkinlikleri - teknolojitasarimci</title>
+    <meta name="description" content="Tasarım ve yenilikçi düşünce etkinlikleri: SCAMPER, morfolojik analiz, zihin haritası, inovasyon zarı, robot tasarımı, biyotaklit ve yenilikçi düşünce teknikleri etkinlikleri.">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/theme.js"></script>
+    <style>
+    .zeka-hub {
+        max-width: 1200px;
+        margin: 26px auto 60px !important;
+        padding: 0 16px;
+    }
+    .zeka-hub-top {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 28px 32px;
+        margin-bottom: 26px;
+        box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.08);
+    }
+    .zeka-hub-top h1 {
+        margin: 0 0 8px;
+        font-size: clamp(22px, 3.5vw, 32px);
+        color: #0f172a;
+        letter-spacing: -0.02em;
+    }
+    .zeka-hub-top p {
+        margin: 0 0 14px;
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+    .zeka-hub-games-link {
+        display: block;
+        width: fit-content;
+        margin: 12px auto 0 auto;
+        background: #0284c7;
+        color: #ffffff !important;
+        border-radius: 25px !important;
+        padding: 9px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none !important;
+    }
+    .zeka-hub-games-link:hover {
+        background: #0369a1;
+    }
+    .zeka-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 18px;
+    }
+    .zeka-card {
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 14px;
+        text-decoration: none !important;
+        box-shadow: 0 4px 16px -4px rgba(2, 132, 199, 0.07);
+        transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .zeka-card:hover {
+        transform: translateY(-3px);
+        border-color: #0284c7;
+    }
+    .zeka-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: 12px;
+        background: #e0f2fe;
+        margin-bottom: 12px;
+    }
+    .zeka-card h2 {
+        margin: 0 0 6px;
+        font-size: 16px;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+        line-height: 1.35;
+    }
+    .zeka-card:hover h2 {
+        color: #0284c7;
+    }
+    .zeka-card .zeka-card-cat {
+        color: #0284c7;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    .zeka-card-read {
+        align-self: flex-end;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #0284c7;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none !important;
+        width: fit-content;
+        margin-top: auto;
+    }
+    .zeka-card-read:hover {
+        color: #0369a1;
+        gap: 10px;
+    }
+    body.dark .zeka-hub-top { background: #1e293b; border-color: #334155; }
+    body.dark .zeka-hub-top h1 { color: #e2e8f0; }
+    body.dark .zeka-hub-top p { color: #cbd5e1; }
+    body.dark .zeka-card { background: #1e293b; border-color: #334155; }
+    body.dark .zeka-card:hover { border-color: #38bdf8; }
+    body.dark .zeka-card h2 { color: #e2e8f0; }
+    body.dark .zeka-card:hover h2 { color: #38bdf8; }
+    body.dark .zeka-card .zeka-card-cat { color: #38bdf8; }
+    body.dark .zeka-card img { background: #0c4a6e; }
+    body.dark .zeka-card-read { color: #38bdf8; }
+    body.dark .zeka-card-read:hover { color: #7dd3e8; }
+    body.dark .zeka-hub-games-link { background: #0284c7; color: #ffffff !important; }
+    body.dark .zeka-hub-games-link:hover { background: #0369a1; }
+    </style>
+</head>
+<body>
+
+<div class="zeka-hub">
+    <div class="zeka-grid" id="zeka-grid"></div>
+</div>
+
+<script>
+(function () {
+    var posts = [
+        ["post-00074-Nesnelere-Yenilikci-Dokunus", "post-00074-preview.html", "Sıradanlıktan İnovasyona: Günlük Nesneleri Yeniden Tasarlama Etkinliği"],
+        ["post-00075-Tersine-Beyin-Firtinasi", "post-00075-preview.html", "Tersten Düşünmenin Gücü: \"Tersine Beyin Fırtınası\" Etkinliği"],
+        ["post-00076-Akilli-Ev-Tasarimi", "post-00076-preview.html", "Disiplinler Arası Akıllı Ev Tasarım Etkinliği"],
+        ["post-00077-SCAMPER", "post-00077-preview.html", "SCAMPER Tekniğiyle Yenilikçi Fikirler Üretelim Etkinliği"],
+        ["post-00078-Nominal-Grup-Teknigi", "post-00078-preview.html", "Nominal Grup Tekniğiyle Yenilikçi Fikirler Üretelim Etkinliği"],
+        ["post-00079-Lateral-Dusunme", "post-00079-preview.html", "Lateral Düşünme Tekniğiyle Yenilikçi Fikirler Üretelim Etkinliği"],
+        ["post-00080-Morfolojik-Analiz", "post-00080-preview.html", "Morfolojik Analiz Tekniğiyle Geleceğin Sınıfını Tasarlayalım Etkinliği"],
+        ["post-00081-Zihin-Haritasi", "post-00081-preview.html", "Zihin Haritası Tekniğiyle Hayal Ettiğim Okulu Tasarlıyorum Etkinliği"],
+        ["post-00082-DCMotor", "post-00082-preview.html", "DC Motor Etkinliği (Özgün Ürünümü Tasarlıyorum)"],
+        ["post-00083-Yenilikci-Kalem-Tasarimi", "post-00083-preview.html", "Sıradanlıktan İnovasyona: Yenilikçi Kalem Tasarımı Etkinliği"],
+        ["post-00084-Robot-Tasarimi", "post-00084-preview.html", "Geleceği Çizmek: İnovatif Robot Tasarımı Etkinliği"],
+        ["post-00085-Sifir-Atik", "post-00085-preview.html", "Sıfır Atık ve Sürdürülebilir Tasarımlar Etkinliği"],
+        ["post-00086-Gorselden-Inovasyona", "post-00086-preview.html", "Görselden İnovasyona: \"Rastgele Bir Resimden Yola Çıkma\" Etkinliği"],
+        ["post-00087-Inovasyon-Zari", "post-00087-preview.html", "Doğadan İlham Alan Çözümler: \"İnovasyon Zarı\" Etkinliği"],
+        ["post-00088-Dusunce-Kaliplarini-Kir", "post-00088-preview.html", "Düşünce Kalıplarını Kır: Doğadan İlham Alan Çözümler (Biyotaklit Etkinliği)"],
+        ["post-00089-Desen-Dedektifi", "post-00089-preview.html", "Doğanın İzinde: \"Desen Dedektifi\" Etkinliği (Biyotaklit)"],
+        ["post-00090-Doga-Gozlem", "post-00090-preview.html", "Doğanın Laboratuvarında: Doğa Gözlem Etkinliği (Biyotaklit)"],
+        ["post-00091-Kesif-Kartlari", "post-00091-preview.html", "Doğanın Sırlarını Çözmek: \"Biyotaklit Keşif Kartları\" Etkinliği"],
+        ["post-00092-Cevre-Muhendisi", "post-00092-preview.html", "Doğanın Kahramanları: Çevre Mühendisi Rol Yapma ve Tasarım Etkinliği"],
+        ["post-00093-Benzer-Durumlardan-Yola-Cikma", "post-00093-preview.html", "Engelsiz Yaşam İçin Yenilikçi Tasarımlar: \"Benzer Durumlardan Yola Çıkma\" Etkinliği"],
+        ["post-00094-This-Way-Tersine-Muhendislik", "post-00094-preview.html", "İcadı Çözmek: \"ThisWay\" Bisikleti ile Tersine Mühendislik Etkinliği"],
+        ["post-00095-Mobilya-Ergonomi", "post-00095-preview.html", "Bu Mobilyayı Tekrar Düşünüp Tasarlayalım Etkinliği (Ergonomi)"],
+        ["post-00096-Giyilebilir-Urun-Sablonlari", "post-00096-preview.html", "Temel Tasarıma Yenilikçi Yaklaşım: Giyilebilir Ürün Şablonları Etkinliği"]
+    ]
+    var grid = document.getElementById('zeka-grid');
+    posts.forEach(function (p) {
+        var a = document.createElement('a');
+        a.className = 'zeka-card';
+        a.href = p[0] + '/' + p[1];
+        a.innerHTML = '<img src="' + p[0] + '/Veri/' + p[0].match(/post-\d+/)[0] + '-Kapak.jpg" alt="' + p[2].replace(/"/g, '&quot;') + '" loading="lazy" onerror="this.src=\'../images/logo.svg\'"><div><span class="zeka-card-cat">Tasarım &amp; Yenilikçi Düşünce</span><h2>' + p[2] + '</h2></div><span class="zeka-card-read">Devamını Oku ►</span>';
+        grid.appendChild(a);
+    });
+})();
+</script>
+
+<script src="../js/menu.js"></script>
+<script src="../js/views.js"></script>
+<script src="../js/protection.js"></script>
+</body>
+</html>

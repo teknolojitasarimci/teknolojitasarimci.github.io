@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Patika oyunu zekâ ve mantık etkinliği. Siyah karelere değmeden tüm beyaz kareleri tek bir kapalı çevrimle dolaşın." />
+  <title>Patika Oyunu - teknolojitasarimci</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    :root {
+      --brand: #0284c7;
+      --brand-dark: #0369a1;
+      --brand-light: #e0f2fe;
+      --brand-grad: #0284c7;
+      --danger: #fee2e2;
+      --danger-text: #dc2626;
+      --success: #dcfce7;
+      --success-text: #15803d;
+      --success-border: #22c55e;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --path-color: #0284c7;
+      --path-glow: rgba(2, 132, 199, 0.35);
+      --path-solution: #16a34a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-width: 320px;
+      color: var(--text);
+      background: #f8fafc;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible, .cell:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, .35);
+      outline-offset: 2px;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid rgba(2, 132, 199, 0.15);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+      text-align: center;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+      text-align: left;
+    }
+    .header-row h1 {
+      margin: 0 0 4px 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rules-btn, .sound-btn {
+      padding: 8px 18px;
+      border-radius: 25px !important;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-outline {
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+    }
+    .btn-outline:hover {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: #0284c7;
+      color: #ffffff;
+      border: 1.5px solid #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+      background: #0369a1;
+      border-color: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    /* Zorluk Filtre Butonları */
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 8px 0 16px;
+      flex-wrap: wrap;
+    }
+    .level-btn {
+      padding: 7px 16px;
+      border-radius: 25px !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid rgba(2, 132, 199, .3);
+      transition: all 0.2s ease;
+    }
+    .level-btn:hover {
+      background: var(--brand-light);
+    }
+    .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Durum ve Seviye Bilgileri */
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .status-box {
+      background: var(--brand-light);
+      color: var(--brand-dark);
+      padding: 7px 16px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Bulmaca Gezinme Barı */
+    .puzzle-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-arrow-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50% !important;
+      background: #ffffff;
+      color: var(--brand);
+      border: 1.5px solid rgba(2, 132, 199, 0.3);
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+    .nav-arrow-btn:hover:not(:disabled) {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      transform: scale(1.05);
+    }
+    .nav-arrow-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .puzzle-select {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(2, 132, 199, 0.3);
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* PATİKA OYUN TAHTASI */
+    .board-container {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0 16px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .board-frame {
+      width: min(100%, 460px);
+      aspect-ratio: 1;
+      position: relative;
+      background: #f8fafc;
+      border: 2px solid #0f172a;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+      touch-action: none;
+    }
+    .board-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      position: relative;
+      z-index: 1;
+    }
+    .cell {
+      position: relative;
+      background: #ffffff;
+      border: 0;
+      border-right: 1px solid #cbd5e1;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+    .cell:nth-child(7n) { border-right: 0; }
+    .cell:nth-last-child(-n+7) { border-bottom: 0; }
+
+    .cell:hover:not(.blocked) {
+      background: #f0f9ff;
+    }
+    .cell.blocked {
+      background: #0f172a !important;
+      cursor: not-allowed;
+    }
+    .cell.visited {
+      background: #f8fafc;
+    }
+    .cell.visited::after {
+      content: attr(data-step);
+      position: absolute;
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(2, 132, 199, 0.45);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .cell.start-cell::before {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0284c7;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.4);
+      z-index: 4;
+      pointer-events: none;
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* SVG ÇİZGİ KATMANI */
+    .path-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .path-line-glow {
+      fill: none;
+      stroke: var(--path-glow);
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .path-line-main {
+      fill: none;
+      stroke: var(--path-color);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s ease;
+    }
+    .path-line-main.closed {
+      stroke: #16a34a !important;
+    }
+    .path-line-glow.closed {
+      stroke: rgba(22, 163, 74, 0.35) !important;
+    }
+    .path-line-main.solution {
+      stroke: #16a34a !important;
+      stroke-width: 8;
+    }
+    .head-dot {
+      fill: #ffffff;
+      stroke: var(--brand);
+      stroke-width: 4;
+    }
+    .head-dot.closed {
+      stroke: #16a34a;
+    }
+
+    /* Durum / Mesaj Kutusu */
+    .hint-text {
+      min-height: 24px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #475569;
+      margin: 8px auto 14px;
+      padding: 6px 18px;
+      border-radius: 20px;
+      width: fit-content;
+      transition: all 0.2s ease;
+    }
+    .hint-text.success {
+      background: var(--success);
+      color: var(--success-text);
+    }
+    .hint-text.error {
+      background: var(--danger);
+      color: var(--danger-text);
+    }
+
+    /* Aksiyon Butonları */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .action-row .btn {
+      padding: 8px 18px;
+      border-radius: 25px !important;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+        .btn::after {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+        body.dark .btn::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+        }
+
+    /* Zafer Bildirimi */
+    .win-banner {
+      margin: 14px auto;
+      padding: 12px 24px;
+      border-radius: 25px !important;
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      background: #dcfce7;
+      color: #15803d;
+      border: 1.5px solid #22c55e;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: fit-content !important;
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.25);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .win-banner.hidden { display: none !important; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .shake { animation: shake 0.25s linear; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Modal Pencere */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: left;
+    }
+    .modal-card h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--brand);
+      margin-bottom: 12px;
+    }
+    .modal-card p {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+    .modal-example {
+      background: #f0f9ff;
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 0.9rem;
+      color: #0369a1;
+    }
+    .modal-card ol {
+      padding-left: 20px;
+      color: #334155;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .modal-card ol li { margin-bottom: 6px; }
+    .modal-close-btn {
+      display: block !important;
+      margin: 14px auto 0 !important;
+      width: fit-content !important;
+      padding: 8px 24px;
+      border-radius: 25px !important;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .modal-close-btn:hover {
+      background: #0369a1;
+    }
+
+    /* Koyu Tema (body.dark) */
+    body.dark {
+      background: #0f172a !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .card {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    }
+    body.dark .header-row h1 { color: #f8fafc !important; }
+    body.dark .subtitle { color: #94a3b8 !important; }
+    body.dark .btn-outline {
+      background: #1e293b !important;
+      color: #38bdf8 !important;
+      border-color: #334155 !important;
+    }
+    body.dark .btn-outline:hover {
+      background: rgba(56, 189, 248, 0.12) !important;
+      border-color: #38bdf8 !important;
+    }
+    body.dark .level-btn {
+      background: #1e293b !important;
+      color: #cbd5e1 !important;
+      border-color: #334155 !important;
+    }
+    body.dark .level-btn:hover {
+      background: rgba(56, 189, 248, 0.1) !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .level-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+    }
+    body.dark .status-box {
+      background: #0f172a !important;
+      color: #38bdf8 !important;
+      border: 1px solid #334155;
+    }
+    body.dark .puzzle-select, body.dark .nav-arrow-btn {
+      background: #0f172a !important;
+      color: #38bdf8 !important;
+      border-color: #334155 !important;
+    }
+    body.dark .board-frame {
+      border-color: #334155 !important;
+      background: #0f172a !important;
+    }
+    body.dark .cell {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    body.dark .cell.blocked {
+      background: #0f172a !important;
+    }
+    body.dark .cell.visited {
+      background: #253349 !important;
+    }
+    body.dark .cell:hover:not(.blocked) {
+      background: #2d3e58 !important;
+    }
+    body.dark .path-line-main {
+      stroke: #38bdf8 !important;
+    }
+    body.dark .path-line-glow {
+      stroke: rgba(56, 189, 248, 0.3) !important;
+    }
+    body.dark .modal-card {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .modal-card h2 { color: #38bdf8 !important; }
+    body.dark .modal-card p, body.dark .modal-card ol { color: #cbd5e1 !important; }
+    body.dark .modal-example {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+      color: #38bdf8 !important;
+    }
+    body.dark .hint-text { color: #cbd5e1; }
+    body.dark .hint-text.error { background: rgba(239, 68, 68, 0.15) !important; color: #fca5a5 !important; border: 1px solid rgba(239, 68, 68, 0.3); }
+    body.dark .hint-text.success { background: rgba(34, 197, 94, 0.15) !important; color: #86efac !important; border: 1px solid rgba(34, 197, 94, 0.3); }
+
+    @media (max-width: 520px) {
+      .game-wrapper { padding: 12px 8px; }
+      .card { padding: 20px 12px; }
+      .path-line-main { stroke-width: 8; }
+      .path-line-glow { stroke-width: 14; }
+    }
+  </style>
+</head>
+<body>
+  <script src="../../js/theme.js"></script>
+
+  <!-- Site Üst Menüsü --><div class="game-wrapper">
+    <div class="card">
+      <div class="header-row">
+        <div>
+          <h1>Patika Oyunu</h1>
+          <p class="subtitle">Kapalı çevrim mantık ve zekâ bulmacası</p>
+        </div>
+        <div class="header-actions">
+          <button class="sound-btn btn-outline" id="soundBtn" style="display:none;" aria-label="Ses Açık/Kapalı">
+            <svg id="soundIconOn" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg id="soundIconOff" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+          <button class="rules-btn btn-outline" id="rulesBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Kurallar
+          </button>
+        </div>
+      </div>
+
+      <!-- Zorluk Filtreleri -->
+      <div class="mode-selector">
+        <button class="level-btn active" data-filter="all">Tümü (96)</button>
+        <button class="level-btn" data-filter="kolay">Kolay (24)</button>
+        <button class="level-btn" data-filter="orta">Orta (24)</button>
+        <button class="level-btn" data-filter="zor">Zor (24)</button>
+        <button class="level-btn" data-filter="cok_zor">Çok Zor (24)</button>
+      </div>
+
+      <!-- Durum Bilgi Çubuğu -->
+      <div class="statusbar">
+        <span class="status-box" id="levelBadge">Kolay Seviye</span>
+        <div class="puzzle-select-wrap">
+          <button class="nav-arrow-btn" id="prevPuzzleBtn" title="Önceki Bulmaca" aria-label="Önceki Bulmaca">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <select id="puzzleSelect" class="puzzle-select" aria-label="Bulmaca Seç"></select>
+          <button class="nav-arrow-btn" id="nextPuzzleBtn" title="Sonraki Bulmaca" aria-label="Sonraki Bulmaca">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <span class="status-box">Süre: <b id="timer">00:00</b></span>
+        <span class="status-box">Kalan: <b id="remainCount">0</b> · Çözülen: <b id="solvedCount">0</b></span>
+      </div>
+
+      <!-- Kazanma Bildirimi -->
+      <div id="winBanner" class="win-banner hidden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Tebrikler! Tüm beyaz kareler kapalı patika ile birleşti.</span>
+      </div>
+
+      <!-- 7x7 Patika Tahtası -->
+      <div class="board-container">
+        <div class="board-frame" id="boardFrame">
+          <div class="board-grid" id="boardGrid" role="grid" aria-label="Patika 7x7 Oyun Alanı"></div>
+          <svg class="path-svg" id="pathSvg" viewBox="0 0 700 700" preserveAspectRatio="none" aria-hidden="true">
+            <polyline class="path-line-glow" id="pathLineGlow" points=""></polyline>
+            <polyline class="path-line-main" id="pathLineMain" points=""></polyline>
+            <circle class="head-dot" id="headDot" cx="-50" cy="-50" r="8"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <div id="statusMessage" class="hint-text">Mavi noktadan başlayarak farenizle veya parmağınızla sürükleyerek yolu çizin.</div>
+
+      <!-- Eylem Butonları -->
+      <div class="action-row">
+        <button id="checkBtn" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Kontrol Et
+        </button>
+        <button id="hintBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          İpucu Al
+        </button>
+        <button id="undoBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+          Geri Al
+        </button>
+        <button id="clearBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Temizle
+        </button>
+        <button id="solutionBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Çözümü Gör
+        </button>
+        <button id="randomBtn" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+          Rastgele
+        </button>
+      </div>
+
+      <!-- Hızlı Paylaşım & Araç Barı -->
+      <div class="quick-action-bar" style="margin-top: 28px;">
+        <span style="font-size:13.5px; font-weight:700; color:#475569; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Paylaş:
+        </span>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="copyPageUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Linki Kopyala
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Patika%20Zek%C3%A2%20Oyunu%20-%20teknolojitasarimci.com" target="_blank" rel="noopener" class="action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Standart Etiketler (Hashtag Box) -->
+      <div class="hashtag-box">
+        <span class="tag-badge">#PatikaOyunu</span>
+        <span class="tag-badge">#ZekaOyunları</span>
+        <span class="tag-badge">#MantıkBulmacaları</span>
+        <span class="tag-badge">#KapalıÇevrim</span>
+        <span class="tag-badge">#ProblemÇözme</span>
+        <span class="tag-badge">#TeknolojiVeTasarım</span>
+      </div>
+
+
+
+      <!-- Yorumlar Bölümü -->
+      <div class="comments-section">
+        <h3 class="comments-header-title">Yorumlar</h3>
+        <div id="commentsList" class="comments-list">
+          <p class="no-comments">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+        </div>
+        <form id="commentForm" class="comment-form" onsubmit="submitComment(event)">
+          <input type="text" id="commentName" placeholder="Adınız Soyadınız" required class="comment-input">
+          <textarea id="commentText" placeholder="Yorumunuzu yazın..." required class="comment-textarea" rows="3"></textarea>
+          <button type="submit" class="btn btn-primary" style="margin: 10px auto 0; display: block;">Yorum Gönder</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Kurallar Modal Penceresi -->
+  <div id="rulesModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
+    <div class="modal-card">
+      <h2 id="rulesModalTitle">Patika Oyunu Nasıl Oynanır?</h2>
+      <p><b>Patika</b>, 7×7 karelik ızgara üzerinde siyah (engelli) karelere dokunmadan tüm beyaz kareleri tek bir kapalı hatla dolaşma zekâ bulmacasıdır.</p>
+
+      <div class="modal-example">
+        <strong>Temel Kural — Kapalı Çevrim:</strong>
+        Mavi noktadan başlayın, sadece yatay veya dikey komşu karelere geçerek tüm beyaz kareleri birer kez ziyaret edin ve başladığınız noktaya geri dönerek yolu kapatın.
+      </div>
+
+      <ol>
+        <li><b>Tekrar Yok:</b> Hiçbir kareyi iki kez kullanamaz ve çizginin kendisini kesmesine izin veremezsiniz.</li>
+        <li><b>Siyah Kareler Engellidir:</b> Siyah karelerin üzerinden veya içinden geçilemez.</li>
+        <li><b>Pratik Çizim:</b> Farenizi veya parmağınızı basılı tutup sürükleyerek yolu kolayca çizebilir, geriye doğru sürükleyerek adımlarınızı geri alabilirsiniz.</li>
+        <li><b>Klavye Desteği:</b> Yön ok tuşlarıyla da adımlarınızı yönlendirebilirsiniz.</li>
+      </ol>
+      <button id="rulesCloseBtn" class="modal-close-btn">Anladım, Başla</button>
+    </div>
+  </div>
+
+  
+  
+  <div style="text-align:center; margin:18px 0;">
+    <a href="../../sayfalar/post-00068-Patika-Oyunu/Veri/patika-(www.teknolojitasarimci.com).pdf" target="_blank" rel="noopener" class="btn btn-outline download-btn">Çalışma Kâğıdı PDF&rsquo;sini İndir</a>
+  </div>
+  <main class="container article-layout" style="margin-top: 30px;">
+    <div class="post-detail-card">
+      <!-- 6. Tepki & Beğeni İkonları -->
+      <div class="reactions-box">
+        <div class="reactions-title">Bu içeriği nasıl buldunuz? Tepkinizi belirtin:</div>
+        <div class="reactions-list">
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Faydalı <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Harika <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Teşekkürler <span class="reaction-count">0</span>
+          </button>
+          <button class="reaction-btn" onclick="toggleReaction(this)">
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>
+            Geliştirilmeli <span class="reaction-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Yorum Bölümü -->
+      <section class="comments-section">
+        <h3 class="comments-header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Yorumlar ve Değerlendirmeler
+        </h3>
+        <form class="comment-form" onsubmit="addComment(event)">
+          <div class="form-group">
+            <label for="comment-name">Adınız Soyadınız *</label>
+            <input type="text" id="comment-name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+          </div>
+          <div class="form-group">
+            <label for="comment-body">Yorumunuz *</label>
+            <textarea id="comment-body" class="form-control" placeholder="Görüş, öneri veya teşekkür mesajınızı yazabilirsiniz..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Yorumu Gönder
+          </button>
+        </form>
+        <div class="comments-list" id="comments-list"></div>
+      </section>
+    </div>
+  </main>
+
+      
+
+      <footer class="footer">
+    <div class="container">
+      <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+      <div class="footer-copyright-text">
+        Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana <a href="mailto:teknolojitasarimci@hotmail.com">teknolojitasarimci@hotmail.com</a> adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!
+      </div>
+    </div>
+  </footer>
+  
+  
+  
+
+  <script>
+    (function() {
+      const PUZZLES = [{"size":7,"blacks":[[0,6],[1,1],[3,2],[4,2],[4,3]],"path":[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[4,1],[3,1],[2,1],[2,2],[1,2],[1,3],[1,4],[2,4],[2,3],[3,3],[3,4],[4,4],[5,4],[5,3],[5,2],[6,2],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6],[1,5],[0,5],[0,4],[0,3],[0,2],[0,1]],"difficulty":"kolay"},{"size":7,"blacks":[[6,6],[1,5],[2,3],[2,2],[3,2]],"path":[[0,6],[0,5],[0,4],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[2,4],[2,5],[3,5],[4,5],[4,4],[3,4],[3,3],[4,3],[4,2],[4,1],[3,1],[2,1],[2,0],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5],[5,5],[5,6],[4,6],[3,6],[2,6],[1,6]],"difficulty":"kolay"},{"size":7,"blacks":[[6,0],[5,5],[3,4],[2,4],[2,3]],"path":[[6,6],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[2,5],[3,5],[4,5],[4,4],[5,4],[5,3],[5,2],[4,2],[4,3],[3,3],[3,2],[2,2],[1,2],[1,3],[1,4],[0,4],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0],[5,1],[6,1],[6,2],[6,3],[6,4],[6,5]],"difficulty":"kolay"},{"size":7,"blacks":[[0,0],[5,1],[4,3],[4,4],[3,4]],"path":[[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[5,4],[5,3],[5,2],[4,2],[4,1],[3,1],[2,1],[2,2],[3,2],[3,3],[2,3],[2,4],[2,5],[3,5],[4,5],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1],[1,1],[1,0],[2,0],[3,0],[4,0],[5,0]],"difficulty":"kolay"},{"size":7,"blacks":[[0,0],[1,5],[3,4],[4,4],[4,3]],"path":[[0,6],[1,6],[2,6],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[4,5],[3,5],[2,5],[2,4],[1,4],[1,3],[1,2],[2,2],[2,3],[3,3],[3,2],[4,2],[5,2],[5,3],[5,4],[6,4],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0],[1,1],[0,1],[0,2],[0,3],[0,4],[0,5]],"difficulty":"kolay"},{"size":7,"blacks":[[6,6],[5,1],[3,2],[2,2],[2,3]],"path":[[6,0],[5,0],[4,0],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[2,1],[3,1],[4,1],[4,2],[5,2],[5,3],[5,4],[4,4],[4,3],[3,3],[3,4],[2,4],[1,4],[1,3],[1,2],[0,2],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6],[5,5],[6,5],[6,4],[6,3],[6,2],[6,1]],"difficulty":"kolay"},{"size":7,"blacks":[[6,0],[1,1],[2,3],[2,4],[3,4]],"path":[[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[1,4],[1,3],[1,2],[2,2],[2,1],[3,1],[4,1],[4,2],[3,2],[3,3],[4,3],[4,4],[4,5],[3,5],[2,5],[2,6],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1],[5,1],[5,0],[4,0],[3,0],[2,0],[1,0]],"difficulty":"kolay"},{"size":7,"blacks":[[0,6],[5,5],[4,3],[4,2],[3,2]],"path":[[6,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[5,2],[5,3],[5,4],[4,4],[4,5],[3,5],[2,5],[2,4],[3,4],[3,3],[2,3],[2,2],[2,1],[3,1],[4,1],[4,0],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5],[1,5],[1,6],[2,6],[3,6],[4,6],[5,6]],"difficulty":"kolay"},{"size":7,"blacks":[[0,6],[1,1],[3,2],[4,2],[4,3]],"path":[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[4,1],[3,1],[2,1],[2,2],[1,2],[1,3],[1,4],[2,4],[2,3],[3,3],[3,4],[4,4],[5,4],[5,3],[5,2],[6,2],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6],[1,5],[0,5],[0,4],[0,3],[0,2],[0,1]],"difficulty":"kolay"},{"size":7,"blacks":[[6,6],[1,5],[2,3],[2,2],[3,2]],"path":[[0,6],[0,5],[0,4],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[2,4],[2,5],[3,5],[4,5],[4,4],[3,4],[3,3],[4,3],[4,2],[4,1],[3,1],[2,1],[2,0],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5],[5,5],[5,6],[4,6],[3,6],[2,6],[1,6]],"difficulty":"kolay"},{"size":7,"blacks":[[6,0],[5,5],[3,4],[2,4],[2,3]],"path":[[6,6],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[2,5],[3,5],[4,5],[4,4],[5,4],[5,3],[5,2],[4,2],[4,3],[3,3],[3,2],[2,2],[1,2],[1,3],[1,4],[0,4],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0],[5,1],[6,1],[6,2],[6,3],[6,4],[6,5]],"difficulty":"kolay"},{"size":7,"blacks":[[0,0],[5,1],[4,3],[4,4],[3,4]],"path":[[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[5,4],[5,3],[5,2],[4,2],[4,1],[3,1],[2,1],[2,2],[3,2],[3,3],[2,3],[2,4],[2,5],[3,5],[4,5],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1],[1,1],[1,0],[2,0],[3,0],[4,0],[5,0]],"difficulty":"kolay"},{"size":7,"blacks":[[0,0],[1,5],[3,4],[4,4],[4,3]],"path":[[0,6],[1,6],[2,6],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[4,5],[3,5],[2,5],[2,4],[1,4],[1,3],[1,2],[2,2],[2,3],[3,3],[3,2],[4,2],[5,2],[5,3],[5,4],[6,4],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0],[1,1],[0,1],[0,2],[0,3],[0,4],[0,5]],"difficulty":"kolay"},{"size":7,"blacks":[[6,6],[5,1],[3,2],[2,2],[2,3]],"path":[[6,0],[5,0],[4,0],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[2,1],[3,1],[4,1],[4,2],[5,2],[5,3],[5,4],[4,4],[4,3],[3,3],[3,4],[2,4],[1,4],[1,3],[1,2],[0,2],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6],[5,5],[6,5],[6,4],[6,3],[6,2],[6,1]],"difficulty":"kolay"},{"size":7,"blacks":[[6,0],[1,1],[2,3],[2,4],[3,4]],"path":[[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[1,4],[1,3],[1,2],[2,2],[2,1],[3,1],[4,1],[4,2],[3,2],[3,3],[4,3],[4,4],[4,5],[3,5],[2,5],[2,6],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1],[5,1],[5,0],[4,0],[3,0],[2,0],[1,0]],"difficulty":"kolay"},{"size":7,"blacks":[[0,6],[5,5],[4,3],[4,2],[3,2]],"path":[[6,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[5,2],[5,3],[5,4],[4,4],[4,5],[3,5],[2,5],[2,4],[3,4],[3,3],[2,3],[2,2],[2,1],[3,1],[4,1],[4,0],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5],[1,5],[1,6],[2,6],[3,6],[4,6],[5,6]],"difficulty":"kolay"},{"size":7,"blacks":[[0,6],[1,1],[3,2],[4,2],[4,3]],"path":[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[4,1],[3,1],[2,1],[2,2],[1,2],[1,3],[1,4],[2,4],[2,3],[3,3],[3,4],[4,4],[5,4],[5,3],[5,2],[6,2],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6],[1,5],[0,5],[0,4],[0,3],[0,2],[0,1]],"difficulty":"kolay"},{"size":7,"blacks":[[6,6],[1,5],[2,3],[2,2],[3,2]],"path":[[0,6],[0,5],[0,4],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[2,4],[2,5],[3,5],[4,5],[4,4],[3,4],[3,3],[4,3],[4,2],[4,1],[3,1],[2,1],[2,0],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5],[5,5],[5,6],[4,6],[3,6],[2,6],[1,6]],"difficulty":"kolay"},{"size":7,"blacks":[[6,0],[5,5],[3,4],[2,4],[2,3]],"path":[[6,6],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[2,5],[3,5],[4,5],[4,4],[5,4],[5,3],[5,2],[4,2],[4,3],[3,3],[3,2],[2,2],[1,2],[1,3],[1,4],[0,4],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0],[5,1],[6,1],[6,2],[6,3],[6,4],[6,5]],"difficulty":"kolay"},{"size":7,"blacks":[[0,0],[5,1],[4,3],[4,4],[3,4]],"path":[[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[5,4],[5,3],[5,2],[4,2],[4,1],[3,1],[2,1],[2,2],[3,2],[3,3],[2,3],[2,4],[2,5],[3,5],[4,5],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1],[1,1],[1,0],[2,0],[3,0],[4,0],[5,0]],"difficulty":"kolay"},{"size":7,"blacks":[[0,0],[1,5],[3,4],[4,4],[4,3]],"path":[[0,6],[1,6],[2,6],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[4,5],[3,5],[2,5],[2,4],[1,4],[1,3],[1,2],[2,2],[2,3],[3,3],[3,2],[4,2],[5,2],[5,3],[5,4],[6,4],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0],[1,1],[0,1],[0,2],[0,3],[0,4],[0,5]],"difficulty":"kolay"},{"size":7,"blacks":[[6,6],[5,1],[3,2],[2,2],[2,3]],"path":[[6,0],[5,0],[4,0],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[2,1],[3,1],[4,1],[4,2],[5,2],[5,3],[5,4],[4,4],[4,3],[3,3],[3,4],[2,4],[1,4],[1,3],[1,2],[0,2],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6],[5,5],[6,5],[6,4],[6,3],[6,2],[6,1]],"difficulty":"kolay"},{"size":7,"blacks":[[6,0],[1,1],[2,3],[2,4],[3,4]],"path":[[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[1,4],[1,3],[1,2],[2,2],[2,1],[3,1],[4,1],[4,2],[3,2],[3,3],[4,3],[4,4],[4,5],[3,5],[2,5],[2,6],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1],[5,1],[5,0],[4,0],[3,0],[2,0],[1,0]],"difficulty":"kolay"},{"size":7,"blacks":[[0,6],[5,5],[4,3],[4,2],[3,2]],"path":[[6,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[5,2],[5,3],[5,4],[4,4],[4,5],[3,5],[2,5],[2,4],[3,4],[3,3],[2,3],[2,2],[2,1],[3,1],[4,1],[4,0],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5],[1,5],[1,6],[2,6],[3,6],[4,6],[5,6]],"difficulty":"kolay"},{"size":7,"blacks":[[0,2],[3,2],[3,3],[3,6],[4,1],[5,5],[6,0]],"path":[[0,0],[0,1],[1,1],[1,2],[2,2],[2,3],[1,3],[0,3],[0,4],[1,4],[1,5],[0,5],[0,6],[1,6],[2,6],[2,5],[2,4],[3,4],[3,5],[4,5],[4,6],[5,6],[6,6],[6,5],[6,4],[5,4],[4,4],[4,3],[4,2],[5,2],[5,3],[6,3],[6,2],[6,1],[5,1],[5,0],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0]],"difficulty":"orta"},{"size":7,"blacks":[[2,6],[2,3],[3,3],[6,3],[1,2],[5,1],[0,0]],"path":[[0,6],[1,6],[1,5],[2,5],[2,4],[3,4],[3,5],[3,6],[4,6],[4,5],[5,5],[5,6],[6,6],[6,5],[6,4],[5,4],[4,4],[4,3],[5,3],[5,2],[6,2],[6,1],[6,0],[5,0],[4,0],[4,1],[4,2],[3,2],[2,2],[2,1],[3,1],[3,0],[2,0],[1,0],[1,1],[0,1],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5]],"difficulty":"orta"},{"size":7,"blacks":[[6,4],[3,4],[3,3],[3,0],[2,5],[1,1],[0,6]],"path":[[6,6],[6,5],[5,5],[5,4],[4,4],[4,3],[5,3],[6,3],[6,2],[5,2],[5,1],[6,1],[6,0],[5,0],[4,0],[4,1],[4,2],[3,2],[3,1],[2,1],[2,0],[1,0],[0,0],[0,1],[0,2],[1,2],[2,2],[2,3],[2,4],[1,4],[1,3],[0,3],[0,4],[0,5],[1,5],[1,6],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6]],"difficulty":"orta"},{"size":7,"blacks":[[4,0],[4,3],[3,3],[0,3],[5,4],[1,5],[6,6]],"path":[[6,0],[5,0],[5,1],[4,1],[4,2],[3,2],[3,1],[3,0],[2,0],[2,1],[1,1],[1,0],[0,0],[0,1],[0,2],[1,2],[2,2],[2,3],[1,3],[1,4],[0,4],[0,5],[0,6],[1,6],[2,6],[2,5],[2,4],[3,4],[4,4],[4,5],[3,5],[3,6],[4,6],[5,6],[5,5],[6,5],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1]],"difficulty":"orta"},{"size":7,"blacks":[[0,4],[3,4],[3,3],[3,0],[4,5],[5,1],[6,6]],"path":[[0,6],[0,5],[1,5],[1,4],[2,4],[2,3],[1,3],[0,3],[0,2],[1,2],[1,1],[0,1],[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[3,1],[4,1],[4,0],[5,0],[6,0],[6,1],[6,2],[5,2],[4,2],[4,3],[4,4],[5,4],[5,3],[6,3],[6,4],[6,5],[5,5],[5,6],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6]],"difficulty":"orta"},{"size":7,"blacks":[[6,2],[3,2],[3,3],[3,6],[2,1],[1,5],[0,0]],"path":[[6,0],[6,1],[5,1],[5,2],[4,2],[4,3],[5,3],[6,3],[6,4],[5,4],[5,5],[6,5],[6,6],[5,6],[4,6],[4,5],[4,4],[3,4],[3,5],[2,5],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[2,3],[2,2],[1,2],[1,3],[0,3],[0,2],[0,1],[1,1],[1,0],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0]],"difficulty":"orta"},{"size":7,"blacks":[[2,0],[2,3],[3,3],[6,3],[1,4],[5,5],[0,6]],"path":[[0,0],[1,0],[1,1],[2,1],[2,2],[3,2],[3,1],[3,0],[4,0],[4,1],[5,1],[5,0],[6,0],[6,1],[6,2],[5,2],[4,2],[4,3],[5,3],[5,4],[6,4],[6,5],[6,6],[5,6],[4,6],[4,5],[4,4],[3,4],[2,4],[2,5],[3,5],[3,6],[2,6],[1,6],[1,5],[0,5],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1]],"difficulty":"orta"},{"size":7,"blacks":[[4,6],[4,3],[3,3],[0,3],[5,2],[1,1],[6,0]],"path":[[6,6],[5,6],[5,5],[4,5],[4,4],[3,4],[3,5],[3,6],[2,6],[2,5],[1,5],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[2,3],[1,3],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[4,1],[3,1],[3,0],[4,0],[5,0],[5,1],[6,1],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5]],"difficulty":"orta"},{"size":7,"blacks":[[0,2],[3,2],[3,3],[3,6],[4,1],[5,5],[6,0]],"path":[[0,0],[0,1],[1,1],[1,2],[2,2],[2,3],[1,3],[0,3],[0,4],[1,4],[1,5],[0,5],[0,6],[1,6],[2,6],[2,5],[2,4],[3,4],[3,5],[4,5],[4,6],[5,6],[6,6],[6,5],[6,4],[5,4],[4,4],[4,3],[4,2],[5,2],[5,3],[6,3],[6,2],[6,1],[5,1],[5,0],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0]],"difficulty":"orta"},{"size":7,"blacks":[[2,6],[2,3],[3,3],[6,3],[1,2],[5,1],[0,0]],"path":[[0,6],[1,6],[1,5],[2,5],[2,4],[3,4],[3,5],[3,6],[4,6],[4,5],[5,5],[5,6],[6,6],[6,5],[6,4],[5,4],[4,4],[4,3],[5,3],[5,2],[6,2],[6,1],[6,0],[5,0],[4,0],[4,1],[4,2],[3,2],[2,2],[2,1],[3,1],[3,0],[2,0],[1,0],[1,1],[0,1],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5]],"difficulty":"orta"},{"size":7,"blacks":[[6,4],[3,4],[3,3],[3,0],[2,5],[1,1],[0,6]],"path":[[6,6],[6,5],[5,5],[5,4],[4,4],[4,3],[5,3],[6,3],[6,2],[5,2],[5,1],[6,1],[6,0],[5,0],[4,0],[4,1],[4,2],[3,2],[3,1],[2,1],[2,0],[1,0],[0,0],[0,1],[0,2],[1,2],[2,2],[2,3],[2,4],[1,4],[1,3],[0,3],[0,4],[0,5],[1,5],[1,6],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6]],"difficulty":"orta"},{"size":7,"blacks":[[4,0],[4,3],[3,3],[0,3],[5,4],[1,5],[6,6]],"path":[[6,0],[5,0],[5,1],[4,1],[4,2],[3,2],[3,1],[3,0],[2,0],[2,1],[1,1],[1,0],[0,0],[0,1],[0,2],[1,2],[2,2],[2,3],[1,3],[1,4],[0,4],[0,5],[0,6],[1,6],[2,6],[2,5],[2,4],[3,4],[4,4],[4,5],[3,5],[3,6],[4,6],[5,6],[5,5],[6,5],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1]],"difficulty":"orta"},{"size":7,"blacks":[[0,4],[3,4],[3,3],[3,0],[4,5],[5,1],[6,6]],"path":[[0,6],[0,5],[1,5],[1,4],[2,4],[2,3],[1,3],[0,3],[0,2],[1,2],[1,1],[0,1],[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[3,1],[4,1],[4,0],[5,0],[6,0],[6,1],[6,2],[5,2],[4,2],[4,3],[4,4],[5,4],[5,3],[6,3],[6,4],[6,5],[5,5],[5,6],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6]],"difficulty":"orta"},{"size":7,"blacks":[[6,2],[3,2],[3,3],[3,6],[2,1],[1,5],[0,0]],"path":[[6,0],[6,1],[5,1],[5,2],[4,2],[4,3],[5,3],[6,3],[6,4],[5,4],[5,5],[6,5],[6,6],[5,6],[4,6],[4,5],[4,4],[3,4],[3,5],[2,5],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[2,3],[2,2],[1,2],[1,3],[0,3],[0,2],[0,1],[1,1],[1,0],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0]],"difficulty":"orta"},{"size":7,"blacks":[[2,0],[2,3],[3,3],[6,3],[1,4],[5,5],[0,6]],"path":[[0,0],[1,0],[1,1],[2,1],[2,2],[3,2],[3,1],[3,0],[4,0],[4,1],[5,1],[5,0],[6,0],[6,1],[6,2],[5,2],[4,2],[4,3],[5,3],[5,4],[6,4],[6,5],[6,6],[5,6],[4,6],[4,5],[4,4],[3,4],[2,4],[2,5],[3,5],[3,6],[2,6],[1,6],[1,5],[0,5],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1]],"difficulty":"orta"},{"size":7,"blacks":[[4,6],[4,3],[3,3],[0,3],[5,2],[1,1],[6,0]],"path":[[6,6],[5,6],[5,5],[4,5],[4,4],[3,4],[3,5],[3,6],[2,6],[2,5],[1,5],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[2,3],[1,3],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[4,1],[3,1],[3,0],[4,0],[5,0],[5,1],[6,1],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5]],"difficulty":"orta"},{"size":7,"blacks":[[0,2],[3,2],[3,3],[3,6],[4,1],[5,5],[6,0]],"path":[[0,0],[0,1],[1,1],[1,2],[2,2],[2,3],[1,3],[0,3],[0,4],[1,4],[1,5],[0,5],[0,6],[1,6],[2,6],[2,5],[2,4],[3,4],[3,5],[4,5],[4,6],[5,6],[6,6],[6,5],[6,4],[5,4],[4,4],[4,3],[4,2],[5,2],[5,3],[6,3],[6,2],[6,1],[5,1],[5,0],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0]],"difficulty":"orta"},{"size":7,"blacks":[[2,6],[2,3],[3,3],[6,3],[1,2],[5,1],[0,0]],"path":[[0,6],[1,6],[1,5],[2,5],[2,4],[3,4],[3,5],[3,6],[4,6],[4,5],[5,5],[5,6],[6,6],[6,5],[6,4],[5,4],[4,4],[4,3],[5,3],[5,2],[6,2],[6,1],[6,0],[5,0],[4,0],[4,1],[4,2],[3,2],[2,2],[2,1],[3,1],[3,0],[2,0],[1,0],[1,1],[0,1],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5]],"difficulty":"orta"},{"size":7,"blacks":[[6,4],[3,4],[3,3],[3,0],[2,5],[1,1],[0,6]],"path":[[6,6],[6,5],[5,5],[5,4],[4,4],[4,3],[5,3],[6,3],[6,2],[5,2],[5,1],[6,1],[6,0],[5,0],[4,0],[4,1],[4,2],[3,2],[3,1],[2,1],[2,0],[1,0],[0,0],[0,1],[0,2],[1,2],[2,2],[2,3],[2,4],[1,4],[1,3],[0,3],[0,4],[0,5],[1,5],[1,6],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6]],"difficulty":"orta"},{"size":7,"blacks":[[4,0],[4,3],[3,3],[0,3],[5,4],[1,5],[6,6]],"path":[[6,0],[5,0],[5,1],[4,1],[4,2],[3,2],[3,1],[3,0],[2,0],[2,1],[1,1],[1,0],[0,0],[0,1],[0,2],[1,2],[2,2],[2,3],[1,3],[1,4],[0,4],[0,5],[0,6],[1,6],[2,6],[2,5],[2,4],[3,4],[4,4],[4,5],[3,5],[3,6],[4,6],[5,6],[5,5],[6,5],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1]],"difficulty":"orta"},{"size":7,"blacks":[[0,4],[3,4],[3,3],[3,0],[4,5],[5,1],[6,6]],"path":[[0,6],[0,5],[1,5],[1,4],[2,4],[2,3],[1,3],[0,3],[0,2],[1,2],[1,1],[0,1],[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[3,1],[4,1],[4,0],[5,0],[6,0],[6,1],[6,2],[5,2],[4,2],[4,3],[4,4],[5,4],[5,3],[6,3],[6,4],[6,5],[5,5],[5,6],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6]],"difficulty":"orta"},{"size":7,"blacks":[[6,2],[3,2],[3,3],[3,6],[2,1],[1,5],[0,0]],"path":[[6,0],[6,1],[5,1],[5,2],[4,2],[4,3],[5,3],[6,3],[6,4],[5,4],[5,5],[6,5],[6,6],[5,6],[4,6],[4,5],[4,4],[3,4],[3,5],[2,5],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[2,3],[2,2],[1,2],[1,3],[0,3],[0,2],[0,1],[1,1],[1,0],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0]],"difficulty":"orta"},{"size":7,"blacks":[[2,0],[2,3],[3,3],[6,3],[1,4],[5,5],[0,6]],"path":[[0,0],[1,0],[1,1],[2,1],[2,2],[3,2],[3,1],[3,0],[4,0],[4,1],[5,1],[5,0],[6,0],[6,1],[6,2],[5,2],[4,2],[4,3],[5,3],[5,4],[6,4],[6,5],[6,6],[5,6],[4,6],[4,5],[4,4],[3,4],[2,4],[2,5],[3,5],[3,6],[2,6],[1,6],[1,5],[0,5],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1]],"difficulty":"orta"},{"size":7,"blacks":[[4,6],[4,3],[3,3],[0,3],[5,2],[1,1],[6,0]],"path":[[6,6],[5,6],[5,5],[4,5],[4,4],[3,4],[3,5],[3,6],[2,6],[2,5],[1,5],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[2,3],[1,3],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[4,1],[3,1],[3,0],[4,0],[5,0],[5,1],[6,1],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5]],"difficulty":"orta"},{"size":7,"blacks":[[0,0],[1,0],[2,0],[2,4],[2,5],[3,2],[4,6],[5,3],[6,3]],"path":[[0,1],[1,1],[2,1],[3,1],[3,0],[4,0],[5,0],[6,0],[6,1],[6,2],[5,2],[5,1],[4,1],[4,2],[4,3],[3,3],[3,4],[4,4],[5,4],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[3,5],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[2,3],[2,2],[1,2],[0,2]],"difficulty":"zor"},{"size":7,"blacks":[[0,6],[0,5],[0,4],[4,4],[5,4],[2,3],[6,2],[3,1],[3,0]],"path":[[1,6],[1,5],[1,4],[1,3],[0,3],[0,2],[0,1],[0,0],[1,0],[2,0],[2,1],[1,1],[1,2],[2,2],[3,2],[3,3],[4,3],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[5,3],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[3,4],[2,4],[2,5],[2,6]],"difficulty":"zor"},{"size":7,"blacks":[[6,6],[5,6],[4,6],[4,2],[4,1],[3,4],[2,0],[1,3],[0,3]],"path":[[6,5],[5,5],[4,5],[3,5],[3,6],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[1,5],[2,5],[2,4],[2,3],[3,3],[3,2],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[3,1],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[4,3],[4,4],[5,4],[6,4]],"difficulty":"zor"},{"size":7,"blacks":[[6,0],[6,1],[6,2],[2,2],[1,2],[4,3],[0,4],[3,5],[3,6]],"path":[[5,0],[5,1],[5,2],[5,3],[6,3],[6,4],[6,5],[6,6],[5,6],[4,6],[4,5],[5,5],[5,4],[4,4],[3,4],[3,3],[2,3],[2,4],[2,5],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[1,3],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[3,2],[4,2],[4,1],[4,0]],"difficulty":"zor"},{"size":7,"blacks":[[0,6],[1,6],[2,6],[2,2],[2,1],[3,4],[4,0],[5,3],[6,3]],"path":[[0,5],[1,5],[2,5],[3,5],[3,6],[4,6],[5,6],[6,6],[6,5],[6,4],[5,4],[5,5],[4,5],[4,4],[4,3],[3,3],[3,2],[4,2],[5,2],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[3,1],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[2,3],[2,4],[1,4],[0,4]],"difficulty":"zor"},{"size":7,"blacks":[[6,0],[5,0],[4,0],[4,4],[4,5],[3,2],[2,6],[1,3],[0,3]],"path":[[6,1],[5,1],[4,1],[3,1],[3,0],[2,0],[1,0],[0,0],[0,1],[0,2],[1,2],[1,1],[2,1],[2,2],[2,3],[3,3],[3,4],[2,4],[1,4],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[3,5],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[4,3],[4,2],[5,2],[6,2]],"difficulty":"zor"},{"size":7,"blacks":[[0,0],[0,1],[0,2],[4,2],[5,2],[2,3],[6,4],[3,5],[3,6]],"path":[[1,0],[1,1],[1,2],[1,3],[0,3],[0,4],[0,5],[0,6],[1,6],[2,6],[2,5],[1,5],[1,4],[2,4],[3,4],[3,3],[4,3],[4,4],[4,5],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[5,3],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[3,2],[2,2],[2,1],[2,0]],"difficulty":"zor"},{"size":7,"blacks":[[6,6],[6,5],[6,4],[2,4],[1,4],[4,3],[0,2],[3,1],[3,0]],"path":[[5,6],[5,5],[5,4],[5,3],[6,3],[6,2],[6,1],[6,0],[5,0],[4,0],[4,1],[5,1],[5,2],[4,2],[3,2],[3,3],[2,3],[2,2],[2,1],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[1,3],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[3,4],[4,4],[4,5],[4,6]],"difficulty":"zor"},{"size":7,"blacks":[[0,0],[1,0],[2,0],[2,4],[2,5],[3,2],[4,6],[5,3],[6,3]],"path":[[0,1],[1,1],[2,1],[3,1],[3,0],[4,0],[5,0],[6,0],[6,1],[6,2],[5,2],[5,1],[4,1],[4,2],[4,3],[3,3],[3,4],[4,4],[5,4],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[3,5],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[2,3],[2,2],[1,2],[0,2]],"difficulty":"zor"},{"size":7,"blacks":[[0,6],[0,5],[0,4],[4,4],[5,4],[2,3],[6,2],[3,1],[3,0]],"path":[[1,6],[1,5],[1,4],[1,3],[0,3],[0,2],[0,1],[0,0],[1,0],[2,0],[2,1],[1,1],[1,2],[2,2],[3,2],[3,3],[4,3],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[5,3],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[3,4],[2,4],[2,5],[2,6]],"difficulty":"zor"},{"size":7,"blacks":[[6,6],[5,6],[4,6],[4,2],[4,1],[3,4],[2,0],[1,3],[0,3]],"path":[[6,5],[5,5],[4,5],[3,5],[3,6],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[1,5],[2,5],[2,4],[2,3],[3,3],[3,2],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[3,1],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[4,3],[4,4],[5,4],[6,4]],"difficulty":"zor"},{"size":7,"blacks":[[6,0],[6,1],[6,2],[2,2],[1,2],[4,3],[0,4],[3,5],[3,6]],"path":[[5,0],[5,1],[5,2],[5,3],[6,3],[6,4],[6,5],[6,6],[5,6],[4,6],[4,5],[5,5],[5,4],[4,4],[3,4],[3,3],[2,3],[2,4],[2,5],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[1,3],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[3,2],[4,2],[4,1],[4,0]],"difficulty":"zor"},{"size":7,"blacks":[[0,6],[1,6],[2,6],[2,2],[2,1],[3,4],[4,0],[5,3],[6,3]],"path":[[0,5],[1,5],[2,5],[3,5],[3,6],[4,6],[5,6],[6,6],[6,5],[6,4],[5,4],[5,5],[4,5],[4,4],[4,3],[3,3],[3,2],[4,2],[5,2],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[3,1],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[2,3],[2,4],[1,4],[0,4]],"difficulty":"zor"},{"size":7,"blacks":[[6,0],[5,0],[4,0],[4,4],[4,5],[3,2],[2,6],[1,3],[0,3]],"path":[[6,1],[5,1],[4,1],[3,1],[3,0],[2,0],[1,0],[0,0],[0,1],[0,2],[1,2],[1,1],[2,1],[2,2],[2,3],[3,3],[3,4],[2,4],[1,4],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[3,5],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[4,3],[4,2],[5,2],[6,2]],"difficulty":"zor"},{"size":7,"blacks":[[0,0],[0,1],[0,2],[4,2],[5,2],[2,3],[6,4],[3,5],[3,6]],"path":[[1,0],[1,1],[1,2],[1,3],[0,3],[0,4],[0,5],[0,6],[1,6],[2,6],[2,5],[1,5],[1,4],[2,4],[3,4],[3,3],[4,3],[4,4],[4,5],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[5,3],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[3,2],[2,2],[2,1],[2,0]],"difficulty":"zor"},{"size":7,"blacks":[[6,6],[6,5],[6,4],[2,4],[1,4],[4,3],[0,2],[3,1],[3,0]],"path":[[5,6],[5,5],[5,4],[5,3],[6,3],[6,2],[6,1],[6,0],[5,0],[4,0],[4,1],[5,1],[5,2],[4,2],[3,2],[3,3],[2,3],[2,2],[2,1],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[1,3],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[3,4],[4,4],[4,5],[4,6]],"difficulty":"zor"},{"size":7,"blacks":[[0,0],[1,0],[2,0],[2,4],[2,5],[3,2],[4,6],[5,3],[6,3]],"path":[[0,1],[1,1],[2,1],[3,1],[3,0],[4,0],[5,0],[6,0],[6,1],[6,2],[5,2],[5,1],[4,1],[4,2],[4,3],[3,3],[3,4],[4,4],[5,4],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[3,5],[3,6],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[2,3],[2,2],[1,2],[0,2]],"difficulty":"zor"},{"size":7,"blacks":[[0,6],[0,5],[0,4],[4,4],[5,4],[2,3],[6,2],[3,1],[3,0]],"path":[[1,6],[1,5],[1,4],[1,3],[0,3],[0,2],[0,1],[0,0],[1,0],[2,0],[2,1],[1,1],[1,2],[2,2],[3,2],[3,3],[4,3],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[5,3],[6,3],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[3,4],[2,4],[2,5],[2,6]],"difficulty":"zor"},{"size":7,"blacks":[[6,6],[5,6],[4,6],[4,2],[4,1],[3,4],[2,0],[1,3],[0,3]],"path":[[6,5],[5,5],[4,5],[3,5],[3,6],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[1,5],[2,5],[2,4],[2,3],[3,3],[3,2],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[3,1],[3,0],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[4,3],[4,4],[5,4],[6,4]],"difficulty":"zor"},{"size":7,"blacks":[[6,0],[6,1],[6,2],[2,2],[1,2],[4,3],[0,4],[3,5],[3,6]],"path":[[5,0],[5,1],[5,2],[5,3],[6,3],[6,4],[6,5],[6,6],[5,6],[4,6],[4,5],[5,5],[5,4],[4,4],[3,4],[3,3],[2,3],[2,4],[2,5],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[1,3],[0,3],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[3,2],[4,2],[4,1],[4,0]],"difficulty":"zor"},{"size":7,"blacks":[[0,6],[1,6],[2,6],[2,2],[2,1],[3,4],[4,0],[5,3],[6,3]],"path":[[0,5],[1,5],[2,5],[3,5],[3,6],[4,6],[5,6],[6,6],[6,5],[6,4],[5,4],[5,5],[4,5],[4,4],[4,3],[3,3],[3,2],[4,2],[5,2],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[3,1],[3,0],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[2,3],[2,4],[1,4],[0,4]],"difficulty":"zor"},{"size":7,"blacks":[[6,0],[5,0],[4,0],[4,4],[4,5],[3,2],[2,6],[1,3],[0,3]],"path":[[6,1],[5,1],[4,1],[3,1],[3,0],[2,0],[1,0],[0,0],[0,1],[0,2],[1,2],[1,1],[2,1],[2,2],[2,3],[3,3],[3,4],[2,4],[1,4],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[3,5],[3,6],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[4,3],[4,2],[5,2],[6,2]],"difficulty":"zor"},{"size":7,"blacks":[[0,0],[0,1],[0,2],[4,2],[5,2],[2,3],[6,4],[3,5],[3,6]],"path":[[1,0],[1,1],[1,2],[1,3],[0,3],[0,4],[0,5],[0,6],[1,6],[2,6],[2,5],[1,5],[1,4],[2,4],[3,4],[3,3],[4,3],[4,4],[4,5],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[5,3],[6,3],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[3,2],[2,2],[2,1],[2,0]],"difficulty":"zor"},{"size":7,"blacks":[[6,6],[6,5],[6,4],[2,4],[1,4],[4,3],[0,2],[3,1],[3,0]],"path":[[5,6],[5,5],[5,4],[5,3],[6,3],[6,2],[6,1],[6,0],[5,0],[4,0],[4,1],[5,1],[5,2],[4,2],[3,2],[3,3],[2,3],[2,2],[2,1],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[1,3],[0,3],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[3,4],[4,4],[4,5],[4,6]],"difficulty":"zor"},{"size":7,"blacks":[[0,0],[0,1],[0,2],[0,3],[0,4],[3,2],[3,3],[3,6],[4,2],[4,3],[6,0]],"path":[[0,5],[0,6],[1,6],[2,6],[2,5],[3,5],[3,4],[4,4],[4,5],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1],[5,1],[5,0],[4,0],[4,1],[3,1],[3,0],[2,0],[1,0],[1,1],[2,1],[2,2],[1,2],[1,3],[2,3],[2,4],[1,4],[1,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,6],[1,6],[2,6],[3,6],[4,6],[2,3],[3,3],[6,3],[2,2],[3,2],[0,0]],"path":[[5,6],[6,6],[6,5],[6,4],[5,4],[5,3],[4,3],[4,2],[5,2],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0],[1,1],[0,1],[0,2],[1,2],[1,3],[0,3],[0,4],[0,5],[1,5],[1,4],[2,4],[2,5],[3,5],[3,4],[4,4],[4,5],[5,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,6],[6,5],[6,4],[6,3],[6,2],[3,4],[3,3],[3,0],[2,4],[2,3],[0,6]],"path":[[6,1],[6,0],[5,0],[4,0],[4,1],[3,1],[3,2],[2,2],[2,1],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5],[1,5],[1,6],[2,6],[2,5],[3,5],[3,6],[4,6],[5,6],[5,5],[4,5],[4,4],[5,4],[5,3],[4,3],[4,2],[5,2],[5,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,0],[5,0],[4,0],[3,0],[2,0],[4,3],[3,3],[0,3],[4,4],[3,4],[6,6]],"path":[[1,0],[0,0],[0,1],[0,2],[1,2],[1,3],[2,3],[2,4],[1,4],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6],[5,5],[6,5],[6,4],[5,4],[5,3],[6,3],[6,2],[6,1],[5,1],[5,2],[4,2],[4,1],[3,1],[3,2],[2,2],[2,1],[1,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,6],[0,5],[0,4],[0,3],[0,2],[3,4],[3,3],[3,0],[4,4],[4,3],[6,6]],"path":[[0,1],[0,0],[1,0],[2,0],[2,1],[3,1],[3,2],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5],[5,5],[5,6],[4,6],[4,5],[3,5],[3,6],[2,6],[1,6],[1,5],[2,5],[2,4],[1,4],[1,3],[2,3],[2,2],[1,2],[1,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,0],[6,1],[6,2],[6,3],[6,4],[3,2],[3,3],[3,6],[2,2],[2,3],[0,0]],"path":[[6,5],[6,6],[5,6],[4,6],[4,5],[3,5],[3,4],[2,4],[2,5],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1],[1,1],[1,0],[2,0],[2,1],[3,1],[3,0],[4,0],[5,0],[5,1],[4,1],[4,2],[5,2],[5,3],[4,3],[4,4],[5,4],[5,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,0],[1,0],[2,0],[3,0],[4,0],[2,3],[3,3],[6,3],[2,4],[3,4],[0,6]],"path":[[5,0],[6,0],[6,1],[6,2],[5,2],[5,3],[4,3],[4,4],[5,4],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6],[1,5],[0,5],[0,4],[1,4],[1,3],[0,3],[0,2],[0,1],[1,1],[1,2],[2,2],[2,1],[3,1],[3,2],[4,2],[4,1],[5,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,6],[5,6],[4,6],[3,6],[2,6],[4,3],[3,3],[0,3],[4,2],[3,2],[6,0]],"path":[[1,6],[0,6],[0,5],[0,4],[1,4],[1,3],[2,3],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0],[5,1],[6,1],[6,2],[5,2],[5,3],[6,3],[6,4],[6,5],[5,5],[5,4],[4,4],[4,5],[3,5],[3,4],[2,4],[2,5],[1,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,0],[0,1],[0,2],[0,3],[0,4],[3,2],[3,3],[3,6],[4,2],[4,3],[6,0]],"path":[[0,5],[0,6],[1,6],[2,6],[2,5],[3,5],[3,4],[4,4],[4,5],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1],[5,1],[5,0],[4,0],[4,1],[3,1],[3,0],[2,0],[1,0],[1,1],[2,1],[2,2],[1,2],[1,3],[2,3],[2,4],[1,4],[1,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,6],[1,6],[2,6],[3,6],[4,6],[2,3],[3,3],[6,3],[2,2],[3,2],[0,0]],"path":[[5,6],[6,6],[6,5],[6,4],[5,4],[5,3],[4,3],[4,2],[5,2],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0],[1,1],[0,1],[0,2],[1,2],[1,3],[0,3],[0,4],[0,5],[1,5],[1,4],[2,4],[2,5],[3,5],[3,4],[4,4],[4,5],[5,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,6],[6,5],[6,4],[6,3],[6,2],[3,4],[3,3],[3,0],[2,4],[2,3],[0,6]],"path":[[6,1],[6,0],[5,0],[4,0],[4,1],[3,1],[3,2],[2,2],[2,1],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5],[1,5],[1,6],[2,6],[2,5],[3,5],[3,6],[4,6],[5,6],[5,5],[4,5],[4,4],[5,4],[5,3],[4,3],[4,2],[5,2],[5,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,0],[5,0],[4,0],[3,0],[2,0],[4,3],[3,3],[0,3],[4,4],[3,4],[6,6]],"path":[[1,0],[0,0],[0,1],[0,2],[1,2],[1,3],[2,3],[2,4],[1,4],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6],[5,5],[6,5],[6,4],[5,4],[5,3],[6,3],[6,2],[6,1],[5,1],[5,2],[4,2],[4,1],[3,1],[3,2],[2,2],[2,1],[1,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,6],[0,5],[0,4],[0,3],[0,2],[3,4],[3,3],[3,0],[4,4],[4,3],[6,6]],"path":[[0,1],[0,0],[1,0],[2,0],[2,1],[3,1],[3,2],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5],[5,5],[5,6],[4,6],[4,5],[3,5],[3,6],[2,6],[1,6],[1,5],[2,5],[2,4],[1,4],[1,3],[2,3],[2,2],[1,2],[1,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,0],[6,1],[6,2],[6,3],[6,4],[3,2],[3,3],[3,6],[2,2],[2,3],[0,0]],"path":[[6,5],[6,6],[5,6],[4,6],[4,5],[3,5],[3,4],[2,4],[2,5],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1],[1,1],[1,0],[2,0],[2,1],[3,1],[3,0],[4,0],[5,0],[5,1],[4,1],[4,2],[5,2],[5,3],[4,3],[4,4],[5,4],[5,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,0],[1,0],[2,0],[3,0],[4,0],[2,3],[3,3],[6,3],[2,4],[3,4],[0,6]],"path":[[5,0],[6,0],[6,1],[6,2],[5,2],[5,3],[4,3],[4,4],[5,4],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6],[1,5],[0,5],[0,4],[1,4],[1,3],[0,3],[0,2],[0,1],[1,1],[1,2],[2,2],[2,1],[3,1],[3,2],[4,2],[4,1],[5,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,6],[5,6],[4,6],[3,6],[2,6],[4,3],[3,3],[0,3],[4,2],[3,2],[6,0]],"path":[[1,6],[0,6],[0,5],[0,4],[1,4],[1,3],[2,3],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0],[5,1],[6,1],[6,2],[5,2],[5,3],[6,3],[6,4],[6,5],[5,5],[5,4],[4,4],[4,5],[3,5],[3,4],[2,4],[2,5],[1,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,0],[0,1],[0,2],[0,3],[0,4],[3,2],[3,3],[3,6],[4,2],[4,3],[6,0]],"path":[[0,5],[0,6],[1,6],[2,6],[2,5],[3,5],[3,4],[4,4],[4,5],[4,6],[5,6],[6,6],[6,5],[5,5],[5,4],[6,4],[6,3],[5,3],[5,2],[6,2],[6,1],[5,1],[5,0],[4,0],[4,1],[3,1],[3,0],[2,0],[1,0],[1,1],[2,1],[2,2],[1,2],[1,3],[2,3],[2,4],[1,4],[1,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,6],[1,6],[2,6],[3,6],[4,6],[2,3],[3,3],[6,3],[2,2],[3,2],[0,0]],"path":[[5,6],[6,6],[6,5],[6,4],[5,4],[5,3],[4,3],[4,2],[5,2],[6,2],[6,1],[6,0],[5,0],[5,1],[4,1],[4,0],[3,0],[3,1],[2,1],[2,0],[1,0],[1,1],[0,1],[0,2],[1,2],[1,3],[0,3],[0,4],[0,5],[1,5],[1,4],[2,4],[2,5],[3,5],[3,4],[4,4],[4,5],[5,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,6],[6,5],[6,4],[6,3],[6,2],[3,4],[3,3],[3,0],[2,4],[2,3],[0,6]],"path":[[6,1],[6,0],[5,0],[4,0],[4,1],[3,1],[3,2],[2,2],[2,1],[2,0],[1,0],[0,0],[0,1],[1,1],[1,2],[0,2],[0,3],[1,3],[1,4],[0,4],[0,5],[1,5],[1,6],[2,6],[2,5],[3,5],[3,6],[4,6],[5,6],[5,5],[4,5],[4,4],[5,4],[5,3],[4,3],[4,2],[5,2],[5,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,0],[5,0],[4,0],[3,0],[2,0],[4,3],[3,3],[0,3],[4,4],[3,4],[6,6]],"path":[[1,0],[0,0],[0,1],[0,2],[1,2],[1,3],[2,3],[2,4],[1,4],[0,4],[0,5],[0,6],[1,6],[1,5],[2,5],[2,6],[3,6],[3,5],[4,5],[4,6],[5,6],[5,5],[6,5],[6,4],[5,4],[5,3],[6,3],[6,2],[6,1],[5,1],[5,2],[4,2],[4,1],[3,1],[3,2],[2,2],[2,1],[1,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,6],[0,5],[0,4],[0,3],[0,2],[3,4],[3,3],[3,0],[4,4],[4,3],[6,6]],"path":[[0,1],[0,0],[1,0],[2,0],[2,1],[3,1],[3,2],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[5,1],[5,2],[6,2],[6,3],[5,3],[5,4],[6,4],[6,5],[5,5],[5,6],[4,6],[4,5],[3,5],[3,6],[2,6],[1,6],[1,5],[2,5],[2,4],[1,4],[1,3],[2,3],[2,2],[1,2],[1,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,0],[6,1],[6,2],[6,3],[6,4],[3,2],[3,3],[3,6],[2,2],[2,3],[0,0]],"path":[[6,5],[6,6],[5,6],[4,6],[4,5],[3,5],[3,4],[2,4],[2,5],[2,6],[1,6],[0,6],[0,5],[1,5],[1,4],[0,4],[0,3],[1,3],[1,2],[0,2],[0,1],[1,1],[1,0],[2,0],[2,1],[3,1],[3,0],[4,0],[5,0],[5,1],[4,1],[4,2],[5,2],[5,3],[4,3],[4,4],[5,4],[5,5]],"difficulty":"cok_zor"},{"size":7,"blacks":[[0,0],[1,0],[2,0],[3,0],[4,0],[2,3],[3,3],[6,3],[2,4],[3,4],[0,6]],"path":[[5,0],[6,0],[6,1],[6,2],[5,2],[5,3],[4,3],[4,4],[5,4],[6,4],[6,5],[6,6],[5,6],[5,5],[4,5],[4,6],[3,6],[3,5],[2,5],[2,6],[1,6],[1,5],[0,5],[0,4],[1,4],[1,3],[0,3],[0,2],[0,1],[1,1],[1,2],[2,2],[2,1],[3,1],[3,2],[4,2],[4,1],[5,1]],"difficulty":"cok_zor"},{"size":7,"blacks":[[6,6],[5,6],[4,6],[3,6],[2,6],[4,3],[3,3],[0,3],[4,2],[3,2],[6,0]],"path":[[1,6],[0,6],[0,5],[0,4],[1,4],[1,3],[2,3],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[1,1],[2,1],[2,0],[3,0],[3,1],[4,1],[4,0],[5,0],[5,1],[6,1],[6,2],[5,2],[5,3],[6,3],[6,4],[6,5],[5,5],[5,4],[4,4],[4,5],[3,5],[3,4],[2,4],[2,5],[1,5]],"difficulty":"cok_zor"}];
+
+      const DIFFICULTY_LABELS = {
+        'kolay': 'Kolay',
+        'orta': 'Orta',
+        'zor': 'Zor',
+        'cok_zor': 'Çok Zor'
+      };
+
+      const SIZE = 7;
+
+      // Web Audio API Ses Sentezleyici
+      let audioCtx = null;
+      let soundEnabled = true;
+
+      function initAudio() {
+        if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+
+      function playTone(freq, type, duration, gainVal) {
+        if (!soundEnabled || localStorage.getItem('tt-sound') === 'off') return;
+        try {
+          initAudio();
+          if (!audioCtx) return;
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(gainVal || 0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      const Sounds = {
+        step: () => playTone(500, 'sine', 0.05, 0.08),
+        undo: () => playTone(320, 'triangle', 0.06, 0.06),
+        close: () => {
+          playTone(600, 'sine', 0.12, 0.1);
+          setTimeout(() => playTone(900, 'sine', 0.18, 0.12), 80);
+        },
+        victory: () => {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            setTimeout(() => playTone(freq, 'triangle', 0.25, 0.15), i * 120);
+          });
+        },
+        error: () => {
+          playTone(220, 'sawtooth', 0.15, 0.1);
+          setTimeout(() => playTone(180, 'sawtooth', 0.2, 0.1), 100);
+        }
+      };
+
+      // Oyun Durumu
+      const state = {
+        filter: 'all',
+        currentIndex: 0,
+        selected: [], // dizi index listesi
+        closed: false,
+        solutionMode: false,
+        isDragging: false,
+        solvedSet: new Set(),
+        timerSeconds: 0,
+        timerInterval: null
+      };
+
+      // LocalStorage Çözülenler
+      try {
+        const saved = localStorage.getItem('patika-solved');
+        if (saved) {
+          const list = JSON.parse(saved);
+          if (Array.isArray(list)) state.solvedSet = new Set(list);
+        }
+      } catch (e) {}
+
+      const idxOf = (r, c) => r * SIZE + c;
+      const rcOf = (idx) => [Math.floor(idx / SIZE), idx % SIZE];
+      const isAdj = (a, b) => {
+        const [ar, ac] = rcOf(a);
+        const [br, bc] = rcOf(b);
+        return Math.abs(ar - br) + Math.abs(ac - bc) === 1;
+      };
+      const curPuzzle = () => PUZZLES[state.currentIndex];
+      const getBlackSet = (p) => new Set(p.blacks.map(([r, c]) => idxOf(r, c)));
+      const getWhiteCount = (p) => SIZE * SIZE - p.blacks.length;
+
+      // DOM Elemanları
+      const boardGrid = document.getElementById('boardGrid');
+      const boardFrame = document.getElementById('boardFrame');
+      const pathLineMain = document.getElementById('pathLineMain');
+      const pathLineGlow = document.getElementById('pathLineGlow');
+      const headDot = document.getElementById('headDot');
+      const levelBadge = document.getElementById('levelBadge');
+      const puzzleSelect = document.getElementById('puzzleSelect');
+      const prevBtn = document.getElementById('prevPuzzleBtn');
+      const nextBtn = document.getElementById('nextPuzzleBtn');
+      const timerEl = document.getElementById('timer');
+      const remainCountEl = document.getElementById('remainCount');
+      const solvedCountEl = document.getElementById('solvedCount');
+      const statusMsg = document.getElementById('statusMessage');
+      const winBanner = document.getElementById('winBanner');
+      const soundBtn = document.getElementById('soundBtn');
+      const soundIconOn = document.getElementById('soundIconOn');
+      const soundIconOff = document.getElementById('soundIconOff');
+
+      // Sayaç
+      function startTimer() {
+        clearInterval(state.timerInterval);
+        state.timerSeconds = 0;
+        updateTimerDisplay();
+        state.timerInterval = setInterval(() => {
+          state.timerSeconds++;
+          updateTimerDisplay();
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const m = String(Math.floor(state.timerSeconds / 60)).padStart(2, '0');
+        const s = String(state.timerSeconds % 60).padStart(2, '0');
+        timerEl.textContent = `${m}:${s}`;
+      }
+
+      function getFilteredIndices() {
+        if (state.filter === 'all') return PUZZLES.map((_, i) => i);
+        return PUZZLES.reduce((acc, p, i) => {
+          if (p.difficulty === state.filter) acc.push(i);
+          return acc;
+        }, []);
+      }
+
+      function populatePuzzleSelect() {
+        const indices = getFilteredIndices();
+        puzzleSelect.innerHTML = '';
+        indices.forEach((idx) => {
+          const opt = document.createElement('option');
+          opt.value = idx;
+          const isSolved = state.solvedSet.has(idx);
+          const diffText = DIFFICULTY_LABELS[PUZZLES[idx].difficulty] || '';
+          opt.textContent = `Bulmaca ${idx + 1} (${diffText})${isSolved ? ' ✓' : ''}`;
+          if (idx === state.currentIndex) opt.selected = true;
+          puzzleSelect.appendChild(opt);
+        });
+      }
+
+      // Tahtayı Oluştur
+      function buildBoard() {
+        boardGrid.innerHTML = '';
+        const p = curPuzzle();
+        const blackSet = getBlackSet(p);
+        const startPoint = p.path[0];
+        const startIdx = idxOf(startPoint[0], startPoint[1]);
+
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            const idx = idxOf(r, c);
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.index = idx;
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            cell.setAttribute('tabindex', '0');
+            cell.setAttribute('role', 'gridcell');
+
+            if (blackSet.has(idx)) {
+              cell.classList.add('blocked');
+              cell.setAttribute('aria-label', `${r + 1}. satır ${c + 1}. sütun siyah engel`);
+            } else {
+              cell.setAttribute('aria-label', `${r + 1}. satır ${c + 1}. sütun beyaz hücre`);
+              if (idx === startIdx) {
+                cell.classList.add('start-cell');
+              }
+            }
+
+            boardGrid.appendChild(cell);
+          }
+        }
+      }
+
+      // SVG Çizgiyi ve Hücre Durumlarını Güncelle
+      function renderPath() {
+        const p = curPuzzle();
+        const totalWhite = getWhiteCount(p);
+        const stepMap = new Map(state.selected.map((idx, i) => [idx, i + 1]));
+
+        // Hücre sınıfları
+        document.querySelectorAll('.cell').forEach((cell) => {
+          const idx = Number(cell.dataset.index);
+          if (stepMap.has(idx)) {
+            cell.classList.add('visited');
+            cell.setAttribute('data-step', stepMap.get(idx));
+          } else {
+            cell.classList.remove('visited');
+            cell.removeAttribute('data-step');
+          }
+        });
+
+        // Çizgi Koordinatları (0-700 viewBox, her hücre 100x100, merkez +50)
+        if (state.selected.length < 1) {
+          pathLineMain.setAttribute('points', '');
+          pathLineGlow.setAttribute('points', '');
+          headDot.setAttribute('cx', '-50');
+          headDot.setAttribute('cy', '-50');
+          remainCountEl.textContent = `${totalWhite} / ${totalWhite}`;
+          return;
+        }
+
+        const pts = state.selected.map((idx) => {
+          const [r, c] = rcOf(idx);
+          return `${c * 100 + 50},${r * 100 + 50}`;
+        });
+
+        if (state.closed) {
+          const [sr, sc] = rcOf(state.selected[0]);
+          pts.push(`${sc * 100 + 50},${sr * 100 + 50}`);
+        }
+
+        const pointsStr = pts.join(' ');
+        pathLineMain.setAttribute('points', pointsStr);
+        pathLineGlow.setAttribute('points', pointsStr);
+
+        pathLineMain.classList.toggle('closed', state.closed);
+        pathLineGlow.classList.toggle('closed', state.closed);
+        pathLineMain.classList.toggle('solution', state.solutionMode);
+
+        // Baş noktasını göster
+        const lastIdx = state.selected[state.selected.length - 1];
+        const [lr, lc] = rcOf(lastIdx);
+        headDot.setAttribute('cx', lc * 100 + 50);
+        headDot.setAttribute('cy', lr * 100 + 50);
+        headDot.classList.toggle('closed', state.closed);
+
+        const remaining = Math.max(0, totalWhite - state.selected.length);
+        remainCountEl.textContent = `${remaining} / ${totalWhite}`;
+      }
+
+      // Adım Ekleme / İşleme
+      function handleCellAction(idx) {
+        if (state.solutionMode) return;
+        const p = curPuzzle();
+        const blackSet = getBlackSet(p);
+        if (blackSet.has(idx)) return;
+
+        // Yol boşsa ve başlama
+        if (state.selected.length === 0) {
+          state.selected = [idx];
+          state.closed = false;
+          winBanner.classList.add('hidden');
+          statusMsg.textContent = 'Güzel başlangıç. Şimdi komşu beyaz karelere doğru sürükleyin.';
+          statusMsg.className = 'hint-text';
+          Sounds.step();
+          renderPath();
+          return;
+        }
+
+        const last = state.selected[state.selected.length - 1];
+
+        // Zaten kapalıysa işlem yapma
+        if (state.closed) {
+          if (idx === last) {
+            // Çevrimi aç
+            state.closed = false;
+            winBanner.classList.add('hidden');
+            Sounds.undo();
+            statusMsg.textContent = 'Çevrim açıldı. Çizmeye devam edebilirsiniz.';
+            renderPath();
+          }
+          return;
+        }
+
+        // Başlangıç noktasına geri dönüp çevrimi kapatma
+        if (idx === state.selected[0] && state.selected.length >= 4 && isAdj(last, idx)) {
+          const totalWhite = getWhiteCount(p);
+          if (state.selected.length !== totalWhite) {
+            statusMsg.textContent = `Henüz eksik kareler var (${state.selected.length} / ${totalWhite}). Bütün beyaz kareleri dolaşmadan çevrim kapatılamaz.`;
+            statusMsg.className = 'hint-text error';
+            Sounds.error();
+            shakeBoard();
+            return;
+          }
+          state.closed = true;
+          Sounds.close();
+          statusMsg.textContent = 'Çevrim kapandı! Kontrol Et butonuna basarak kontrol edebilirsiniz.';
+          statusMsg.className = 'hint-text';
+          renderPath();
+          return;
+        }
+
+        // Bir önceki hücreye geri gitme (Geri Alma / Backtrack)
+        if (state.selected.length > 1 && idx === state.selected[state.selected.length - 2]) {
+          state.selected.pop();
+          Sounds.undo();
+          renderPath();
+          return;
+        }
+
+        // Son hücreye tekrar tıklarsa bir adım geri al
+        if (idx === last && state.selected.length > 1) {
+          state.selected.pop();
+          Sounds.undo();
+          renderPath();
+          return;
+        }
+
+        // Zaten kullanılmış hücre uyarısı
+        if (state.selected.includes(idx)) {
+          shakeBoard();
+          return;
+        }
+
+        // Bitişik değilse uyarı
+        if (!isAdj(last, idx)) {
+          shakeBoard();
+          return;
+        }
+
+        // Geçerli yeni adım ekle
+        state.selected.push(idx);
+        Sounds.step();
+        renderPath();
+      }
+
+      function shakeBoard() {
+        boardFrame.classList.remove('shake');
+        void boardFrame.offsetWidth;
+        boardFrame.classList.add('shake');
+      }
+
+      // Sürükleme ve Dokunmatik Olayları
+      function getCellFromTouch(e) {
+        const touch = e.touches[0];
+        if (!touch) return null;
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        return el ? el.closest('.cell') : null;
+      }
+
+      boardFrame.addEventListener('mousedown', (e) => {
+        const cell = e.target.closest('.cell');
+        if (!cell) return;
+        state.isDragging = true;
+        handleCellAction(Number(cell.dataset.index));
+      });
+
+      boardFrame.addEventListener('mousemove', (e) => {
+        if (!state.isDragging) return;
+        const cell = e.target.closest('.cell');
+        if (!cell) return;
+        const idx = Number(cell.dataset.index);
+        const last = state.selected[state.selected.length - 1];
+        if (idx !== last) {
+          handleCellAction(idx);
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        state.isDragging = false;
+      });
+
+      boardFrame.addEventListener('touchstart', (e) => {
+        const cell = getCellFromTouch(e);
+        if (!cell) return;
+        e.preventDefault();
+        state.isDragging = true;
+        handleCellAction(Number(cell.dataset.index));
+      }, { passive: false });
+
+      boardFrame.addEventListener('touchmove', (e) => {
+        if (!state.isDragging) return;
+        const cell = getCellFromTouch(e);
+        if (!cell) return;
+        e.preventDefault();
+        const idx = Number(cell.dataset.index);
+        const last = state.selected[state.selected.length - 1];
+        if (idx !== last) {
+          handleCellAction(idx);
+        }
+      }, { passive: false });
+
+      boardFrame.addEventListener('touchend', () => {
+        state.isDragging = false;
+      });
+
+      // Bulmaca Yükle
+      function loadPuzzle(index) {
+        state.currentIndex = index;
+        state.selected = [];
+        state.closed = false;
+        state.solutionMode = false;
+        state.isDragging = false;
+
+        document.getElementById('solutionBtn').innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Çözümü Gör
+        `;
+        winBanner.classList.add('hidden');
+        statusMsg.textContent = 'Mavi noktadan başlayarak farenizle veya parmağınızla sürükleyerek yolu çizin.';
+        statusMsg.className = 'hint-text';
+
+        const p = curPuzzle();
+        levelBadge.textContent = `${DIFFICULTY_LABELS[p.difficulty] || 'Standart'} Seviye (Bulmaca ${index + 1})`;
+
+        buildBoard();
+        renderPath();
+        populatePuzzleSelect();
+        startTimer();
+
+        const indices = getFilteredIndices();
+        const pos = indices.indexOf(index);
+        prevBtn.disabled = (pos <= 0);
+        nextBtn.disabled = (pos >= indices.length - 1);
+      }
+
+      // Kontrol Et Butonu
+      function checkPath() {
+        const p = curPuzzle();
+        const totalWhite = getWhiteCount(p);
+        const blackSet = getBlackSet(p);
+
+        if (!state.closed) {
+          statusMsg.textContent = 'Yol henüz kapanmadı. Başlangıç noktasına geri dönerek çevrimi kapatın.';
+          statusMsg.className = 'hint-text error';
+          Sounds.error();
+          shakeBoard();
+          return;
+        }
+
+        if (state.selected.length !== totalWhite) {
+          statusMsg.textContent = `Eksik kare var: ${totalWhite} beyaz karenin tamamını dolaşmalısınız (${state.selected.length} / ${totalWhite}).`;
+          statusMsg.className = 'hint-text error';
+          Sounds.error();
+          shakeBoard();
+          return;
+        }
+
+        // Bitişiklik ve geçerlilik kontrolü
+        for (let i = 1; i < state.selected.length; i++) {
+          if (!isAdj(state.selected[i - 1], state.selected[i])) {
+            statusMsg.textContent = 'Yolda kopukluk var. Adımları gözden geçirin.';
+            statusMsg.className = 'hint-text error';
+            Sounds.error();
+            shakeBoard();
+            return;
+          }
+        }
+
+        if (!isAdj(state.selected[state.selected.length - 1], state.selected[0])) {
+          statusMsg.textContent = 'Bitiş noktası başlangıç noktasına bitişik değil.';
+          statusMsg.className = 'hint-text error';
+          Sounds.error();
+          shakeBoard();
+          return;
+        }
+
+        // Başarılı Zafer
+        winBanner.classList.remove('hidden');
+        statusMsg.textContent = 'Tebrikler! Bulmaca eksiksiz ve doğru çözüldü!';
+        statusMsg.className = 'hint-text success';
+        clearInterval(state.timerInterval);
+        Sounds.victory();
+
+        if (!state.solvedSet.has(state.currentIndex)) {
+          state.solvedSet.add(state.currentIndex);
+          try {
+            localStorage.setItem('patika-solved', JSON.stringify(Array.from(state.solvedSet)));
+          } catch (e) {}
+          solvedCountEl.textContent = state.solvedSet.size;
+          populatePuzzleSelect();
+        }
+      }
+
+      // İpucu Verme (Çözüm yolundan sonraki adımları ekler)
+      function giveHint() {
+        if (state.solutionMode) return;
+        const p = curPuzzle();
+        const solIndices = p.path.map(([r, c]) => idxOf(r, c));
+
+        if (state.selected.length === 0) {
+          state.selected = solIndices.slice(0, 4);
+          state.closed = false;
+        } else {
+          // Mevcut seçimin çözümle eşleştiği noktayı bul
+          let matchLen = 0;
+          for (let i = 0; i < state.selected.length; i++) {
+            if (i < solIndices.length && state.selected[i] === solIndices[i]) {
+              matchLen++;
+            } else {
+              break;
+            }
+          }
+
+          if (matchLen < state.selected.length) {
+            // Yanlış yoldaysa son doğru yere kadar kırp ve sonraki adımı ver
+            state.selected = solIndices.slice(0, matchLen + 3);
+          } else {
+            // Doğru yoldaysa +3 adım daha ekle
+            state.selected = solIndices.slice(0, Math.min(solIndices.length, state.selected.length + 3));
+          }
+
+          if (state.selected.length === solIndices.length) {
+            state.closed = true;
+          }
+        }
+
+        Sounds.step();
+        statusMsg.textContent = 'İpucu adımları yerleştirildi.';
+        statusMsg.className = 'hint-text success';
+        renderPath();
+      }
+
+      // Geri Al
+      function undoStep() {
+        if (state.solutionMode) return;
+        if (state.closed) {
+          state.closed = false;
+          statusMsg.textContent = 'Çevrim açıldı.';
+        } else if (state.selected.length > 0) {
+          state.selected.pop();
+          statusMsg.textContent = 'Son adım geri alındı.';
+        }
+        winBanner.classList.add('hidden');
+        Sounds.undo();
+        renderPath();
+      }
+
+      // Temizle
+      function clearBoard() {
+        if (state.solutionMode) return;
+        state.selected = [];
+        state.closed = false;
+        winBanner.classList.add('hidden');
+        statusMsg.textContent = 'Tahta temizlendi. Mavi noktadan başlayın.';
+        statusMsg.className = 'hint-text';
+        Sounds.undo();
+        renderPath();
+      }
+
+      // Çözümü Göster / Gizle
+      function toggleSolution() {
+        state.solutionMode = !state.solutionMode;
+        const btn = document.getElementById('solutionBtn');
+        const p = curPuzzle();
+
+        if (state.solutionMode) {
+          state.selected = p.path.map(([r, c]) => idxOf(r, c));
+          state.closed = true;
+          btn.innerHTML = `
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            Çözümü Gizle
+          `;
+          statusMsg.textContent = 'Çözüm gösteriliyor (Yeşil çizgi doğru kapalı patikayı gösterir).';
+        } else {
+          state.selected = [];
+          state.closed = false;
+          btn.innerHTML = `
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Çözümü Gör
+          `;
+          statusMsg.textContent = 'Kendi çözümünüze geri dönüldü.';
+        }
+        renderPath();
+      }
+
+      // Buton Dinleyicileri
+      document.querySelectorAll('.level-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.level-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.filter = btn.dataset.filter;
+          const indices = getFilteredIndices();
+          loadPuzzle(indices[0] || 0);
+        });
+      });
+
+      puzzleSelect.addEventListener('change', (e) => {
+        loadPuzzle(Number(e.target.value));
+      });
+
+      prevBtn.addEventListener('click', () => {
+        const indices = getFilteredIndices();
+        const pos = indices.indexOf(state.currentIndex);
+        if (pos > 0) loadPuzzle(indices[pos - 1]);
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const indices = getFilteredIndices();
+        const pos = indices.indexOf(state.currentIndex);
+        if (pos < indices.length - 1) loadPuzzle(indices[pos + 1]);
+      });
+
+      document.getElementById('randomBtn').addEventListener('click', () => {
+        const indices = getFilteredIndices().filter((i) => i !== state.currentIndex);
+        if (indices.length > 0) {
+          const rand = indices[Math.floor(Math.random() * indices.length)];
+          loadPuzzle(rand);
+        }
+      });
+
+      document.getElementById('checkBtn').addEventListener('click', checkPath);
+      document.getElementById('hintBtn').addEventListener('click', giveHint);
+      document.getElementById('undoBtn').addEventListener('click', undoStep);
+      document.getElementById('clearBtn').addEventListener('click', clearBoard);
+      document.getElementById('solutionBtn').addEventListener('click', toggleSolution);
+
+      // Klavye Yön Tuşları ile Çizim
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        if (e.key === 'Backspace' || e.key === 'z') {
+          undoStep();
+          return;
+        }
+        if (e.key === 'Enter') {
+          checkPath();
+          return;
+        }
+
+        if (state.selected.length === 0) return;
+        const last = state.selected[state.selected.length - 1];
+        const [r, c] = rcOf(last);
+        let nextR = r, nextC = c;
+
+        if (e.key === 'ArrowRight') nextC = c + 1;
+        else if (e.key === 'ArrowLeft') nextC = c - 1;
+        else if (e.key === 'ArrowDown') nextR = r + 1;
+        else if (e.key === 'ArrowUp') nextR = r - 1;
+        else return;
+
+        if (nextR >= 0 && nextR < SIZE && nextC >= 0 && nextC < SIZE) {
+          e.preventDefault();
+          handleCellAction(idxOf(nextR, nextC));
+        }
+      });
+
+      // Ses Butonu
+      soundBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        soundIconOn.style.display = soundEnabled ? 'block' : 'none';
+        soundIconOff.style.display = soundEnabled ? 'none' : 'block';
+        if (soundEnabled) Sounds.step();
+      });
+
+      // Kurallar Modal
+      const rulesModal = document.getElementById('rulesModal');
+      document.getElementById('rulesBtn').addEventListener('click', () => {
+        rulesModal.classList.add('open');
+      });
+      document.getElementById('rulesCloseBtn').addEventListener('click', () => {
+        rulesModal.classList.remove('open');
+      });
+      rulesModal.addEventListener('click', (e) => {
+        if (e.target === rulesModal) rulesModal.classList.remove('open');
+      });
+
+      // Başlatma
+      solvedCountEl.textContent = state.solvedSet.size;
+      loadPuzzle(0);
+    })();
+  </script>
+
+  
+
+<script src="../../js/menu.js" defer></script>  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script>
+    function copyPageUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = 'Bağlantı kopyalandı!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    }
+    function toggleReaction(btn) {
+      if (window.reactionsApi) {
+        window.reactionsApi.toggleReaction(btn);
+      }
+    }
+  </script>
+</body>
+</html>
