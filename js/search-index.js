@@ -42,7 +42,7 @@ window.SITE_SEARCH_INDEX = [
     "type": "oyun",
     "type_label": "Zekâ Oyunu",
     "badge": "🎮 İnteraktif Oyun",
-    "title": "Kelime Avı",
+    "title": "Kelime Bulmaca",
     "description": "44 farklı kategoride yüzlerce kelime içeren etkileşimli kelime bulma oyunu. 11x11 ve 15x15 ızgaralar.",
     "category": "Zekâ Oyunları",
     "tags": [
@@ -50,10 +50,10 @@ window.SITE_SEARCH_INDEX = [
       "Zeka",
       "Bulmaca",
       "Akıl Oyunu",
-      "Kelime Avı",
+      "Kelime Bulmaca",
       "kelime-avi"
     ],
-    "content": "Kelime Avı Zeka Oyunu - teknolojitasarimci Oyunlar Menüsüne Dön Kelime Avı Zeka Oyunu Gizli kelimeleri yatay, dikey veya çapraz yönde sürükleyerek bulun. Bulmaca Seç: Tema Boyut Süre: 00:00 ◄ Önceki Seçimi Temizle Cevabı Göster Sonraki Aranan Kelimeler 0 / 0 Kontrol Et Kelime Avı Nasıl Oynanır? Izgaradaki ilk harfe tıklayıp parmağınızı veya farenizi kelimenin bittiği yöne doğru (yatay, dikey veya çapraz) sürükleyin. Doğru kelimeyi bulduğunuzda harfler yeşil renge bürünür ve sağdaki listede kelime tamamlandı olarak işaretlenir. Takıldığınız noktalarda \"Cevabı Göster\" butonuyla çözümleri inceleyebilirsiniz. Toplam 44 farklı tema ve seviyede (11×11 ve 15×15 ızgara) kelime dağarcığınızı ve görsel algınızı geliştirin. Tebrikler! Tüm kelimeleri başarıyla buldunuz. Tekrar İncele Sonraki Bulmacaya Geç Bu içeriği nasıl buldunuz? Tepkinizi belirtin: Faydalı 0 Harika 0 Teşekkürler 0 Geliştirilmeli 0 Yorumlar ve Değerlendirmeler Adınız Soyadınız * Yorumunuz * Yorumu Gönder",
+    "content": "Kelime Bulmaca Zeka Oyunu - teknolojitasarimci Oyunlar Menüsüne Dön Kelime Bulmaca Zeka Oyunu Gizli kelimeleri yatay, dikey veya çapraz yönde sürükleyerek bulun. Bulmaca Seç: Tema Boyut Süre: 00:00 ◄ Önceki Seçimi Temizle Cevabı Göster Sonraki Aranan Kelimeler 0 / 0 Kontrol Et Kelime Avı Nasıl Oynanır? Izgaradaki ilk harfe tıklayıp parmağınızı veya farenizi kelimenin bittiği yöne doğru (yatay, dikey veya çapraz) sürükleyin. Doğru kelimeyi bulduğunuzda harfler yeşil renge bürünür ve sağdaki listede kelime tamamlandı olarak işaretlenir. Takıldığınız noktalarda \"Cevabı Göster\" butonuyla çözümleri inceleyebilirsiniz. Toplam 44 farklı tema ve seviyede (11×11 ve 15×15 ızgara) kelime dağarcığınızı ve görsel algınızı geliştirin. Tebrikler! Tüm kelimeleri başarıyla buldunuz. Tekrar İncele Sonraki Bulmacaya Geç Bu içeriği nasıl buldunuz? Tepkinizi belirtin: Faydalı 0 Harika 0 Teşekkürler 0 Geliştirilmeli 0 Yorumlar ve Değerlendirmeler Adınız Soyadınız * Yorumunuz * Yorumu Gönder",
     "url": "Oyunlar/kelime-avi/index.html",
     "cover": "sayfalar/post-00073-Kelime-Avi/Veri/post-00073-Kapak.jpg"
   },
@@ -626,25 +626,6 @@ window.SITE_SEARCH_INDEX = [
     "content": "Bardak Oyunu - teknolojitasarimci Bardak Oyunu Seviye 1 Bardak 3 En Yüksek 1 Başlamak için aşağıdaki butona tıkla! Oyunu Başlat Bu oyunu nasıl buldunuz? Tepkinizi belirtin: Faydalı 0 Harika 0 Teşekkürler 0 Geliştirilmeli 0 Yorumlar ve Değerlendirmeler Adınız Soyadınız * Yorumunuz * Yorumu Gönder Copyright © Mürsel EREN Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek dilediğiniz gibi paylaşabilir, uyarlayabilir veya yeniden kullanabilirsiniz. Eğer herhangi bir içeriğin telif hakkı ihlali oluşturduğunu düşünüyorsanız, lütfen bana teknolojitasarimci@hotmail.com adresinden ulaşın. İçeriklerimi kullandığınız için şimdiden teşekkür ederim!",
     "url": "Oyunlar/bardak-oyunu/index.html",
     "cover": "Oyunlar/bardak-oyunu/Veri/bardak-oyunu-kapak.jpg"
-  },
-  {
-    "type": "oyun",
-    "type_label": "Zekâ Oyunu",
-    "badge": "🎮 İnteraktif Oyun",
-    "title": "Kelime Bulmaca",
-    "description": "Daire içindeki harfleri birleştirerek gizli kelimeleri bulunuz ve kelime haznenizi geliştiriniz.",
-    "category": "Zekâ Oyunları",
-    "tags": [
-      "Oyun",
-      "Zeka",
-      "Bulmaca",
-      "Akıl Oyunu",
-      "Kelime Bulmaca",
-      "kelime-bulmaca"
-    ],
-    "content": "Kelime Bulmaca - teknolojitasarimci Kelime Bulmaca Kurallar Sıfırla Daire içindeki harfleri birleştirerek gizli kelimeleri bulunuz. Skor 0 Seviye 1 / 5 Ekstra 0 Tebrikler, Kazandınız! Tüm seviyeleri başarıyla tamamladınız. Kelime bilginiz mükemmel seviyede! Toplam Skor 0 Ekstra Kelime 0 Tekrar Oyna Oyun Kuralları Petek Kelime Bulmaca oyununu keyifle oynamanız için temel kurallar aşağıdadır: Daire içindeki harflerin üzerine tıklayıp (veya basılı tutup) parmağınızı/mousenuzu diğer harflere sürükleyerek çizgiler oluşturunuz. Parmağınızı/tuşu bıraktığınızda seçtiğiniz kelime kontrol edilir. Seçtiğiniz kelime bulmaca gridinde yer alıyorsa ilgili hücreler açılır. Bulmacada bulunmayan fakat Türkçe sözlükte yer alan geçerli kelimeler size Ekstra Kelime (Bonus Puan) kazandırır. Toplam 5 farklı seviyeyi en yüksek skorla tamamlamaya çalışınız. Anladım Bu oyunu nasıl buldunuz? Tepkinizi belirtin: Faydalı 0 Harika 0 Teşekkürler 0 Geliştirilmeli 0 Yorumlar ve Değerlendirmeler Adınız Soyadınız * Yorumunuz * Yorumu Gönder Copyright © Mürsel EREN Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını aç",
-    "url": "Oyunlar/kelime-bulmaca/index.html",
-    "cover": "Oyunlar/kelime-bulmaca/Veri/kelime-bulmaca-kapak.jpg"
   },
   {
     "type": "gonderi",
@@ -3747,7 +3728,6 @@ window.SITE_SEARCH_INDEX = [
       "Çarpmaca Oyunu",
       "İşlem Karesi Oyunu",
       "Kare Kapmaca Oyunu",
-      "Kelime Avı Oyunu",
       "Kelime Bulmaca Oyunu",
       "Kutuban Oyunu",
       "Labirent Bulmacaları",

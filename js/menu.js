@@ -86,7 +86,7 @@
                             <div class="mega-column-title">Zeka Oyunları</div>
                             <a href="${prefix}sayfalar/zeka-oyunlari-preview.html" class="mega-menu-item">Zeka Oyunları (PDF)</a>
                             <a href="${prefix}Oyunlar/index.html" class="mega-menu-item">Zeka Oyunları (İnteraktif)</a>
-                            <a href="${prefix}Oyunlar/kelime-bulmaca/index.html" class="mega-menu-item">Kelime Bulmaca (İnteraktif)</a>
+                            <a href="${prefix}Oyunlar/kelime-avi/index.html" class="mega-menu-item">Kelime Bulmaca (İnteraktif)</a>
                             <a href="${prefix}dosyalar/MEB-Zeka-Oyunlari-Ogretmen-Kilavuz-Kitabi.pdf" class="mega-menu-item" target="_blank" rel="noopener" data-no-pdf-embed="true">Zeka Oyunları Öğretmen Kılavuz Kitabı (PDF)</a>
                             <div class="mega-column-title mega-column-title-spaced">Veli Toplantıları</div>
                             <a href="${prefix}sayfalar/post-00015-Veli-Toplantisi-Dosyalari/post-00015-preview.html" class="mega-menu-item">Veli Toplantısı Dosyaları</a>
@@ -107,7 +107,7 @@
                 <div class="nav-pill dropdown"><button type="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Oyunlar
                         <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </button><div class="dropdown-menu">
-              <a href="${prefix}Oyunlar/kelime-avi/index.html" class="dropdown-item">Kelime Avı</a>
+              <a href="${prefix}Oyunlar/kelime-avi/index.html" class="dropdown-item">Kelime Bulmaca</a>
               <a href="${prefix}Oyunlar/klasik-sos/index.html" class="dropdown-item">SOS (Klasik)</a>
               <a href="${prefix}Oyunlar/acili-sos/index.html" class="dropdown-item">SOS (Acılı)</a>
               <a href="${prefix}Oyunlar/kare-kapmaca/index.html" class="dropdown-item">Kare Kapmaca</a>
@@ -140,7 +140,6 @@
               <a href="${prefix}Oyunlar/bayrak-bil/index.html" class="dropdown-item">Bayrak Bil</a>
               <a href="${prefix}Oyunlar/mini-minisler/index.html" class="dropdown-item">Mini Minişler</a>
               <a href="${prefix}Oyunlar/bardak-oyunu/index.html" class="dropdown-item">Bardak Oyunu</a>
-              <a href="${prefix}Oyunlar/kelime-bulmaca/index.html" class="dropdown-item">Kelime Bulmaca</a>
             </div>
                 </div>
                 <div class="nav-pill dropdown" id="app-dropdown-parent">
