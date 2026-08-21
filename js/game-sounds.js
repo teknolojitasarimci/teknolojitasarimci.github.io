@@ -45,6 +45,18 @@ const GameSounds = {
     this._tone(600, 0.07, 'triangle', 0.12);
     this._tone(800, 0.1, 'triangle', 0.12, 0.07);
   },
+  correct() {
+    this._tone(523.25, 0.12, 'triangle', 0.14, 0.00);
+    this._tone(659.25, 0.14, 'triangle', 0.14, 0.08);
+    this._tone(783.99, 0.22, 'sine', 0.16, 0.16);
+  },
+  streak() {
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((f, i) => this._tone(f, 0.16, 'triangle', 0.15, i * 0.07));
+  },
+  tick() {
+    this._tone(900, 0.035, 'sine', 0.08);
+  },
   win() {
     const notes = [523, 659, 784, 1047];
     notes.forEach((f, i) => this._tone(f, 0.2, 'triangle', 0.15, i * 0.13));
@@ -54,7 +66,10 @@ const GameSounds = {
     notes.forEach((f, i) => this._tone(f, 0.25, 'sine', 0.12, i * 0.15));
   },
   draw() { this._tone(440, 0.2, 'sine', 0.12); },
-  wrong() { this._tone(180, 0.15, 'sawtooth', 0.12); },
+  wrong() {
+    this._tone(220, 0.12, 'sawtooth', 0.12, 0.00);
+    this._tone(164.81, 0.22, 'sawtooth', 0.12, 0.08);
+  },
   egg() {
     this._tone(900, 0.08, 'sine', 0.12);
     this._tone(1200, 0.06, 'sine', 0.1, 0.05);

@@ -94,9 +94,6 @@ h1{
             background-repeat: no-repeat;
             flex-shrink: 0;
         }
-        body.dark .btn::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
-        }
 .btn-outline{
   background:#fff;
   color:var(--brand-dark);
@@ -1086,7 +1083,7 @@ body.dark .mode-selector, body.dark .mode-row, body.dark .controls, body.dark .c
       try{ GameSounds.win(); }catch(e){}
       winnerBanner.style.display = 'block';
       if(mode === 'ai'){
-        winnerBanner.textContent = p === 1 ? 'Tebrikler, sen kazandın!' : 'Yapay zeka kazandı. Tekrar deneyebilirsin!';
+        winnerBanner.textContent = p === 1 ? 'Tebrikler, Kazandınız!' : 'Yapay Zeka kazandı. Tekrar deneyebilirsiniz!';
       } else {
         winnerBanner.textContent = 'Oyuncu ' + p + ' kazandı! 9 taşını rakip alana ulaştırdı.';
       }

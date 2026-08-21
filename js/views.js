@@ -1,19 +1,18 @@
 /* ============================================================
  * teknolojitasarimci.com — Akıllı Görüntülenme ve Ziyaretçi Sayacı
  * ------------------------------------------------------------
- * 1. Supabase Yapılandırılmışsa: Gerçek zamanlı bulut veritabanından
+ * 1. Firebase (Firestore) Yapılandırılmışsa: Gerçek zamanlı veritabanından
  *    senkronize eder ve artırır (sessionStorage ile tekil sayım).
- * 2. Supabase Henüz Girilmemişse / Çevrimdışıysa: Yazı yayın tarihine
+ * 2. Firebase Henüz Girilmemişse / Çevrimdışıysa: Yazı yayın tarihine
  *    ve popülerliğine göre gerçekçi dinamik taban değeri üretir,
  *    ziyaret edildikçe yerel olarak artırır (asla '0'da takılı kalmaz).
- * 3. Ana Sayfa Kenar Çubuğu (Sidebar) Ziyaretçi Sayacını da canlı yönetir.
  * ============================================================ */
 (function () {
     "use strict";
 
-    const SUPABASE_URL = window.SUPABASE_URL || "";
-    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
-    const CONFIGURED = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+    const PROJECT_ID = window.FIREBASE_PROJECT_ID || "";
+    const API_KEY = window.FIREBASE_API_KEY || "";
+    const CONFIGURED = !!(PROJECT_ID && API_KEY);
 
     function currentPath() {
         let p = window.location.pathname;
@@ -22,6 +21,20 @@
         }
         let parts = p.split("/");
         return "/" + parts[parts.length - 1];
+    }
+    
+    // Firestore document ID cannot contain slashes
+    function getDocId(path) {
+        return path.replace(/[\/\.]/g, "_");
+    }
+
+    // Firestore REST API URL
+    function firestoreUrl(action) {
+        return `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents:${action}?key=${API_KEY}`;
+    }
+    
+    function getDocUrl(collection, docId) {
+        return `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/${collection}/${docId}?key=${API_KEY}`;
     }
 
     function formatCount(n) {
@@ -40,19 +53,8 @@
             hash |= 0;
         }
         const absHash = Math.abs(hash);
-        // 180 ile 650 arasında dengeli bir taban değer
         const base = 180 + (absHash % 470);
         return base;
-    }
-
-    async function api(path, options) {
-        return fetch(SUPABASE_URL + path, Object.assign({
-            headers: {
-                "apikey": SUPABASE_ANON_KEY,
-                "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-                "Content-Type": "application/json"
-            }
-        }, options));
     }
 
     // Sayı animasyonu (Sayaç açılış efekti)
@@ -77,11 +79,60 @@
         }
         requestAnimationFrame(update);
     }
+    
+    // Firestore'da atomic increment (artırma) yapar
+    async function incrementFirestoreCount(collection, docId, fieldName) {
+        const docPath = `projects/${PROJECT_ID}/databases/(default)/documents/${collection}/${docId}`;
+        const res = await fetch(firestoreUrl("commit"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                writes: [
+                    {
+                        update: {
+                            name: docPath,
+                            fields: {} // Dummy field just to ensure doc is created if not exists
+                        }
+                    },
+                    {
+                        transform: {
+                            document: docPath,
+                            fieldTransforms: [
+                                {
+                                    fieldPath: fieldName,
+                                    increment: { integerValue: "1" }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            })
+        });
+        
+        if (!res.ok) throw new Error("increment failed");
+        
+        // Firestore commit doesn't return the new value. We must fetch it.
+        const res2 = await fetch(getDocUrl(collection, docId));
+        const data = await res2.json();
+        return parseInt(data.fields[fieldName].integerValue || data.fields[fieldName].doubleValue || "0", 10);
+    }
+    
+    // Firestore'dan sayacı okur
+    async function getFirestoreCount(collection, docId, fieldName) {
+        const res = await fetch(getDocUrl(collection, docId));
+        if (res.status === 404) return null;
+        if (!res.ok) throw new Error("read failed");
+        const data = await res.json();
+        if (!data.fields || !data.fields[fieldName]) return null;
+        return parseInt(data.fields[fieldName].integerValue || data.fields[fieldName].doubleValue || "0", 10);
+    }
 
     async function run() {
         // 1. Gönderi Görüntülenme Sayacı
         const counter = document.getElementById("view-counter");
         const path = (counter && counter.getAttribute("data-path")) ? counter.getAttribute("data-path") : currentPath();
+        const docId = getDocId(path);
+        
         const sessionKey = "tt_view_session_" + path;
         const localKey = "tt_local_views_" + path;
 
@@ -91,33 +142,23 @@
             if (CONFIGURED) {
                 try {
                     if (!sessionStorage.getItem(sessionKey)) {
-                        const res = await api("/rest/v1/rpc/register_view", {
-                            method: "POST",
-                            body: JSON.stringify({ p_path: path })
-                        });
-                        if (res.ok) {
-                            finalCount = await res.json();
-                            sessionStorage.setItem(sessionKey, "1");
-                        }
-                    }
-                    if (finalCount === null || finalCount === undefined) {
-                        const res2 = await api("/rest/v1/rpc/get_views", {
-                            method: "POST",
-                            body: JSON.stringify({ p_path: path })
-                        });
-                        if (res2.ok) finalCount = await res2.json();
+                        // Artır
+                        finalCount = await incrementFirestoreCount("page_views", docId, "count");
+                        sessionStorage.setItem(sessionKey, "1");
+                    } else {
+                        // Sadece Oku
+                        finalCount = await getFirestoreCount("page_views", docId, "count");
                     }
                 } catch (e) {
-                    console.warn("Supabase view sync fallback to local.");
+                    console.warn("Firestore view sync fallback to local.");
                 }
             }
 
             // Fallback (Yerel Akıllı Sayaç)
             if (finalCount === null || finalCount === undefined) {
                 let saved = parseInt(localStorage.getItem(localKey), 10);
-                if (isNaN(saved) || saved <= 0) {
-                    saved = generateBaselineViews(path);
-                }
+                if (isNaN(saved) || saved <= 0) saved = generateBaselineViews(path);
+                
                 if (!sessionStorage.getItem(sessionKey)) {
                     saved += 1; // +1 artır
                     sessionStorage.setItem(sessionKey, "1");
@@ -129,7 +170,7 @@
             animateCounter(counter, finalCount);
         }
 
-        // 2. Ana Sayfa / Sayfa Altı Ziyaretçi Sayacı (Gerçek — Supabase)
+        // 2. Ana Sayfa / Sayfa Altı Ziyaretçi Sayacı (Gerçek)
         const visitorCounters = document.querySelectorAll("#sidebar-visitor-count, .sidebar-visitor-num, #bottom-visitor-count, .bottom-visitor-num");
         if (visitorCounters.length > 0) {
             let visitorId = null;
@@ -138,40 +179,31 @@
                 visitorId = "v-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
                 try { localStorage.setItem("tt_visitor_id", visitorId); } catch (e) {}
             }
+            
             const sessionKey = "tt_site_visit_logged_" + visitorId;
             let totalVisitors = null;
 
             if (CONFIGURED) {
                 try {
                     if (!sessionStorage.getItem(sessionKey)) {
-                        const res = await api("/rest/v1/rpc/register_site_visit", {
-                            method: "POST",
-                            body: JSON.stringify({ p_visitor_id: visitorId })
-                        });
-                        if (res.ok) {
-                            totalVisitors = await res.json();
-                            sessionStorage.setItem(sessionKey, "1");
-                        }
-                    }
-                    if (totalVisitors === null || totalVisitors === undefined) {
-                        const res2 = await api("/rest/v1/rpc/get_site_visitors", {
-                            method: "POST",
-                            body: JSON.stringify({})
-                        });
-                        if (res2.ok) totalVisitors = await res2.json();
+                        // Global ziyaretçi sayacını artır
+                        totalVisitors = await incrementFirestoreCount("site_stats", "global_visitors", "total_count");
+                        sessionStorage.setItem(sessionKey, "1");
+                    } else {
+                        // Sadece Oku
+                        totalVisitors = await getFirestoreCount("site_stats", "global_visitors", "total_count");
                     }
                 } catch (e) {
-                    console.warn("Supabase visitor sync fallback to local.");
+                    console.warn("Firestore visitor sync fallback to local.");
                 }
             }
 
-            // Fallback (Supabase yapılandırılmadıysa yerel yaklaşık sayaç)
+            // Fallback (Yapılandırılmadıysa yerel yaklaşık sayaç)
             if (totalVisitors === null || totalVisitors === undefined) {
                 const siteVisitorKey = "tt_total_site_visitors";
                 let localCount = parseInt(localStorage.getItem(siteVisitorKey), 10);
-                if (isNaN(localCount) || localCount < 1) {
-                    localCount = 1;
-                }
+                if (isNaN(localCount) || localCount < 1) localCount = 1;
+                
                 if (!sessionStorage.getItem(sessionKey)) {
                     localCount += 1;
                     sessionStorage.setItem(sessionKey, "1");

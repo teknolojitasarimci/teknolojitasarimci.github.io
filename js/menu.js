@@ -33,6 +33,23 @@
     document.head.appendChild(script);
   }
 
+  function loadSearchScripts() {
+    if (!document.querySelector('script[data-search-index="true"]')) {
+      var sIdx = document.createElement('script');
+      sIdx.src = prefix + 'js/search-index.js';
+      sIdx.defer = true;
+      sIdx.dataset.searchIndex = 'true';
+      document.head.appendChild(sIdx);
+    }
+    if (!document.querySelector('script[data-search-engine="true"]')) {
+      var sEng = document.createElement('script');
+      sEng.src = prefix + 'js/search.js';
+      sEng.defer = true;
+      sEng.dataset.searchEngine = 'true';
+      document.head.appendChild(sEng);
+    }
+  }
+
   var headerHTML = `
     <header class="header site-header" style="width:100%;flex-shrink:0;">
         <div class="container header-main">
@@ -90,9 +107,8 @@
                         <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </button><div class="dropdown-menu">
               <a href="${prefix}Oyunlar/kelime-avi/index.html" class="dropdown-item">Kelime Avı</a>
-              <a href="${prefix}Oyunlar/bardak-top/index.html" class="dropdown-item">Bardak ve Top</a>
-              <a href="${prefix}Oyunlar/klasik-sos/index.html" class="dropdown-item">Klasik SOS</a>
-              <a href="${prefix}Oyunlar/acili-sos/index.html" class="dropdown-item">Acılı SOS</a>
+              <a href="${prefix}Oyunlar/klasik-sos/index.html" class="dropdown-item">SOS (Klasik)</a>
+              <a href="${prefix}Oyunlar/acili-sos/index.html" class="dropdown-item">SOS (Acılı)</a>
               <a href="${prefix}Oyunlar/kare-kapmaca/index.html" class="dropdown-item">Kare Kapmaca</a>
               <a href="${prefix}Oyunlar/turk-damasi/index.html" class="dropdown-item">Dama</a>
               <a href="${prefix}Oyunlar/capraz-dama/index.html" class="dropdown-item">Çapraz Dama</a>
@@ -114,12 +130,15 @@
               <a href="${prefix}Oyunlar/islem-karesi/index.html" class="dropdown-item">İşlem Karesi</a>
               <a href="${prefix}Oyunlar/patika-oyunu/index.html" class="dropdown-item">Patika</a>
               <a href="${prefix}Oyunlar/abc-baglamaca-oyunu/index.html" class="dropdown-item">ABC Bağlamaca</a>
+              <a href="${prefix}Oyunlar/kutuban/index.html" class="dropdown-item">Kutuban</a>
               <a href="${prefix}Oyunlar/engelsiz-patika-oyunu/index.html" class="dropdown-item">Patika Oluşturma</a>
               <a href="${prefix}Oyunlar/carpmaca-oyunu/index.html" class="dropdown-item">Çarpmaca</a>
               <a href="${prefix}Oyunlar/elmas-madencisi/index.html" class="dropdown-item">Elmas Madencisi</a>
               <a href="${prefix}Oyunlar/devekusu-kosusu/index.html" class="dropdown-item">Devekuşu Koşusu</a>
               <a href="${prefix}Oyunlar/trafik-isaretleri/index.html" class="dropdown-item">Trafik İşaretleri</a>
-              <a href="${prefix}Oyunlar/mini-minisler/index.html" class="dropdown-item">Mini Minişler</a>
+              <a href="${prefix}Oyunlar/bayrak-bil/index.html" class="dropdown-item">Bayrak Bil</a>
+<a href="${prefix}Oyunlar/mini-minisler/index.html" class="dropdown-item">Mini Minişler</a>
+              <a href="${prefix}Oyunlar/bardak-oyunu/index.html" class="dropdown-item">Bardak Oyunu</a>
             </div>
                 </div>
                 <div class="nav-pill dropdown" id="app-dropdown-parent">
@@ -161,16 +180,20 @@
     `;
 
   function initHeader() {
-    if (document.querySelector('header.site-header')) {
-      return;
+    var existingHeader = document.querySelector('header.site-header, header.header');
+    if (!existingHeader) {
+      document.body.insertAdjacentHTML('afterbegin', headerHTML);
     }
+
+    // Arama motorunu ve dizinini yükle
+    loadSearchScripts();
+
     if (location.search.indexOf('embed=1') !== -1) {
       return;
     }
     if (!document.body) {
       return;
     }
-    document.body.insertAdjacentHTML('afterbegin', headerHTML);
 
     var searchToggle = document.getElementById('search-toggle-btn');
     var searchBar = document.getElementById('header-search-bar');

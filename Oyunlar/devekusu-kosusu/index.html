@@ -495,14 +495,14 @@
       <div class="msg-box">
         <div class="eyebrow">Koş &middot; Zıpla &middot; Ateş Püskürt</div>
         <h1>DEVEKUŞU <span>KOŞUSU</span></h1>
-        <p class="sub">Güneşli bir günde devekuşunla koş, kaktüsleri aş ve ateş püskürterek engelleri yok et.</p>
+        <p class="sub">Güneşli bir günde devekuşunuzla koşunuz, kaktüsleri aşınız ve ateş püskürterek engelleri yok ediniz.</p>
         <div class="mech-row">
           <div class="mech"><span class="mech-swatch" style="background:#fde047;"></span>Ateş topu engelleri yok eder</div>
-          <div class="mech"><span class="mech-swatch" style="background:#22c55e;"></span>Kaktüslere dikkat et</div>
-          <div class="mech"><span class="mech-swatch" style="background:#e11d48;"></span>Kalp toplayarak can kazan</div>
+          <div class="mech"><span class="mech-swatch" style="background:#22c55e;"></span>Kaktüslere dikkat ediniz</div>
+          <div class="mech"><span class="mech-swatch" style="background:#e11d48;"></span>Kalp toplayarak can kazanınız</div>
         </div>
         <div class="mech-row">
-          <div class="mech"><span class="mech-swatch" style="background:#f59e0b;"></span>Altın kargayı yakala: +150 puan</div>
+          <div class="mech"><span class="mech-swatch" style="background:#f59e0b;"></span>Altın kargayı yakalayınız: +150 puan</div>
           <div class="mech"><span class="mech-swatch" style="background:#334155;"></span>Sıradan kargalar zararsızdır</div>
         </div>
         <div class="kbd-row">
@@ -518,7 +518,7 @@
       <div class="msg-box">
         <div class="rank-eyebrow">Koşu Bitti</div>
         <h2 class="rank-title" id="rankTitle">Yavru Devekuşu</h2>
-        <p class="rank-sub" id="rankSub">İlk adımlarını attın, yolculuk başladı.</p>
+        <p class="rank-sub" id="rankSub">İlk adımlarınızı attınız, yolculuk başladı.</p>
         <div class="go-stats">
           <div><div class="go-stat-label">Kat Edilen</div><div class="go-stat-value" id="finalScore">0 m</div></div>
           <div><div class="go-stat-label">En İyi</div><div class="go-stat-value" id="bestScore">0 m</div></div>
@@ -626,12 +626,12 @@
 
   // ---------- Rütbeler ----------
   const ranks = [
-    { min: 0,    name: "Yavru Devekuşu",   sub: "İlk adımlarını attın, yolculuk başladı." },
-    { min: 300,  name: "Hızlı Koşucu",     sub: "Hızını artırdın, kaktüsleri geride bırakıyorsun." },
-    { min: 900,  name: "Keskin Göz",       sub: "Engelleri önceden seziyorsun." },
-    { min: 1800, name: "Ateş Ustası",      sub: "Ateş püskürtmek artık ikinci doğan." },
-    { min: 3000, name: "Kaktüs Avcısı",    sub: "Önüne çıkan her engeli yok ediyorsun." },
-    { min: 4500, name: "Efsanevi Koşucu",  sub: "Gündüz koşusunun tartışmasız şampiyonu." }
+    { min: 0,    name: "Yavru Devekuşu",   sub: "İlk adımlarınızı attınız, yolculuk başladı." },
+    { min: 300,  name: "Hızlı Koşucu",     sub: "Hızınızı artırdınız, kaktüsleri geride bırakıyorsunuz." },
+    { min: 900,  name: "Keskin Göz",       sub: "Engelleri önceden seziyorsunuz." },
+    { min: 1800, name: "Ateş Ustası",      sub: "Ateş püskürtmekte ustalaştınız." },
+    { min: 3000, name: "Kaktüs Avcısı",    sub: "Önünüze çıkan her engeli yok ediyorsunuz." },
+    { min: 4500, name: "Efsanevi Koşucu",  sub: "Gündüz koşusunun tartışmasız şampiyonu oldunuz." }
   ];
   function rankForScore(s) {
     let r = ranks[0];
@@ -1197,7 +1197,7 @@
   }
 
   function obstacleHitbox(o) {
-    if (o.type === 'amber' || o.type === 'egg' || o.type === 'heart' || o.type === 'fire') return { x: o.x, y: o.y - o.h, w: o.w, h: o.h };
+    if (o.type === 'amber' || o.type === 'egg' || o.type === 'heart' || o.type === 'fire') return { x: o.x - 6, y: o.y - 18, w: o.w + 12, h: o.h + 16 };
     if (o.type === 'meteor') {
       if (o.falling) return null;
       return { x: o.x + 4, y: o.y - o.h + 2, w: o.w - 8, h: o.h - 2 };
@@ -1501,7 +1501,7 @@
     eggTimer -= timeScale;
     if (eggTimer <= 0 && score > 80) { spawnEgg(); eggTimer = 480 + Math.random() * 220; }
     heartTimer -= timeScale;
-    if (heartTimer <= 0 && lives < 5 && score > 300) { spawnHeart(); heartTimer = 900 + Math.random() * 300; }
+    if (heartTimer <= 0 && lives < 5 && score > 80) { spawnHeart(); heartTimer = 650 + Math.random() * 250; }
     fireBonusTimer -= timeScale;
     if (fireBonusTimer <= 0 && score > 200) { spawnFireBonus(); fireBonusTimer = 1200 + Math.random() * 400; }
     goldCrowTimer -= timeScale;
@@ -1565,9 +1565,16 @@
             eggCount = 0;
             hasCompanion = true;
             sfx.companion();
-            showCombo('YOL ARKADAŞIN UYANDI!', player.x / W, (player.y - 90) / H, '#e2e8f0');
+            showCombo('YOL ARKADAŞINIZ UYANDI!', player.x / W, (player.y - 90) / H, '#e2e8f0');
           }
           updatePips();
+          removeObstacle(i);
+          continue;
+        }
+      } else if (o.type === 'heart') {
+        if (box && aabb(hb, box)) {
+          addLife(1);
+          showCombo('+1 CAN!', player.x / W, (player.y - 90) / H, '#e11d48');
           removeObstacle(i);
           continue;
         }
@@ -1590,7 +1597,7 @@
             hasCompanion = false;
             updatePips();
             sfx.shield();
-            showCombo('YOL ARKADAŞIN SENİ KURTARDI!', player.x / W, (player.y - 90) / H, '#38bdf8');
+            showCombo('YOL ARKADAŞINIZ SİZİ KURTARDI!', player.x / W, (player.y - 90) / H, '#38bdf8');
             removeObstacle(i);
             continue;
           }

@@ -1104,11 +1104,24 @@ function updateGhosts() {
           bestDir = possibleDirs.reduce((prev, curr) => {
             const playerDist1 = bfsDist(g.x + curr.x, g.y + curr.y, player.x, player.y);
             const cornerDist1 = Math.hypot((g.x + curr.x) - cx, (g.y + curr.y) - cy);
-            const score1 = playerDist1 * 10 - cornerDist1;
+            let ghostDist1 = 0;
+            ghosts.forEach(otherG => {
+              if (otherG !== g) {
+                ghostDist1 += Math.hypot((g.x + curr.x) - otherG.x, (g.y + curr.y) - otherG.y);
+              }
+            });
+            // OYUNCUDAN KAÇ + KÖŞEYE GİT + DİĞER HAYALETLERDEN UZAK DUR (Sürü Psikolojisini Kır)
+            const score1 = (playerDist1 * 15) - (cornerDist1 * 1.5) + (ghostDist1 * 3);
 
             const playerDist2 = bfsDist(g.x + prev.x, g.y + prev.y, player.x, player.y);
             const cornerDist2 = Math.hypot((g.x + prev.x) - cx, (g.y + prev.y) - cy);
-            const score2 = playerDist2 * 10 - cornerDist2;
+            let ghostDist2 = 0;
+            ghosts.forEach(otherG => {
+              if (otherG !== g) {
+                ghostDist2 += Math.hypot((g.x + prev.x) - otherG.x, (g.y + prev.y) - otherG.y);
+              }
+            });
+            const score2 = (playerDist2 * 15) - (cornerDist2 * 1.5) + (ghostDist2 * 3);
 
             return score1 > score2 ? curr : prev;
           });

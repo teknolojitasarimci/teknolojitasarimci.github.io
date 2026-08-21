@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bayrak Bil - teknolojitasarimci</title>
+  <meta name="description" content="Bayrak Bil - Dünya ülkelerinin bayraklarını eğlenceli ve öğretici bir yarışmayla keşfediniz, coğrafya bilginizi test ediniz.">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/theme.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: #f8fafc;
+      color: #0f172a;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body.dark {
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+
+    #game-shell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 680px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+    }
+
+    .game-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    .game-title {
+      font-size: clamp(22px, 4.5vw, 32px);
+      font-weight: 800;
+      color: #0284c7;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin: 0;
+    }
+    body.dark .game-title { color: #38bdf8; }
+
+    .game-subtitle {
+      font-size: 14px;
+      color: #64748b;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    body.dark .game-subtitle { color: #94a3b8; }
+
+    #top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 12px 20px;
+      background: #ffffff;
+      border: 1px solid #bae6fd;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(2,132,199,0.08);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    body.dark #top-bar {
+      background: #1e293b;
+      border-color: #334155;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+    .stat-box { display: flex; flex-direction: column; align-items: center; min-width: 65px; }
+    .stat-label { font-size: 11px; letter-spacing: 1px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+    body.dark .stat-label { color: #94a3b8; }
+    .stat-val { font-size: 20px; font-weight: 800; color: #0284c7; }
+    .stat-val.green { color: #10b981; }
+    .stat-val.amber { color: #f59e0b; }
+    body.dark .stat-val { color: #38bdf8; }
+    body.dark .stat-val.green { color: #34d399; }
+    body.dark .stat-val.amber { color: #fbbf24; }
+
+    .timer-ring-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 48px;
+      height: 48px;
+    }
+    .timer-ring-box svg {
+      transform: rotate(-90deg);
+      width: 48px;
+      height: 48px;
+    }
+    .ring-bg { fill: none; stroke: #e2e8f0; stroke-width: 4; }
+    body.dark .ring-bg { stroke: #334155; }
+    .ring-fg {
+      fill: none;
+      stroke: #0284c7;
+      stroke-width: 4;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.1s linear, stroke 0.2s;
+    }
+    .ring-fg.danger { stroke: #ef4444 !important; }
+    .timer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      font-weight: 800;
+      color: #0284c7;
+      font-family: monospace;
+    }
+    .timer-text.danger { color: #ef4444; }
+    body.dark .timer-text { color: #38bdf8; }
+    body.dark .timer-text.danger { color: #f87171; }
+
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .act-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      height: 38px; min-height: 38px; max-height: 38px;
+      padding: 0 16px; font-size: 13px; font-weight: 700;
+      line-height: 1;
+      border-radius: 25px !important; border: 1px solid #bae6fd;
+      background: #e0f2fe; color: #0284c7;
+      cursor: pointer; transition: background 0.15s, transform 0.15s;
+      box-sizing: border-box;
+      width: fit-content;
+    }
+    .act-btn:hover { background: #bae6fd; transform: translateY(-1px); }
+    body.dark .act-btn { background: #1e3a5f; border-color: #334155; color: #38bdf8; }
+    body.dark .act-btn:hover { background: #1e4976; }
+
+    /* İlerleme Çubuğu */
+    .progress-container {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    body.dark .progress-track { background: #334155; }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+      width: 5%;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      margin-top: 6px;
+    }
+    body.dark .progress-label { color: #94a3b8; }
+
+    /* Seri Bildirimi */
+    .streak-banner {
+      min-height: 26px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #ea580c;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.3s;
+    }
+    body.dark .streak-banner { color: #fb923c; }
+
+    /* Bayrak Kartı */
+    .flag-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 24px 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      width: 100%;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    body.dark .flag-card {
+      background: #1e293b;
+      border-color: #334155;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .flag-card.glow-correct {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 24px rgba(16,185,129,0.25) !important;
+    }
+    .flag-card.glow-wrong {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 24px rgba(239,68,68,0.25) !important;
+    }
+
+    /* Bayrak Görseli (%20 Büyütülmüş & Dış Çerçevesiz) */
+    .flag-img-wrap {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 3 / 2;
+      height: auto;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    body.dark .flag-img-wrap {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    .flag-img-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.12);
+      display: block;
+      transition: opacity 0.2s ease, transform 0.3s ease;
+    }
+    body.dark .flag-img-wrap img {
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+    }
+    .flag-img-wrap img.loading {
+      opacity: 0.15;
+      transform: scale(0.96);
+    }
+
+    .flag-question {
+      font-size: 16px;
+      font-weight: 700;
+      color: #334155;
+    }
+    body.dark .flag-question { color: #cbd5e1; }
+    .flag-question strong { color: #0284c7; }
+    body.dark .flag-question strong { color: #38bdf8; }
+
+    /* Seçenekler Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-flow: column;
+      grid-template-rows: repeat(2, auto);
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 14px 20px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 25px !important;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: left;
+      position: relative;
+    }
+    body.dark .option-btn {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+    .option-btn:hover:not(.disabled) {
+      border-color: #0284c7;
+      background: #f0f9ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(2,132,199,0.12);
+    }
+    body.dark .option-btn:hover:not(.disabled) {
+      border-color: #38bdf8;
+      background: #1e3a5f;
+    }
+    .option-btn:active:not(.disabled) {
+      transform: translateY(0);
+    }
+    .option-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      border-radius: 50% !important;
+      background: #e0f2fe;
+      border: 1.5px solid #bae6fd;
+      color: #0284c7;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.12);
+    }
+    body.dark .option-key {
+      background: #1e3a5f;
+      border: 1.5px solid #0284c7;
+      color: #38bdf8;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .option-btn:hover:not(.disabled) .option-key {
+      background: #0284c7;
+      border-color: #0284c7;
+      color: #ffffff;
+      transform: scale(1.06);
+    }
+    body.dark .option-btn:hover:not(.disabled) .option-key {
+      background: #38bdf8;
+      border-color: #38bdf8;
+      color: #0f172a;
+      transform: scale(1.06);
+    }
+    .option-text {
+      flex: 1;
+      font-size: 15px;
+    }
+    .option-btn.correct {
+      border-color: #10b981 !important;
+      background: #ecfdf5 !important;
+      color: #065f46 !important;
+    }
+    .option-btn.correct .option-key {
+      background: #10b981 !important;
+      color: #ffffff !important;
+    }
+    body.dark .option-btn.correct {
+      background: rgba(16,185,129,0.2) !important;
+      color: #6ee7b7 !important;
+    }
+    .option-btn.wrong {
+      border-color: #ef4444 !important;
+      background: #fef2f2 !important;
+      color: #991b1b !important;
+    }
+    .option-btn.wrong .option-key {
+      background: #ef4444 !important;
+      color: #ffffff !important;
+    }
+    body.dark .option-btn.wrong {
+      background: rgba(239,68,68,0.2) !important;
+      color: #fca5a5 !important;
+    }
+    .option-btn.disabled {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Sonuç Ekranı */
+    .result-card {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 36px 24px;
+      text-align: center;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.05);
+      animation: fadeIn 0.4s ease;
+    }
+    body.dark .result-card {
+      background: #1e293b;
+      border-color: #334155;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+    }
+    .result-card.active { display: flex; }
+    .result-trophy { font-size: 54px; margin-bottom: 12px; }
+    .result-title { font-size: 24px; font-weight: 800; color: #0284c7; margin-bottom: 8px; }
+    body.dark .result-title { color: #38bdf8; }
+    .result-desc { font-size: 15px; color: #64748b; margin-bottom: 24px; line-height: 1.5; }
+    body.dark .result-desc { color: #94a3b8; }
+
+    .result-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 440px;
+      margin-bottom: 28px;
+    }
+    .r-stat-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 10px;
+    }
+    body.dark .r-stat-box { background: #0f172a; border-color: #334155; }
+    .r-stat-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+    body.dark .r-stat-label { color: #94a3b8; }
+    .r-stat-val { font-size: 20px; font-weight: 900; color: #0284c7; }
+    body.dark .r-stat-val { color: #38bdf8; }
+
+    .primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 36px;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 25px !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: fit-content;
+      margin: 0 auto;
+    }
+    .primary-btn:hover {
+      background: #0369a1;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(2,132,199,0.35);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,0.6);
+      backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 1000; padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    body.dark .modal-card { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+    .modal-card h2 { font-size: 20px; font-weight: 800; color: #0284c7; margin-bottom: 12px; }
+    body.dark .modal-card h2 { color: #38bdf8; }
+    .modal-card p, .modal-card li { font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 10px; }
+    body.dark .modal-card p, body.dark .modal-card li { color: #cbd5e1; }
+    .modal-card ol { padding-left: 20px; margin-bottom: 20px; }
+    .modal-btn-row {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 18px;
+    }
+    .modal-close-btn {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 36px;
+      border-radius: 25px !important;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      width: fit-content !important;
+      margin: 0 auto !important;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .modal-close-btn:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 560px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+        grid-auto-flow: row;
+        grid-template-rows: unset;
+      }
+      .flag-img-wrap { max-width: 276px; }
+      .stat-val { font-size: 17px; }
+      .stat-box { min-width: 50px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-shell">
+    <div class="game-header-row">
+      <h1 class="game-title">Bayrak Bil</h1>
+      <div class="top-actions">
+        <button class="act-btn" id="rulesBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Kurallar
+        </button>
+        <button class="act-btn" id="restartBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Yeniden Başlat
+        </button>
+      </div>
+    </div>
+    <p class="game-subtitle">Dünya ülkelerinin bayraklarını eğlenceli ve öğretici bir yarışmayla keşfediniz.</p>
+
+    <!-- Oyun Ekranı -->
+    <div id="play-area" style="width:100%;">
+      <div id="top-bar">
+        <div class="stat-box">
+          <span class="stat-label">Skor</span>
+          <span class="stat-val" id="score-val">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Doğru</span>
+          <span class="stat-val green" id="correct-val">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Yanıtlanamayan</span>
+          <span class="stat-val amber" id="wrong-val">0</span>
+        </div>
+        <div class="timer-ring-box">
+          <svg viewBox="0 0 48 48">
+            <circle class="ring-bg" cx="24" cy="24" r="20"/>
+            <circle class="ring-fg" id="ring-fg" cx="24" cy="24" r="20" stroke-dasharray="125.66" stroke-dashoffset="0"/>
+          </svg>
+          <div class="timer-text" id="timer-text">10</div>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-label">
+          <span id="progress-text">Soru 1 / 20</span>
+          <span id="streak-text" class="streak-banner"></span>
+        </div>
+      </div>
+
+      <div class="flag-card" id="flag-card">
+        <div class="flag-img-wrap">
+          <img id="flag-img" src="" alt="Bayrak" class="loading">
+        </div>
+        <p class="flag-question">Bu bayrak <strong>hangi ülkeye</strong> aittir?</p>
+      </div>
+
+      <div class="options-grid" id="options-grid"></div>
+    </div>
+
+    <!-- Sonuç Ekranı -->
+    <div class="result-card" id="result-card">
+      <div class="result-trophy" id="result-trophy"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;margin-bottom:8px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7v2h10v-2h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></div>
+      <h2 class="result-title" id="result-title">Tebrikler!</h2>
+      <p class="result-desc" id="result-desc">Tüm soruları başarıyla tamamladınız.</p>
+      
+      <div class="result-stats-grid">
+        <div class="r-stat-box">
+          <div class="r-stat-label">Toplam Skor</div>
+          <div class="r-stat-val" id="final-score">0</div>
+        </div>
+        <div class="r-stat-box">
+          <div class="r-stat-label">Doğru</div>
+          <div class="r-stat-val" id="final-correct">0 / 20</div>
+        </div>
+        <div class="r-stat-box">
+          <div class="r-stat-label">En İyi Seri</div>
+          <div class="r-stat-val" id="final-streak">0</div>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="playAgainBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Tekrar Oyna
+      </button>
+    </div>
+  </div>
+
+  <!-- Kurallar Modal -->
+  <div id="rulesModal" class="modal-overlay">
+    <div class="modal-card">
+      <h2>Bayrak Bil Nasıl Oynanır?</h2>
+      <p><b>Bayrak Bil</b>, dünya ülkelerinin bayraklarını tanıma ve coğrafya bilginizi pekiştirme yarışmasıdır.</p>
+      <ol>
+        <li>Her yarışmada rastgele seçilen <b>20 farklı ülke bayrağı</b> sorulur.</li>
+        <li>Her soru için <b>10 saniyelik</b> süreniz bulunmaktadır.</li>
+        <li>Doğru yanıtlar sürenin kalanına göre <b>ekstra puan</b> kazandırır.</li>
+        <li>Klavyenizdeki <b>A, B, C, D</b> veya <b>1, 2, 3, 4</b> tuşlarını kullanarak da hızlıca yanıtlayabilirsiniz.</li>
+      </ol>
+      <div class="modal-btn-row">
+        <button id="rulesCloseBtn" class="modal-close-btn">Anladım</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Telif ve Kaynak Bilgisi -->
+  <p class="source-note" style="text-align:center; font-size:12px; color:#64748b; margin:16px auto; max-width:620px; line-height:1.5;">Telif ve Kaynak Bilgisi: Oyunda kullanılan tüm ülke bayrağı görselleri <a href="https://flagpedia.net" target="_blank" rel="noopener" style="color:#0284c7; font-weight:700; text-decoration:underline;">Flagpedia.net</a> (FlagCDN) üzerinden dinamik olarak sağlanmaktadır.</p>
+
+  <div class="quick-action-bar">
+    <a class="action-btn" href="../index.html">Tüm Oyunlar</a>
+  </div>
+
+  <div class="hashtag-box">
+    <span class="hashtag">#BayrakBil</span>
+    <span class="hashtag">#Coğrafya</span>
+    <span class="hashtag">#ZekaOyunları</span>
+    <span class="hashtag">#EğiticiOyun</span>
+    <span class="hashtag">#GenelKültür</span>
+    <span class="hashtag">#TeknolojiVeTasarım</span>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-copyright-title">Copyright © Mürsel EREN</div>
+      <div class="footer-copyright-text">Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını açıkça belirterek kullanabilirsiniz. İçeriklerimi kullandığınız için teşekkür ederim.</div>
+    </div>
+  </footer>
+
+  <script src="../../js/views.js"></script>
+  <script src="../../js/protection.js"></script>
+  <script src="../../js/menu.js"></script>
+  <div id="toast-notification"></div>
+  <script src="../../js/config.js"></script>
+  <script src="../../js/reactions.js"></script>
+  <script src="../../js/comments.js"></script>
+  <script src="../../js/game-sounds.js"></script>
+
+  <script>
+    // ─── Ülke ve Bayrak Listesi (166 Ülke) ───
+    const countries = [
+      {code:"tr",name:"Türkiye"},{code:"de",name:"Almanya"},{code:"fr",name:"Fransa"},
+      {code:"gb",name:"Birleşik Krallık"},{code:"us",name:"Amerika Birleşik Devletleri"},
+      {code:"it",name:"İtalya"},{code:"es",name:"İspanya"},{code:"pt",name:"Portekiz"},
+      {code:"nl",name:"Hollanda"},{code:"be",name:"Belçika"},{code:"ch",name:"İsviçre"},
+      {code:"at",name:"Avusturya"},{code:"se",name:"İsveç"},{code:"no",name:"Norveç"},
+      {code:"dk",name:"Danimarka"},{code:"fi",name:"Finlandiya"},{code:"pl",name:"Polonya"},
+      {code:"cz",name:"Çekya"},{code:"gr",name:"Yunanistan"},{code:"ro",name:"Romanya"},
+      {code:"hu",name:"Macaristan"},{code:"hr",name:"Hırvatistan"},{code:"rs",name:"Sırbistan"},
+      {code:"bg",name:"Bulgaristan"},{code:"ua",name:"Ukrayna"},{code:"ru",name:"Rusya"},
+      {code:"by",name:"Beyaz Rusya"},{code:"md",name:"Moldova"},{code:"lt",name:"Litvanya"},
+      {code:"lv",name:"Letonya"},{code:"ee",name:"Estonya"},{code:"ie",name:"İrlanda"},
+      {code:"is",name:"İzlanda"},{code:"al",name:"Arnavutluk"},{code:"mk",name:"Kuzey Makedonya"},
+      {code:"si",name:"Slovenya"},{code:"sk",name:"Slovakya"},{code:"me",name:"Karadağ"},
+      {code:"ba",name:"Bosna-Hersek"},{code:"xk",name:"Kosova"},
+      {code:"cn",name:"Çin"},{code:"jp",name:"Japonya"},{code:"kr",name:"Güney Kore"},
+      {code:"kp",name:"Kuzey Kore"},{code:"in",name:"Hindistan"},{code:"pk",name:"Pakistan"},
+      {code:"bd",name:"Bangladeş"},{code:"lk",name:"Sri Lanka"},{code:"np",name:"Nepal"},
+      {code:"mm",name:"Myanmar"},{code:"th",name:"Tayland"},{code:"vn",name:"Vietnam"},
+      {code:"la",name:"Laos"},{code:"kh",name:"Kamboçya"},{code:"my",name:"Malezya"},
+      {code:"id",name:"Endonezya"},{code:"ph",name:"Filipinler"},{code:"sg",name:"Singapur"},
+      {code:"bn",name:"Brunei"},{code:"tl",name:"Doğu Timor"},{code:"mn",name:"Moğolistan"},
+      {code:"kz",name:"Kazakistan"},{code:"uz",name:"Özbekistan"},{code:"tm",name:"Türkmenistan"},
+      {code:"kg",name:"Kırgızistan"},{code:"tj",name:"Tacikistan"},{code:"af",name:"Afganistan"},
+      {code:"ir",name:"İran"},{code:"iq",name:"Irak"},{code:"sy",name:"Suriye"},
+      {code:"lb",name:"Lübnan"},{code:"jo",name:"Ürdün"},{code:"ps",name:"Filistin"},
+      {code:"sa",name:"Suudi Arabistan"},{code:"ae",name:"Birleşik Arap Emirlikleri"},
+      {code:"kw",name:"Kuveyt"},{code:"bh",name:"Bahreyn"},{code:"qa",name:"Katar"},
+      {code:"om",name:"Umman"},{code:"ye",name:"Yemen"},
+      {code:"eg",name:"Mısır"},{code:"ly",name:"Libya"},{code:"tn",name:"Tunus"},
+      {code:"dz",name:"Cezayir"},{code:"ma",name:"Fas"},{code:"sd",name:"Sudan"},
+      {code:"ss",name:"Güney Sudan"},{code:"et",name:"Etiyopya"},{code:"er",name:"Eritre"},
+      {code:"dj",name:"Cibuti"},{code:"so",name:"Somali"},{code:"ke",name:"Kenya"},
+      {code:"tz",name:"Tanzanya"},{code:"ug",name:"Uganda"},{code:"rw",name:"Ruanda"},
+      {code:"bi",name:"Burundi"},{code:"cd",name:"Kongo Demokratik Cumhuriyeti"},
+      {code:"cg",name:"Kongo Cumhuriyeti"},{code:"ga",name:"Gabon"},{code:"gq",name:"Ekvator Ginesi"},
+      {code:"cm",name:"Kamerun"},{code:"ng",name:"Nijerya"},{code:"ne",name:"Nijer"},
+      {code:"bf",name:"Burkina Faso"},{code:"ml",name:"Mali"},{code:"sn",name:"Senegal"},
+      {code:"gm",name:"Gambiya"},{code:"gw",name:"Gine-Bissau"},{code:"gn",name:"Gine"},
+      {code:"sl",name:"Sierra Leone"},{code:"lr",name:"Liberya"},{code:"ci",name:"Fildişi Sahili"},
+      {code:"gh",name:"Gana"},{code:"tg",name:"Togo"},{code:"bj",name:"Benin"},
+      {code:"td",name:"Çad"},{code:"cf",name:"Orta Afrika Cumhuriyeti"},
+      {code:"mg",name:"Madagaskar"},{code:"mu",name:"Mauritius"},{code:"sc",name:"Seyşeller"},
+      {code:"km",name:"Komorlar"},{code:"cv",name:"Yeşil Burun Adaları"},
+      {code:"mz",name:"Mozambik"},{code:"zw",name:"Zimbabve"},{code:"zm",name:"Zambiya"},
+      {code:"mw",name:"Malavi"},{code:"ao",name:"Angola"},{code:"na",name:"Namibya"},
+      {code:"bw",name:"Botsvana"},{code:"za",name:"Güney Afrika"},{code:"sz",name:"Esvatini"},
+      {code:"ls",name:"Lesotho"},{code:"mx",name:"Meksika"},{code:"gt",name:"Guatemala"},
+      {code:"bz",name:"Belize"},{code:"hn",name:"Honduras"},{code:"sv",name:"El Salvador"},
+      {code:"ni",name:"Nikaragua"},{code:"cr",name:"Kosta Rika"},{code:"pa",name:"Panama"},
+      {code:"cu",name:"Küba"},{code:"jm",name:"Jamaika"},{code:"ht",name:"Haiti"},
+      {code:"do",name:"Dominik Cumhuriyeti"},{code:"co",name:"Kolombiya"},
+      {code:"ve",name:"Venezuela"},{code:"ec",name:"Ekvador"},{code:"pe",name:"Peru"},
+      {code:"bo",name:"Bolivya"},{code:"cl",name:"Şili"},{code:"ar",name:"Arjantin"},
+      {code:"uy",name:"Uruguay"},{code:"py",name:"Paraguay"},{code:"br",name:"Brezilya"},
+      {code:"au",name:"Avustralya"},{code:"nz",name:"Yeni Zelanda"},{code:"ca",name:"Kanada"},
+      {code:"az",name:"Azerbaycan"},{code:"ge",name:"Gürcistan"},{code:"am",name:"Ermenistan"},
+      {code:"cy",name:"Kıbrıs"},{code:"mt",name:"Malta"},{code:"lu",name:"Lüksemburg"},
+      {code:"mc",name:"Monako"},{code:"sm",name:"San Marino"},{code:"ad",name:"Andorra"}
+    ];
+
+    // Tekrar edenleri temizle
+    const uniqueMap = new Map();
+    countries.forEach(c => uniqueMap.set(c.code, c.name));
+    const cleanCountries = [];
+    uniqueMap.forEach((name, code) => cleanCountries.push({code, name}));
+
+    // ─── Oyun Durumu ───
+    const TOTAL_QUESTIONS = 20;
+    const TIME_PER_QUESTION = 10;
+    let score = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let currentQ = 0;
+    let streak = 0;
+    let maxStreak = 0;
+    let timerInterval = null;
+    let timeLeft = TIME_PER_QUESTION;
+    let answered = false;
+    let nextQuestionTimeout = null; // Hata 1: Race condition önleme
+    let toastTimeout = null; // Hata 2: Toast çakışması önleme
+
+    // DOM Elemanları
+    const $score = document.getElementById('score-val');
+    const $correct = document.getElementById('correct-val');
+    const $wrong = document.getElementById('wrong-val');
+    const $progressFill = document.getElementById('progress-fill');
+    const $progressText = document.getElementById('progress-text');
+    const $streakText = document.getElementById('streak-text');
+    const $flagCard = document.getElementById('flag-card');
+    const $flagImg = document.getElementById('flag-img');
+    const $optionsGrid = document.getElementById('options-grid');
+    const $playArea = document.getElementById('play-area');
+    const $resultCard = document.getElementById('result-card');
+    const $ringFg = document.getElementById('ring-fg');
+    const $timerText = document.getElementById('timer-text');
+    const CIRCUMFERENCE = 2 * Math.PI * 20; // ~125.66
+
+    function showToastMsg(msg) {
+      const toast = document.getElementById('toast-notification');
+      if (toast) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // getRandomIndex() kaldırıldı — kullanılmayan ölü kod (Hata 4)
+
+    function getFlagUrl(code) {
+      return `https://flagcdn.com/w320/${code}.png`;
+    }
+
+    function updateStats() {
+      $score.textContent = score;
+      $correct.textContent = correctCount;
+      $wrong.textContent = wrongCount;
+    }
+
+    function updateProgress() {
+      const pct = (currentQ / TOTAL_QUESTIONS) * 100;
+      $progressFill.style.width = pct + '%';
+      $progressText.textContent = `Soru ${currentQ} / ${TOTAL_QUESTIONS}`;
+    }
+
+    function updateStreak() {
+      if (streak >= 3) {
+        $streakText.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="#ea580c" style="vertical-align: -2px; margin-right: 4px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> ${streak} Seri Doğru!`;
+        $streakText.style.opacity = '1';
+      } else {
+        $streakText.innerHTML = '';
+        $streakText.style.opacity = '0';
+      }
+    }
+
+    // ─── SES SİSTEMİ (Merkezi js/game-sounds.js üzerinden) ───
+    const AudioFX = window.GameSounds || {
+      enabled: true,
+      click() {},
+      tick() {},
+      correct() {},
+      streak() {},
+      wrong() {},
+      win() {},
+      toggle() { this.enabled = !this.enabled; return this.enabled; }
+    };
+
+    let lastTickSecond = -1;
+
+    function startTimer() {
+      // Hata 5: Float drift önleme — Date.now() delta bazlı zamanlama
+      const startTime = Date.now();
+      timeLeft = TIME_PER_QUESTION;
+      lastTickSecond = -1;
+      updateTimerDisplay();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        timeLeft = Math.max(0, TIME_PER_QUESTION - elapsed);
+        if (timeLeft <= 0) {
+          timeLeft = 0;
+          clearInterval(timerInterval);
+          if (!answered) handleTimeout();
+        }
+        updateTimerDisplay();
+      }, 100);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function updateTimerDisplay() {
+      const t = Math.max(0, timeLeft);
+      const ceilT = Math.ceil(t);
+      $timerText.textContent = ceilT;
+      const offset = CIRCUMFERENCE * (1 - t / TIME_PER_QUESTION);
+      $ringFg.style.strokeDashoffset = offset;
+
+      const danger = t <= 3 && t > 0;
+      $ringFg.classList.toggle('danger', danger);
+      $timerText.classList.toggle('danger', danger);
+
+      // Son 3 saniyede tik-tak uyarı sesi
+      if (danger && ceilT !== lastTickSecond) {
+        lastTickSecond = ceilT;
+        AudioFX.tick();
+      }
+    }
+
+    function handleTimeout() {
+      answered = true;
+      wrongCount++;
+      streak = 0;
+      updateStats();
+      updateStreak();
+
+      const btns = $optionsGrid.querySelectorAll('.option-btn');
+      btns.forEach(btn => {
+        btn.classList.add('disabled');
+        btn.disabled = true; // HTML seviyesinde pasifleştirme (A11y)
+        if (btn.dataset.correct === 'true') {
+          btn.classList.add('correct');
+        }
+      });
+
+      $flagCard.classList.add('glow-wrong');
+      showToastMsg("Süre doldu, maalesef zamanında yanıt verilemedi.");
+      AudioFX.wrong();
+
+      // Hata 1: Timeout ID sakla
+      clearTimeout(nextQuestionTimeout);
+      nextQuestionTimeout = setTimeout(nextQuestion, 1800);
+    }
+
+    let roundQuestions = [];
+
+    function generateQuestion() {
+      if (currentQ >= TOTAL_QUESTIONS) {
+        endGame();
+        return;
+      }
+
+      currentQ++;
+      answered = false;
+      $flagCard.classList.remove('glow-correct', 'glow-wrong');
+      $flagImg.classList.add('loading');
+
+      // 20 rastgele seçilmiş sorudan mevcut olanı al
+      const correctCountry = roundQuestions[currentQ - 1];
+      // currentCorrect kaldırıldı — kullanılmayan ölü kod (Hata 4)
+
+      $flagImg.src = ""; // Eski resmi temizle (Görsel titremesi bug'ı önlemi)
+      $flagImg.src = getFlagUrl(correctCountry.code);
+      $flagImg.alt = "Hangi ülkeye ait olduğu sorulan bayrak görseli"; // Dinamik A11y alt metni
+      // Hata 3: onerror handler eklendi
+      $flagImg.onload = () => { $flagImg.classList.remove('loading'); };
+      $flagImg.onerror = () => {
+        $flagImg.classList.remove('loading');
+        $flagImg.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="213" viewBox="0 0 320 213"><rect width="320" height="213" fill="%23e2e8f0"/><text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-size="14" fill="%2394a3b8">Bayrak yuklenemedi</text></svg>';
+        $flagImg.alt = 'Bayrak yüklenemedi';
+      };
+
+      // Kalan tüm ülkelerden 3 rastgele çeldirici seç
+      const wrongPool = cleanCountries.filter(c => c.code !== correctCountry.code);
+      const wrongPicks = shuffle(wrongPool).slice(0, 3);
+
+      const options = shuffle([
+        { name: correctCountry.name, correct: true },
+        { name: wrongPicks[0].name, correct: false },
+        { name: wrongPicks[1].name, correct: false },
+        { name: wrongPicks[2].name, correct: false }
+      ]);
+
+      const keys = ['A', 'B', 'C', 'D'];
+      $optionsGrid.innerHTML = '';
+      options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `
+          <span class="option-key">${keys[i]}</span>
+          <span class="option-text">${opt.name}</span>
+        `;
+        btn.dataset.correct = opt.correct ? 'true' : 'false';
+        btn.addEventListener('click', () => handleAnswer(btn, opt.correct));
+        $optionsGrid.appendChild(btn);
+      });
+
+      updateProgress();
+      startTimer();
+    }
+
+    function handleAnswer(btn, isCorrect) {
+      if (answered) return;
+      answered = true;
+      stopTimer();
+
+      const btns = $optionsGrid.querySelectorAll('.option-btn');
+      btns.forEach(b => {
+        b.classList.add('disabled');
+        b.disabled = true; // HTML seviyesinde pasifleştirme (A11y)
+      });
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        $flagCard.classList.add('glow-correct');
+        const timeBonus = Math.round(timeLeft * 5);
+        const qScore = 50 + timeBonus;
+        score += qScore;
+        correctCount++;
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+        showToastMsg(`Tebrikler! Doğru yanıt (+${qScore} Puan)`);
+        if (streak >= 3) {
+          if (typeof AudioFX.streak === 'function') AudioFX.streak(); // Hata 6
+        } else {
+          AudioFX.correct();
+        }
+      } else {
+        btn.classList.add('wrong');
+        $flagCard.classList.add('glow-wrong');
+        btns.forEach(b => {
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+        });
+        streak = 0;
+        wrongCount++;
+        showToastMsg("Maalesef cevabınız doğru değil.");
+        AudioFX.wrong();
+      }
+
+      updateStats();
+      updateStreak();
+      // Hata 1: Timeout ID sakla
+      clearTimeout(nextQuestionTimeout);
+      nextQuestionTimeout = setTimeout(nextQuestion, 1600);
+    }
+
+    function nextQuestion() {
+      generateQuestion();
+    }
+
+    function endGame() {
+      stopTimer();
+      $playArea.style.display = 'none';
+      $resultCard.classList.add('active');
+
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('final-correct').textContent = `${correctCount} / ${TOTAL_QUESTIONS}`;
+      document.getElementById('final-streak').textContent = maxStreak;
+
+      const $rTrophy = document.getElementById('result-trophy');
+      const $rTitle = document.getElementById('result-title');
+      const $rDesc = document.getElementById('result-desc');
+
+      if (correctCount >= 18) {
+        $rTrophy.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;margin-bottom:8px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+        $rTitle.textContent = 'Mükemmel Başarı!';
+        $rDesc.textContent = 'Dünya bayrakları konusunda tam bir uzmansınız. Harika bir performans gösterdiniz!';
+      } else if (correctCount >= 14) {
+        $rTrophy.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;margin-bottom:8px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7v2h10v-2h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`;
+        $rTitle.textContent = 'Tebrikler, Çok Başarılı!';
+        $rDesc.textContent = 'Oldukça yüksek bir coğrafya ve genel kültür bilgisi sergilediniz.';
+      } else if (correctCount >= 9) {
+        $rTrophy.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;margin-bottom:8px;"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>`;
+        $rTitle.textContent = 'Güzel Deneme!';
+        $rDesc.textContent = 'Birkaç tekrarla tüm dünya bayraklarını kolayca öğrenebilirsiniz.';
+      } else {
+        $rTrophy.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;margin-bottom:8px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`;
+        $rTitle.textContent = 'Yarışmayı Tamamladınız';
+        $rDesc.textContent = 'Bayrakları keşfetmeye devam ederek skorunuzu daha da yükseltebilirsiniz.';
+      }
+
+      AudioFX.win();
+    }
+
+    function resetGame() {
+      // Hata 1: Bekleyen tüm async işlemleri temizle
+      clearTimeout(nextQuestionTimeout);
+      clearInterval(timerInterval);
+
+      score = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      currentQ = 0;
+      streak = 0;
+      maxStreak = 0;
+      answered = false;
+
+      roundQuestions = shuffle(cleanCountries).slice(0, TOTAL_QUESTIONS);
+
+      updateStats();
+      updateStreak();
+
+      $resultCard.classList.remove('active');
+      $playArea.style.display = 'block';
+      generateQuestion();
+    }
+
+    // Klavye kısayolları
+    document.addEventListener('keydown', e => {
+      // Hata 2: Kurallar modalı açıkken klavye şık seçimini engelle
+      if ($modal && $modal.classList.contains('open')) return;
+      if (answered || $playArea.style.display === 'none') return;
+      const key = e.key.toUpperCase();
+      const btns = $optionsGrid.querySelectorAll('.option-btn');
+      if (['A', '1'].includes(key) && btns[0]) btns[0].click();
+      if (['B', '2'].includes(key) && btns[1]) btns[1].click();
+      if (['C', '3'].includes(key) && btns[2]) btns[2].click();
+      if (['D', '4'].includes(key) && btns[3]) btns[3].click();
+    });
+
+    // Modal Butonları
+    const $modal = document.getElementById('rulesModal');
+    document.getElementById('rulesBtn').addEventListener('click', () => { AudioFX.click(); $modal.classList.add('open'); });
+    document.getElementById('rulesCloseBtn').addEventListener('click', () => { AudioFX.click(); $modal.classList.remove('open'); });
+    $modal.addEventListener('click', e => { if (e.target === $modal) $modal.classList.remove('open'); });
+
+    document.getElementById('restartBtn').addEventListener('click', () => { AudioFX.click(); resetGame(); });
+    document.getElementById('playAgainBtn').addEventListener('click', () => { AudioFX.click(); resetGame(); });
+
+    // Başlat
+    document.addEventListener('DOMContentLoaded', resetGame);
+  </script>
+</body>
+</html>

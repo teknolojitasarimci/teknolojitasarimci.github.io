@@ -444,9 +444,6 @@
             background-repeat: no-repeat;
             flex-shrink: 0;
         }
-        body.dark .btn::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
-        }
 
     /* Kazanma / Zafer Bildirimi */
     .win-banner {
@@ -854,18 +851,7 @@
 
 
 
-      <!-- Yorumlar Bölümü -->
-      <div class="comments-section">
-        <h3 class="comments-header-title">Yorumlar</h3>
-        <div id="commentsList" class="comments-list">
-          <p class="no-comments">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
-        </div>
-        <form id="commentForm" class="comment-form" onsubmit="submitComment(event)">
-          <input type="text" id="commentName" placeholder="Adınız Soyadınız" required class="comment-input">
-          <textarea id="commentText" placeholder="Yorumunuzu yazın..." required class="comment-textarea" rows="3"></textarea>
-          <button type="submit" class="btn btn-primary" style="margin: 10px auto 0; display: block;">Yorum Gönder</button>
-        </form>
-      </div>
+
 
     </div>
   </div>

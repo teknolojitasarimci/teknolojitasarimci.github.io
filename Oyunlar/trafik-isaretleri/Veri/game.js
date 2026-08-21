@@ -417,7 +417,7 @@ function handleAnswer(code, btn) {
         roundResults[round - 1] = 'wrong';
         updateProgress();
         if (fb) {
-            fb.innerHTML = 'Maalesef, cevabınız doğru değildir. Doğru cevap <strong>"' + currentQuestion.name + '"</strong> olmalıydı.';
+            fb.innerHTML = 'Maalesef cevabınız doğru değil. Doğru cevap: <strong>"' + currentQuestion.name + '"</strong>';
             fb.style.background = '#fee2e2';
             fb.style.color = '#b91c1c';
             fb.style.display = 'block';
@@ -446,7 +446,7 @@ function endGame() {
     const correct = roundResults.filter(r => r === 'correct').length;
     const wrong = roundResults.filter(r => r === 'wrong').length;
     document.getElementById('score-circle').textContent = score;
-    let detail = MAX_ROUNDS + ' soruda ' + correct + ' doğru, ' + wrong + ' yanlış cevap verdiniz.';
+    let detail = MAX_ROUNDS + ' sorudan ' + correct + ' tanesini doğru yanıtladınız.';
     if (timedOut > 0) detail += ' Süre dolduğu için ' + timedOut + ' soruya cevap veremediniz.';
     document.getElementById('result-detail').textContent = detail;
     playSound('win');

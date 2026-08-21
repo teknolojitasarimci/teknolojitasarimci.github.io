@@ -245,9 +245,6 @@
             background-repeat: no-repeat;
             flex-shrink: 0;
         }
-        body.dark .btn::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
-        }
     .overlay-card .btn:hover {
       background: #0369a1 !important;
       transform: translateY(-2px);
@@ -442,10 +439,10 @@
     <div class="modal">
       <h2>Tırtıl Kuralları</h2>
       <ol>
-        <li>Tırtılı bahçe içinde yönlendirerek leziz kırmızı meyveleri topla.</li>
-        <li>Her yediğin meyve sana <strong>+10 Puan</strong> kazandırır ve tırtılın gövdesini 1 boğum uzatır.</li>
-        <li><strong>Kapalı Engeller</strong>: <em>Engelli</em> veya <em>Labirent</em> modunu seçtiğinde bahçede gri taş bloklar oluşur. Dış duvarlara, kendi gövdene veya bu kapalı engellere çarparsan oyun biter.</li>
-        <li>Yönlendirme için <strong>Ok Tuşlarını</strong>, <strong>W-A-S-D</strong> tuşlarını veya dokunmatik ekranda parmağını kaydırabilirsin.</li>
+        <li>Tırtılı bahçe içinde yönlendirerek leziz kırmızı meyveleri toplayınız.</li>
+        <li>Toplanan her meyve <strong>+10 Puan</strong> kazandırır ve tırtılın gövdesini 1 boğum uzatır.</li>
+        <li><strong>Kapalı Engeller</strong>: <em>Engelli</em> veya <em>Labirent</em> modunu seçtiğinizde bahçede gri taş bloklar oluşur. Dış duvarlara, kendi gövdenize veya bu kapalı engellere çarparsanız oyun biter.</li>
+        <li>Yönlendirme için <strong>Ok Tuşlarını</strong>, <strong>W-A-S-D</strong> tuşlarını kullanabilir veya dokunmatik ekranda parmağınızı kaydırabilirsiniz.</li>
       </ol>
       <button class="modal-close" id="rulesClose">Anladım, Kapat</button>
       <!-- Hızlı Paylaşım & Araç Barı -->
@@ -549,12 +546,21 @@
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
 
+      const LOGICAL_SIZE = 600;
+      function setupCanvasDPI() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = LOGICAL_SIZE * dpr;
+        canvas.height = LOGICAL_SIZE * dpr;
+        ctx.scale(dpr, dpr);
+      }
+      setupCanvasDPI();
+
       const scoreBadge = document.getElementById('scoreBadge');
       const lengthBadge = document.getElementById('lengthBadge');
       const highBadge = document.getElementById('highBadge');
 
       const GRID_COUNT = 25;
-      const CELL_SIZE = canvas.width / GRID_COUNT; // 20px per cell
+      const CELL_SIZE = LOGICAL_SIZE / GRID_COUNT;
 
       const SPEEDS = {
         slow: 240,
@@ -737,11 +743,11 @@
       }
 
       function draw(body, now, progress) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
 
         const isDark = document.body.classList.contains('dark');
         ctx.fillStyle = isDark ? '#0f172a' : '#ecfdf5';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, LOGICAL_SIZE, LOGICAL_SIZE);
 
         // Izgara Hatları (Net ve Ferah)
         ctx.strokeStyle = isDark ? 'rgba(51, 65, 85, 0.4)' : 'rgba(16, 185, 129, 0.14)';
@@ -749,11 +755,11 @@
         for (let i = 0; i <= GRID_COUNT; i++) {
           ctx.beginPath();
           ctx.moveTo(i * CELL_SIZE, 0);
-          ctx.lineTo(i * CELL_SIZE, canvas.height);
+          ctx.lineTo(i * CELL_SIZE, LOGICAL_SIZE);
           ctx.stroke();
           ctx.beginPath();
           ctx.moveTo(0, i * CELL_SIZE);
-          ctx.lineTo(canvas.width, i * CELL_SIZE);
+          ctx.lineTo(LOGICAL_SIZE, i * CELL_SIZE);
           ctx.stroke();
         }
 

@@ -335,9 +335,6 @@
             background-repeat: no-repeat;
             flex-shrink: 0;
         }
-        body.dark .btn::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
-        }
     .btn-primary {
       background: #0284c7;
       color: #fff;
@@ -1335,7 +1332,7 @@
 
       if (!over) {
         const ts = turn === 'w' ? 'Beyaz' : 'Siyah';
-        setSt(inChk(turn) ? `Dikkat: ${ts} şahta!` : gameMode === 'pvp' ? `Sıra: ${ts}` : turn === playerColor ? 'Senin sıran' : 'Yapay Zeka düşünüyor...');
+        setSt(inChk(turn) ? `Dikkat: ${ts} şahta!` : gameMode === 'pvp' ? `Sıra: ${ts}` : turn === playerColor ? 'Sıra Sizde' : 'Yapay Zeka düşünüyor...');
       }
     }
 

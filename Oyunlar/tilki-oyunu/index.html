@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Tilki ve Yumurtalar - Dört rampadan yuvarlanan yumurtaları sepetinle yakalama refleksi oyunu.">
+  <meta name="description" content="Tilki ve Yumurtalar - Dört rampadan yuvarlanan yumurtaları sepetinizle yakalama refleksi oyunu.">
   <title>Tilki ve Yumurtalar - teknolojitasarimci</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
@@ -443,9 +443,6 @@
             background-repeat: no-repeat;
             flex-shrink: 0;
         }
-        body.dark .btn::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
-        }
     .btn-primary {
       background: #0284c7;
       color: #fff;
@@ -539,6 +536,20 @@
       background: #0f172a !important;
       border-color: #38bdf8 !important;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    }
+    body.dark .arena-overlay {
+      background: rgba(15, 23, 42, 0.65) !important;
+    }
+    body.dark .arena-card {
+      background: rgba(30, 41, 59, 0.96) !important;
+      border-color: #334155 !important;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+    }
+    body.dark .arena-card h2 {
+      color: #38bdf8 !important;
+    }
+    body.dark .arena-card p {
+      color: #cbd5e1 !important;
     }
     body.dark .modal {
       background: #1e293b !important;
@@ -657,15 +668,15 @@
     <div class="modal">
       <h2>Tilki ve Yumurtalar Kuralları</h2>
       <ol>
-        <li>Dört ayrı rampadan aşağı doğru yuvarlanan yumurtaları sepetinle yakala.</li>
-        <li>Tilkiyi yönlendirmek için ekrandaki rampalara doğrudan tıklayabilir veya klavyenden <strong>Ok Tuşlarını (↑, ↓, ←, →)</strong>, <strong>W, A, S, D</strong> ve <strong>Q, A, E, D</strong> tuşlarını kullanabilirsin.</li>
+        <li>Dört ayrı rampadan aşağı doğru yuvarlanan yumurtaları sepetinizle yakalayınız.</li>
+        <li>Tilkiyi yönlendirmek için ekrandaki rampalara doğrudan tıklayabilir veya klavyenizden <strong>Ok Tuşlarını (↑, ↓, ←, →)</strong>, <strong>W, A, S, D</strong> ve <strong>Q, A, E, D</strong> tuşlarını kullanabilirsiniz.</li>
         <li><strong>Klasik Yumurta (Beyaz)</strong>: Her yakalanan normal yumurta <strong>+1 Puan</strong> kazandırır.</li>
         <li><strong>Nadir Altın Yumurta (Sarı)</strong>: Çok nadir gelir; yakalandığında <strong>+5 Puan</strong> ve <strong>+1 Ekstra Can</strong> kazandırır (Canlar sınırsız birikebilir).</li>
         <li><strong>Pembe Yumurta (Hız Yavaşlatıcı)</strong>: Oyunun giderek artan zorluk seviyesini ve akış hızını <strong>kalıcı olarak yavaşlatır (1 kademe düşürür)</strong> ve +2 Puan kazandırır.</li>
         <li><strong>Buzul Yumurtası (Mavi - Ağır Çekim)</strong>: Yakalandığında <strong>6 saniye boyunca oyunu %50 yavaşlatır</strong> ve yumurtaların ağır çekimde akmasını sağlar.</li>
         <li><strong>Yıldız Yumurtası (Mor - 2X Çift Puan)</strong>: Yakalandığında <strong>6 saniye boyunca toplanan tüm yumurtalardan 2 kat puan</strong> kazandırır!</li>
-        <li><strong>Bozuk Yumurta (Çürük Yeşil - TUTMA!)</strong>: Bu yumurta çürük ve bozuktur! Sepetle <strong>tutarsan 1 can kaybedersin</strong>. Sepetini çekip yere düşüp kırılmasına izin verirsen <strong>civciv çıkmaz, canın gitmez ve bozuk yumurtayı atlatmış olursun!</strong></li>
-        <li>Normal yumurtaları kaçırdığında kırılır ve 1 can hakkı kaybedersin (Başlangıçta 3 can).</li>
+        <li><strong>Bozuk Yumurta (Çürük Yeşil - Tutmayınız!)</strong>: Bu yumurta çürük ve bozuktur! Sepetle <strong>tutarsanız 1 can kaybedersiniz</strong>. Sepetinizi çekip yere düşüp kırılmasına izin verirseniz <strong>can hakkınız gitmez ve bozuk yumurtayı atlatmış olursunuz!</strong></li>
+        <li>Normal yumurtaları kaçırdığınızda kırılır ve 1 can hakkı kaybedersiniz (Başlangıçta 3 can).</li>
         <li><strong>2 Oyuncu Modu</strong>: Sırayla oynanır; en çok yumurta toplayan taraf oyunu kazanır.</li>
       </ol>
       <button class="modal-close" id="rulesClose">Anladım, Oyuna Başla</button>
@@ -2425,11 +2436,11 @@
                   floatingTexts.push({
                     x: r.catchBox.x,
                     y: r.catchBox.y - 14,
-                    text: `-1 CAN! BOZUK YUMURTAYI TUTTUN!`,
+                    text: `-1 CAN! BOZUK YUMURTA TUTULDU!`,
                     color: '#65a30d',
                     life: 1.3
                   });
-                  showEggAlert('danger', '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <b>Bozuk Yumurta!</b> Çürük yumurtayı tuttun, 1 can kaybettin!');
+                  showEggAlert('danger', '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <b>Bozuk Yumurta!</b> Çürük yumurtayı tuttunuz, 1 can kaybettiniz!');
                   updateUI();
                   if (lives <= 0) {
                     gameOver();

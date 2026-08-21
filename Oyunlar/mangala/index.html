@@ -924,7 +924,7 @@ body.dark .mode-selector, body.dark .mode-row, body.dark .controls, body.dark .c
 
       <!-- P1 Treasury (Right) -->
       <div class="treasury p1">
-        <div class="treasury-title">Senin Hazine</div>
+        <div class="treasury-title">Hazineniz</div>
         <div class="treasury-count" id="t1">0</div>
       </div>
     </div>
@@ -1189,7 +1189,7 @@ function checkCaptures(landIdx, player){
       t1 += pits[landIdx];
       pits[landIdx] = 0;
       try{ GameSounds.capture(); }catch(e){}
-      msgBanner.textContent = 'Çift kuralı! Rakibin kuyusundaki taşları aldın.';
+      msgBanner.textContent = 'Çift kuralı! Rakibin kuyusundaki taşları aldınız.';
     }
   } else if(player === 2 && landIdx >= 0 && landIdx <= 5){
     if(pits[landIdx] % 2 === 0){
@@ -1207,7 +1207,7 @@ function checkCaptures(landIdx, player){
       pits[landIdx] = 0;
       pits[oppIdx] = 0;
       try{ GameSounds.capture(); }catch(e){}
-      msgBanner.innerHTML = '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5" fill="#b45309" stroke="none"/></svg> Kuyu kapma! Karşı kuyudaki taşları kazandın.';
+      msgBanner.innerHTML = '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5" fill="#b45309" stroke="none"/></svg> Kuyu kapma! Karşı kuyudaki taşları kazandınız.';
     }
   } else if(player === 2 && landIdx >= 6 && landIdx <= 11 && pits[landIdx] === 1){
     const oppIdx = 11 - landIdx;

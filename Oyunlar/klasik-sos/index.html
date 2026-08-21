@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klasik SOS Oyunu - teknolojitasarimci</title>
+    <title>SOS (Klasik) - teknolojitasarimci</title>
     <link rel="stylesheet" href="../../css/style.css">
     <style>
         :root {
@@ -886,7 +886,7 @@ body.dark .mode-selector, body.dark .mode-row, body.dark .controls, body.dark .c
     <!-- Site Üst Menüsü --><div class="game-wrapper">
         <div class="game-container">
             <div class="header-row">
-                <h1>Klasik SOS</h1>
+                <h1>SOS (Klasik)</h1>
                 <button class="action-btn" id="rulesBtn">Kurallar</button>
             </div>
             <div class="subtitle">Yatay, dikey veya çapraz SOS oluştur, puanları topla</div>
@@ -1253,7 +1253,7 @@ body.dark .mode-selector, body.dark .mode-row, body.dark .controls, body.dark .c
             }catch(e){}
             let msg = '';
             if(vsAI){
-                if(scores.p1 > scores.p2) msg = 'Tebrikler, Kazandın!';
+                if(scores.p1 > scores.p2) msg = 'Tebrikler, Kazandınız!';
                 else if(scores.p2 > scores.p1) msg = 'Yapay Zeka Kazandı!';
                 else msg = '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> Berabere Bitti!';
             } else {

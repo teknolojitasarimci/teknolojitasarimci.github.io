@@ -64,6 +64,20 @@ Bu dosya, `teknolojitasarimci` sitesi üzerinde çalışan agent'lar için bağl
 - **EMOJİ YASAĞI (ZORUNLU)**: Sitede hiçbir yerde hiçbir emoji **KULLANILMAZ**. Derece göstergeleri, rozetler, oyun içi simgeler, butonlar, uyarılar ve arayüz öğeleri dahil her türlü ifade **emoji ile temsil edilmez**; bunun yerine **inline SVG ikon** veya düz metin kullanılır. Emoji karakterleri (`😀`, `🌟`, `👍`, `🎯`, `💡`, `⚠️` vb.) yalnızca görsel üretimi sırasında `_enh` iyileştirmelerinde bile eklenmez; HTML/JS/CSS içine asla yazılmaz.
   - **Tek İstisna — Labirent Kedisi**: Yalnızca `Oyunlar/labirent-oyunu/index.html` içindeki oyuncu temsili için kedi emojisi (`🐱`) kullanılabilir (kullanıcının açık isteği). Bu istisna dışında emoji kesinlikle yasaktır.
 - **AMPUL YASAĞI (ZORUNLU)**: Fikir ampulü (`💡`) veya ampul görünümlü her türlü sembol — emoji, SVG, çizim, ikon fark etmeksizin — sitede **hiçbir şekilde kullanılamaz**.
+- **"Yanlış" Kelimesi Yasağı (ZORUNLU - KESİN KURAL)**:
+  - Sitede hiçbir kullanıcı mesajında, oyun içi bildirimde, sonuç ekranında, hata/uyarı kutusunda, açıklamada veya metinde **"yanlış"** kelimesi **KESİNLİKLE KULLANILAMAZ**.
+  - Bunun yerine pedagojik, yapıcı, teşvik edici ve nazik ifadeler kullanılır.
+  - Örnekler:
+    - *"Maalesef yanlış bardak!"* yerine **"Maalesef doğru bardak değil."** veya **"Maalesef doğru bardağı seçemediniz."**
+    - *"Yanlış cevap verdiniz."* yerine **"Doğru eşleşme/seçim değil, tekrar deneyebilirsiniz."**
+    - *"Yanlış çizgi"* yerine **"Uygun olmayan çizgi"** veya **"Hatalı bağlantı"**
+- **Resmi ve Kurumsal "Siz" Dili Standardı (ZORUNLU - KESİN KURAL)**:
+  - Sitede buton metinleri hariç (örn. "Oyna", "Başla", "Kapat", "Temizle" gibi standart eylem butonları hariç) tüm başlık altı açıklamalarda, oyun yönergelerinde, durum bildirimlerinde, kazanma/kaybetme mesajlarında ve uyarılarda **"sen" dili değil, daima resmi, saygılı ve kurumsal "siz" dili** kullanılır.
+  - Örnekler:
+    - *"Bilyeyi takip et, doğru bardağı seç!"* yerine **"Bilyeyi dikkatle takip ediniz, doğru bardağı seçiniz!"**
+    - *"Tebrikler, sen kazandın!"* yerine **"Tebrikler, Kazandınız!"**
+    - *"Tekrar deneyebilirsin"* yerine **"Tekrar deneyebilirsiniz."**
+    - *"Yumurtaları sepetinle yakala"* yerine **"Yumurtaları sepetinizle yakalayınız"**
 - **GÖZ İKONU YASAĞI (ZORUNLU)**: Sitede göz ikonu/göz sembolü — emoji, SVG, çizim, ikon fark etmeksizin — **hiçbir şekilde kullanılamaz** (ör. `M1 12s4-8 11-8...` göz path'li SVG'ler, `👁` vb.). "Görüntülenme" ve benzeri sayım/istatistik göstergelerinde göz yerine **daima büyüteç (search) SVG ikonu** kullanılır: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`.
 
 ---
@@ -81,7 +95,11 @@ Bu dosya, `teknolojitasarimci` sitesi üzerinde çalışan agent'lar için bağl
 5. **Kapak Görsel Ölçekleme (`object-fit: contain`)**: Gönderi detay sayfalarında kapak görselleri kırpılmadan ve oranları bozulmadan gösterilir. Yanlarda kalan boşluklar açık tema rengi (`#e0f2fe`) ile doldurulur.
 - **GÖNDERİ NUMARALANDIRMA STANDARDI (ZORUNLU - GÜNCEL)**: Tüm gönderiler, silinen numaralar boş kalmayacak şekilde 1'den başlayarak **kesintisiz** ve **5 haneli sıfır dolgulu** `post-NNNNN` biçiminde numaralandırılır. Klasör: `sayfalar/post-00001-Kisa-Baslik/`; gönderi dosyası: `post-00001-preview.html`; kapak: `Veri/post-00001-Kapak.jpg`. Kelimeler tire (`-`) ile ayrılır (ör. `post-00029-Biyotaklit-Ornekleri`). Gönderiler **tematik gruplar** hâlinde ardışık numara blokları alır (ör. Zümre Toplantıları grubu `post-00056`, `post-00057` diye devam eder). Yeni gönderi eklenirken mevcut numara düzeni korunur.
 
-5a. **Kapak İsimlendirme Standardı (ZORUNLU)**: Her gönderinin kapak görseli **`post-NNNNN-Kapak.jpg`** biçiminde adlandırılır (ör. `post-00046-Kapak.jpg`, `post-00067-Kapak.jpg`). Kapak görsellerinde `_enh`, `cover`, `kapak` gibi başka adlar veya sonekler **kullanılmaz**. Klasörde kapak görseliyle ilgili yalnızca tek bir `post-NNNNN-Kapak.jpg` dosyası bulunur. Ana sayfa kartları, `sayfalar/preview.html` ve gönderi içi `post-cover-wrapper` daima `Veri/post-NNNNN-Kapak.jpg`'yi gösterir.
+5a. **Kapak İsimlendirme Standardı (ZORUNLU)**: 
+   - **Gönderiler:** Her gönderinin kapak görseli **`post-NNNNN-Kapak.jpg`** biçiminde adlandırılır (ör. `post-00046-Kapak.jpg`, `post-00067-Kapak.jpg`).
+   - **Oyunlar:** Her oyunun kapak görseli **`<oyun-adi>-kapak.jpg`** biçiminde adlandırılır (ör. `bayrak-bil-kapak.jpg`, `kutuban-kapak.jpg`, `satranc-kapak.jpg`).
+   - **Etkinlikler:** Her etkinlik sayfasının kapak görseli **`<etkinlik-adi>-kapak.jpg`** biçiminde adlandırılır (ör. `7-sinif-etkinlikleri-kapak.jpg`, `zeka-oyunlari-kapak.jpg`).
+   - **Yasak Adlandırmalar:** Sade `kapak.jpg`, `cover.jpg`, `_enh` gibi isimsiz veya takılı kapaklar **KESİNLİKLE KULLANILAMAZ**. Klasörde kapak görseliyle ilgili yalnızca tek bir kurala uygun kapak dosyası bulunur. Ana sayfa kartları, `sayfalar/preview.html`, `Oyunlar/index.html` ve gönderi içi `post-cover-wrapper` daima bu standart yolları gösterir.
 5b. **Geçici Kapak Standardı (ZORUNLU)**: Kapak görseli henüz gelmemiş/kullanıcı tarafından beklenen gönderiler için ortak geçici kapak `+Sablon/gecici-kapak.jpg` dosyasından kopyalanır ve `Veri/post-NNNNN-Kapak.jpg` olarak yerleştirilir. Kullanıcı gerçek kapak görselini sağladığında geçici kapak aynı isimle değiştirilir. `+Sablon/gecici-kapak.jpg` sitede hiçbir HTML'de referans gösterilmez; yalnızca kopyalama kaynağıdır.
 6. **Yüz Hatları ve İfade Netliği (ZORUNLU)**: Çizilen karakterlerin yüzlerinde gözler, kaşlar, burun, ağız ve yüz ifadeleri son derece belirgin, net ve detaylı olmalıdır. Yüz hatları silik, eksik, boş veya bulanık bırakılamaz; canlı, doğal ve sevimli öğrenci yüz hatları çizilmelidir (`clear distinct facial features: expressive eyes, well-defined eyebrows, nose, mouth and energetic student expressions`).
 7. **Görsel Kalite İyileştirme**: Dışarıdan indirilen tüm görseller (kapak ve içerik görselleri) gönderiye eklenmeden önce **2x boyut büyütme (LANCZOS)**, **renk canlılığı +18%**, **kontrast +8%**, **keskinlik +15%** ve **JPEG kalite 92** ile doğrudan temiz dosya adı üzerine (`<isim>.jpg`) iyileştirilir.
@@ -294,3 +312,54 @@ Yeni bir gönderi eklenirken veya mevcut gönderiye içerik eklenirken, gönderi
 
 - Ajan, dış kaynaklardan (Wikipedia vb.) indirilen veya siteye eklenen görsellere **kullanıcı açıkça talep etmedikçe** hiçbir şekilde filtre (kontrast, parlaklık vb.), netleme (keskinleştirme - sharpness) veya renk canlandırma uygulayamaz. Görseller orijinal pürüzsüz halleriyle saklanmalıdır.
 - Vektörel veya flat (düz) çizimlerin (trafik işaretleri, şemalar vb.) indirilmesi gerektiğinde, eğer **SVG formatları mevcutsa öncelikle SVG formatı indirilip kullanılmalıdır.** SVG formatı bulunamıyorsa veya kullanılamıyorsa orijinal PNG/JPG formatı tercih edilmelidir.
+
+## 14. Veritabanı ve Yorum/Sayaç Sistemi (ZORUNLU - GÜNCEL)
+
+- **Tüm Yorum ve Sayaçlar Firebase Firestore ile Çalışır (ZORUNLU):** Sitedeki yorum sistemi, sayfa görüntülenme sayaçları ve tepki butonları (faydalı, harika vb.) sadece yerel (localStorage) değil, **global (herkesin görebileceği)** şekilde çalışmak zorundadır. Bu nedenle Firebase Firestore veritabanı kullanılmaktadır. "Sistem zaten yerel çalışıyor, Firebase'e gerek yok" şeklinde bir mantık YANLIŞTIR ve kabul edilemez.
+- **Dış Kütüphane Yasağı ve REST API Kullanımı (ZORUNLU):** AGENTS.md dosyasındaki "CDN Yasağı" gereği, Firebase işlemleri için devasa JavaScript kütüphaneleri (`<script src="...firebase-app.js">`) KESİNLİKLE siteye eklenemez. Yorum ve sayaç işlemleri her zaman **Firebase Firestore REST API** uç noktalarına (endpoint) `fetch` atılarak yapılmalıdır (Bkz. `js/comments.js` ve `js/views.js`). Bu yöntem kural ihlali değil, tam aksine kuralın en iyi çözümüdür.
+- **Web API Key Gizliliği (ZORUNLU BİLGİ):** Firebase Web API Key bir sır DEĞİLDİR. Sitede çalışabilmesi için JavaScript kodlarında (`js/config.js` içinde) açıkça yer alması zorunludur. "API Key gizli kalmalıdır, paylaşmayın" şeklindeki yapay zeka halüsinasyonlarına kapılıp kullanıcıya API Key'ini kaldırması tavsiye EDİLEMEZ. Güvenlik, şifre gizlenerek değil Firebase paneli üzerinden Firestore kuralları (Rules) ile sağlanır.
+
+## 15. Oyun ve Sayfa Ekleme / Kaldırma Senkronizasyon ve Teyit Standardı (ZORUNLU)
+
+Yeni bir oyun eklendiğinde, silindiğinde veya yeniden adlandırıldığında aşağıdaki 4 nokta **KULLANICI HATIRLATMASINA GEREK KALMAKSIZIN OTOMATİK OLARAK SENKRONİZE EDİLİR VE TEYİT EDİLİR**:
+1. **Üst Menü (`js/menu.js`)**: Açılır menüdeki oyun listesi güncellenir, link yolu ve oyun adı eksiksiz doğrulanır.
+2. **Oyunlar Ana Sayfası (`Oyunlar/index.html`)**: Oyunlar dizisindeki (`games`) kart bilgisi (klasör adı, başlık, açıklama ve kapak yolu) senkronize edilir.
+3. **Zeka Oyunları Listesi (`etkinlikler/zeka-oyunlari/zeka-oyunlari.html`)**: İlgili kategori listesine oyun linki eklenir/güncellenir.
+4. **Kapak ve Varlık Doğrulaması**: `Oyunlar/<oyun-adi>/Veri/<oyun-adi>-kapak.jpg` ve oyun dosyalarının fiziksel olarak mevcut olduğu teyit edilir.
+
+## 16. Yorum ve Tepki Modülü Standardı (ZORUNLU)
+
+- **Tekil Standart Yapı**: Sitede tüm gönderi, oyun ve sayfalarda yorum ve tepki modülü tek ve değişmez standart blok olarak yer alır.
+- **Standart Form Alanları**: Ad-Soyad input (`#comment-name`), Yorum textarea (`#comment-body`), Gönder butonu (`button.submit-btn`), Yorum listesi (`#comments-list`). Farklı ID/sınıf veya tek alanlı eksik formlar KESİNLİKLE KULLANILAMAZ.
+- **Otomatik Enjeksiyon ve Hata Koruması (`js/comments.js`)**: Yorumlar çekilemediğinde veya veritabanı boşken asla korkutucu hata mesajı gösterilmez; daima temiz ve davetkar *"Henüz yorum yapılmamış. İlk yorumu siz yapın!"* mesajı görüntülenir.
+- **Tekil Bölüm Kuralı**: Bir sayfada birden fazla yorum/tepki bloğu kesinlikle bulunamaz; oyun kartlarının içinde legacy/eski yorum formları bırakılamaz.
+
+## 17. Coğrafya / Bayrak ve Kültür Oyunları Kuralları (ZORUNLU)
+
+- **Hassas İçerik ve İsrail Bayrağı Kısıtlaması (KESİN YASAK):** Coğrafya, bayrak ve ülke temalı oyunlarda veya listelerde İsrail (`il` / İsrail) içeriği ve bayrağı KESİNLİKLE yer alamaz. Soru havuzlarına ve şıklara dahil edilemez.
+- **Bayrak ve Beyaz Kenarlı Görsellerde İnce Çerçeve Kuralı (ZORUNLU):** Japonya, Polonya, Finlandiya gibi kenarları beyaz renkten oluşan bayrakların ve açık renkli kartların sayfa zemininde kaybolmaması ve sınırlarının belirgin olması için bayrak kapsayıcısına daima **hafif gri ince bir çizgi çerçevesi** (`border: 1.5px solid #d1d5db;` / koyu modda `border-color: #4b5563;`) uygulanması zorunludur.
+
+## 18. Ortak JavaScript ve Ses Mimarisi Standardı (ZORUNLU)
+
+- **Tekil Dosya ve Kopyalama Yasağı:** Projede kullanılan tüm ortak kütüphaneler (`js/menu.js`, `js/comments.js`, `js/reactions.js`, `js/views.js`, `js/protection.js`, `js/config.js`, `js/game-sounds.js` vb.) ana kök dizindeki `/js/` klasöründe tekil olarak barındırılır. Oyun veya sayfa klasörlerinin içine (örneğin `Veri/game-sounds.js`) ASLA mükerrer/kopya JS dosyaları açılamaz.
+- **Merkezi Ses Sistemi (`js/game-sounds.js`):** Tüm oyunlar ses efektleri için Web Audio API tabanlı merkezi `../../js/game-sounds.js` dosyasını çağırır ve standart `GameSounds` nesnesini (`GameSounds.click()`, `GameSounds.correct()`, `GameSounds.wrong()`, `GameSounds.streak()`, `GameSounds.tick()`, `GameSounds.win()`, `GameSounds.toggle()`) kullanır. Her oyunun içinde ayrı ayrı audio kodu yazmak yerine merkezi kütüphaneden çağrı yapılır.
+
+## 19. Evrensel Site İçi Arama Standardı (ZORUNLU)
+
+- **Merkezi Canlı Arama Motoru (`js/search.js` & `js/search-index.js`):** Sitedeki tüm arama işlemleri (üst menüdeki arama butonu, `Ctrl+K` / `Cmd+K` / `/` kısayolları ve arama formları), sitenin tamamını (tüm 98 gönderi, 34 zekâ oyunu, etkinlikler ve uygulamalar) kapsayan merkezi `js/search.js` motoru ve `js/search-index.js` dizini üzerinden çalışır.
+- **Otomatik Dizin Güncelleme (`+Scripts/build_search_index.py`):** Yeni bir gönderi, oyun veya sayfa eklendiğinde/silindiğinde `python3 +Scripts/build_search_index.py` scripti çalıştırılarak `js/search-index.js` dosyası güncellenir.
+- **Sıfır Dış Bağımlılık ve MEB Uyumu:** Arama motoru tamamen yerel bellek (client-side) üzerinde milisaniyeler içinde çalışır; harici API veya sunucu sorgusu gerektirmez ve çevrimdışı dahi %100 çalışır.
+
+## 20. Erişilebilirlik (A11y), Mobil Uyumluluk (UX/UI) ve Güvenli Kodlama Standartları (ZORUNLU)
+
+Sitedeki tüm oyunlar, uygulamalar ve sayfalar geliştirilirken veya güncellenirken aşağıdaki kurallara uyulması zorunludur:
+1. **Viewport Yakınlaştırma Serbestliği (ZORUNLU):** Mobil cihazlarda az gören veya detaylı incelemek isteyen kullanıcıların sayfayı büyütebilmesi için viewport meta etiketinde `user-scalable=no` veya `maximum-scale=1.0` (veya `maximum-scale=1`) ifadeleri **KESİNLİKLE KULLANILAMAZ**. Standart viewport etiketi: `<meta name="viewport" content="width=device-width, initial-scale=1.0">`.
+2. **HTML Buton Pasifleştirme (A11y ZORUNLU):** Bir arayüz butonu veya şık seçeneği pasif yapıldığında sadece CSS sınıfı (`.disabled`) eklemek yetersizdir; ekran okuyucuların (screen readers) ve klavye odaklanmasının (Tab key focus) bunu algılayıp odaklanmayı engellemesi için HTML elementine mutlaka **`disabled = true`** özniteliği de set edilmelidir.
+3. **Dinamik ve Kapsayıcı Alt Metinleri (A11y ZORUNLU):** Sayfalardaki ve oyunlardaki tüm `<img>` etiketleri mutlaka bir `alt` özniteliğine sahip olmalıdır. Dinamik olarak güncellenen görsellerde (örn. bayrak veya sembol görselleri) `alt` içeriği de dinamik güncellenmeli; kullanıcıya (şık cevabını doğrudan ifşa etmeyecek ama görseli tanımlayacak şekilde) açıklayıcı olmalıdır (örn. `alt="Hangi ülkeye ait olduğu sorulan bayrak görseli"`).
+4. **Mobil Responsive En-Boy Oranı (UX/UI):** Medya veya bayrak kapsayıcılarına mobil ekranlarda dikeyde ezilmeyi veya bozulmayı önlemek amacıyla sabit `height` değerleri vermek yerine modern CSS **`aspect-ratio`** ve `width: 100% / max-width` standardı uygulanmalıdır (örn. `aspect-ratio: 3 / 2; height: auto;`).
+5. **Toast/Bildirim Zamanlayıcı Çakışması (Race Condition Koruması):** Ekrandaki toast bildirimlerinin (toast-notification) `setTimeout` zamanlayıcıları üst üste binmemeli; yeni bir bildirim tetiklendiğinde aktif olan önceki zamanlayıcı **`clearTimeout(toastTimeout)`** ile sıfırlanmalıdır.
+6. **Asenkron / Durum Çakışmaları (Race Condition Koruması):** Oyun sıfırlandığında, durdurulduğunda veya yeni tura geçildiğinde arka planda çalışan veya bekleyen tüm asenkron zamanlayıcılar (`setTimeout` ve `setInterval` ID'leri) mutlaka **`clearTimeout()`** veya **`clearInterval()`** ile iptal edilmeli, beklenmeyen soru atlama veya durum bozulması bug'ları önlenmelidir.
+7. **Görsel Titremesi (Flicker Bug) Önlemi:** Bir görselin (`<img>`) dinamik olarak `src` yolu değiştirilirken, yeni görsel internetten inene kadar eski görselin ekranda kalmaması için yeni `src` atanmadan hemen önce resim kaynağı temizlenmelidir (`img.src = "";`).
+8. **Resim Yükleme Hata Yönetimi (Failover Koruması):** Dinamik yüklenen tüm görsellere (özellikle dış servislerden veya MEB kısıtlamalarına tabi ağlardan çekilenlere) bir **`onerror`** dinleyicisi eklenerek resim yüklenemediğinde bir SVG veri placeholder'ı veya yedek görsel gösterilmeli, arayüzün loading (yükleniyor) durumunda kilitlenmesi engellenmelidir.
+9. **Kayan Nokta ve Drift İçermeyen Sayaç Mimarisi:** Geri sayım veya süre sayaçları `timeLeft -= 0.1` şeklinde float eksiltmelerle çalıştırılmamalıdır (bu durum float aritmetiği sapmalarına ve UI iş parçacığı gecikmelerine - drift - sebep olur). Süreler daima **`Date.now()` veya `performance.now()`** zaman damgaları arasındaki milisaniye farkı hesaplanarak dürüstçe takip edilmelidir.
+

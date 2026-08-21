@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="../../images/logo.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Bantumi Oyunu - Nokia 3310'un klasik bezelye toplama ve dağıtma strateji oyunu. İster Yapay Zekaya karşı ister arkadaşınla oyna!">
+  <meta name="description" content="Bantumi Oyunu - Nokia 3310'un klasik bezelye toplama ve dağıtma strateji oyunu. İster Yapay Zekaya karşı ister arkadaşınızla oynayın!">
   <title>Bantumi - teknolojitasarimci</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
@@ -364,9 +364,6 @@
             background-repeat: no-repeat;
             flex-shrink: 0;
         }
-        body.dark .btn::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
-        }
     .btn-primary {
       background: #0284c7;
       color: #fff;
@@ -614,7 +611,7 @@
             <div class="pit" data-index="7"><span class="pit-count">4</span><div class="pit-peas"></div></div>
           </div>
 
-          <div class="row-info" style="margin-top:8px;" id="rowP1Label">Senin Kuyuların (Alt Sıra)</div>
+          <div class="row-info" style="margin-top:8px;" id="rowP1Label">Kuyularınız (Alt Sıra)</div>
           <!-- Alt Sıra: P1 Kuyuları (0'dan 5'e soldan sağa) -->
           <div class="pits-row" id="rowP1">
             <div class="pit active-row" data-index="0"><span class="pit-count">4</span><div class="pit-peas"></div></div>
@@ -968,7 +965,7 @@
         if (landedInOwnKalah) {
           try { GameSounds.point(); } catch(e){}
           const pName = player === 1 ? 'Oyuncu 1' : (gameMode === 'ai' ? 'Yapay Zeka' : 'Oyuncu 2');
-          updateTurnDisplay(`Sıra Tekrar: ${pName}!`, 'Son bezelye ana hazneye düştüğü için tekrar oynama hakkı kazandın!');
+          updateTurnDisplay(`Sıra Tekrar: ${pName}!`, 'Son bezelye ana hazneye düştüğü için tekrar oynama hakkı kazandınız!');
           isAnimating = false;
           renderBoard();
 
@@ -1142,7 +1139,7 @@
         let msg = '';
 
         if (scoreP1 > scoreP2) {
-          title = 'Tebrikler, Kazandın!';
+          title = 'Tebrikler, Kazandınız!';
           msg = `Oyuncu 1: ${scoreP1} bezelye — ${gameMode === 'ai' ? 'Yapay Zeka' : 'Oyuncu 2'}: ${scoreP2} bezelye.`;
           try { GameSounds.win(); } catch(e){}
         } else if (scoreP2 > scoreP1) {

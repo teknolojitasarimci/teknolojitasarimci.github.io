@@ -181,7 +181,7 @@ function handleCupClick(clickedIndex) {
                 }
             }, 1500);
         } else {
-            // Yanlış!
+            // İsabetli değil
             gameState.isGameOver = true;
             DOM.restartBtn.style.display = 'inline-block';
             DOM.gameArea.innerHTML = '<div style="text-align:center; padding:40px; color:#ef4444; font-size:18px;">Oyun Bitti!<br>Skor: ' + gameState.score + '</div>';

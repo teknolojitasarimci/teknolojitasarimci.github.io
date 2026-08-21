@@ -1,7 +1,7 @@
 /* ============================================================
  * teknolojitasarimci.com — Gerçek Tepki Sayaçları
  * ------------------------------------------------------------
- * - Tepki sayıları 0'dan başlar, Supabase üzerinden gerçek
+ * - Tepki sayıları 0'dan başlar, Firebase (Firestore) üzerinden gerçek
  *   ziyaretçi oylarıyla artar.
  * - Her ziyaretçi, sayfa başına her tepki tipi için yalnızca
  *   BİR kez oy kullanabilir (tekrar tıklama oyu geri alır).
@@ -10,9 +10,9 @@
 (function () {
     "use strict";
 
-    const SUPABASE_URL = window.SUPABASE_URL || "";
-    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
-    const CONFIGURED = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+    const PROJECT_ID = window.FIREBASE_PROJECT_ID || "";
+    const API_KEY = window.FIREBASE_API_KEY || "";
+    const CONFIGURED = !!(PROJECT_ID && API_KEY);
 
     const TYPE_BY_INDEX = ["faydali", "harika", "tesekkurler", "gelistirilmeli"];
 
@@ -21,15 +21,17 @@
         if (p.endsWith("/")) p += "index.html";
         return p;
     }
-
-    function api(path, options) {
-        return fetch(SUPABASE_URL + path, Object.assign({
-            headers: {
-                "apikey": SUPABASE_ANON_KEY,
-                "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-                "Content-Type": "application/json"
-            }
-        }, options));
+    
+    function getDocId(path) {
+        return path.replace(/[\/\.]/g, "_");
+    }
+    
+    function getDocUrl(docId) {
+        return `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/reactions/${docId}?key=${API_KEY}`;
+    }
+    
+    function firestoreUrl(action) {
+        return `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents:${action}?key=${API_KEY}`;
     }
 
     function showToast(message) {
@@ -55,13 +57,20 @@
         const buttons = document.querySelectorAll(".reaction-btn");
         if (!buttons.length || !CONFIGURED) return;
 
+        const docId = getDocId(currentPath());
+
         try {
-            const res = await api("/rest/v1/reactions?select=type,count&page_url=eq." +
-                encodeURIComponent(currentPath()));
-            if (!res.ok) throw new Error("load failed");
-            const rows = await res.json();
+            const res = await fetch(getDocUrl(docId));
+            const data = await res.json();
+            
             const counts = {};
-            rows.forEach(function (r) { counts[r.type] = r.count; });
+            if (data.fields) {
+                TYPE_BY_INDEX.forEach(function(type) {
+                    if (data.fields[type]) {
+                        counts[type] = parseInt(data.fields[type].integerValue || data.fields[type].doubleValue || "0", 10);
+                    }
+                });
+            }
 
             buttons.forEach(function (btn, i) {
                 const type = TYPE_BY_INDEX[i];
@@ -99,20 +108,41 @@
         countSpan.textContent = newCount;
         btn.classList.toggle("active", delta === 1);
 
+        const docId = getDocId(currentPath());
+        const docPath = `projects/${PROJECT_ID}/databases/(default)/documents/reactions/${docId}`;
+
         try {
-            const res = await api("/rest/v1/rpc/change_reaction", {
+            const res = await fetch(firestoreUrl("commit"), {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    p_path: currentPath(),
-                    p_type: type,
-                    p_delta: delta
+                    writes: [
+                        {
+                            update: { name: docPath, fields: {} }
+                        },
+                        {
+                            transform: {
+                                document: docPath,
+                                fieldTransforms: [
+                                    {
+                                        fieldPath: type,
+                                        increment: { integerValue: delta.toString() }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
                 })
             });
-            if (!res.ok) throw new Error("rpc failed");
-            const serverCount = await res.json();
-            if (serverCount !== undefined) {
-                countSpan.textContent = serverCount;
+            if (!res.ok) throw new Error("commit failed");
+            
+            // Okuma yapıp kesin değeri arayüze yansıt
+            const res2 = await fetch(getDocUrl(docId));
+            const data = await res2.json();
+            if (data.fields && data.fields[type]) {
+                countSpan.textContent = parseInt(data.fields[type].integerValue || data.fields[type].doubleValue || "0", 10);
             }
+            
             if (delta === 1) {
                 sessionStorage.setItem(voteKey(type), "1");
             } else {
@@ -127,6 +157,5 @@
     }
 
     window.reactionsApi = { toggleReaction: toggleReaction };
-
     document.addEventListener("DOMContentLoaded", loadCounts);
 })();

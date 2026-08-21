@@ -268,9 +268,6 @@
             background-repeat: no-repeat;
             flex-shrink: 0;
         }
-        body.dark .btn::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
-        }
     .btn-primary {
       background: #0284c7;
       color: #fff;
@@ -355,26 +352,26 @@
       color: #cbd5e1 !important;
     }
     body.dark .sudoku {
-      border: 3.5px solid #38bdf8 !important;
-      background: #38bdf8 !important;
+      border: 3.5px solid #334155 !important;
+      background: #334155 !important;
     }
     body.dark .cell {
       border-radius: 0 !important;
       background: #1e293b !important;
       color: #38bdf8 !important;
     }
-    body.dark .cell:nth-child(3n) { border-right: 3px solid #38bdf8 !important; }
+    body.dark .cell:nth-child(3n) { border-right: 3px solid #334155 !important; }
     body.dark .cell:nth-child(9n) { border-right: 0 !important; }
     body.dark .cell:nth-child(n+19):nth-child(-n+27),
-    body.dark .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #38bdf8 !important; }
+    body.dark .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #334155 !important; }
 
     body.dark .cell.given { background: #0f172a !important; color: #f8fafc !important; font-weight: 900 !important; }
-    body.dark .cell.selected { background: rgba(56, 189, 248, 0.4) !important; color: #ffffff !important; }
-    body.dark .cell.related { background: rgba(56, 189, 248, 0.12) !important; }
-    body.dark .cell.same-number { background: rgba(56, 189, 248, 0.28) !important; color: #38bdf8 !important; }
-    body.dark .cell.error { background: rgba(239, 68, 68, 0.35) !important; color: #fca5a5 !important; }
-    body.dark .cell.correct { background: rgba(16, 185, 129, 0.35) !important; color: #6ee7b7 !important; }
-    body.dark .cell:not(.given):hover { background: rgba(56, 189, 248, 0.2) !important; }
+    body.dark .cell.selected { background: #0284c7 !important; color: #ffffff !important; }
+    body.dark .cell.related { background: #2a3b52 !important; }
+    body.dark .cell.same-number { background: #0369a1 !important; color: #ffffff !important; }
+    body.dark .cell.error { background: #7f1d1d !important; color: #fca5a5 !important; }
+    body.dark .cell.correct { background: #064e3b !important; color: #6ee7b7 !important; }
+    body.dark .cell:not(.given):hover { background: #2a3b52 !important; }
 
     body.dark .num-btn {
       background: #0f172a !important;
@@ -836,7 +833,7 @@
         state.values = cloneGrid(state.solution).flat();
         state.finished = true;
         state.running = false;
-        setStatus('Çözüm gösterildi. Yeni bir Sudoku ile tekrar deneyebilirsin.');
+        setStatus('Çözüm gösterildi. Yeni bir Sudoku ile tekrar deneyebilirsiniz.');
         renderBoard();
       }
 

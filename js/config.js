@@ -1,11 +1,13 @@
 /* ============================================================
- * teknolojitasarimci.com — Merkezi Yapılandırma
- * ------------------------------------------------------------
- * Supabase projeni oluşturduktan sonra (supabase-schema.sql'i
- * SQL Editor'de çalıştır), Project Settings -> API bölümünden
- * aldığın URL ve anon key'i aşağıdaki tırnakların arasına yaz.
- * Bu dosya SADECE herkese açık (anon) anahtarı içerir; panel
- * şifren asla burada yer almaz.
+ * teknolojitasarimci.com — Ortak Yapılandırma Dosyası
  * ============================================================ */
-window.SUPABASE_URL = "";       // Örn: "https://xxxx.supabase.co"
-window.SUPABASE_ANON_KEY = "";  // Örn: "eyJhbGciOiJIUzI1NiIs..."
+window.ttConfig = window.ttConfig || {};
+
+// ===== FIREBASE YORUM VE SAYAÇ SİSTEMİ =====
+// Firebase Console -> Project Settings sayfasından alınacak
+window.FIREBASE_PROJECT_ID = "teknolojitasarimci-559ea";
+
+// Web API Key'i almak için önce Firebase panelinde bir "Web App" oluşturmanız gerekmektedir.
+// Lütfen panelinizdeki `</>` ikonuna tıklayarak adımları izleyin.
+window.FIREBASE_API_KEY = "AIzaSyBgLAzifTnMcJxCBpaPowZhxiPtnu0BXtI";
+

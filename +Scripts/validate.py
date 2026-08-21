@@ -39,6 +39,24 @@ def check_page(path: Path) -> list:
     ok("</html>" in html, "html kapanışı")
     ok('lang="tr"' in html, "dil tr")
 
+    # 1.1 Viewport Yakınlaştırma Serbestliği Kontrolü (A11y/UX)
+    viewport_m = re.search(r'<meta\s+[^>]*name=["\']viewport["\'][^>]*>', html, re.IGNORECASE)
+    if viewport_m:
+        vp_content = viewport_m.group(0)
+        has_zoom_lock = "user-scalable=no" in vp_content or "maximum-scale=1" in vp_content
+        ok(not has_zoom_lock, "viewport yakinlastirma kilidi yok (A11y/UX)")
+
+    # 1.2 Görsel Alt Etiketi Kontrolü (A11y)
+    img_tags = re.findall(r'<img\s+[^>]*>', html, re.IGNORECASE)
+    missing_alt = False
+    for img in img_tags:
+        if not re.search(r'\balt\s*=\s*["\']', img, re.IGNORECASE):
+            missing_alt = True
+            print(f"  FAIL Gorselde alt ozniteligi eksik: {img}")
+            break
+    ok(not missing_alt, "tum gorseller alt ozniteligine sahip (A11y)")
+
+
     # 2. Fontlar ve CDN Yasağı
     ok("fonts.googleapis.com" not in html and "fonts.gstatic.com" not in html,
        "harici font CDN'si yok")
@@ -198,7 +216,7 @@ def main():
         files = [p for p in ROOT.glob("*.html")
                  if p.name not in ("index.html", "yeni-gonderi.html", "admin.html")]
         files += list(ROOT.glob("sayfalar/*.html"))
-        files += [p for p in ROOT.glob("sayfalar/Post*/*.html") if not p.name.endswith("postX-preview.html")]
+        files += [p for p in ROOT.glob("sayfalar/post-*/*.html") if not p.name.endswith("postX-preview.html")]
         files += list(ROOT.glob("etkinlikler/*.html"))
         files += list(ROOT.glob("etkinlikler/*/*.html"))
     else:
@@ -218,7 +236,16 @@ def main():
     if all_issues:
         print(f"SONUÇ: {len(all_issues)} SORUN BULUNDU — Lütfen düzeltin!")
         sys.exit(1)
+    
     print("SONUÇ: TÜM KONTROLLER BAŞARILI (OK) — Standartlara uygun.")
+
+    # Otomatik Evrensel Arama Dizini Güncellemesi
+    try:
+        from universal_crawler import run_crawler
+        print("\n--- Evrensel Arama Dizini Otomatik Senkronizasyonu ---")
+        run_crawler()
+    except Exception as e:
+        print("Crawler güncelleme uyarısı:", e)
 
 
 if __name__ == "__main__":
