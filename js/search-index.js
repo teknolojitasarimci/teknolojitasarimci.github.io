@@ -628,6 +628,25 @@ window.SITE_SEARCH_INDEX = [
     "cover": "Oyunlar/bardak-oyunu/Veri/bardak-oyunu-kapak.jpg"
   },
   {
+    "type": "oyun",
+    "type_label": "Zekâ Oyunu",
+    "badge": "🎮 İnteraktif Oyun",
+    "title": "Kelime Bulmaca",
+    "description": "Daire içindeki harfleri birleştirerek gizli kelimeleri bulunuz ve kelime haznenizi geliştiriniz.",
+    "category": "Zekâ Oyunları",
+    "tags": [
+      "Oyun",
+      "Zeka",
+      "Bulmaca",
+      "Akıl Oyunu",
+      "Kelime Bulmaca",
+      "kelime-bulmaca"
+    ],
+    "content": "Kelime Bulmaca - teknolojitasarimci Kelime Bulmaca Kurallar Sıfırla Daire içindeki harfleri birleştirerek gizli kelimeleri bulunuz. Skor 0 Seviye 1 / 5 Ekstra 0 Tebrikler, Kazandınız! Tüm seviyeleri başarıyla tamamladınız. Kelime bilginiz mükemmel seviyede! Toplam Skor 0 Ekstra Kelime 0 Tekrar Oyna Oyun Kuralları Petek Kelime Bulmaca oyununu keyifle oynamanız için temel kurallar aşağıdadır: Daire içindeki harflerin üzerine tıklayıp (veya basılı tutup) parmağınızı/mousenuzu diğer harflere sürükleyerek çizgiler oluşturunuz. Parmağınızı/tuşu bıraktığınızda seçtiğiniz kelime kontrol edilir. Seçtiğiniz kelime bulmaca gridinde yer alıyorsa ilgili hücreler açılır. Bulmacada bulunmayan fakat Türkçe sözlükte yer alan geçerli kelimeler size Ekstra Kelime (Bonus Puan) kazandırır. Toplam 5 farklı seviyeyi en yüksek skorla tamamlamaya çalışınız. Anladım Bu oyunu nasıl buldunuz? Tepkinizi belirtin: Faydalı 0 Harika 0 Teşekkürler 0 Geliştirilmeli 0 Yorumlar ve Değerlendirmeler Adınız Soyadınız * Yorumunuz * Yorumu Gönder Copyright © Mürsel EREN Web sitemde yer alan tüm içeriklerimi, ticari olmayan amaçlarla (örneğin kişisel projeler, eğitim veya kâr amacı gütmeyen çalışmalar için) ve kaynağını aç",
+    "url": "Oyunlar/kelime-bulmaca/index.html",
+    "cover": "Oyunlar/kelime-bulmaca/Veri/kelime-bulmaca-kapak.jpg"
+  },
+  {
     "type": "gonderi",
     "type_label": "Gönderi",
     "badge": "📝 Gönderi & Rehber",
@@ -1807,6 +1826,24 @@ window.SITE_SEARCH_INDEX = [
     "tags": [],
     "content": "İmkânsızı Başaranlar: Engelleri Aşan İlham Verici İsimler - teknolojitasarimci Bağlantı kopyalandı! Ana Sayfaya Dön İçerik Engelsiz Hayat Teknolojileri 3 Dk Okuma İmkânsızı Başaranlar: Engelleri Aşan İlham Verici İsimler Yayınlanma Tarihi: 15 Ağustos 2026 Hazırlayan: Mürsel EREN Görüntülenme: 0 İçeriği Paylaş: Linki Kopyala WhatsApp Yazdır Sevgili gençler ve değerli meslektaşlarım, Tarih boyunca birçok insan, doğuştan veya sonradan edinilen engellere rağmen büyük başarılar elde etmiştir. Bu kişiler, fiziksel veya duyusal kısıtlılıkların, gerçek başarının önünde asla duramayacağını kanıtlayarak tüm insanlığa ilham kaynağı olmuşlardır. Aşağıdaki isimlerin hayat hikâyeleri; engellerin aslında bedenimizde değil, zihinlerimizde olduğunu ve hayattaki tek gerçek engelin \"vazgeçmek\" olduğunu bizlere göstermektedir: Ludwig van Beethoven: Yaşadığı ağır işitme kaybına rağmen, notaları zihninde duyarak klasik müziğin en büyük bestecilerinden biri olmuş ve ölümsüz eserler üretmiştir. Frida Kahlo: Geçirdiği trafik kazası sonrası yatağa bağımlı kaldığı derin acıları fırçasıyla tuvale dökmüş, sanat tarihinin en ikonik ve etkileyici ressamlarından biri olmuştur. Stephen Hawking: ALS hastalığı nedeniyle tekerlekli sandalyeye ve bir konuşma cihazına bağlı kalmasına rağmen, zekâsıyla evrenin sırlarını çözmüş ve dünyanın en saygın teorik fizikçilerinden biri olmuştur. Helen Keller: Hem görme hem de işitme engeline sahip olmasına rağmen azmiyle birden fazla dil öğrenmiş, üniversite mezunu olmuş ve",
     "url": "sayfalar/post-00055-Engelleri-Asanlar/post-00055-preview.html",
+    "cover": "images/logo.svg"
+  },
+  {
+    "type": "pdf",
+    "type_label": "PDF Belge",
+    "badge": "📄 İndirilebilir PDF",
+    "title": "Etkinlik Dosyasını İndir (PDF)",
+    "description": "İmkânsızı Başaranlar: Engelleri Aşan İlham Verici İsimler yazısına ait indirilebilir ve yazdırılabilir resmî A4 PDF dokümanı.",
+    "category": "PDF & Dokümanlar",
+    "tags": [
+      "PDF",
+      "İndir",
+      "Yazdır",
+      "Doküman",
+      "İmkânsızı Başaranlar: Engelleri Aşan İlham Verici İsimler"
+    ],
+    "content": "Etkinlik Dosyasını İndir (PDF) İmkânsızı Başaranlar: Engelleri Aşan İlham Verici İsimler PDF indir yazdır çalışma yaprağı evrak",
+    "url": "sayfalar/post-00055-Engelleri-Asanlar/Veri/Engellerini-Asmis-Basarili-Insanlar-(www.teknolojitasarimci.com).pdf",
     "cover": "images/logo.svg"
   },
   {
@@ -3711,6 +3748,7 @@ window.SITE_SEARCH_INDEX = [
       "İşlem Karesi Oyunu",
       "Kare Kapmaca Oyunu",
       "Kelime Avı Oyunu",
+      "Kelime Bulmaca Oyunu",
       "Kutuban Oyunu",
       "Labirent Bulmacaları",
       "Patika Oyunu",
